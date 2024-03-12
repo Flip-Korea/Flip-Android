@@ -1,4 +1,4 @@
-package com.team.flip.ui.theme
+package com.team.flip.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build

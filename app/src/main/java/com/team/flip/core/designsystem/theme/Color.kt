@@ -1,4 +1,4 @@
-package com.team.flip.ui.theme
+package com.team.flip.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
