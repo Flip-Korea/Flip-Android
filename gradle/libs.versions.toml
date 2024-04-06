@@ -6,14 +6,17 @@ androidxComposeCompiler = "1.5.8"
 androidxCore = "1.12.0"
 androidxHilt = "1.1.0"
 androidxLifecycle = "2.7.0"
-androidxNavigation = "2.7.6"
+androidxNavigation = "2.7.7"
 androidxRoom = "2.6.1"
 androidxTestCore = "1.5.0"
 androidxTestExt = "1.1.5"
 androidxTestRunner = "1.5.2"
+androidXArchCoreTest = "2.2.0"
 coroutines = "1.7.3"
 hilt = "2.50"
 junit = "4.13.2"
+mockito = "4.8.0"
+robolectric = "4.10.3"
 kotlin = "1.9.22"
 kotlinxDatetime = "0.4.1"
 ksp = "1.9.22-1.0.16"
@@ -21,8 +24,12 @@ espresso-core = "3.5.1"
 appcompat = "1.6.1"
 material = "1.11.0"
 retrofit = "2.9.0"
+retrofitMock = "2.7.1"
+okhttpMock = "4.10.0"
+moshi = "1.12.0"
 okhttp = "5.0.0-alpha.2"
-
+androidxDataStore = "1.0.0"
+coil-compose = "2.5.0"
 
 [libraries]
 # add
@@ -47,6 +54,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoom" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoom" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoom" }
+androidx-arch-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidXArchCoreTest" }
 androidx-test-core  = { module = "androidx.test:core", version.ref = "androidxTestCore" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestExt" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
@@ -56,6 +64,8 @@ hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", vers
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric"}
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
@@ -65,9 +75,16 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-mock = { module = "com.squareup.retrofit2:retrofit-mock", version.ref = "retrofitMock" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+retrofit-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+androidx-dataStore-preference = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDataStore" }
+okhttp-mockWebServer = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttpMock" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+#androidx-dataStore-core = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

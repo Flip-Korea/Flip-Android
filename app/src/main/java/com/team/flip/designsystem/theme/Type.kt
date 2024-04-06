@@ -1,4 +1,4 @@
-package com.team.flip.core.designsystem.theme
+package com.team.flip.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

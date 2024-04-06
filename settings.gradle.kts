@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Flip"
 include(":app")
+include(":data")
+include(":domain")
+include(":presentation")
