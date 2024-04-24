@@ -1,0 +1,150 @@
+package com.team.data.repository
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.FlipPagination
+import com.team.data.network.retrofit.api.PostNetworkApi
+import com.team.data.network.source.PostNetworkDataSource
+import com.team.data.network.source.fake.FakePostNetworkDataSource
+import com.team.data.repository.fake.FakeTempPostRepository
+import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.domain.model.post.NewPost
+import com.team.domain.model.post.TempPost
+import com.team.domain.repository.TempPostRepository
+import com.team.domain.util.Result
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.test.runTest
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
+@ExperimentalCoroutinesApi
+@RunWith(JUnit4::class)
+class DefaultTempPostRepositoryTest {
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var postNetworkDataSource: PostNetworkDataSource
+    private lateinit var tempPostRepository: TempPostRepository
+
+    private lateinit var postNetworkApi: PostNetworkApi
+    private lateinit var server: MockWebServer
+    private lateinit var moshi: Moshi
+
+    @Before
+    fun setUp() {
+        server = MockWebServer()
+        server.start()
+
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        postNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(PostNetworkApi::class.java)
+
+        postNetworkDataSource = FakePostNetworkDataSource(postNetworkApi)
+        tempPostRepository = FakeTempPostRepository(postNetworkDataSource)
+    }
+
+    @After
+    fun teardown() {
+        server.shutdown()
+    }
+
+    @Test
+    fun `플립 임시저장 글 목록 페이지네이션 (getTempPostsPagination())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
+
+        var tempPosts = listOf<TempPost>()
+
+        var endOfPage = false
+        var nextCursor = 1
+        while (!endOfPage) {
+            // FakePostNetworkDataSource - makeTempPostListResponseTestData() -> 3개의 페이지만 반환
+            val result =
+                tempPostRepository.getTempPostsPagination("TestProfileId", nextCursor.toString(), FlipPagination.PAGE_SIZE).last()
+            if ((result as Result.Success).data.isEmpty()) {
+                endOfPage = true
+            } else {
+                nextCursor++
+                tempPosts = result.data
+            }
+        }
+
+        Assert.assertEquals(tempPosts.size, FlipPagination.PAGE_SIZE)
+        Assert.assertEquals(nextCursor, 4)
+    }
+
+    @Test
+    fun `플립 임시저장 글 추가 (addTemporaryPost())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+            setBody(resultIdResponseTestData)
+        })
+
+        val newPost = NewPost(
+            profileId = "PID",
+            title = "title",
+            content = "content",
+            createdAt = "24-04-24",
+            categoryId = 1,
+            bgColorId = 1,
+            fontStyleId = 1,
+            tags = listOf("a", "b")
+        )
+
+        val result = tempPostRepository.addTemporaryPost(newPost).last()
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `플립 임시저장 글 삭제 (deleteTemporaryPost())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
+
+        val result = tempPostRepository.deleteTemporaryPost(1).last()
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `플립 임시저장 글 수정 (editTemporaryPost())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
+
+        val newPost = NewPost(
+            profileId = "PID",
+            title = "title",
+            content = "content",
+            createdAt = "24-04-24",
+            categoryId = 1,
+            bgColorId = 1,
+            fontStyleId = 1,
+            tags = listOf("a", "b")
+        )
+
+        val result = tempPostRepository.editTemporaryPost(newPost).last()
+
+        assert((result as Result.Success).data)
+    }
+}

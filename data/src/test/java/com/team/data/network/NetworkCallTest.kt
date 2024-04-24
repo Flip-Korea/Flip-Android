@@ -5,9 +5,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.domain.util.ErrorType
+import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -22,7 +22,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
-import com.team.domain.util.Result
 
 @JsonClass(generateAdapter = true)
 private data class TestModel(
@@ -82,9 +81,9 @@ class NetworkCallTest {
             setBody(jsonTestData)
         })
 
-        val networkCallResult = com.team.data.network.networkCallFlow { apiService.testCall() }
+        val networkCallResult = networkCall { apiService.testCall() }
 
-        networkCallResult.first().also { actualResponse ->
+        networkCallResult.also { actualResponse ->
             if (actualResponse is Result.Success)
                 Assert.assertEquals(expectedResponse, actualResponse.data)
         }
@@ -97,10 +96,10 @@ class NetworkCallTest {
             setResponseCode(404)
         })
 
-        val networkCallResult = com.team.data.network.networkCallFlow { apiService.testCall() }
+        val networkCallResult = networkCall { apiService.testCall() }
 
-        val expectedResponse = com.team.domain.util.ErrorType.Exception.EXCEPTION
-        networkCallResult.last().also { res ->
+        val expectedResponse = ErrorType.Exception.EXCEPTION
+        networkCallResult.also { res ->
             if (res is Result.Error) {
                 val actualResponse = res.error
                 Assert.assertEquals(expectedResponse, actualResponse)
@@ -118,7 +117,7 @@ class NetworkCallTest {
         val networkCallResult =
             com.team.data.network.networkCallWithoutResponse { apiService.testCall() }
 
-        networkCallResult.first().also { actualResponse ->
+        networkCallResult.also { actualResponse ->
             if (actualResponse is Result.Success)
                 Assert.assertEquals(true, actualResponse.data)
         }
@@ -131,10 +130,10 @@ class NetworkCallTest {
             setResponseCode(404)
         })
 
-        val networkCallResult = com.team.data.network.networkCallFlow { apiService.testCall() }
+        val networkCallResult = networkCall { apiService.testCall() }
 
         val expectedResponse = com.team.domain.util.ErrorType.Exception.EXCEPTION
-        networkCallResult.last().also { res ->
+        networkCallResult.also { res ->
             if (res is Result.Error) {
                 val actualResponse = res.error
                 Assert.assertEquals(expectedResponse, actualResponse)

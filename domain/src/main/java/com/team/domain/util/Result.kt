@@ -2,6 +2,10 @@ package com.team.domain.util
 
 typealias BaseError = Error
 
+/** Result Wrapper Class
+ *
+ * 1. When used in NetworkCall: Not Used 'Loading()'
+ * 2. When used in Repository: Use 'Loading()' **/
 sealed interface Result<out T, out E: BaseError> {
     data class Success<out T, out E: BaseError>(val data: T): Result<T, E>
 

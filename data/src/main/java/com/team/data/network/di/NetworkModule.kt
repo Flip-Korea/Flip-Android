@@ -2,16 +2,20 @@ package com.team.data.network.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.datastore.TokenManager
-import com.team.data.network.retrofit.api.AuthNetworkApi
+import com.team.data.BuildConfig
+import com.team.data.datastore.DataStoreManager
+import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
 import com.team.data.network.retrofit.api.CategoryNetworkApi
+import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
-import com.team.data.network.source.AuthNetworkDataSource
-import com.team.data.network.source.AuthNetworkDataSourceImpl
+import com.team.data.network.source.AccountNetworkDataSource
+import com.team.data.network.source.AccountNetworkDataSourceImpl
 import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.data.network.source.CategoryNetworkDataSourceImpl
+import com.team.data.network.source.PostNetworkDataSource
+import com.team.data.network.source.PostNetworkDataSourceImpl
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSourceImpl
 import dagger.Module
@@ -38,9 +42,12 @@ object NetworkModule {
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
-//                if (BuildConfig.DEBUG) {
-            setLevel(HttpLoggingInterceptor.Level.BODY)
-//                }
+            //TODO AGP 8.0부터는 BuildConfig 기본 비활성화, 9.0부터는 삭제 예정
+                if (BuildConfig.DEBUG) {
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                } else {
+                    setLevel(HttpLoggingInterceptor.Level.NONE)
+                }
         }
     }
 
@@ -74,15 +81,15 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideTokenAuthentication(
-        tokenManager: TokenManager,
-        authNetworkApi: AuthNetworkApi,
-    ): TokenAuthenticator = TokenAuthenticator(tokenManager, authNetworkApi)
+        dataStoreManager: DataStoreManager,
+        authNetworkApi: AccountNetworkApi,
+    ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, authNetworkApi)
 
     @Singleton
     @Provides
     fun provideTokenInterceptor(
-        tokenManager: TokenManager,
-    ): TokenInterceptor = TokenInterceptor(tokenManager)
+        dataStoreManager: DataStoreManager,
+    ): TokenInterceptor = TokenInterceptor(dataStoreManager)
 
     /** Retrofit Instance **/
     @DefaultRetrofitBuilder
@@ -104,10 +111,10 @@ object NetworkModule {
     fun provideAuthApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): AuthNetworkApi = retrofit
+    ): AccountNetworkApi = retrofit
         .client(loggingOkHttpClient)
         .build()
-        .create(AuthNetworkApi::class.java)
+        .create(AccountNetworkApi::class.java)
 
     @Singleton
     @Provides
@@ -119,11 +126,21 @@ object NetworkModule {
         .build()
         .create(UserNetworkApi::class.java)
 
+    @Singleton
+    @Provides
+    fun providePostApiService(
+        @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
+    ): PostNetworkApi = retrofit
+        .client(tokenOkHttpClient)
+        .build()
+        .create(PostNetworkApi::class.java)
+
     /** DataSource **/
     @Singleton
     @Provides
-    fun provideAuthNetworkDataSource(authNetworkApi: AuthNetworkApi): AuthNetworkDataSource {
-        return AuthNetworkDataSourceImpl(authNetworkApi)
+    fun provideAuthNetworkDataSource(authNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
+        return AccountNetworkDataSourceImpl(authNetworkApi)
     }
 
     @Singleton
@@ -136,6 +153,12 @@ object NetworkModule {
     @Provides
     fun provideCategoryNetworkDataSource(categoryNetworkApi: CategoryNetworkApi): CategoryNetworkDataSource {
         return CategoryNetworkDataSourceImpl(categoryNetworkApi)
+    }
+
+    @Singleton
+    @Provides
+    fun providePostNetworkDataSource(postNetworkApi: PostNetworkApi): PostNetworkDataSource {
+        return PostNetworkDataSourceImpl(postNetworkApi)
     }
 }
 

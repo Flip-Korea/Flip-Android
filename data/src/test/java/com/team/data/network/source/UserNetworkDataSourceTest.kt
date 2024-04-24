@@ -2,18 +2,26 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.testdoubles.network.model.networkProfileTestData
-import com.team.data.testdoubles.network.source.FakeUserNetworkDataSource
-import com.team.domain.util.ErrorType
+import com.team.data.network.model.request.CategoryRequest
+import com.team.data.network.model.request.ScrapCommentRequest
+import com.team.data.network.model.request.ScrapRequest
+import com.team.data.network.model.response.ResultIdResponse
+import com.team.data.network.model.response.post.PostListResponse
+import com.team.data.network.model.response.profile.ProfileResponse
+import com.team.data.network.retrofit.api.UserNetworkApi
+import com.team.data.network.source.fake.FakeUserNetworkDataSource
+import com.team.data.testdoubles.network.addScrapRequestTestData
+import com.team.data.testdoubles.network.networkProfileTestData
+import com.team.data.testdoubles.network.postsResponseTestDataWithScrapComment
+import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.util.Result
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -26,8 +34,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @RunWith(JUnit4::class)
 class UserNetworkDataSourceTest {
 
-    private lateinit var userNetworkApi: com.team.data.network.retrofit.api.UserNetworkApi
-    private lateinit var userNetworkDataSource: com.team.data.network.source.UserNetworkDataSource
+    private lateinit var userNetworkApi: UserNetworkApi
+    private lateinit var userNetworkDataSource: UserNetworkDataSource
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
@@ -54,14 +62,6 @@ class UserNetworkDataSourceTest {
         server.shutdown()
     }
 
-    private suspend fun <T> getResult(response: Flow<Result<T, ErrorType>>): T? {
-        return when (val result = response.first()) {
-            is Result.Error -> { null }
-            Result.Loading -> { null }
-            is Result.Success -> { result.data }
-        }
-    }
-
     @Test
     fun `getProfile Call Test`() = runTest {
 
@@ -70,13 +70,13 @@ class UserNetworkDataSourceTest {
             setBody(networkProfileTestData)
         })
 
-        val adapter = moshi.adapter(com.team.data.network.model.response.ProfileResponse::class.java)
+        val adapter = moshi.adapter(ProfileResponse::class.java)
         val mockResponseToObject = adapter.fromJson(networkProfileTestData)
 
-        val response = getResult(userNetworkDataSource.getProfile("testprofileid"))
+        val response = userNetworkDataSource.getProfile("testprofileid")
 
         assertNotNull(response)
-        assertEquals(mockResponseToObject, response)
+        assertEquals(mockResponseToObject, (response as Result.Success).data)
     }
 
     @Test
@@ -87,14 +87,14 @@ class UserNetworkDataSourceTest {
         })
 
         val response =
-            getResult(userNetworkDataSource.selectMyCategory(
+            userNetworkDataSource.selectMyCategory(
                 profileId = "honggd",
                 category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3))
-            ))
+            )
 
         val recordedRequest = server.takeRequest()
 
-        val adapter = moshi.adapter(com.team.data.network.model.request.CategoryRequest::class.java)
+        val adapter = moshi.adapter(CategoryRequest::class.java)
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
         val requestBody = """
             {
@@ -115,15 +115,14 @@ class UserNetworkDataSourceTest {
         })
 
         val response =
-            getResult(userNetworkDataSource.updateMyCategory(
+            userNetworkDataSource.updateMyCategory(
                 profileId = "honggd",
-                category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3)),
-                accessToken = "Bearer aaa.bbb.ccc"
-            ))
+                category = CategoryRequest(listOf(1, 2, 3)),
+            )
 
         val recordedRequest = server.takeRequest()
 
-        val adapter = moshi.adapter(com.team.data.network.model.request.CategoryRequest::class.java)
+        val adapter = moshi.adapter(CategoryRequest::class.java)
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
         val requestBody = """
             {
@@ -134,5 +133,71 @@ class UserNetworkDataSourceTest {
 
         assertNotNull(response)
         assertEquals(expectedRequestBody!!.categories, realRequestBody!!.categories)
+    }
+
+    @Test
+    fun `스크랩 목록 불러오기 (getScrapList())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(postsResponseTestDataWithScrapComment)
+        })
+
+        val expectedResponse = moshi
+            .adapter(PostListResponse::class.java)
+            .fromJson(postsResponseTestDataWithScrapComment)
+
+        val actualResponse =
+            userNetworkDataSource.getScrapList(profileId = "honggd", cursor = "test-cursor", limit = 15)
+
+        assertEquals(expectedResponse!!, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `스크랩 코멘트 수정 (editScrapComment())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
+
+        val scrapCommentRequest = ScrapCommentRequest("테스트 스크랩 코멘트")
+        val result =
+            userNetworkDataSource.editScrapComment(
+                profileId = "TestProfileId",
+                scrapId = 1L,
+                scrapCommentRequest = scrapCommentRequest
+            )
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `API-030 (스크랩 추가)`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+            setBody(resultIdResponseTestData)
+        })
+
+        val requestAdapter = moshi.adapter(ScrapRequest::class.java)
+        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
+
+        val actualResponse =
+            userNetworkDataSource.addScrap(
+                requestAdapter.fromJson(addScrapRequestTestData)!!
+            )
+        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
+
+        Assert.assertNotNull(actualResponse)
+        assertEquals(expectedResponse!!.resultId, (actualResponse as Result.Success).data.resultId)
+    }
+
+    @Test
+    fun `API-031 (스크랩 삭제)`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
+
+        val actualResponse = userNetworkDataSource.deleteScrap(1)
+
+        Assert.assertNotNull(actualResponse)
+        assertEquals(true, (actualResponse as Result.Success).data)
     }
 }
