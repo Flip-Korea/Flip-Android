@@ -1,9 +1,10 @@
 package com.team.data.network.retrofit
 
 import android.util.Log
-import com.team.data.datastore.TokenManager
+import com.team.data.datastore.DataStoreManager
 import com.team.data.network.model.response.TokenResponse
-import com.team.data.network.retrofit.api.AuthNetworkApi
+import com.team.data.network.retrofit.api.AccountNetworkApi
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -14,8 +15,8 @@ import javax.inject.Inject
 
 /** Only Called Once When Receive HTTP Status Code 401. **/
 class TokenAuthenticator @Inject constructor(
-    private val tokenManager: TokenManager,
-    private val authNetworkApi: AuthNetworkApi,
+    private val dataStoreManager: DataStoreManager,
+    private val authNetworkApi: AccountNetworkApi,
 ) : Authenticator {
 
     private val TAG = this.javaClass.simpleName
@@ -26,7 +27,9 @@ class TokenAuthenticator @Inject constructor(
 
         // get originalRefreshToken
         val originalRefreshToken = runBlocking {
-            tokenManager.getToken(TokenManager.Type.REFRESH_TOKEN).first()
+            dataStoreManager.getToken(DataStoreManager.TokenType.REFRESH_TOKEN)
+                .catch { emit("") }
+                .first()
         }
 
         return runBlocking {
@@ -36,15 +39,15 @@ class TokenAuthenticator @Inject constructor(
 
             // couldn't refresh the token, so restart the login process
             if (!newTokens.isSuccessful || newTokens.body() == null) {
-//                tokenManager.deleteToken(TokenManager.Type.ACCESS_TOKEN)
-//                tokenManager.deleteToken(TokenManager.Type.REFRESH_TOKEN)
+                dataStoreManager.deleteToken(DataStoreManager.TokenType.ACCESS_TOKEN)
+                dataStoreManager.deleteToken(DataStoreManager.TokenType.REFRESH_TOKEN)
             }
 
             // Save Tokens
             // & Call With Tokens (can get response from 'chain.proceed(...)')
             newTokens.body()?.let { res ->
-                tokenManager.saveToken(TokenManager.Type.ACCESS_TOKEN, res.accessToken)
-                tokenManager.saveToken(TokenManager.Type.REFRESH_TOKEN, res.refreshToken)
+                dataStoreManager.saveToken(DataStoreManager.TokenType.ACCESS_TOKEN, res.accessToken)
+                dataStoreManager.saveToken(DataStoreManager.TokenType.REFRESH_TOKEN, res.refreshToken)
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${res.accessToken}")
                     .build()

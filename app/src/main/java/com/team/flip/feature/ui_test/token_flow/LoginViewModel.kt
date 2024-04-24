@@ -2,16 +2,17 @@ package com.team.flip.feature.ui_test.token_flow
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.team.data.datastore.DataStoreManager
+import com.team.data.network.source.AccountNetworkDataSource
+import com.team.data.network.source.UserNetworkDataSource
+import com.team.domain.util.Result
 import com.team.flip.feature.util.UiText
 import com.team.flip.feature.util.asUiText
-import com.team.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,9 +28,9 @@ data class LoginState(
 class LoginViewModel @Inject constructor(
     // 나중에는 DataSource 직접 가져다 쓰지말고
     // UseCase 클래스나 리포지토리를 진입점으로 교체
-    private val authNetworkDataSource: com.team.data.network.source.AuthNetworkDataSource,
-    private val userNetworkDataSource: com.team.data.network.source.UserNetworkDataSource,
-    private val tokenManager: com.team.data.datastore.TokenManager
+    private val authNetworkDataSource: AccountNetworkDataSource,
+    private val userNetworkDataSource: UserNetworkDataSource,
+    private val tokenManager: DataStoreManager
 ): ViewModel() {
 
     private val _loginState = MutableStateFlow(LoginState())
@@ -39,18 +40,18 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
 
             // 임시 모의 개체
-            val networkRegister = com.team.data.network.model.request.NetworkRegister(
+            val networkRegister = com.team.data.network.model.request.RegisterRequest(
                 accountId = "kakao123test",
                 name = "testName",
                 categories = listOf(1, 2, 3),
-                profile = com.team.data.network.model.request.NetworkProfile(
+                profile = com.team.data.network.model.request.ProfileRequest(
                     profileId = "honggd",
                     nickname = "honggildong",
                     photoUrl = "test.com"
                 )
             )
 
-            authNetworkDataSource.register(networkRegister).onEach { result ->
+            authNetworkDataSource.register(networkRegister).also { result ->
                 when (result) {
                     is Result.Error -> {
                         _loginState.update { it.copy(
@@ -69,7 +70,7 @@ class LoginViewModel @Inject constructor(
                         saveToken(result.data.accessToken, result.data.refreshToken)
                     }
                 }
-            }.launchIn(this)
+            }
         }
     }
 
@@ -77,7 +78,7 @@ class LoginViewModel @Inject constructor(
         // 일단 임시로 입력 값 X
         viewModelScope.launch {
 
-            authNetworkDataSource.login(accountId).onEach { result ->
+            authNetworkDataSource.login(accountId).also { result ->
                 when(result) {
                     Result.Loading -> { _loginState.update { it.copy(loading = true) } }
                     is Result.Error -> {
@@ -96,7 +97,7 @@ class LoginViewModel @Inject constructor(
                         saveToken(result.data.accessToken, result.data.refreshToken)
                     }
                 }
-            }.launchIn(this)
+            }
         }
     }
 
@@ -104,13 +105,13 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _loginState.update { it.copy(loading = true) }
 
-            tokenManager.deleteToken(com.team.data.datastore.TokenManager.Type.ACCESS_TOKEN)
-            tokenManager.deleteToken(com.team.data.datastore.TokenManager.Type.REFRESH_TOKEN)
+            tokenManager.deleteToken(DataStoreManager.TokenType.ACCESS_TOKEN)
+            tokenManager.deleteToken(DataStoreManager.TokenType.REFRESH_TOKEN)
 
             val accessTokenByDataStore =
-                tokenManager.getToken(com.team.data.datastore.TokenManager.Type.ACCESS_TOKEN).first() ?: "null"
+                tokenManager.getToken(DataStoreManager.TokenType.ACCESS_TOKEN).first() ?: "null"
             val refreshTokenByDataStore =
-                tokenManager.getToken(com.team.data.datastore.TokenManager.Type.REFRESH_TOKEN).first() ?: "null"
+                tokenManager.getToken(DataStoreManager.TokenType.REFRESH_TOKEN).first() ?: "null"
 
             _loginState.update { it.copy(
                 loading = false,
@@ -125,7 +126,7 @@ class LoginViewModel @Inject constructor(
 
     fun getProfile(profileId: String) {
         viewModelScope.launch {
-            userNetworkDataSource.getProfile(profileId).onEach { result ->
+            userNetworkDataSource.getProfile(profileId).also { result ->
                 when(result) {
                     Result.Loading -> { _loginState.update { it.copy(loading = true) } }
                     is Result.Error -> {
@@ -143,7 +144,7 @@ class LoginViewModel @Inject constructor(
                         ) }
                     }
                 }
-            }.launchIn(this)
+            }
         }
     }
 
@@ -152,9 +153,9 @@ class LoginViewModel @Inject constructor(
             _loginState.update { it.copy(loading = true) }
 
             val accessTokenByDataStore =
-                tokenManager.getToken(com.team.data.datastore.TokenManager.Type.ACCESS_TOKEN).first() ?: "null"
+                tokenManager.getToken(DataStoreManager.TokenType.ACCESS_TOKEN).first() ?: "null"
             val refreshTokenByDataStore =
-                tokenManager.getToken(com.team.data.datastore.TokenManager.Type.REFRESH_TOKEN).first() ?: "null"
+                tokenManager.getToken(DataStoreManager.TokenType.REFRESH_TOKEN).first() ?: "null"
 
             _loginState.update { it.copy(
                 loading = false,
@@ -170,8 +171,8 @@ class LoginViewModel @Inject constructor(
     /** 여기서 저장 해도 되나? **/
     private fun saveToken(accessToken: String, refreshToken: String) {
         viewModelScope.launch {
-            tokenManager.saveToken(com.team.data.datastore.TokenManager.Type.ACCESS_TOKEN, accessToken)
-            tokenManager.saveToken(com.team.data.datastore.TokenManager.Type.REFRESH_TOKEN, refreshToken)
+            tokenManager.saveToken(DataStoreManager.TokenType.ACCESS_TOKEN, accessToken)
+            tokenManager.saveToken(DataStoreManager.TokenType.REFRESH_TOKEN, refreshToken)
         }
     }
 

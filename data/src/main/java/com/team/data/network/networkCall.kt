@@ -3,6 +3,7 @@ package com.team.data.network
 import android.util.MalformedJsonException
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
+import com.team.data.util.retry
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import retrofit2.HttpException
@@ -22,6 +23,7 @@ suspend fun <T> networkCall(
             404 -> ErrorType.Network.NOT_FOUND
             408 -> ErrorType.Network.TIMEOUT
             429 -> ErrorType.Network.TOO_MANY_REQUESTS
+            409 -> ErrorType.Network.CONFLICT
             else -> {
                 if (code/100 == 5) {
                     ErrorType.Network.SERVER_ERROR
@@ -34,7 +36,7 @@ suspend fun <T> networkCall(
 
     // Main Logic
     try {
-        val response = call()
+        val response = retry { call() }
         if (response.isSuccessful) {
             response.body()?.let { data ->
                 return Result.Success(data)

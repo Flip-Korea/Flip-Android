@@ -1,6 +1,6 @@
 package com.team.data.network.retrofit.api
 
-import com.team.data.network.model.response.ResponseCategoryWrapper
+import com.team.data.network.model.response.category.ResponseCategoryWrapper
 import retrofit2.Response
 import retrofit2.http.GET
 

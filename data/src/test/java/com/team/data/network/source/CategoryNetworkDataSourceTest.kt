@@ -2,8 +2,10 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.testdoubles.network.model.networkCategoriesTestData
-import com.team.data.testdoubles.network.source.FakeCategoryNetworkDataSource
+import com.team.data.network.model.response.category.ResponseCategoryWrapper
+import com.team.data.network.retrofit.api.CategoryNetworkApi
+import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
+import com.team.data.testdoubles.network.networkCategoriesTestData
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import junit.framework.Assert.assertNotNull
@@ -26,8 +28,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @RunWith(JUnit4::class)
 class CategoryNetworkDataSourceTest {
 
-    private lateinit var categoryNetworkApi: com.team.data.network.retrofit.api.CategoryNetworkApi
-    private lateinit var categoryNetworkDataSource: com.team.data.network.source.CategoryNetworkDataSource
+    private lateinit var categoryNetworkApi: CategoryNetworkApi
+    private lateinit var categoryNetworkDataSource: CategoryNetworkDataSource
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
@@ -44,7 +46,7 @@ class CategoryNetworkDataSourceTest {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(server.url("/"))
             .build()
-            .create(com.team.data.network.retrofit.api.CategoryNetworkApi::class.java)
+            .create(CategoryNetworkApi::class.java)
 
         categoryNetworkDataSource = FakeCategoryNetworkDataSource(categoryNetworkApi)
     }
@@ -57,7 +59,7 @@ class CategoryNetworkDataSourceTest {
     private suspend fun <T> getResult(response: Flow<Result<T, ErrorType>>): T? {
         return when (val result = response.first()) {
             is Result.Error -> { null }
-            com.team.domain.util.Result.Loading -> { null }
+            Result.Loading -> { null }
             is Result.Success -> { result.data }
         }
     }
@@ -69,12 +71,15 @@ class CategoryNetworkDataSourceTest {
             setBody(networkCategoriesTestData)
         })
 
-        val actualResponse = getResult(categoryNetworkDataSource.getCategories())
+        val actualResponse = categoryNetworkDataSource.getCategories()
 
-        val adapter = moshi.adapter(com.team.data.network.model.response.ResponseCategoryWrapper::class.java)
+        val adapter = moshi.adapter(ResponseCategoryWrapper::class.java)
         val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
         assertNotNull(actualResponse)
-        assertEquals(expectedResponse!!.categories, actualResponse!!.categories)
+        assertEquals(
+            expectedResponse!!.categories,
+            (actualResponse as Result.Success).data.categories
+        )
     }
 }

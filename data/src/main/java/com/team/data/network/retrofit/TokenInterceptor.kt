@@ -1,7 +1,8 @@
 package com.team.data.network.retrofit
 
 import android.util.Log
-import com.team.data.datastore.TokenManager
+import com.team.data.datastore.DataStoreManager
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -9,7 +10,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class TokenInterceptor @Inject constructor(
-    private val tokenManager: TokenManager
+    private val dataStoreManager: DataStoreManager
 ): Interceptor {
 
     private val TAG = this.javaClass.simpleName
@@ -20,7 +21,9 @@ class TokenInterceptor @Inject constructor(
 
         // get accessToken & just continue request when accessToken is null
         val accessToken = runBlocking {
-            tokenManager.getToken(TokenManager.Type.ACCESS_TOKEN).first()
+            dataStoreManager.getToken(DataStoreManager.TokenType.ACCESS_TOKEN)
+                .catch { emit("") }
+                .first()
         } ?: return chain.proceed(chain.request())
 
         // accessToken is not null

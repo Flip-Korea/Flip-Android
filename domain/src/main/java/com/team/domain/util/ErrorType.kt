@@ -12,11 +12,13 @@ sealed interface ErrorType: Error {
         SERVER_ERROR,
         INTERNET_CONNECTION,
         SERIALIZATION,
+        CONFLICT,
         UNEXPECTED
     }
 
     enum class Local: ErrorType {
-
+        EMPTY,
+        UNEXPECTED
     }
 
     enum class Exception: ErrorType {
@@ -26,5 +28,9 @@ sealed interface ErrorType: Error {
         JSON_ENCODING,
         MALFORMED_JSON,
         EXCEPTION
+    }
+
+    enum class Token: ErrorType {
+        NOT_FOUND,
     }
 }
