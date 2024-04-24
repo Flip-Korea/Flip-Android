@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Flip</string>
+
+    <!-- ErrorType -->
+    <string name="error_exception_io">인터넷 연결을 확인해주세요.</string>
+    <string name="error_exception_timeout">요청 시간 초과</string>
+    <string name="error_exception_json_data">데이터 관련 오류</string>
+    <string name="error_exception_json_encoding">데이터 관련 오류</string>
+    <string name="error_exception_malformed_json">데이터 관련 오류</string>
+    <string name="error_exception_exception">알 수 없는 오류로 인해 앱을 다시 시작해주세요.</string>
+    <string name="error_network_bad_request">잘못된 요청이에요.</string>
+    <string name="error_network_unauthorized">액세스 접근 불가</string>
+    <string name="error_network_forbidden">정지된 사용자거나 액세스 접근 불가</string>
+    <string name="error_network_not_found">찾을 수 없어요 ㅜ.ㅜ</string>
+    <string name="error_network_timeout">요청 시간 초과</string>
+    <string name="error_network_too_many_requests">너무 많은 요청을 보냈어요 잠시만 기다려주세요.</string>
+    <string name="error_network_server_error">서버 오류</string>
+    <string name="error_network_internet_connection">인터넷 연결을 확인해주세요.</string>
+    <string name="error_network_serialization">데이터 관련 오류</string>
+    <string name="error_network_unexpected">알 수 없는 오류</string>
 </resources>

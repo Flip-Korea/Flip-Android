@@ -1,27 +1,20 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.team.flip"
+    namespace = "com.team.presentation"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.team.flip"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner = "com.team.flip.TestRunner"
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     testOptions {
@@ -60,19 +53,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
 
     implementation(project(":data"))
     implementation(project(":domain"))
-    implementation(project(":presentation"))
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -99,9 +85,6 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-
-    // DataStore
-    implementation(libs.androidx.dataStore.preference)
 
     // Coil
     implementation(libs.coil.compose)
