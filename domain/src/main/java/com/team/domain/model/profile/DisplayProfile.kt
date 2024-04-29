@@ -7,6 +7,9 @@ data class DisplayProfile(
     val profileId: String,
     val nickname: String,
     val photoUrl: String,
-    val following: Boolean,
-    val followerCnt: Long?
+    val isFollower: Boolean,
+    val isFollowing: Boolean,
+    val introduce: String?,
+    val followerCnt: Long?,
+    val rating: String?,
 )

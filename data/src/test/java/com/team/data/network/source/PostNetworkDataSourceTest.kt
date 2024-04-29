@@ -73,14 +73,15 @@ class PostNetworkDataSourceTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(postsResponseTestData)
         })
 
-        val pageSize = 15
-        val actualResponse =
-            postNetworkDataSource.getPosts("0001", pageSize)
+        val expectedResponse = moshi
+            .adapter(PostListResponse::class.java)
+            .fromJson(postsResponseTestData)
+        val actualResponse = postNetworkDataSource.getPosts("0001", 15)
 
-        assertNotNull(actualResponse)
-        assertEquals(pageSize.toLong(), (actualResponse as Result.Success).data.postCnt)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
     }
 
     @Test

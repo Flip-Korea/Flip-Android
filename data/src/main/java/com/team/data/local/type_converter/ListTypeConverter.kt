@@ -36,4 +36,19 @@ class ListTypeConverter(private val moshi: Moshi) {
         val adapter: JsonAdapter<List<String>> = moshi.adapter(stringListType)
         return adapter.fromJson(json)
     }
+
+    // List<String>
+    @TypeConverter
+    fun longListToJson(list: List<Long>?): String? {
+        val stringListType = Types.newParameterizedType(List::class.java, Long::class.java)
+        val adapter: JsonAdapter<List<Long>> = moshi.adapter(stringListType)
+        return adapter.toJson(list)
+    }
+
+    @TypeConverter
+    fun jsonToLongList(json: String): List<Long>? {
+        val stringListType = Types.newParameterizedType(List::class.java, Long::class.java)
+        val adapter: JsonAdapter<List<Long>> = moshi.adapter(stringListType)
+        return adapter.fromJson(json)
+    }
 }

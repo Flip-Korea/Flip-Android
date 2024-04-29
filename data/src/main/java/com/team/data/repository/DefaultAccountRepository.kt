@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import javax.inject.Inject
 
 class DefaultAccountRepository @Inject constructor(
@@ -31,6 +32,25 @@ class DefaultAccountRepository @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ): AccountRepository {
+
+    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> = flow {
+        emit(Result.Loading)
+
+//        dataStoreManager.deleteToken(DataStoreManager.AccountType.CURRENT_PROFILE_ID)
+        try {
+            dataStoreManager.saveToken(
+                DataStoreManager.AccountType.CURRENT_PROFILE_ID,
+                profileId
+            )
+            emit(Result.Success(true))
+        } catch (e: NullPointerException) {
+            emit(Result.Error(ErrorType.Token.NOT_FOUND))
+        } catch (e: IOException) {
+            emit(Result.Error(ErrorType.Exception.IO))
+        } catch (e: Exception) {
+            emit(Result.Error(ErrorType.Exception.EXCEPTION))
+        }
+    }
 
     override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
         return flow {
@@ -45,7 +65,7 @@ class DefaultAccountRepository @Inject constructor(
                         // 민감데이터 필요 시, 서버에서 가져온 데이터 그대로 사용
                         // API 명세서에 따라 현재 프로필 제외하고는 ID만 가져오게 바뀔 가능성 있음
                         val account = withContext(ioDispatcher) {
-                            myProfileDao.upsertAll(result.data.profile.toEntity())
+                            myProfileDao.refresh(result.data.profile.toEntity())
                             val myProfileEntities = myProfileDao.getAllProfile().first()
                             result.data.toExternal(myProfileEntities.toExternal())
                         }
@@ -55,7 +75,7 @@ class DefaultAccountRepository @Inject constructor(
                         val currentProfile = dataStoreManager.getToken(DataStoreManager.AccountType.CURRENT_PROFILE_ID)
                             .catch { emit("") }
                             .first()
-                        if (currentProfile == null) {
+                        if (currentProfile.isNullOrEmpty()) {
                             dataStoreManager.saveToken(
                                 DataStoreManager.AccountType.CURRENT_PROFILE_ID,
                                 account.profiles[0].profileId
@@ -112,10 +132,7 @@ class DefaultAccountRepository @Inject constructor(
 
             when (val result = accountNetworkDataSource.login(accountIdResult)) {
                 is Result.Success -> {
-                    val accessToken = result.data.accessToken
-                    val refreshToken = result.data.refreshToken
-                    dataStoreManager.saveToken(DataStoreManager.TokenType.ACCESS_TOKEN, accessToken)
-                    dataStoreManager.saveToken(DataStoreManager.TokenType.REFRESH_TOKEN, refreshToken)
+                    saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
                 is Result.Error -> { emit(Result.Error(result.error)) }
@@ -132,10 +149,7 @@ class DefaultAccountRepository @Inject constructor(
 
             when(val result = accountNetworkDataSource.register(register.toNetwork())) {
                 is Result.Success -> {
-                    val accessToken = result.data.accessToken
-                    val refreshToken = result.data.refreshToken
-                    dataStoreManager.saveToken(DataStoreManager.TokenType.ACCESS_TOKEN, accessToken)
-                    dataStoreManager.saveToken(DataStoreManager.TokenType.REFRESH_TOKEN, refreshToken)
+                    saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
                 is Result.Error -> { emit(Result.Error(result.error)) }
@@ -144,5 +158,10 @@ class DefaultAccountRepository @Inject constructor(
         }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+    }
+
+    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
+        dataStoreManager.saveToken(DataStoreManager.TokenType.ACCESS_TOKEN, accessToken)
+        dataStoreManager.saveToken(DataStoreManager.TokenType.REFRESH_TOKEN, refreshToken)
     }
 }

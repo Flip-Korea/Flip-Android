@@ -6,12 +6,15 @@ data class DisplayProfileEntity(
     val profileId: String,
     val nickname: String,
     val photoUrl: String,
-    val following: Boolean,
-    val followerCnt: Long?
+    val isFollower: Boolean,
+    val isFollowing: Boolean,
+    val introduce: String?,
+    val followerCnt: Long?,
+    val rating: String?,
 )
 
 fun DisplayProfileEntity.toExternal(): DisplayProfile =
-    DisplayProfile(profileId, nickname, photoUrl, following, followerCnt)
+    DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
 fun DisplayProfile.toEntity(): DisplayProfileEntity =
-    DisplayProfileEntity(profileId, nickname, photoUrl, following, followerCnt)
+    DisplayProfileEntity(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)

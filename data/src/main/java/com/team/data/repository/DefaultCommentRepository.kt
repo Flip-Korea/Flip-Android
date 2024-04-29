@@ -22,7 +22,6 @@ import javax.inject.Inject
 class DefaultCommentRepository @Inject constructor(
     private val postNetworkDataSource: PostNetworkDataSource,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope
 ): CommentRepository {
 
     override fun getCommentsPagination(

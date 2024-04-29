@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class FakeTempPostRepository(
     private val postNetworkDataSource: PostNetworkDataSource,
@@ -51,9 +52,10 @@ class FakeTempPostRepository(
         emit(Result.Loading)
 
 //        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
-            postNetworkDataSource.addTemporaryPost(newPost.toNetwork())) {
+            postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -76,9 +78,10 @@ class FakeTempPostRepository(
         emit(Result.Loading)
 
 //        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
-            postNetworkDataSource.editTemporaryPost(newPost.toNetwork())) {
+            postNetworkDataSource.editTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }

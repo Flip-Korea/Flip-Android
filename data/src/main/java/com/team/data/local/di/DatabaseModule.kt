@@ -8,6 +8,7 @@ import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.CategoryDao
 import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
+import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.type_converter.ListTypeConverter
 import dagger.Module
 import dagger.Provides
@@ -56,4 +57,8 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideCategoryDao(flipDatabase: FlipDatabase): CategoryDao = flipDatabase.categoryDao()
+
+    @Singleton
+    @Provides
+    fun provideRecentSearchDao(flipDatabase: FlipDatabase): RecentSearchDao = flipDatabase.recentSearchDao()
 }

@@ -3,7 +3,7 @@ package com.team.data.local.dao
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.team.data.local.FlipDatabase
-import com.team.data.testdoubles.local.makeProfileEntityTestData
+import com.team.data.testdoubles.local.makeMyProfileEntityTestData
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -34,7 +34,7 @@ import kotlin.random.Random
 //        "androidx.loader.content"
 //    ])
 )
-class ProfileDaoTest {
+class MyProfileDaoTest {
 
     @get:Rule(order = 1)
     var hiltModule = HiltAndroidRule(this)
@@ -65,8 +65,8 @@ class ProfileDaoTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
         val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
-        val profileEntity2 = makeProfileEntityTestData(profileId2)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
+        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
         myProfileDao.upsertProfile(profileEntity)
         myProfileDao.upsertProfile(profileEntity2)
@@ -80,7 +80,7 @@ class ProfileDaoTest {
     fun `프로필 1개 불러오기 (getProfileById())`() = runTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
 
         myProfileDao.upsertProfile(profileEntity)
 
@@ -94,7 +94,7 @@ class ProfileDaoTest {
     fun `프로필 추가 (upsertProfile())`() = runTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
 
         myProfileDao.upsertProfile(profileEntity)
 
@@ -109,8 +109,8 @@ class ProfileDaoTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
         val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
-        val profileEntity2 = makeProfileEntityTestData(profileId2)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
+        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
         val profileEntities = listOf(profileEntity, profileEntity2)
 
@@ -128,8 +128,8 @@ class ProfileDaoTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
         val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
-        val profileEntity2 = makeProfileEntityTestData(profileId2)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
+        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
         val profileEntities = listOf(profileEntity, profileEntity2)
 
@@ -147,8 +147,8 @@ class ProfileDaoTest {
 
         val profileId = "test-profile-${Random.nextInt(1, 50000)}"
         val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeProfileEntityTestData(profileId)
-        val profileEntity2 = makeProfileEntityTestData(profileId2)
+        val profileEntity = makeMyProfileEntityTestData(profileId)
+        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
         val profileEntities = listOf(profileEntity, profileEntity2)
 
@@ -156,5 +156,24 @@ class ProfileDaoTest {
         myProfileDao.deleteAll()
 
         assert(myProfileDao.getAllProfile().first().isEmpty())
+    }
+
+    @Test
+    fun `관심분야 카테고리 업데이트 (updateCategories())`() = runTest {
+        val profileId = "testProfileId"
+        val profileEntityTestData =
+            makeMyProfileEntityTestData(profileId)
+                .copy(categories = listOf(1, 2, 3, 4))
+
+        myProfileDao.upsertProfile(profileEntityTestData)
+
+        val changeCategories = listOf(5, 6, 7)
+        myProfileDao.updateCategories(profileId, changeCategories)
+
+        val profileEntity = myProfileDao.getProfileById(profileId).first()
+
+        assert(profileEntity != null)
+        assert(profileEntity!!.categories.isNotEmpty())
+        assertEquals(profileEntity.categories, changeCategories)
     }
 }

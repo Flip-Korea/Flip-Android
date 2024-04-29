@@ -12,7 +12,6 @@ import com.team.data.network.networkCall
 import com.team.data.network.networkCallWithoutResponse
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.domain.type.PathParameterType
-import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 

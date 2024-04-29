@@ -9,6 +9,7 @@ import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
 import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.retrofit.api.PostNetworkApi
+import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.AccountNetworkDataSourceImpl
@@ -16,6 +17,8 @@ import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.data.network.source.CategoryNetworkDataSourceImpl
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.PostNetworkDataSourceImpl
+import com.team.data.network.source.SearchNetworkDataSource
+import com.team.data.network.source.SearchNetworkDataSourceImpl
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSourceImpl
 import dagger.Module
@@ -136,11 +139,31 @@ object NetworkModule {
         .build()
         .create(PostNetworkApi::class.java)
 
+    @Singleton
+    @Provides
+    fun provideSearchApiService(
+        @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
+    ): SearchNetworkApi = retrofit
+        .client(loggingOkHttpClient)
+        .build()
+        .create(SearchNetworkApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCategoryApiService(
+        @LoggingOkHttpClient logginOkHttpClient: OkHttpClient,
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
+    ): CategoryNetworkApi = retrofit
+        .client(logginOkHttpClient)
+        .build()
+        .create(CategoryNetworkApi::class.java)
+
     /** DataSource **/
     @Singleton
     @Provides
-    fun provideAuthNetworkDataSource(authNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
-        return AccountNetworkDataSourceImpl(authNetworkApi)
+    fun provideAccountNetworkDataSource(accountNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
+        return AccountNetworkDataSourceImpl(accountNetworkApi)
     }
 
     @Singleton
@@ -159,6 +182,12 @@ object NetworkModule {
     @Provides
     fun providePostNetworkDataSource(postNetworkApi: PostNetworkApi): PostNetworkDataSource {
         return PostNetworkDataSourceImpl(postNetworkApi)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSearchNetworkDataSource(searchNetworkApi: SearchNetworkApi): SearchNetworkDataSource {
+        return SearchNetworkDataSourceImpl(searchNetworkApi)
     }
 }
 

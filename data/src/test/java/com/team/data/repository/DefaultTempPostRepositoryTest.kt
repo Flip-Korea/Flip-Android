@@ -16,6 +16,7 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import makeTempPostListResponseTestData
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -68,28 +69,18 @@ class DefaultTempPostRepositoryTest {
 
     @Test
     fun `플립 임시저장 글 목록 페이지네이션 (getTempPostsPagination())`() = runTest {
+
+        val pageSize = 15
+
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(makeTempPostListResponseTestData("1", pageSize))
         })
 
-        var tempPosts = listOf<TempPost>()
+        val result =
+            tempPostRepository.getTempPostsPagination("TestProfileId", "1", pageSize).last()
 
-        var endOfPage = false
-        var nextCursor = 1
-        while (!endOfPage) {
-            // FakePostNetworkDataSource - makeTempPostListResponseTestData() -> 3개의 페이지만 반환
-            val result =
-                tempPostRepository.getTempPostsPagination("TestProfileId", nextCursor.toString(), FlipPagination.PAGE_SIZE).last()
-            if ((result as Result.Success).data.isEmpty()) {
-                endOfPage = true
-            } else {
-                nextCursor++
-                tempPosts = result.data
-            }
-        }
-
-        Assert.assertEquals(tempPosts.size, FlipPagination.PAGE_SIZE)
-        Assert.assertEquals(nextCursor, 4)
+        Assert.assertEquals(pageSize, (result as Result.Success).data.size)
     }
 
     @Test

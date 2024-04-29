@@ -5,12 +5,12 @@ sealed interface PathParameterType {
         CATEGORY, PROFILE, TAG
     }
 
+    fun asString(): String {
+        return when (this) {
+            PathParameterType.Post.CATEGORY -> { "category" }
+            PathParameterType.Post.PROFILE -> { "profile" }
+            PathParameterType.Post.TAG -> { "tag" }
+        }
+    }
 
 }
-
-fun PathParameterType.asString(): String =
-    when (this) {
-        PathParameterType.Post.CATEGORY -> { "category" }
-        PathParameterType.Post.PROFILE -> { "profile" }
-        PathParameterType.Post.TAG -> { "tag" }
-    }

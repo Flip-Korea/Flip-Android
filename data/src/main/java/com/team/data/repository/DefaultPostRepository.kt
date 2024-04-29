@@ -1,6 +1,5 @@
 package com.team.data.repository
 
-import com.team.data.FlipPagination
 import com.team.data.di.ApplicationScope
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.PostDao
@@ -42,11 +41,11 @@ class DefaultPostRepository @Inject constructor(
     override fun getPosts(): Flow<List<Post>> =
         postDao.getPosts().map { it.toExternal() }
 
-    override fun getPostsPagination(cursor: String): Flow<Result<Boolean, ErrorType>> {
+    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
-            when (val result = postNetworkDataSource.getPosts(cursor, FlipPagination.PAGE_SIZE)) {
+            when (val result = postNetworkDataSource.getPosts(cursor, limit)) {
                 is Result.Success -> {
                     if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                         val postListEntities = withContext(ioDispatcher) {
@@ -95,8 +94,6 @@ class DefaultPostRepository @Inject constructor(
     override fun addPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        // 원래는 데이터 동기화 전략을 따라야 하지만 PostId를 서버에서 생성하기 때문에
-        // 먼저 서버에 저장 후 응답 받은 PostId를 포함한 PostEntity를 기기에 저장 (추후 로직)
         val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
         when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
@@ -110,7 +107,6 @@ class DefaultPostRepository @Inject constructor(
     override fun editPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        // addPost와 마찬가지로 PostId를 서버에서 받아옴
         val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
         when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
@@ -125,11 +121,12 @@ class DefaultPostRepository @Inject constructor(
         type: PathParameterType,
         typeId: String,
         cursor: String,
+        limit: Int
     ): Flow<Result<List<Post>, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
-            postNetworkDataSource.getPostsByType(type, typeId, cursor, FlipPagination.PAGE_SIZE)) {
+            postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)) {
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val postList = withContext(ioDispatcher) {

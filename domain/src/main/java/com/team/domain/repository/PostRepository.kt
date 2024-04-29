@@ -16,7 +16,7 @@ interface PostRepository {
 
     /** 1. 카테고리(전체) 및 플립(숏폼부분) 에 해당
      * 2. 로컬DB에서 가져오는 getPosts()를 통해서만 데이터를 가져옴 **/
-    fun getPostsPagination(cursor: String): Flow<Result<Boolean, ErrorType>>
+    fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>>
 
     /** 예외 / 오류 / 존재하지 않은 데이터 읽기 상황에서 Null 반환 **/
     fun getPostById(postId: Long): Flow<Result<Post?, ErrorType>>
@@ -29,6 +29,7 @@ interface PostRepository {
         type: PathParameterType,
         typeId: String,
         cursor: String,
+        limit: Int
     ): Flow<Result<List<Post>, ErrorType>>
 
     fun deletePost(postId: Long): Flow<Result<Boolean, ErrorType>>

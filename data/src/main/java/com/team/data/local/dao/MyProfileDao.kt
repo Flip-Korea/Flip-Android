@@ -3,7 +3,9 @@ package com.team.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
+import com.team.data.local.entity.CategoryEntity
 import com.team.data.local.entity.profile.MyProfileEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -27,4 +29,14 @@ interface MyProfileDao {
 
     @Query("DELETE FROM myprofileentity")
     suspend fun deleteAll()
+
+    @Transaction
+    suspend fun refresh(myProfileEntities: List<MyProfileEntity>) {
+        deleteAll()
+        upsertAll(myProfileEntities)
+    }
+
+    // Update
+    @Query("UPDATE myprofileentity SET categories=:categories WHERE profileId=:profileId")
+    suspend fun updateCategories(profileId: String, categories: List<Int>)
 }

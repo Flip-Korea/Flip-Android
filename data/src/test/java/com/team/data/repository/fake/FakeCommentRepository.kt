@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class FakeCommentRepository(
     private val postNetworkDataSource: PostNetworkDataSource
@@ -27,20 +28,20 @@ class FakeCommentRepository(
     ): Flow<Result<List<Comment>, ErrorType>> = flow {
         emit(Result.Loading)
 
-        when (val commentResult =
+        when (val result =
             postNetworkDataSource.getComments(postId, cursor, limit)) {
             is Result.Success -> {
-                if (commentResult.data.hasNext && commentResult.data.nextCursor.isNotEmpty()) {
+                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
 //                    val comments = withContext(ioDispatcher) {
-//                        commentResult.data.comments.toExternal()
+//                        result.data.comments.toExternal()
 //                    }
-                    val comments = commentResult.data.comments.toExternal()
+                    val comments = result.data.comments.toExternal()
                     emit(Result.Success(comments))
                 } else {
                     emit(Result.Success(emptyList()))
                 }
             }
-            is Result.Error -> { emit(Result.Error(commentResult.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }

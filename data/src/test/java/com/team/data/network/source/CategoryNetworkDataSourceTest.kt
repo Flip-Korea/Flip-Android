@@ -2,7 +2,7 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.network.model.response.category.ResponseCategoryWrapper
+import com.team.data.network.model.response.category.CategoryResponseWrapper
 import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
 import com.team.data.testdoubles.network.networkCategoriesTestData
@@ -73,7 +73,7 @@ class CategoryNetworkDataSourceTest {
 
         val actualResponse = categoryNetworkDataSource.getCategories()
 
-        val adapter = moshi.adapter(ResponseCategoryWrapper::class.java)
+        val adapter = moshi.adapter(CategoryResponseWrapper::class.java)
         val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
         assertNotNull(actualResponse)

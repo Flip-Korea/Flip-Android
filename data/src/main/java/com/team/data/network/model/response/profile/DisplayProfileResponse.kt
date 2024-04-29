@@ -10,12 +10,18 @@ data class DisplayProfileResponse(
     @Json(name = "profile_id") val profileId: String,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "photo_url") val photoUrl: String,
-    @Json(name = "following") val following: Boolean,
-    @Json(name = "follower_cnt") val followerCnt: Long?
+    @Json(name = "is_follower") val isFollower: Boolean,
+    @Json(name = "is_following") val isFollowing: Boolean,
+    @Json(name = "introduce") val introduce: String?,
+    @Json(name = "follower_cnt") val followerCnt: Long?,
+    @Json(name = "rating") val rating: String?,
 )
 
 fun DisplayProfileResponse.toEntity(): DisplayProfileEntity =
-    DisplayProfileEntity(profileId, nickname, photoUrl, following, followerCnt)
+    DisplayProfileEntity(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
 fun DisplayProfileResponse.toExternal(): DisplayProfile =
-    DisplayProfile(profileId, nickname, photoUrl, following, followerCnt)
+    DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
+
+fun List<DisplayProfileResponse>.toExternal(): List<DisplayProfile> =
+    this.map { it.toExternal() }

@@ -4,13 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ResponseCategoryWrapper(
+data class CategoryResponseWrapper(
     @Json(name = "categories")
-    val categories: List<ResponseCategoryItem>
+    val categories: List<CategoryItemResponse>
 )
 
 @JsonClass(generateAdapter = true)
-data class ResponseCategoryItem(
+data class CategoryItemResponse(
     @Json(name = "id") val id: Int,
     @Json(name = "name") val name: String,
     @Json(name = "icon") val icon: String,
