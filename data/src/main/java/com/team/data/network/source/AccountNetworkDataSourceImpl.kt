@@ -10,36 +10,36 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 class AccountNetworkDataSourceImpl(
-    private val authNetworkApi: AccountNetworkApi,
+    private val accountNetworkApi: AccountNetworkApi,
 ) : AccountNetworkDataSource {
 
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> =
         networkCall {
-            authNetworkApi.getUserAccount(accessToken)
+            accountNetworkApi.getUserAccount(accessToken)
         }
 
     override suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            authNetworkApi.checkDuplicateName(nickname)
+            accountNetworkApi.checkDuplicateName(nickname)
         }
 
     override suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            authNetworkApi.checkDuplicateProfileId(profileId)
+            accountNetworkApi.checkDuplicateProfileId(profileId)
         }
 
     override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =
         networkCall {
-            authNetworkApi.login(accountId)
+            accountNetworkApi.login(accountId)
         }
 
     override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> =
         networkCall {
-            authNetworkApi.register(networkRegister)
+            accountNetworkApi.register(networkRegister)
         }
 
     override suspend fun tokenRefresh(refreshToken: String): Result<TokenResponse, ErrorType> =
         networkCall{
-            authNetworkApi.tokenRefresh(refreshToken)
+            accountNetworkApi.tokenRefresh(refreshToken)
         }
 }

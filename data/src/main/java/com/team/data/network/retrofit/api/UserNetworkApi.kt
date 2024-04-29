@@ -1,10 +1,20 @@
 package com.team.data.network.retrofit.api
 
+import com.team.data.network.model.request.BlockRequest
 import com.team.data.network.model.request.CategoryRequest
+import com.team.data.network.model.request.EditProfileRequest
+import com.team.data.network.model.request.FollowRequest
+import com.team.data.network.model.request.ReportRequest
 import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
+import com.team.data.network.model.response.block.BlockListResponse
+import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.comment.MyCommentListResponse
+import com.team.data.network.model.response.follow.FollowerListResponse
+import com.team.data.network.model.response.follow.FollowingListResponse
 import com.team.data.network.model.response.post.PostListResponse
+import com.team.data.network.model.response.profile.MyProfileResponse
 import com.team.data.network.model.response.profile.ProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -67,5 +77,85 @@ interface UserNetworkApi {
         @Path("scrap_id") scrapId: Long
     ): Response<Unit>
 
-    /**  **/
+    /** API-018 (계정 신고) **/
+    @POST("/api/v1/profile/report")
+    suspend fun reportAccount(
+        @Body reportRequest: ReportRequest
+    ): Response<Unit>
+
+    /** API-019 (계정 차단) **/
+    @POST("/api/v1/profile/block")
+    suspend fun blockAccount(
+        @Body blockRequest: BlockRequest
+    ): Response<Unit>
+
+    /** API-020 (계정 차단 해제) **/
+    @DELETE("/api/v1/profile/{profile_id}/block/{blocked_id}")
+    suspend fun unblockAccount(
+        @Path("profile_id") profileId: String,
+        @Path("blocked_id") blockedId: String
+    ): Response<Unit>
+
+    /** API-026 ((본인)프로필 수정) **/
+    @PATCH("/api/v1/profile/my/{profile_id}")
+    suspend fun editMyProfile(
+        @Path("profile_id") profileId: String,
+        @Body editProfileRequest: EditProfileRequest
+    ): Response<Unit>
+
+    /** API-039 (팔로우) **/
+    @POST("/api/v1/profile/follow")
+    suspend fun follow(
+        @Body followRequest: FollowRequest
+    ): Response<Unit>
+
+    /** API-040 (언팔로우) **/
+    @POST("/api/v1/profile/unfollow")
+    suspend fun unfollow(
+        @Body followRequest: FollowRequest
+    ): Response<Unit>
+
+    /** API-041 (팔로워 목록 조회) **/
+    @GET("/api/v1/profile/{profile_id}/follower")
+    suspend fun getFollowerList(
+        @Path("profile_id") profileId: String,
+        @Query("cursor") cursor: String,
+        @Query("limit") limit: Int,
+    ): Response<FollowerListResponse>
+
+    /** API-042 (팔로잉 목록 조회) **/
+    @GET("/api/v1/profile/{profile_id}/following")
+    suspend fun getFollowingList(
+        @Path("profile_id") profileId: String,
+        @Query("cursor") cursor: String,
+        @Query("limit") limit: Int,
+    ): Response<FollowingListResponse>
+
+    /** API-045 (차단 목록 조회) **/
+    @GET("/api/v1/profile/{profile_id}/block")
+    suspend fun getBlockList(
+        @Path("profile_id") profileId: String,
+        @Query("cursor") cursor: String,
+        @Query("limit") limit: Int,
+    ): Response<BlockListResponse>
+
+    /** API-046 (댓글 목록 조회) **/
+    @GET("/api/v1/profile/{profile_id}/comment")
+    suspend fun getMyCommentList(
+        @Path("profile_id") profileId: String,
+        @Query("cursor") cursor: String,
+        @Query("limit") limit: Int,
+    ): Response<MyCommentListResponse>
+
+    /** API-050(임시) (사용자 관심분야 카테고리 조회) **/
+    @GET("/api/v1/profile/{profile_id}/category")
+    suspend fun getMyCategories(
+        @Path("profile_id") profileId: String
+    ): Response<CategoryResponseWrapper>
+
+    /** API-049 (본인 프로필 조회) **/
+    @GET("/api/v1/profile/my/{profile_id}")
+    suspend fun getMyProfile(
+        @Path("profile_id") profileId: String
+    ): Response<MyProfileResponse>
 }

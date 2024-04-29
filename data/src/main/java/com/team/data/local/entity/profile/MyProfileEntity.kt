@@ -16,7 +16,7 @@ data class MyProfileEntity(
     val followerCnt: Int,
     val followingCnt: Int,
     val categories: List<Int>,
-    val rating: String
+    val rating: String,
 )
 
 fun List<MyProfileEntity>.toExternal(): List<MyProfile> =

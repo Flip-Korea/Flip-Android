@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 //TODO 실제 Repository로 통합해서 테스트하기
 class FakePostRepository(
@@ -33,22 +34,22 @@ class FakePostRepository(
     override fun getPosts(): Flow<List<Post>> =
         postDao.getPosts().map { it.toExternal() }
 
-    override fun getPostsPagination(cursor: String): Flow<Result<Boolean, ErrorType>> {
+    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
-            when (val postList = postNetworkDataSource.getPosts(cursor, FlipPagination.PAGE_SIZE)) {
+            when (val result = postNetworkDataSource.getPosts(cursor, limit)) {
                 is Result.Success -> {
-                    if (postList.data.hasNext && postList.data.nextCursor.isNotEmpty()) {
+                    if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
 //                        val postListEntities = withContext(ioDispatcher) {
-//                            postList.data.posts.map { it.toEntity() }
+//                            result.data.posts.map { it.toEntity() }
 //                        }
-                        val postListEntities = postList.data.posts.map { it.toEntity() }
+                        val postListEntities = result.data.posts.map { it.toEntity() }
                         postDao.refresh(postListEntities)
                     }
-                    emit(Result.Success(postList.data.hasNext))
+                    emit(Result.Success(result.data.hasNext))
                 }
-                is Result.Error -> { emit(Result.Error(postList.error)) }
+                is Result.Error -> { emit(Result.Error(result.error)) }
                 Result.Loading -> { }
             }
         }
@@ -70,15 +71,15 @@ class FakePostRepository(
             //TODO 리팩터링 필요
             // 1. Local DB에 데이터가 없으면 서버에서 가져와서 바로 보여줌 (SSOT X)
             // 2. 대부분 페이지네이션 된 글을 읽을 것으로 예상 -> 밑에 코드 실행 확률 극히 적음
-            when (val postNetwork = postNetworkDataSource.getPostById(postId)) {
+            when (val result = postNetworkDataSource.getPostById(postId)) {
                 is Result.Success -> {
 //                    val post = withContext(ioDispatcher) {
-//                        postNetwork.data.toEntity().toExternal()
+//                        result.data.toEntity().toExternal()
 //                    }
-                    val post = postNetwork.data.toEntity().toExternal()
+                    val post = result.data.toEntity().toExternal()
                     emit(Result.Success(post))
                 }
-                is Result.Error -> { emit(Result.Error(postNetwork.error)) }
+                is Result.Error -> { emit(Result.Error(result.error)) }
                 Result.Loading -> { }
             }
         }
@@ -89,13 +90,11 @@ class FakePostRepository(
     override fun addPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        // 원래는 데이터 동기화 전략을 따라야 하지만 PostId를 서버에서 생성하기 때문에
-        // 먼저 서버에 저장 후 응답 받은 PostId를 포함한 PostEntity를 기기에 저장 (추후 로직)
 //        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
         val newPostNetwork = newPost.toNetwork()
-        when (val resultId = postNetworkDataSource.addPost(newPostNetwork)) {
+        when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(resultId.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }
@@ -105,12 +104,11 @@ class FakePostRepository(
     override fun editPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        // addPost와 마찬가지로 PostId를 서버에서 받아옴
 //        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
         val newPostNetwork = newPost.toNetwork()
-        when (val resultId = postNetworkDataSource.editPost(newPostNetwork)) {
+        when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(resultId.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }
@@ -121,23 +119,24 @@ class FakePostRepository(
         type: PathParameterType,
         typeId: String,
         cursor: String,
+        limit: Int
     ): Flow<Result<List<Post>, ErrorType>> = flow {
         emit(Result.Loading)
 
-        when (val postResult =
-            postNetworkDataSource.getPostsByType(type, typeId, cursor, FlipPagination.PAGE_SIZE)) {
+        when (val result =
+            postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)) {
             is Result.Success -> {
-                if (postResult.data.hasNext && postResult.data.nextCursor.isNotEmpty()) {
+                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
 //                    val postList = withContext(ioDispatcher) {
-//                        postResult.data.posts.toExternal()
+//                        result.data.posts.toExternal()
 //                    }
-                    val postList = postResult.data.posts.toExternal()
+                    val postList = result.data.posts.toExternal()
                     emit(Result.Success(postList))
                 } else {
                     emit(Result.Success(emptyList()))
                 }
             }
-            is Result.Error -> { emit(Result.Error(postResult.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }
@@ -163,20 +162,20 @@ class FakePostRepository(
     ): Flow<Result<List<Post>, ErrorType>> = flow {
         emit(Result.Loading)
 
-        when (val postResult =
+        when (val result =
             postNetworkDataSource.getPostsByPopularUser(categoryId, cursor, limit)) {
             is Result.Success -> {
-                if (postResult.data.hasNext && postResult.data.nextCursor.isNotEmpty()) {
+                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
 //                    val postList = withContext(ioDispatcher) {
-//                        postResult.data.posts.toExternal()
+//                        result.data.posts.toExternal()
 //                    }
-                    val postList = postResult.data.posts.toExternal()
+                    val postList = result.data.posts.toExternal()
                     emit(Result.Success(postList))
                 } else {
                     emit(Result.Success(emptyList()))
                 }
             }
-            is Result.Error -> { emit(Result.Error(postResult.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }
@@ -187,9 +186,9 @@ class FakePostRepository(
         emit(Result.Loading)
 
         val likeResult = LikeRequest(profileId, postId)
-        when (val resultId = postNetworkDataSource.likePost(likeResult)) {
+        when (val result = postNetworkDataSource.likePost(likeResult)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(resultId.error)) }
+            is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
         }
     }

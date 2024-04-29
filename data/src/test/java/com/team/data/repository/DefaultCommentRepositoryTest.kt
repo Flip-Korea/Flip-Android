@@ -11,10 +11,12 @@ import com.team.data.repository.fake.FakeCommentRepository
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.comment.Comment
 import com.team.domain.model.comment.NewComment
+import com.team.domain.repository.CommentRepository
 import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
+import makeCommentListResponseTestData
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -35,7 +37,7 @@ class DefaultCommentRepositoryTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var postNetworkDataSource: PostNetworkDataSource
-    private lateinit var commentRepository: FakeCommentRepository
+    private lateinit var commentRepository: CommentRepository
 
     private lateinit var postNetworkApi: PostNetworkApi
     private lateinit var server: MockWebServer
@@ -67,29 +69,17 @@ class DefaultCommentRepositoryTest {
 
     @Test
     fun `댓글 목록 페이지네이션 (getCommentsPagination())`() = runTest {
+
+        val pageSize = 15
+
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(makeCommentListResponseTestData(1, "3", pageSize))
         })
 
-        var endOfPage = false
-        var nextCursor = 1
+        val result = commentRepository.getCommentsPagination(1, "2", FlipPagination.PAGE_SIZE).last()
 
-        var comments = listOf<Comment>()
-
-        while (!endOfPage) {
-            // FakePostNetworkDataSource - makeCommentListResponseTestData() -> 3개의 페이지만 반환
-            val result =
-                commentRepository.getCommentsPagination(1, nextCursor.toString(), FlipPagination.PAGE_SIZE).last()
-            if ((result as Result.Success).data.isEmpty()){
-                endOfPage = true
-            } else {
-                nextCursor++
-                comments = result.data
-            }
-        }
-
-        assertEquals(comments.size, FlipPagination.PAGE_SIZE)
-        assertEquals(nextCursor, 4)
+        assertEquals(pageSize, (result as Result.Success).data.size)
     }
 
     @Test

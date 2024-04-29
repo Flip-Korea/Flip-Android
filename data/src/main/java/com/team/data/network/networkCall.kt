@@ -15,6 +15,9 @@ suspend fun <T> networkCall(
     call: suspend () -> Response<T>
 ): Result<T, ErrorType> {
 
+    //TODO 나중에 에러메시지 수정하기
+    //Ex)
+    // 404 -> '사용자/계정/플립/..'을 찾을 수 없어요
     val toNetworkErrorType = { code: Int ->
         when (code) {
             400 -> ErrorType.Network.BAD_REQUEST

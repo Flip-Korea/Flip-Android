@@ -2,7 +2,7 @@ package com.team.data.testdoubles.network
 
 val postsResponseTestData = """
     {
-        "post_cnt": 12001,
+    	"post_cnt": 12001,
       "has_next": true,
       "next_cursor": "0000002024030854",
       "posts": [
@@ -12,7 +12,8 @@ val postsResponseTestData = """
             "profile_id": "honggd",
             "nickname": "홍길동이",
             "photo_url": "https://sample-server.com/65332",
-            "following": false
+    				"is_follower": false,
+    				"is_following": false
           },
           "title": "오늘의 일기!",
           "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
@@ -33,7 +34,61 @@ val postsResponseTestData = """
             "profile_id": "honggd2",
             "nickname": "홍길동이2",
             "photo_url": "https://sample-server.com/24123",
-            "following": false
+    				"is_follower": false,
+    				"is_following": false
+          },
+          "title": "오늘의 일기2222!",
+          "content": "테스틈당",
+          "liked": false,
+          "like_cnt": 2,
+          "comment_cnt": 31,
+          "scrap_cnt": 30,
+          "scraped": false,
+          "category_id": 5,
+          "bg_color_id": 2,
+          "font_style_id": 2,
+          "tag": ["일기", "일상"],
+          "created_at": "2024-03-05 TUE"
+        }
+      ]
+    }
+""".trimIndent()
+val postsResponseTestDataEndOfPage = """
+    {
+    	"post_cnt": 12001,
+      "has_next": false,
+      "next_cursor": "0000002024030854",
+      "posts": [
+        {
+          "post_id": 12345,
+          "profile": {
+            "profile_id": "honggd",
+            "nickname": "홍길동이",
+            "photo_url": "https://sample-server.com/65332",
+    				"is_follower": false,
+    				"is_following": false
+          },
+          "title": "오늘의 일기!",
+          "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
+          "liked": true,
+          "like_cnt": 4,
+          "comment_cnt": 31,
+          "scrap_cnt": 331,
+          "scraped": false,
+          "category_id": 5,
+          "bg_color_id": 3,
+          "font_style_id": 2,
+          "tag": ["일기", "일상"],
+          "created_at": "2024-03-04 MON"
+        },
+        {
+          "post_id": 12346,
+          "profile": {
+            "profile_id": "honggd2",
+            "nickname": "홍길동이2",
+            "photo_url": "https://sample-server.com/24123",
+    				"is_follower": false,
+    				"is_following": false
           },
           "title": "오늘의 일기2222!",
           "content": "테스틈당",
@@ -54,7 +109,7 @@ val postsResponseTestData = """
 
 val postsResponseTestDataWithScrapComment = """
     {
-        "post_cnt": 12001,
+    	"post_cnt": 12001,
       "has_next": true,
       "next_cursor": "0000002024030854",
       "posts": [
@@ -64,7 +119,8 @@ val postsResponseTestDataWithScrapComment = """
             "profile_id": "honggd",
             "nickname": "홍길동이",
             "photo_url": "https://sample-server.com/65332",
-            "following": false
+    				"is_follower": false,
+    				"is_following": false
           },
           "title": "오늘의 일기!",
           "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
@@ -72,8 +128,8 @@ val postsResponseTestDataWithScrapComment = """
           "like_cnt": 4,
           "comment_cnt": 31,
           "scrap_cnt": 331,
-          "scraped": true,
-          "scrap_comment": "테스트 스크랩 코멘트 1",
+          "scraped": false,
+          "scrap_comment": "스크랩 코멘트 텍스트",
           "category_id": 5,
           "bg_color_id": 3,
           "font_style_id": 2,
@@ -86,7 +142,8 @@ val postsResponseTestDataWithScrapComment = """
             "profile_id": "honggd2",
             "nickname": "홍길동이2",
             "photo_url": "https://sample-server.com/24123",
-            "following": false
+    				"is_follower": false,
+    				"is_following": false
           },
           "title": "오늘의 일기2222!",
           "content": "테스틈당",
@@ -94,8 +151,8 @@ val postsResponseTestDataWithScrapComment = """
           "like_cnt": 2,
           "comment_cnt": 31,
           "scrap_cnt": 30,
-          "scraped": true,
-          "scrap_comment": "테스트 스크랩 코멘트 1",
+          "scraped": false,
+          "scrap_comment": "스크랩 코멘트 텍스트",
           "category_id": 5,
           "bg_color_id": 2,
           "font_style_id": 2,
@@ -108,27 +165,29 @@ val postsResponseTestDataWithScrapComment = """
 
 val postResponseTestData = """
     {
-      "post_id": 12345,
+      "post_id": 12346,
       "profile": {
-        "profile_id": "honggd",
-        "nickname": "홍길동이",
-        "photo_url": "https://sample-server.com/65332",
-        "following": false
+        "profile_id": "honggd2",
+        "nickname": "홍길동이2",
+        "photo_url": "https://sample-server.com/24123",
+    		"is_follower": false,
+    		"is_following": false
       },
-      "title": "오늘의 일기!",
-      "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
-      "liked": true,
-      "like_cnt": 4,
+      "title": "오늘의 일기2222!",
+      "content": "테스틈당",
+      "liked": false,
+      "like_cnt": 2,
       "comment_cnt": 31,
-      "scrap_cnt": 331,
+      "scrap_cnt": 30,
       "scraped": false,
       "category_id": 5,
-      "bg_color_id": 3,
+      "bg_color_id": 2,
       "font_style_id": 2,
       "tag": ["일기", "일상"],
-      "created_at": "2024-03-04 MON"
+      "created_at": "2024-03-05 TUE"
     }
 """.trimIndent()
+
 val postRequestTestData = """
     {
       "profile_id": "honggd",
@@ -173,6 +232,7 @@ val commentResponseTestData = """
       ]
     }
 """.trimIndent()
+
 val commentRequestTestData = """
     {
       "profile_id": "honggd123",

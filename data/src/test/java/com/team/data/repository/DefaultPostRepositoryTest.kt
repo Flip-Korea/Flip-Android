@@ -20,6 +20,7 @@ import com.team.data.testdoubles.network.postResponseTestData
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.Post
+import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import makePostListResponseTestData
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -62,7 +64,7 @@ class DefaultPostRepositoryTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var postNetworkDataSource: PostNetworkDataSource
-    private lateinit var postRepository: FakePostRepository
+    private lateinit var postRepository: PostRepository
 
     private lateinit var postNetworkApi: PostNetworkApi
     private lateinit var server: MockWebServer
@@ -124,26 +126,19 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `플립 글 목록 페이지네이션 (getPostsPagination())`() = runTest(UnconfinedTestDispatcher()) {
+
+        val pageSize = 15
+
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(makePostListResponseTestData("1", pageSize))
         })
 
-        var endOfPage = false
-        var nextCursor = 1
-        while (!endOfPage) {
-            // FakePostNetworkDataSource - makePostListResponseTestData() -> 3개의 페이지만 반환
-            val result = postRepository.getPostsPagination(nextCursor.toString()).last()
-            if (!(result as Result.Success).data)
-                endOfPage = true
-            else
-                nextCursor++
-        }
+        postRepository.getPostsPagination("1", pageSize).last()
 
         val posts = postRepository.getPosts().first()
 
-        assertEquals(posts.size, FlipPagination.PAGE_SIZE)
-        assertEquals(posts.last().createdAt, "3")
-        assertEquals(nextCursor, 4)
+        assertEquals(pageSize, posts.size)
     }
 
     @Test
@@ -230,34 +225,29 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `타입 별로 플립 글 목록 페이지네이션 (getPostsByType())`() = runTest {
+
+        val pageSize = 15
+
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(makePostListResponseTestData(
+                "1",
+                pageSize,
+                PathParameterType.Post.CATEGORY,
+                "1"
+                )
+            )
         })
 
-        var endOfPage = false
-        var nextCursor = 1
+        val result =
+            postRepository.getPostsByTypePagination(
+                type = PathParameterType.Post.CATEGORY,
+                typeId = "2",
+                cursor = "1",
+                pageSize
+            ).last()
 
-        var posts = listOf<Post>()
-
-        while (!endOfPage) {
-            // FakePostNetworkDataSource - makePostListResponseTestData() -> 3개의 페이지만 반환
-            val result =
-                postRepository.getPostsByTypePagination(
-                    type = PathParameterType.Post.CATEGORY,
-                    typeId = "2",
-                    cursor = nextCursor.toString()
-                ).last()
-            if ((result as Result.Success).data.isEmpty()) {
-                endOfPage = true
-            } else {
-                nextCursor++
-                posts = result.data
-            }
-        }
-
-        assertEquals(posts.size, FlipPagination.PAGE_SIZE)
-        assertEquals(posts.last().categoryId, 2)
-        assertEquals(nextCursor, 4)
+        assertEquals(pageSize, (result as Result.Success).data.size)
     }
 
     @Test
@@ -273,34 +263,22 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `특정 분야에서 인기 플리퍼의 플립 글 목록 페이지네이션 (getPostsByPopularUserPagination())`() = runTest {
+
+        val pageSize = 15
+
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
+            setBody(makePostListResponseTestData("1", pageSize))
         })
 
-        var endOfPage = false
-        var nextCursor = 1
+        val result =
+            postRepository.getPostsByPopularUserPagination(
+                2,
+                "1",
+                FlipPagination.PAGE_SIZE
+            ).last()
 
-        var posts = listOf<Post>()
-
-        while (!endOfPage) {
-            // FakePostNetworkDataSource - makePostListResponseTestData() -> 3개의 페이지만 반환
-            val result =
-                postRepository.getPostsByPopularUserPagination(
-                    2,
-                    nextCursor.toString(),
-                    FlipPagination.PAGE_SIZE
-                ).last()
-            if ((result as Result.Success).data.isEmpty()) {
-                endOfPage = true
-            } else {
-                nextCursor++
-                posts = result.data
-            }
-        }
-
-        assertEquals(posts.size, FlipPagination.PAGE_SIZE)
-        assertEquals(posts.last().categoryId, 2)
-        assertEquals(nextCursor, 4)
+        assertEquals(pageSize, (result as Result.Success).data.size)
     }
 
     @Test

@@ -2,15 +2,29 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.network.model.request.BlockRequest
 import com.team.data.network.model.request.CategoryRequest
+import com.team.data.network.model.request.EditProfileRequest
+import com.team.data.network.model.request.FollowRequest
+import com.team.data.network.model.request.ReportRequest
 import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
+import com.team.data.network.model.response.block.BlockListResponse
+import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.comment.MyCommentListResponse
+import com.team.data.network.model.response.follow.FollowerListResponse
+import com.team.data.network.model.response.follow.FollowingListResponse
 import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.profile.ProfileResponse
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
 import com.team.data.testdoubles.network.addScrapRequestTestData
+import com.team.data.testdoubles.network.networkBlocksTestData
+import com.team.data.testdoubles.network.networkCategoriesTestData
+import com.team.data.testdoubles.network.networkFollowersTestData
+import com.team.data.testdoubles.network.networkFollowingsTestData
+import com.team.data.testdoubles.network.networkMyCommentsTestData
 import com.team.data.testdoubles.network.networkProfileTestData
 import com.team.data.testdoubles.network.postsResponseTestDataWithScrapComment
 import com.team.data.testdoubles.network.resultIdResponseTestData
@@ -63,7 +77,7 @@ class UserNetworkDataSourceTest {
     }
 
     @Test
-    fun `getProfile Call Test`() = runTest {
+    fun `사용자 프로필 조회 (getProfile())`() = runTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
@@ -80,7 +94,7 @@ class UserNetworkDataSourceTest {
     }
 
     @Test
-    fun `selectMyCategory Call Test`() = runTest {
+    fun `카테고리 관심분야 선택(selectMyCategory())`() = runTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
@@ -108,7 +122,7 @@ class UserNetworkDataSourceTest {
     }
 
     @Test
-    fun `updateMyCategory Call Test`() = runTest {
+    fun `카테고리 업데이트(updateMyCategory())`() = runTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
@@ -170,7 +184,7 @@ class UserNetworkDataSourceTest {
     }
 
     @Test
-    fun `API-030 (스크랩 추가)`() = runTest {
+    fun `스크랩 추가 (addScrap())`() = runTest {
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
             setBody(resultIdResponseTestData)
@@ -190,7 +204,7 @@ class UserNetworkDataSourceTest {
     }
 
     @Test
-    fun `API-031 (스크랩 삭제)`() = runTest {
+    fun `스크랩 삭제 (deleteScrap())`() = runTest {
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
         })
@@ -199,5 +213,176 @@ class UserNetworkDataSourceTest {
 
         Assert.assertNotNull(actualResponse)
         assertEquals(true, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `계정 신고 (reportAccount())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val reportRequest = ReportRequest(
+            blameType = "혐오발언",
+            reporterId = "honggd",
+            reportId = "bad_friend",
+            postId = 123L,
+            commentId = 22L
+        )
+
+        val result = userNetworkDataSource.reportAccount(reportRequest)
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `계정 차단 (blockAccount())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val blockRequest = BlockRequest(
+            profileId = "honggd",
+            blockedId = "bad_friend",
+            postId = 123L
+        )
+
+        val result = userNetworkDataSource.blockAccount(blockRequest)
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `계정 차단 해제 (unblockAccount())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val result =
+            userNetworkDataSource.unblockAccount("honggd", "bad_friend")
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `본인 프로필 수정 (editMyProfile())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val editProfileRequest = EditProfileRequest(
+            nickname = "nickname",
+            introduce = "introduce",
+            photoUrl = "asd"
+        )
+
+        val result = userNetworkDataSource.editMyProfile("profileId", editProfileRequest)
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `팔로우 (follow())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val followRequest = FollowRequest("1", "2")
+
+        val result = userNetworkDataSource.follow(followRequest)
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `언팔로우 (unfollow())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
+
+        val followRequest = FollowRequest("1", "2")
+
+        val result = userNetworkDataSource.unfollow(followRequest)
+
+        assert((result as Result.Success).data)
+    }
+
+    @Test
+    fun `팔로워 목록 조회 (getFollowerList())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkFollowersTestData)
+        })
+
+        val expectedResponse = moshi
+            .adapter(FollowerListResponse::class.java)
+            .fromJson(networkFollowersTestData)
+
+        val actualResponse = userNetworkDataSource.getFollowerList("1", "1", 20)
+
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `팔로잉 목록 조회 (getFollowingList())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkFollowingsTestData)
+        })
+
+        val expectedResponse = moshi
+            .adapter(FollowingListResponse::class.java)
+            .fromJson(networkFollowingsTestData)
+
+        val actualResponse = userNetworkDataSource.getFollowingList("1", "1", 20)
+
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `차단 목록 조회 (getBlockList())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkBlocksTestData)
+        })
+
+        val expectedResponse = moshi
+            .adapter(BlockListResponse::class.java)
+            .fromJson(networkBlocksTestData)
+
+        val actualResponse = userNetworkDataSource.getBlockList("1", "1", 20)
+
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `내 댓글 목록 조회 (getMyCommentList())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkMyCommentsTestData)
+        })
+
+        val expectedResponse = moshi
+            .adapter(MyCommentListResponse::class.java)
+            .fromJson(networkMyCommentsTestData)
+
+        val actualResponse = userNetworkDataSource.getMyCommentList("1", "1", 20)
+
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+    }
+
+    @Test
+    fun `내 카테고리 관심분야 조회 (getMyCategories())`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkCategoriesTestData)
+        })
+
+        val expectedResponse = moshi
+            .adapter(CategoryResponseWrapper::class.java)
+            .fromJson(networkCategoriesTestData)
+
+        val actualResponse = userNetworkDataSource.getMyCategories("1")
+
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
     }
 }

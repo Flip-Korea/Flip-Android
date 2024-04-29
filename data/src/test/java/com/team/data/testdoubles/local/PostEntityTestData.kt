@@ -11,8 +11,11 @@ fun makePostEntityTestData(postId: Long): PostEntity =
             profileId = "test-profile-123",
             nickname = "test-nickname",
             photoUrl = "https://test.com/123",
-            following = false,
-            followerCnt = 30
+            isFollower = false,
+            isFollowing = false,
+            introduce = null,
+            followerCnt = 30,
+            rating = null
         ),
         title = "테스트 타이틀",
         content = "테스트 내용",
@@ -40,8 +43,11 @@ fun makeMultiplePostEntityTestData(postIds: List<Long>): List<PostEntity> {
                     profileId = "test-profile-123",
                     nickname = "test-nickname",
                     photoUrl = "https://test.com/123",
-                    following = false,
-                    followerCnt = 30
+                    isFollower = false,
+                    isFollowing = false,
+                    introduce = null,
+                    followerCnt = 30,
+                    rating = null
                 ),
                 title = "테스트 타이틀",
                 content = "테스트 내용",

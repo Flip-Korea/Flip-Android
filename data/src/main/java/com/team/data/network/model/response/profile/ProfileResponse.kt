@@ -2,6 +2,8 @@ package com.team.data.network.model.response.profile
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.team.domain.model.profile.MyProfile
+import com.team.domain.model.profile.Profile
 
 /** 다른 사용자의 프로필 (Res-1) **/
 @JsonClass(generateAdapter = true)
@@ -17,3 +19,6 @@ data class ProfileResponse(
     @Json(name = "is_following") val isFollowing: Boolean,
     @Json(name = "rating") val rating: String
 )
+
+fun ProfileResponse.toExternal(): Profile =
+    Profile(profileId, nickname, introduce, photoUrl, postCnt, followerCnt, followingCnt, isFollower, isFollowing, rating)
