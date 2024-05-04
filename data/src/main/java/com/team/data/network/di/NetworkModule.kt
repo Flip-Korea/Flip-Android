@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
+//TODO 네트워크 캐싱 필요
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

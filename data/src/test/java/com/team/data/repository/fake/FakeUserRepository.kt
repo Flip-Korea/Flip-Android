@@ -1,5 +1,6 @@
 package com.team.data.repository.fake
 
+import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.MyProfileEntity
 import com.team.data.local.entity.profile.toExternal
@@ -22,6 +23,7 @@ import com.team.domain.model.report_block.ReportReq
 import com.team.domain.repository.UserRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -35,16 +37,15 @@ import kotlinx.coroutines.withContext
 class FakeUserRepository(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val myProfileDao: MyProfileDao,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): UserRepository {
 
-    private val ioDispatcher = Dispatchers.IO
     suspend fun getMyProfileRefresh(profileId: String) {
         when (val result = userNetworkDataSource.getMyProfile(profileId)) {
             is Result.Success -> {
-//                val profileEntity = withContext(ioDispatcher) {
-//                    result.data.toEntity()
-//                }
-                val profileEntity = result.data.toEntity()
+                val profileEntity = withContext(ioDispatcher) {
+                    result.data.toEntity()
+                }
                 myProfileDao.upsertProfile(profileEntity)
             }
             is Result.Error -> {  }
@@ -92,8 +93,7 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.getProfile(profileId)) {
             is Result.Success -> {
-//                val profile = withContext(ioDispatcher) { result.data.toExternal() }
-                val profile = result.data.toExternal()
+                val profile = withContext(ioDispatcher) { result.data.toExternal() }
                 emit(Result.Success(profile))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -113,12 +113,10 @@ class FakeUserRepository(
         when (val result =
             userNetworkDataSource.updateMyCategory(profileId, categoryRequest)) {
             is Result.Success -> {
-//                val myProfileEntity = withContext(ioDispatcher) {
-//                    myProfileDao.updateCategories(profileId, categories)
-//                    myProfileDao.getProfileById(profileId).firstOrNull()
-//                }
-                myProfileDao.updateCategories(profileId, categories)
-                val myProfileEntity = myProfileDao.getProfileById(profileId).firstOrNull()
+                val myProfileEntity = withContext(ioDispatcher) {
+                    myProfileDao.updateCategories(profileId, categories)
+                    myProfileDao.getProfileById(profileId).firstOrNull()
+                }
                 emit(Result.Success(myProfileEntity != null))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -231,10 +229,9 @@ class FakeUserRepository(
             userNetworkDataSource.getFollowerList(profileId, cursor, limit)) {
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-//                    val followers = withContext(ioDispatcher) {
-//                        result.data.followers.toExternal()
-//                    }
-                    val followers = result.data.followers.toExternal()
+                    val followers = withContext(ioDispatcher) {
+                        result.data.followers.toExternal()
+                    }
                     emit(Result.Success(followers))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -258,10 +255,9 @@ class FakeUserRepository(
             userNetworkDataSource.getFollowingList(profileId, cursor, limit)) {
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-//                    val followings = withContext(ioDispatcher) {
-//                        result.data.followings.toExternal()
-//                    }
-                    val followings = result.data.followings.toExternal()
+                    val followings = withContext(ioDispatcher) {
+                        result.data.followings.toExternal()
+                    }
                     emit(Result.Success(followings))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -285,10 +281,9 @@ class FakeUserRepository(
             userNetworkDataSource.getBlockList(profileId, cursor, limit)) {
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-//                    val blockList = withContext(ioDispatcher) {
-//                        result.data.blockList.toExternal()
-//                    }
-                    val blockList = result.data.blockList.toExternal()
+                    val blockList = withContext(ioDispatcher) {
+                        result.data.blockList.toExternal()
+                    }
                     emit(Result.Success(blockList))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -312,10 +307,9 @@ class FakeUserRepository(
             userNetworkDataSource.getMyCommentList(profileId, cursor, limit)) {
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-//                    val displayPosts = withContext(ioDispatcher) {
-//                        result.data.posts.toExternal()
-//                    }
-                    val displayPosts = result.data.posts.toExternal()
+                    val displayPosts = withContext(ioDispatcher) {
+                        result.data.posts.toExternal()
+                    }
                     emit(Result.Success(displayPosts))
                 } else {
                     emit(Result.Success(emptyList()))
