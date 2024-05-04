@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.di.IODispatcher
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.PostDao
@@ -63,6 +64,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import junit.framework.Assert
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
@@ -112,6 +114,10 @@ class DefaultUserRepositoryTest {
     lateinit var database: FlipDatabase
     private lateinit var myProfileDao: MyProfileDao
 
+    @Inject
+    @IODispatcher
+    lateinit var ioDispatcher: CoroutineDispatcher
+
     @Before
     fun setUp() {
         hiltRule.inject()
@@ -131,7 +137,7 @@ class DefaultUserRepositoryTest {
 
         myProfileDao = database.myProfileDao()
         userNetworkDataSource = FakeUserNetworkDataSource(userNetworkApi)
-        userRepository = FakeUserRepository(userNetworkDataSource, myProfileDao)
+        userRepository = FakeUserRepository(userNetworkDataSource, myProfileDao, ioDispatcher)
     }
 
     @After
