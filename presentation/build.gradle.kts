@@ -58,6 +58,7 @@ dependencies {
 
     implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(project(":designsystem"))
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
