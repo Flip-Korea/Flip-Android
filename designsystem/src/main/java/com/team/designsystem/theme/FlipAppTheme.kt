@@ -78,7 +78,7 @@ fun FlipAppTheme(
         localColorScheme provides colorScheme,
         localTypography provides typography,
         localRadius provides FlipRadius(),
-        LocalRippleTheme provides FlipRipple(),
+//        LocalRippleTheme provides FlipRipple(),
     ) {
         // 1. Default
         content()
