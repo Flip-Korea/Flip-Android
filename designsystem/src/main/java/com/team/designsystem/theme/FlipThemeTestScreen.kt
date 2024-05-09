@@ -40,7 +40,7 @@ fun FlipThemeTestScreen() {
                 alignment = Alignment.CenterVertically
             )
         ) {
-            CompositionLocalProvider(LocalRippleTheme provides FlipRipple()) {
+//            CompositionLocalProvider(LocalRippleTheme provides FlipNoRipple()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -80,7 +80,7 @@ fun FlipThemeTestScreen() {
                         color = FlipTheme.colors.white
                     )
                 }
-            }
+//            }
         }
     }
 }

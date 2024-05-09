@@ -24,7 +24,7 @@ import androidx.core.view.WindowCompat
 private val localColorScheme = staticCompositionLocalOf { FlipLightColors }
 private val localRadius = staticCompositionLocalOf { FlipRadius() }
 private val localTypography = staticCompositionLocalOf { FlipTypography() }
-private val localRipple = staticCompositionLocalOf { FlipRipple() }
+//private val localRipple = staticCompositionLocalOf { FlipRipple() }
 
 object FlipTheme {
     val colors: FlipColors
@@ -78,7 +78,7 @@ fun FlipAppTheme(
         localColorScheme provides colorScheme,
         localTypography provides typography,
         localRadius provides FlipRadius(),
-//        LocalRippleTheme provides FlipRipple(),
+        LocalRippleTheme provides FlipRipple(),
     ) {
         // 1. Default
         content()
