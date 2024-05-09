@@ -69,7 +69,7 @@ fun Modifier.clickableSingle(
 
     clickable(
         interactionSource = interactionSource ?: remember { MutableInteractionSource() },
-        indication = indication,
+        indication = indication ?: rememberRipple(),
         enabled = enabled,
         onClickLabel = onClickLabel,
         role = role,
