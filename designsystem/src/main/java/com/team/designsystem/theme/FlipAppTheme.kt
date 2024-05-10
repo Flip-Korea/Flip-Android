@@ -53,13 +53,18 @@ fun FlipAppTheme(
     val colorScheme = if (darkTheme) FlipLightColors else FlipLightColors
 
     val typography = FlipTypography(
+        headline8 = headline8(),
+        headline7 = headline7(),
+        headline6 = headline6(),
         headline5 = headline5(),
         headline4 = headline4(),
         headline3 = headline3(),
         headline2 = headline2(),
         headline1 = headline1(),
+        body7 = body7(),
+        body6 = body6(),
         body5 = body5(),
-        body4 = body4(),
+        body4 = body4Underline(),
         body3 = body3(),
         body2 = body2(),
         body1 = body1(),
