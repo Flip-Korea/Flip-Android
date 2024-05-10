@@ -3,17 +3,17 @@ package com.team.designsystem.theme
 import androidx.compose.ui.graphics.Color
 
 // Background Color
-//    val redB: Color,
-//    val yellowB: Color,
-//    val greenB: Color,
-//    val blueB: Color,
-//    val purpleB: Color,
+//    val bgRed: Color,
+//    val bgYellow: Color,
+//    val bgGreen: Color,
+//    val bgBlue: Color,
+//    val bgPurple: Color,
 
-// redB = Color(0xFFFFE1E1),
-// yellowB = Color(0xFFFFF5E1),
-// greenB = Color(0xFFEDFFE1),
-// blueB = Color(0xFFE1FDFF),
-// purpleB = Color(0xFFF2E1FF),
+// bgRed = Color(0xFFFFE1E1),
+// bgYellow = Color(0xFFFFF5E1),
+// bgGreen = Color(0xFFEDFFE1),
+// bgBlue = Color(0xFFE1FDFF),
+// bgPurple = Color(0xFFF2E1FF),
 
 data class FlipColors(
     // Primary Color
