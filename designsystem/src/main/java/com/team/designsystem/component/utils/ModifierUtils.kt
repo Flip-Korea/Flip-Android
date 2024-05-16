@@ -1,4 +1,4 @@
-package com.team.presentation.utils
+package com.team.designsystem.component.utils
 
 import android.annotation.SuppressLint
 import android.graphics.BlurMaskFilter

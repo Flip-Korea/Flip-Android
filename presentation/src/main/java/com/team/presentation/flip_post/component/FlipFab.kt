@@ -41,11 +41,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.team.designsystem.R
+import com.team.presentation.R
+import com.team.designsystem.component.utils.clickableSingle
+import com.team.designsystem.component.utils.dropShadow
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
-import com.team.presentation.utils.clickableSingle
-import com.team.presentation.utils.dropShadow
 import kotlinx.coroutines.delay
 
 /**
@@ -128,7 +128,7 @@ private fun FabMenu(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(FlipTheme.radius.large))
+            .clip(FlipTheme.shapes.roundedCornerLarge)
             .background(FlipTheme.colors.main)
             .wrapContentSize()
             .padding(vertical = 20.dp)

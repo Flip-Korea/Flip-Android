@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fab Items -->
+    <string name="fab_item_like">좋아요</string>
+    <string name="fab_item_scrap">스크랩</string>
+    <string name="fab_item_comment">댓글</string>
+    <string name="fab_item_share">공유</string>
+    <string name="fab_item_more">더보기</string>
+</resources>

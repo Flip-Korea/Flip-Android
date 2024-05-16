@@ -2,28 +2,21 @@ package com.team.designsystem.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.view.WindowCompat
 
 private val localColorScheme = staticCompositionLocalOf { FlipLightColors }
-private val localRadius = staticCompositionLocalOf { FlipRadius() }
+private val localShapes = staticCompositionLocalOf { FlipShapes() }
 private val localTypography = staticCompositionLocalOf { FlipTypography() }
+private val localTransition = staticCompositionLocalOf { FlipTransition() }
 //private val localRipple = staticCompositionLocalOf { FlipRipple() }
 
 object FlipTheme {
@@ -37,13 +30,19 @@ object FlipTheme {
         @ReadOnlyComposable
         get() = localTypography.current
 
-    val radius: FlipRadius
+    val shapes: FlipShapes
         @Composable
         @ReadOnlyComposable
-        get() = localRadius.current
+        get() = localShapes.current
+
+    val transition: FlipTransition
+        @Composable
+        @ReadOnlyComposable
+        get() = localTransition.current
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+
+//TODO FlipColors 등의 클래스들에게 @Immutable 부여하기
 @Composable
 fun FlipAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -64,7 +63,7 @@ fun FlipAppTheme(
         body7 = body7(),
         body6 = body6(),
         body5 = body5(),
-        body4 = body4Underline(),
+        body4Underline = body4Underline(),
         body3 = body3(),
         body2 = body2(),
         body1 = body1(),
@@ -82,7 +81,8 @@ fun FlipAppTheme(
     CompositionLocalProvider(
         localColorScheme provides colorScheme,
         localTypography provides typography,
-        localRadius provides FlipRadius(),
+        localShapes provides FlipShapes(),
+        localTransition provides FlipTransition(),
         LocalRippleTheme provides FlipRipple(),
     ) {
         // 1. Default

@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +44,7 @@ fun FlipThemeTestScreen() {
                         .fillMaxWidth()
                         .height(48.dp)
                         .padding(horizontal = 16.dp)
-                        .clip(RoundedCornerShape(FlipTheme.radius.small))
+                        .clip(FlipTheme.shapes.roundedCornerSmall)
                         .background(FlipTheme.colors.main)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -72,7 +70,7 @@ fun FlipThemeTestScreen() {
                         containerColor = FlipTheme.colors.main,
                         contentColor = FlipTheme.colors.white
                     ),
-                    shape = RoundedCornerShape(FlipTheme.radius.small)
+                    shape = FlipTheme.shapes.roundedCornerSmall
                 ) {
                     Text(
                         text = "Flip 디자인 시스템 테스트(Button)",
