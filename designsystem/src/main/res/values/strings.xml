@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fab_item_like">좋아요</string>
-    <string name="fab_item_scrap">스크랩</string>
-    <string name="fab_item_comment">댓글</string>
-    <string name="fab_item_share">공유</string>
-    <string name="fab_item_more">더보기</string>
+    <!-- Samples -->
+    <string name="sample_button_title">sample</string>
 
     <!-- Content Description -->
     <string name="content_desc_fab_more">더보기</string>
+    <string name="content_desc_menu_more">더보기</string>
+    <string name="content_desc_delete">삭제</string>
+    <string name="content_desc_tf_remove">모두 지우기</string>
+    <string name="content_desc_error">에러</string>
+    <string name="content_desc_search">검색</string>
+    <string name="content_desc_comment">댓글 등록</string>
+
+    <!-- Button - Follow -->
+    <string name="btn_following">팔로잉</string>
+    <string name="btn_follow">팔로우</string>
+    <string name="btn_follow_back">맞팔로우</string>
+    <string name="btn_profile_edit">프로필 수정</string>
+    <string name="btn_flip_edit">내 플립 편집</string>
+
+    <!-- TextField -->
+    <string name="tf_placeholder_search">키워드, 이름, 태그를 입력해 주세요.</string>
+    <string name="tf_placeholder_comment">글에 대한 다양한 생각을 댓글로 공유해보세요.</string>
 </resources>

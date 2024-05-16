@@ -1,7 +1,7 @@
 package com.team.presentation.flip_post.component
 
 import androidx.compose.ui.graphics.Color
-import com.team.designsystem.R
+import com.team.presentation.R
 
 data class FabItem(
     val outlinedIcon: Int,
