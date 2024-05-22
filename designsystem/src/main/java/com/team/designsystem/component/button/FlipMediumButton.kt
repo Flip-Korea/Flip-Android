@@ -1,5 +1,6 @@
 package com.team.designsystem.component.button
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.utils.ClickableSingle
@@ -39,7 +41,8 @@ fun FlipMediumButton(
         onClick = { clickableSingle.onEvent(onClick) },
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(48.dp)
+            .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
         colors = ButtonDefaults.buttonColors(
             containerColor = FlipTheme.colors.main,
             contentColor = FlipTheme.colors.white
@@ -58,6 +61,7 @@ fun FlipMediumButton(
             Text(
                 text = text,
                 style = FlipTheme.typography.headline3,
+                color = FlipTheme.colors.white
             )
         }
     }

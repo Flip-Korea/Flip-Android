@@ -3,6 +3,7 @@ package com.team.designsystem.component.button
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ fun FlipProfileEditButton(
         Text(
             text = stringResource(id = R.string.btn_profile_edit),
             style = FlipTheme.typography.headline1,
+            color = FlipTheme.colors.white
         )
     }
 }
@@ -49,6 +51,6 @@ fun FlipProfileEditButton(
 @Composable
 private fun FlipProfileEditButtonPreview() {
     FlipAppTheme {
-        FlipProfileEditButton(onClick = {})
+        FlipProfileEditButton(modifier = Modifier.width(168.dp), onClick = {})
     }
 }

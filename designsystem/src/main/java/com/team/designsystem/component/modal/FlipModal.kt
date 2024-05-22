@@ -68,7 +68,7 @@ private fun ModalButton(
 fun FlipModal(
     modifier: Modifier = Modifier,
     mainTitle: String,
-    subTitle: String,
+    subTitle: String? = null,
     itemText: String,
     itemText2: String,
     onItemClick: () -> Unit,
@@ -92,11 +92,13 @@ fun FlipModal(
                 verticalArrangement = Arrangement.spacedBy(6.dp, alignment = Alignment.CenterVertically)
             ) {
                 Text(text = mainTitle, style = FlipTheme.typography.headline4)
-                Text(
-                    text = subTitle,
-                    style = FlipTheme.typography.body3,
-                    color = FlipTheme.colors.gray6
-                )
+                if (subTitle != null) {
+                    Text(
+                        text = subTitle,
+                        style = FlipTheme.typography.body3,
+                        color = FlipTheme.colors.gray6
+                    )
+                }
             }
 
             Column(
@@ -155,6 +157,21 @@ fun FlipMediumModalPreview() {
     }
 }
 
+@Preview(name = "Medium(sub title X)", showBackground = true)
+@Composable
+fun FlipMediumModalWithoutSubTitlePreview() {
+    FlipAppTheme {
+        FlipModal(
+            modifier = Modifier.size(290.dp, 195.dp),
+            mainTitle = "Main Title",
+            itemText = "Text",
+            itemText2 = "Text",
+            onItemClick = { },
+            onItem2Click = { }
+        )
+    }
+}
+
 @Preview(name = "Small", showBackground = true)
 @Composable
 fun FlipSmallModalPreview() {
@@ -171,7 +188,22 @@ fun FlipSmallModalPreview() {
     }
 }
 
-@Preview(name = "Interaction-Medium", showBackground = true)
+@Preview(name = "Small(sub title x)", showBackground = true)
+@Composable
+fun FlipMediumModalWithoutSubTitlePreview2() {
+    FlipAppTheme {
+        FlipModal(
+            modifier = Modifier.size(262.dp, 195.dp),
+            mainTitle = "Main Title",
+            itemText = "Text",
+            itemText2 = "Text",
+            onItemClick = { },
+            onItem2Click = { }
+        )
+    }
+}
+
+@Preview(name = "Interaction-Medium", showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
 private fun FlipMediumModalPreview2() {
 
@@ -202,7 +234,7 @@ private fun FlipMediumModalPreview2() {
     }
 }
 
-@Preview(name = "Interaction-Small", showBackground = true)
+@Preview(name = "Interaction-Small", showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
 private fun FlipSmallModalPreview2() {
 
