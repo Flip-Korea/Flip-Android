@@ -69,7 +69,8 @@ fun FlipSearchTextField(
         textStyle = FlipTheme.typography.body6,
         singleLine = true,
         interactionSource = interactionSource,
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        cursorBrush = FlipTextFieldStyles.cursorBrushBlack
     ) { innerTextField ->
         Row(
             modifier = Modifier

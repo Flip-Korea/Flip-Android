@@ -51,7 +51,7 @@ fun FlipOutlinedSmallChip(
         Row(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(start = 20.dp, end = 12.dp, top = 6.dp, bottom = 6.dp),
+                .padding(start = 20.dp, end = 12.dp, top = 4.5.dp, bottom = 4.5.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
             verticalAlignment = Alignment.CenterVertically
         ) {

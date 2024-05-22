@@ -1,5 +1,6 @@
 package com.team.designsystem.component.button
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,21 +35,21 @@ fun FlipLargeButton(
         onClick = { clickableSingle.onEvent(onClick) },
         modifier = modifier
             .fillMaxWidth()
-            .height(78.dp),
+            .height(78.dp)
+            .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
         colors = ButtonDefaults.buttonColors(
             containerColor = FlipTheme.colors.main,
             contentColor = FlipTheme.colors.white
         ),
         enabled = enabled,
         shape = RectangleShape,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp)
     ) {
         Text(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(top = 15.dp, bottom = 1.dp),
+            modifier = Modifier.fillMaxHeight(),
             text = text,
             style = FlipTheme.typography.headline3,
+            color = FlipTheme.colors.white
         )
     }
 }
@@ -57,7 +59,9 @@ fun FlipLargeButton(
 private fun FlipLargeButtonPreview() {
     FlipAppTheme {
         FlipLargeButton(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             text = "sample",
             enabled = true,
             onClick = {}
@@ -70,7 +74,9 @@ private fun FlipLargeButtonPreview() {
 private fun FlipLargeButton2Preview() {
     FlipAppTheme {
         FlipLargeButton(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             text = "sample",
             enabled = false,
             onClick = {}

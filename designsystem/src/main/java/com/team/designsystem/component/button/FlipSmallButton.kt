@@ -61,6 +61,9 @@ fun FlipSmallButton(
             Text(
                 text = text,
                 style = FlipTheme.typography.headline3,
+                color = if (solid) {
+                    FlipTheme.colors.white
+                } else FlipTheme.colors.main
             )
         }
     }

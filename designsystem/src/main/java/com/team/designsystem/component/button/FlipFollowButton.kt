@@ -1,5 +1,7 @@
 package com.team.designsystem.component.button
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,7 +39,7 @@ fun FlipFollowButton(
 
     val (textRes, containerColor, contentColor) = when {
         isFollowing -> Triple(R.string.btn_following, FlipTheme.colors.gray1, FlipTheme.colors.main)
-        isFollower -> Triple(R.string.btn_follow_back, FlipTheme.colors.gray1, FlipTheme.colors.main)
+        isFollower -> Triple(R.string.btn_follow_back, FlipTheme.colors.main, FlipTheme.colors.white)
         else -> Triple(R.string.btn_follow, FlipTheme.colors.main, FlipTheme.colors.white)
     }
 
@@ -64,6 +66,7 @@ fun FlipFollowButton(
             style = LocalTextStyle.current.merge(
                 FlipTheme.typography.headline1
             ),
+            color = contentColor
         )
     }
 }
@@ -72,11 +75,26 @@ fun FlipFollowButton(
 @Composable
 private fun FlipFollowButtonPreview() {
     FlipAppTheme {
-        FlipFollowButton(
-            isFollowing = false,
-            isFollower = false,
-            onClick = {}
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            FlipFollowButton(
+                modifier = Modifier.width(343.dp),
+                isFollowing = false,
+                isFollower = false,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(144.dp),
+                isFollowing = false,
+                isFollower = false,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(81.dp),
+                isFollowing = false,
+                isFollower = false,
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -84,11 +102,26 @@ private fun FlipFollowButtonPreview() {
 @Composable
 private fun FlipFollowButton2Preview() {
     FlipAppTheme {
-        FlipFollowButton(
-            isFollowing = true,
-            isFollower = false,
-            onClick = {}
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            FlipFollowButton(
+                modifier = Modifier.width(343.dp),
+                isFollowing = true,
+                isFollower = false,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(144.dp),
+                isFollowing = true,
+                isFollower = false,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(81.dp),
+                isFollowing = true,
+                isFollower = false,
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -96,11 +129,26 @@ private fun FlipFollowButton2Preview() {
 @Composable
 private fun FlipFollowButton3Preview() {
     FlipAppTheme {
-        FlipFollowButton(
-            isFollowing = false,
-            isFollower = true,
-            onClick = {}
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            FlipFollowButton(
+                modifier = Modifier.width(343.dp),
+                isFollowing = false,
+                isFollower = true,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(144.dp),
+                isFollowing = false,
+                isFollower = true,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(81.dp),
+                isFollowing = false,
+                isFollower = true,
+                onClick = {}
+            )
+        }
     }
 }
 
@@ -108,24 +156,25 @@ private fun FlipFollowButton3Preview() {
 @Composable
 private fun FlipFollowButton4Preview() {
     FlipAppTheme {
-        FlipFollowButton(
-            isFollowing = true,
-            isFollower = true,
-            onClick = {}
-        )
-    }
-}
-
-@Preview(name = "size - small", showBackground = true, backgroundColor = 0xFF000000)
-@Composable
-private fun FlipFollowButton5Preview() {
-    FlipAppTheme {
-        FlipFollowButton(
-            modifier = Modifier.width(100.dp),
-            isFollowing = true,
-            isFollower = true,
-            size = FlipFollowButtonSize.Small,
-            onClick = {}
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            FlipFollowButton(
+                modifier = Modifier.width(343.dp),
+                isFollowing = true,
+                isFollower = true,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(144.dp),
+                isFollowing = true,
+                isFollower = true,
+                onClick = {}
+            )
+            FlipFollowButton(
+                modifier = Modifier.width(81.dp),
+                isFollowing = true,
+                isFollower = true,
+                onClick = {}
+            )
+        }
     }
 }

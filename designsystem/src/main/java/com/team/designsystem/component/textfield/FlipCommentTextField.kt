@@ -87,9 +87,10 @@ fun FlipCommentTextField(
             .focusCleaner(focusManager),
         value = text,
         onValueChange = onTextChanged,
-        textStyle = FlipTheme.typography.body6,
+        textStyle = FlipTheme.typography.body5,
         interactionSource = interactionSource,
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        cursorBrush = FlipTextFieldStyles.cursorBrushPoint
     ) { innerTextField ->
         Row(
             modifier = Modifier

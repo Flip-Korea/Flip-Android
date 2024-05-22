@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,11 +40,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.team.presentation.R
 import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.component.utils.dropShadow
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
+import com.team.presentation.R
 import kotlinx.coroutines.delay
 
 /**
@@ -101,7 +100,7 @@ fun FlipFab(
                 .size(48.dp)
                 .clip(CircleShape)
                 .background(FlipTheme.colors.main)
-                .clickableSingle{
+                .clickableSingle {
                     if (enableAgain) {
                         enableAgain = false
                         changeExpanded()
@@ -137,51 +136,60 @@ private fun FabMenu(
         verticalArrangement = Arrangement.Center
     ) {
         items.forEachIndexed { index, item ->
-
-            // 끌어올려야 함
-            var isActive by remember { mutableStateOf(item.active) }
-            val icon = if (isActive) item.filledIcon else item.outlinedIcon
-
-            Box(
-                modifier = Modifier
-                    .widthIn(max = 109.dp)
-                    .fillMaxWidth()
-                    .clickableSingle {
-                        if (index == 0 || index == 1) {
-                            isActive = !isActive
-                        }
-                    }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .wrapContentSize()
-                        .padding(start = 12.dp, top = 5.dp, bottom = 5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        12.dp,
-                        alignment = Alignment.Start
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = ImageVector.vectorResource(icon),
-                        contentDescription = stringResource(id = item.title),
-                        tint = item.color
-                    )
-                    Text(
-                        text = stringResource(id = item.title),
-                        style = FlipTheme.typography.body3,
-                        color = Color.White,
-                        textAlign = TextAlign.Start,
-                        maxLines = 1
-                    )
-                }
-            }
-
+            MenuItem(index = index, item = item)
         }
     }
 }
+
+@Composable
+private fun MenuItem(
+    modifier: Modifier = Modifier,
+    index: Int,
+    item: FabItem,
+) {
+
+    // 끌어올려야 함
+    var isActive by remember { mutableStateOf(item.active) }
+    val icon = if (isActive) item.filledIcon else item.outlinedIcon
+
+    Box(
+        modifier = modifier
+            .widthIn(max = 109.dp)
+            .fillMaxWidth()
+            .clickableSingle {
+                if (index == 0 || index == 1) {
+                    isActive = !isActive
+                }
+            },
+    ) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .wrapContentSize()
+                .padding(start = 12.dp, top = 5.dp, bottom = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(
+                12.dp,
+                alignment = Alignment.Start
+            ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = ImageVector.vectorResource(icon),
+                contentDescription = stringResource(id = item.title),
+                tint = item.color
+            )
+            Text(
+                text = stringResource(id = item.title),
+                style = FlipTheme.typography.body5,
+                color = Color.White,
+                textAlign = TextAlign.Start,
+                maxLines = 1
+            )
+        }
+    }
+}
+
 
 @Preview(showBackground = true, widthDp = 200, heightDp = 350)
 @Composable
