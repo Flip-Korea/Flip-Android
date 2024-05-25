@@ -207,7 +207,7 @@ fun FlipMediumModalWithoutSubTitlePreview2() {
 @Composable
 private fun FlipMediumModalPreview2() {
 
-    var isOpen by remember { mutableStateOf(false) }
+    var isOpen by remember { mutableStateOf(true) }
 
     FlipAppTheme {
         Column(
