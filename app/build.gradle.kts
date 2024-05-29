@@ -82,6 +82,12 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
     ksp(libs.hilt.compiler)
     // Testing
     kspTest(libs.hilt.android.compiler)
@@ -113,6 +119,9 @@ dependencies {
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Splash Screen API
+    implementation(libs.androidx.core.splashscreen)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)

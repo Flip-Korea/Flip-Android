@@ -2,19 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ColorPreview">
-        <State />
-      </entry>
-      <entry key="FlipCenterAlignedTopBarPreview">
-        <State />
-      </entry>
-      <entry key="FlipInfoTextField5Preview - dynamic">
-        <State />
-      </entry>
-      <entry key="FlipSmallButton2Preview - loading">
-        <State />
-      </entry>
-      <entry key="TempPreview">
+      <entry key="FlipFabPreview">
         <State />
       </entry>
       <entry key="app">

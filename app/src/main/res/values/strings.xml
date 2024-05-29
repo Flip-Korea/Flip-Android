@@ -32,4 +32,8 @@
     <string name="report_inappropriate">부적절함</string>
     <string name="report_fake">사기 또는 거짓</string>
     <string name="report_hate_speech">혐오 발언</string>
+    
+    <!-- Activity -->
+    <string name="activity_splash">SplashActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>
