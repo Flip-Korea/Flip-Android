@@ -1,9 +1,15 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
+
+val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
 
 android {
     namespace = "com.team.presentation"
@@ -14,6 +20,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", gradleLocalProperties(rootDir).getProperty("GOOGLE_WEB_CLIENT_ID"))
     }
 
     testOptions {
@@ -47,6 +55,7 @@ android {
         buildConfig = false
         renderScript = false
         shaders = false
+        buildConfig = true
     }
 
     composeOptions {
@@ -95,6 +104,23 @@ dependencies {
     // Coroutine
     implementation(libs.kotlinx.coroutines.android)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    // Credential Manager
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.all)
+    implementation(libs.kakao.sdk.v2.user)
+    implementation(libs.kakao.sdk.v2.talk)
+    implementation(libs.kakao.sdk.v2.share)
+    implementation(libs.kakao.sdk.v2.friend)
+    implementation(libs.kakao.sdk.v2.navi)
+    implementation(libs.kakao.sdk.v2.cert)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)

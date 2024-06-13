@@ -33,4 +33,14 @@ sealed interface ErrorType: Error {
     enum class Token: ErrorType {
         NOT_FOUND,
     }
+
+    enum class Auth: ErrorType {
+        PARSING_EXCEPTION,
+        CREDENTIAL_TYPE_INVALID,
+        TOKEN_ERROR,
+        CANCELLED,
+        DELETE_ACCOUNT_FAILED,
+        USER_NOT_FOUND,
+        UNEXPECTED,
+    }
 }

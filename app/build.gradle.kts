@@ -1,9 +1,15 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
-    id(libs.plugins.android.application.get().pluginId)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.gms.google.services)
 }
+
+val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
 
 android {
     namespace = "com.team.flip"
@@ -22,6 +28,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = "KAKAO_NATIVE_APP_KEY"
     }
 
     testOptions {
@@ -55,6 +63,7 @@ android {
         buildConfig = true
         renderScript = false
         shaders = false
+        buildConfig = true
     }
 
     composeOptions {
@@ -122,6 +131,15 @@ dependencies {
 
     // Splash Screen API
     implementation(libs.androidx.core.splashscreen)
+
+    // Kakao SDK
+    implementation(libs.kakao.sdk.v2.all)
+    implementation(libs.kakao.sdk.v2.user)
+    implementation(libs.kakao.sdk.v2.talk)
+    implementation(libs.kakao.sdk.v2.share)
+    implementation(libs.kakao.sdk.v2.friend)
+    implementation(libs.kakao.sdk.v2.navi)
+    implementation(libs.kakao.sdk.v2.cert)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)

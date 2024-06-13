@@ -75,4 +75,27 @@ fun ErrorType.asUiText(): UiText =
         ErrorType.Token.NOT_FOUND -> UiText.StringResource(
             R.string.error_token_not_found
         )
+
+        // Auth
+        ErrorType.Auth.PARSING_EXCEPTION -> UiText.StringResource(
+            R.string.error_auth_parsing_exception
+        )
+        ErrorType.Auth.CREDENTIAL_TYPE_INVALID -> UiText.StringResource(
+            R.string.error_auth_credential_type_invalid
+        )
+        ErrorType.Auth.TOKEN_ERROR -> UiText.StringResource(
+            R.string.error_auth_token_error
+        )
+        ErrorType.Auth.CANCELLED -> UiText.StringResource(
+            R.string.error_auth_cancelled
+        )
+        ErrorType.Auth.DELETE_ACCOUNT_FAILED -> UiText.StringResource(
+            R.string.error_auth_delete_acocunt_failed
+        )
+        ErrorType.Auth.USER_NOT_FOUND -> UiText.StringResource(
+            R.string.error_auth_user_not_found
+        )
+        ErrorType.Auth.UNEXPECTED -> UiText.StringResource(
+            R.string.error_auth_unexpected
+        )
     }
