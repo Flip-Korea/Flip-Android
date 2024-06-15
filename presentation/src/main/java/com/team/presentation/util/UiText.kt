@@ -1,4 +1,4 @@
-package com.team.flip.feature.util
+package com.team.presentation.util
 
 import android.content.Context
 import androidx.annotation.StringRes

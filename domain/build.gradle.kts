@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ksp)
 }
 
 java {
@@ -9,6 +10,7 @@ java {
 
 dependencies {
     api(libs.kotlinx.coroutines.core)
+    implementation(libs.dagger.hilt.javax)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito)

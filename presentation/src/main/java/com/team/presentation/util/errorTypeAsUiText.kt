@@ -1,8 +1,8 @@
-package com.team.flip.feature.util
+package com.team.presentation.util
 
 import com.team.domain.util.ErrorType
-import com.team.flip.R
 import com.team.domain.util.Result
+import com.team.presentation.R
 
 fun Result.Error<*, ErrorType>.asUiText(): UiText = error.asUiText()
 

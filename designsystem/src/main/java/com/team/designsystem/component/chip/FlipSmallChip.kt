@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +22,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.R
-import com.team.designsystem.component.utils.ClickableSingle
 import com.team.designsystem.component.utils.clickableSingle
-import com.team.designsystem.component.utils.get
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
@@ -38,8 +35,6 @@ fun FlipSmallChip(
     onClick: () -> Unit = {},
     onDelete: () -> Unit = {},
 ) {
-
-    val clickableSingle = remember { ClickableSingle.get() }
 
     Box(
         modifier = modifier
@@ -55,7 +50,7 @@ fun FlipSmallChip(
                     FlipTheme.colors.point3
                 } else FlipTheme.colors.gray1
             )
-            .clickableSingle { clickableSingle.onEvent(onClick) }
+            .clickableSingle { onClick() }
     ) {
         Row(
             modifier = Modifier

@@ -19,5 +19,5 @@ class DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager = DataStoreManager(context)
+    fun provideDataStoreManager(@ApplicationContext context: Context): TokenDataStore = TokenDataStore(context)
 }

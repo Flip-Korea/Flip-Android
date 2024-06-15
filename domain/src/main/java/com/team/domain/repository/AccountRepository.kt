@@ -2,7 +2,7 @@ package com.team.domain.repository
 
 import com.team.domain.model.account.Account
 import com.team.domain.model.account.Register
-import com.team.domain.type.LoginPlatformType
+import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +37,7 @@ interface AccountRepository {
      *  (404, Not Found): 계정을 찾을 수 없음, 회원가입 진행
      *  (403, Forbidden): 정지된 계정 혹은 접근 불가**/
     fun login(
-        loginPlatformType: LoginPlatformType,
+        loginPlatformType: SocialLoginPlatform,
         accountId: String
     ): Flow<Result<Boolean, ErrorType>>
 

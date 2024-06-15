@@ -3,7 +3,7 @@ package com.team.data.network.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.BuildConfig
-import com.team.data.datastore.DataStoreManager
+import com.team.data.datastore.TokenDataStore
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
@@ -84,14 +84,14 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideTokenAuthentication(
-        dataStoreManager: DataStoreManager,
+        dataStoreManager: TokenDataStore,
         authNetworkApi: AccountNetworkApi,
     ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, authNetworkApi)
 
     @Singleton
     @Provides
     fun provideTokenInterceptor(
-        dataStoreManager: DataStoreManager,
+        dataStoreManager: TokenDataStore,
     ): TokenInterceptor = TokenInterceptor(dataStoreManager)
 
     /** Retrofit Instance **/
@@ -105,7 +105,7 @@ object NetworkModule {
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(TestBaseUrl.TEST_BASE_URL)
+            .baseUrl(BuildConfig.FLIP_SERVER_URL)
     }
 
     /** ApiService **/
@@ -203,8 +203,3 @@ annotation class DefaultRetrofitBuilder
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenOkHttpClient
-
-// TODO 나중에 BuildConfig 로 숨겨 놓기
-object TestBaseUrl {
-    const val TEST_BASE_URL = "https://1504-115-95-115-150.ngrok-free.app"
-}

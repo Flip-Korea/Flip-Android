@@ -9,7 +9,7 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.team.domain.util.ErrorType
-import com.team.presentation.util.AuthUiState
+import com.team.presentation.login.state.AuthUiState
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -47,6 +47,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
                     }
                 } else {
                     // 3. token validity check successful (renew if necessary)
+                    login(context)
                 }
             }
         } else {
@@ -64,9 +65,19 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         }
     }
 
-    override suspend fun deleteAccount() {
+    override suspend fun deleteAccount(): Flow<AuthUiState> = callbackFlow {
+        trySend(AuthUiState.Loading)
+
         UserApiClient.instance.unlink { e ->
+            if (e == null) {
+                trySend(AuthUiState.Success("success"))
+            } else {
+                trySend(AuthUiState.Error(ErrorType.Auth.DELETE_ACCOUNT_FAILED))
+            }
         }
+        close()
+
+        awaitClose {  }
     }
 
     private fun ProducerScope<AuthUiState>.login(context: Context) {
@@ -130,10 +141,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
 
     private fun ProducerScope<AuthUiState>.loginSuccess() {
         UserApiClient.instance.me { user, error ->
-            user?.let { u ->
-                trySend(AuthUiState.Success(u.id))
+            if (user?.id != null) {
+                trySend(AuthUiState.Success(user.id.toString()))
                 close()
-            } ?: {
+            } else {
                 trySend(AuthUiState.Error(ErrorType.Auth.USER_NOT_FOUND))
                 close()
             }
