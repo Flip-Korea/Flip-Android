@@ -18,7 +18,7 @@ import com.team.data.testdoubles.network.networkAccountJsonTestData
 import com.team.data.testdoubles.network.networkRegisterTestData
 import com.team.data.testdoubles.network.networkTokenTestData
 import com.team.data.testdoubles.network.toExternal
-import com.team.domain.type.LoginPlatformType
+import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -205,7 +205,7 @@ class DefaultAccountRepositoryTest {
         })
 
         dataStoreManager.clearAll()
-        val result = accountRepository.login(LoginPlatformType.KAKAO, "12345").last()
+        val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
 
         val expectedAccessToken = moshi.adapter(TokenResponse::class.java)
             .fromJson(networkTokenTestData)!!

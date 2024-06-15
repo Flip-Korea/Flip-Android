@@ -1,7 +1,7 @@
-package com.team.flip.feature.util
+package com.team.presentation.util
 
 import com.team.domain.type.ReportType
-import com.team.flip.R
+import com.team.presentation.R
 
 fun ReportType.asUiText(): UiText =
     when (this) {

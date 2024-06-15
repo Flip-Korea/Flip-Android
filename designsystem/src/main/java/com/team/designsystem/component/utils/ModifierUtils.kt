@@ -6,12 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
@@ -19,31 +16,30 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** 일정 시간 동안 연속 클릭을 제한하는 Modifier 확장 함수 - 1 **/
-@SuppressLint("ModifierFactoryUnreferencedReceiver")
-fun Modifier.clickableOnce(onClick: () -> Unit): Modifier = composed(
-    inspectorInfo = {
-        name = "clickableOnce"
-        value = onClick
-    }
-) {
-    var enableAgain by remember { mutableStateOf(true) }
-    LaunchedEffect(enableAgain, block = {
-        if (enableAgain) return@LaunchedEffect
-        delay(timeMillis = 500L)
-        enableAgain = true
-    })
-    Modifier.clickable {
-        if (enableAgain) {
-            enableAgain = false
-            onClick()
-        }
-    }
-}
+//@SuppressLint("ModifierFactoryUnreferencedReceiver")
+//fun Modifier.clickableOnce(onClick: () -> Unit): Modifier = composed(
+//    inspectorInfo = {
+//        name = "clickableOnce"
+//        value = onClick
+//    }
+//) {
+//    var enableAgain by remember { mutableStateOf(true) }
+//    LaunchedEffect(enableAgain, block = {
+//        if (enableAgain) return@LaunchedEffect
+//        delay(timeMillis = 500L)
+//        enableAgain = true
+//    })
+//    Modifier.clickable {
+//        if (enableAgain) {
+//            enableAgain = false
+//            onClick()
+//        }
+//    }
+//}
 
 /** 일정 시간 동안 연속 클릭을 제한하는 Modifier 확장 함수 - 2 **/
 @SuppressLint("ModifierFactoryUnreferencedReceiver")

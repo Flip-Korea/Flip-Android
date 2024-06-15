@@ -1,9 +1,15 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
+
+val properties = Properties().apply { load(FileInputStream(rootProject.file("local.properties"))) }
 
 android {
     namespace = "com.team.data"
@@ -20,6 +26,8 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        buildConfigField("String", "FLIP_SERVER_URL", gradleLocalProperties(rootDir).getProperty("FLIP_SERVER_URL"))
     }
 
     testOptions {

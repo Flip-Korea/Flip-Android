@@ -1,6 +1,5 @@
 package com.team.data.repository.fake
 
-import com.team.data.datastore.DataStoreManager
 import com.team.data.datastore.fake.FakeDataStoreManager
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.toExternal
@@ -11,7 +10,7 @@ import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.model.account.Account
 import com.team.domain.model.account.Register
 import com.team.domain.repository.AccountRepository
-import com.team.domain.type.LoginPlatformType
+import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class FakeAccountRepository(
@@ -126,7 +124,7 @@ class FakeAccountRepository(
     }
 
     override fun login(
-        loginPlatformType: LoginPlatformType,
+        loginPlatformType: SocialLoginPlatform,
         accountId: String
     ): Flow<Result<Boolean, ErrorType>> {
         return flow {

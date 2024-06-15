@@ -15,7 +15,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.team.domain.util.ErrorType
 import com.team.presentation.BuildConfig
-import com.team.presentation.util.AuthUiState
+import com.team.presentation.login.state.AuthUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -35,7 +35,6 @@ class GoogleAuthManager(
     private val auth = Firebase.auth
 
     override fun signIn(): Flow<AuthUiState> = flow {
-
         emit(AuthUiState.Loading)
 
         val googleIdOption: GetSignInWithGoogleOption =
@@ -72,7 +71,7 @@ class GoogleAuthManager(
                     }
                 }
 
-                else -> { emit(AuthUiState.Error(ErrorType.Auth.UNEXPECTED)) }
+                else -> { emit(AuthUiState.Error(ErrorType.Auth.CREDENTIAL_TYPE_INVALID)) }
             }
         } catch (e: GetCredentialCancellationException) {
             emit(AuthUiState.Error(ErrorType.Auth.CANCELLED))
@@ -88,29 +87,27 @@ class GoogleAuthManager(
         )
     }
 
-    override suspend fun deleteAccount() {
-        var isSuccessful: Boolean = false
-        var errorType: ErrorType = ErrorType.Auth.UNEXPECTED
+    override suspend fun deleteAccount(): Flow<AuthUiState> = flow {
+        emit(AuthUiState.Loading)
 
         val currentUser = auth.currentUser
         if (currentUser != null) {
             try {
                 val task = currentUser.delete()
                 if (task.isComplete && task.isSuccessful) {
-                    isSuccessful = true
+                    credentialManager.clearCredentialState(
+                        ClearCredentialStateRequest()
+                    )
+                    emit(AuthUiState.Success("success"))
                 } else {
-                    errorType = ErrorType.Auth.DELETE_ACCOUNT_FAILED
+                    emit(AuthUiState.Error(ErrorType.Auth.DELETE_ACCOUNT_FAILED))
                 }
             } catch (e: Exception) {
-                errorType = ErrorType.Auth.DELETE_ACCOUNT_FAILED
+                emit(AuthUiState.Error(ErrorType.Auth.UNEXPECTED))
             }
         } else {
-            errorType = ErrorType.Auth.USER_NOT_FOUND
+            emit(AuthUiState.Error(ErrorType.Auth.USER_NOT_FOUND))
         }
-
-        credentialManager.clearCredentialState(
-            ClearCredentialStateRequest()
-        )
     }
 
     private suspend fun signInWithFirebase(googleIdToken: String): FirebaseUser? {
