@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Fab Items -->
-    <string name="fab_item_like">좋아요</string>
-    <string name="fab_item_scrap">스크랩</string>
-    <string name="fab_item_comment">댓글</string>
-    <string name="fab_item_share">공유</string>
-    <string name="fab_item_more">더보기</string>
+    <!-- IconButton (Content Description) -->
+    <string name="icon_button_like">좋아요</string>
+    <string name="icon_button_scrap">스크랩</string>
+    <string name="icon_button_comment">댓글</string>
+    <string name="icon_button_share">공유</string>
+    <string name="icon_button_more">더보기</string>
 
     <!-- ErrorType (Exception) -->
     <string name="error_exception_io">인터넷 연결을 확인해주세요.</string>
@@ -52,5 +52,19 @@
     <string name="login_screen_title_2">눈에 담기는</string>
     <string name="login_screen_title_3">모든 이야기</string>
     <string name="login_screen_select_platform">SNS 계정으로 간편하게 가입해보세요!</string>
+
+    <!-- Photo Crop Screen -->
+    <string name="photo_crop_screen_btn_cancel">취소</string>
+    <string name="photo_crop_screen_btn_ok">확인</string>
+
+    <!-- HomeScreen (ContentDescription) -->
+    <string name="home_screen_content_desc_logo">Flip</string>
+    <string name="home_screen_content_desc_search">검색</string>
+    <string name="home_screen_content_desc_notification">알림</string>
+    <string name="home_screen_content_desc_setting">설정</string>
+
+    <!-- HomeFlipCard (ContentDescription) -->
+    <string name="home_flip_card_content_desc_photo_url">프로필 사진</string>
+    <string name="home_flip_card_content_desc_more">더보기</string>
 
 </resources>

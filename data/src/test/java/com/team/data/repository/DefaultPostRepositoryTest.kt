@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.FlipPagination
+import com.team.domain.util.FlipPagination
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.PostDao
 import com.team.data.local.entity.post.toExternal
@@ -19,7 +19,6 @@ import com.team.data.testdoubles.local.makePostIds
 import com.team.data.testdoubles.network.postResponseTestData
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
-import com.team.domain.model.post.Post
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.Result

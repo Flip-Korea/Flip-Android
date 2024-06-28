@@ -1,6 +1,5 @@
 package com.team.data.repository.fake
 
-import com.team.data.FlipPagination
 import com.team.data.local.dao.PostDao
 import com.team.data.local.entity.post.toExternal
 import com.team.data.network.model.request.LikeRequest
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 //TODO 실제 Repository로 통합해서 테스트하기
 class FakePostRepository(

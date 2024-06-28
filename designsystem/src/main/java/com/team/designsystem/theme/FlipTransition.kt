@@ -11,6 +11,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 
 data class FlipTransition(
     val fadeIn: EnterTransition = fadeIn(),
@@ -25,5 +27,17 @@ data class FlipTransition(
     val dialogExit: ExitTransition = fadeOut(tween(easing = EaseInCirc)) + scaleOut(
         targetScale = .8f,
         animationSpec = tween(easing = EaseInBack)
-    )
+    ),
+    val slideInVertically: EnterTransition = slideInVertically(initialOffsetY = { it }),
+    val slideOutVertically: ExitTransition = slideOutVertically(targetOffsetY = { it }) + fadeOut()
 )
+
+object FlipTransitionObject {
+    private val flipTransition = FlipTransition()
+    val fadeIn = flipTransition.fadeIn
+    val fadeOut = flipTransition.fadeOut
+    val dialogEnter = flipTransition.dialogEnter
+    val dialogExit = flipTransition.dialogExit
+    val slideInVertically = flipTransition.slideInVertically
+    val slideOutVertically = flipTransition.slideOutVertically
+}

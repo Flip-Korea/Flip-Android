@@ -7,10 +7,17 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * 소셜로그인 Usecase
+ */
 class LoginUseCase @Inject constructor(
     private val accountRepository: AccountRepository
 ) {
 
+    /**
+     * @param socialLoginPlatform 소셜로그인 플랫폼 구분
+     * @param accountId 각 플랫폼에서 받아온 고유식별번호(id)
+     */
     operator fun invoke(
         socialLoginPlatform: SocialLoginPlatform,
         accountId: String

@@ -12,4 +12,19 @@ data class DisplayProfile(
     val introduce: String?,
     val followerCnt: Long?,
     val rating: String?,
-)
+) {
+    constructor(
+        profileId: String,
+        nickname: String,
+        photoUrl: String
+    ): this(
+        profileId = profileId,
+        nickname = nickname,
+        photoUrl = photoUrl,
+        isFollower = false,
+        isFollowing = false,
+        introduce = null,
+        followerCnt = null,
+        rating = null
+    )
+}

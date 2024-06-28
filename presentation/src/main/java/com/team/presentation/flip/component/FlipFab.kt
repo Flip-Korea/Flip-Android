@@ -1,4 +1,4 @@
-package com.team.presentation.post.component
+package com.team.presentation.flip.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable

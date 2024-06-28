@@ -1,12 +1,12 @@
 package com.team.designsystem.component.utils
 
-internal interface ClickableSingle {
+interface ClickableSingle {
     fun onEvent(event: () -> Unit)
 
     companion object
 }
 
-internal fun ClickableSingle.Companion.get(): ClickableSingle =
+fun ClickableSingle.Companion.get(): ClickableSingle =
     ClickableSingleImpl()
 
 private class ClickableSingleImpl : ClickableSingle {
