@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.home.FlipCardUiEvent
+import com.team.presentation.home.HomeUiEvent
 import com.team.presentation.home.state.CategoryState
 import com.team.presentation.home.state.PostState
 import com.team.presentation.home.util.HomeTabMockItems
@@ -46,7 +47,7 @@ class HomeViewModel: ViewModel() {
                         profile = DisplayProfile(
                             nickname = "어스름늑대",
                             profileId = "90WXYZ6789A1B2C3",
-                            photoUrl = ""
+                            photoUrl = "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg"
                         ),
                         title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
                         content = "행정권은 대통령을 수반으로 하는 정부에\n" +
@@ -77,6 +78,13 @@ class HomeViewModel: ViewModel() {
             FlipCardUiEvent.OnMoreClick -> { }
             FlipCardUiEvent.OnScrapClick -> { }
             FlipCardUiEvent.OnFlipCardClick -> { }
+        }
+    }
+
+    fun onHomeUiEvent(uiEvent: HomeUiEvent) {
+        when (uiEvent) {
+            HomeUiEvent.OnNotificationClick -> { }
+            HomeUiEvent.OnSearchClick -> { }
         }
     }
 }

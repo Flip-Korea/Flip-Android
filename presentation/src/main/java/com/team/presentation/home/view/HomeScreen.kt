@@ -1,6 +1,5 @@
 package com.team.presentation.home.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +25,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
@@ -55,31 +52,17 @@ fun HomeScreen(
 
     var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var topBarHeightDp by remember { mutableStateOf(0.dp) }
-    val topBarOffsetHeightPx = remember { mutableFloatStateOf(0f) }
+    val topBarHeightOffsetPx = remember { mutableFloatStateOf(0f) }
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
 
                 val delta = available.y
-                val newOffset = topBarOffsetHeightPx.floatValue + delta
-                topBarOffsetHeightPx.floatValue = newOffset.coerceIn(-topBarHeightPx, 0f)
-
-                Log.d("topbar_offset_log", "" +
-                        "topBarOffsetHeightPx.floatValue: ${topBarOffsetHeightPx.floatValue}\n" +
-                        "topBarHeightPx: $topBarHeightPx")
+                val newOffset = topBarHeightOffsetPx.floatValue + delta
+                topBarHeightOffsetPx.floatValue = newOffset.coerceIn(-topBarHeightPx, 0f)
 
                 return Offset.Zero
-            }
-
-            override suspend fun onPreFling(available: Velocity): Velocity {
-
-//                val newOffsetAuto = if (abs(topBarOffsetHeightPx.floatValue) < topBarHeightPx / 3) {
-//                    0f
-//                } else -topBarHeightPx
-//                topBarOffsetHeightPx.floatValue = newOffsetAuto
-
-                return Velocity.Zero
             }
         }
     }
@@ -89,15 +72,13 @@ fun HomeScreen(
     ) {
         HomeTopBarWrapper(
             modifier = Modifier
-                .zIndex(1f)
-                .align(Alignment.TopCenter)
                 .onSizeChanged {
                     val padding = with(density) { HomeScreenPaddingValues.TopBarTopPadding.toPx() }
                     topBarHeightPx = it.height + padding
                     val heightDp = with(density) { it.height.toDp() }
                     topBarHeightDp = heightDp + HomeScreenPaddingValues.TopBarTopPadding
                 },
-            topBarOffsetHeightPx = topBarOffsetHeightPx.floatValue
+            topBarHeightOffsetPx = topBarHeightOffsetPx.floatValue,
         ) {
             HomeTopBar(
                 modifier = Modifier

@@ -117,7 +117,7 @@ private fun CardTopSection(
                 model = photoUrl,
                 contentDescription = "${nickname}의 ${stringResource(id = R.string.home_flip_card_content_desc_photo_url)}",
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.img_login_bg)
+                placeholder = painterResource(id = R.drawable.ic_logo_dark)
             )
             Column {
                 Text(text = nickname, style = FlipTheme.typography.headline1)
