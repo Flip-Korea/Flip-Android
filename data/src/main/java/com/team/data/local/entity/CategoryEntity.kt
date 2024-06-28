@@ -12,7 +12,7 @@ data class CategoryEntity(
     val icon: Int?,
 )
 
-fun CategoryEntity.toExternal(): Category =
+fun CategoryEntity.toDomainModel(): Category =
     Category(id, name, icon)
 
-fun List<CategoryEntity>.toExternal(): List<Category> = this.map { it.toExternal() }
+fun List<CategoryEntity>.toDomainModel(): List<Category> = this.map { it.toDomainModel() }

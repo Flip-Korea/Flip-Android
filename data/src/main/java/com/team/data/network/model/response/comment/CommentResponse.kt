@@ -14,7 +14,7 @@ data class CommentResponse(
     @Json(name = "comment_date") val commentDate: String,
 )
 
-fun List<CommentResponse>.toExternal(): List<Comment> = this.map { it.toExternal() }
+fun List<CommentResponse>.toDomainModel(): List<Comment> = this.map { it.toDomainModel() }
 
-fun CommentResponse.toExternal(): Comment =
+fun CommentResponse.toDomainModel(): Comment =
     Comment(commentId, profileId, nickname, photoUrl, content, commentDate)

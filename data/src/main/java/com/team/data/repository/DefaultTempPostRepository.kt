@@ -2,7 +2,7 @@ package com.team.data.repository
 
 import com.team.data.di.IODispatcher
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.TempPost
@@ -34,7 +34,7 @@ class DefaultTempPostRepository @Inject constructor(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val tempPosts = withContext(ioDispatcher) {
-                        result.data.tempPosts.toExternal()
+                        result.data.tempPosts.toDomainModel()
                     }
                     emit(Result.Success(tempPosts))
                 } else {

@@ -5,23 +5,18 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.local.FlipDatabase
-import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.entity.RecentSearchEntity
 import com.team.data.network.model.response.post.PostListResponse
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.model.response.profile.DisplayProfileListResponse
-import com.team.data.network.model.response.profile.toExternal
+import com.team.data.network.model.response.profile.toDomainModel
 import com.team.data.network.model.response.tag.TagListResponse
-import com.team.data.network.model.response.tag.toExternal
+import com.team.data.network.model.response.tag.toDomainModel
 import com.team.data.network.retrofit.api.SearchNetworkApi
-import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.SearchNetworkDataSource
-import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.fake.FakeSearchNetworkDataSource
-import com.team.data.network.source.fake.FakeUserNetworkDataSource
 import com.team.data.repository.fake.FakeSearchRepository
-import com.team.data.repository.fake.FakeUserRepository
 import com.team.data.testdoubles.network.displayProfileListResponseTestData
 import com.team.data.testdoubles.network.displayProfileListResponseTestDataEndOfPage
 import com.team.data.testdoubles.network.postsResponseTestData
@@ -172,7 +167,7 @@ class DefaultSearchRepositoryTest {
 
         val expectedResponse = moshi.adapter(PostListResponse::class.java)
             .fromJson(postsResponseTestData)!!
-            .posts.toExternal()
+            .posts.toDomainModel()
 
         val actualResponse = searchRepository.searchByPostPagination("123", "aaa", 15).last()
 
@@ -200,7 +195,7 @@ class DefaultSearchRepositoryTest {
 
         val expectedResponse = moshi.adapter(DisplayProfileListResponse::class.java)
             .fromJson(displayProfileListResponseTestData)!!
-            .profiles.toExternal()
+            .profiles.toDomainModel()
 
         val actualResponse = searchRepository.searchByNicknamePagination("123", "aaa", 15).last()
 
@@ -228,7 +223,7 @@ class DefaultSearchRepositoryTest {
 
         val expectedResponse = moshi.adapter(TagListResponse::class.java)
             .fromJson(tagListResponseTestData)!!
-            .tags.toExternal()
+            .tags.toDomainModel()
 
         val actualResponse = searchRepository.searchByTagPagination("123", "aaa", 15).last()
 

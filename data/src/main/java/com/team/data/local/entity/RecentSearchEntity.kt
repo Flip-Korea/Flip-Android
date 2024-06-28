@@ -10,7 +10,7 @@ data class RecentSearchEntity(
     val word: String
 )
 
-fun RecentSearchEntity.toExternal(): RecentSearch = RecentSearch(id, word)
+fun RecentSearchEntity.toDomainModel(): RecentSearch = RecentSearch(id, word)
 
-fun List<RecentSearchEntity>.toExternal(): List<RecentSearch> =
-    this.map { it.toExternal() }
+fun List<RecentSearchEntity>.toDomainModel(): List<RecentSearch> =
+    this.map { it.toDomainModel() }

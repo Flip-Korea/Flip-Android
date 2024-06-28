@@ -12,10 +12,10 @@ data class CommentListResponse(
     @Json(name = "comment") val comments: List<CommentResponse>,
 )
 
-fun CommentListResponse.toExternal(): CommentList =
+fun CommentListResponse.toDomainModel(): CommentList =
     CommentList(
         commentCnt = commentCnt,
         hasNext = hasNext,
         nextCursor = nextCursor,
-        comments = comments.toExternal()
+        comments = comments.toDomainModel()
     )

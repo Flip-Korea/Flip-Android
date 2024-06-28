@@ -2,9 +2,9 @@ package com.team.data.repository.fake
 
 import com.team.data.datastore.fake.FakeDataStoreManager
 import com.team.data.local.dao.MyProfileDao
-import com.team.data.local.entity.profile.toExternal
+import com.team.data.local.entity.profile.toDomainModel
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.account.toExternal
+import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.model.account.Account
@@ -70,7 +70,7 @@ class FakeAccountRepository(
 
                         myProfileDao.refresh(result.data.profile.toEntity())
                         val myProfileEntities = myProfileDao.getAllProfile().first()
-                        val account = result.data.toExternal(myProfileEntities.toExternal())
+                        val account = result.data.toDomainModel(myProfileEntities.toDomainModel())
 
                         //TODO 현재 저장된 ProfileId가 없다면 저장 (해당 위치가 맞는지 확인 필요)
                         // 만약 멀티프로필 기능 추가 시 현재 프로필ID로 바꿔주는 함수 필요

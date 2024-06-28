@@ -1,7 +1,7 @@
 package com.team.data.repository.fake
 
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.TempPost
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 class FakeTempPostRepository(
     private val postNetworkDataSource: PostNetworkDataSource,
@@ -35,7 +34,7 @@ class FakeTempPostRepository(
 //                    val tempPosts = withContext(ioDispatcher) {
 //                        result.data.tempPosts.toExternal()
 //                    }
-                    val tempPosts = result.data.tempPosts.toExternal()
+                    val tempPosts = result.data.tempPosts.toDomainModel()
                     emit(Result.Success(tempPosts))
                 } else {
                     emit(Result.Success(emptyList()))

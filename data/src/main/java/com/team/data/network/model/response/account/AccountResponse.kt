@@ -18,7 +18,7 @@ data class AccountResponse(
     val profile: List<MyProfileResponse>
 )
 
-fun AccountResponse.toExternal(profiles: List<MyProfile>): Account =
+fun AccountResponse.toDomainModel(profiles: List<MyProfile>): Account =
     Account(
         email = email,
         name = name,

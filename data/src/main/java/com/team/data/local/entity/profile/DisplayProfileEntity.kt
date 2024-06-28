@@ -13,7 +13,7 @@ data class DisplayProfileEntity(
     val rating: String?,
 )
 
-fun DisplayProfileEntity.toExternal(): DisplayProfile =
+fun DisplayProfileEntity.toDomainModel(): DisplayProfile =
     DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
 fun DisplayProfile.toEntity(): DisplayProfileEntity =

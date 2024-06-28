@@ -3,9 +3,9 @@ package com.team.data.repository
 import com.team.data.datastore.TokenDataStore
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
-import com.team.data.local.entity.profile.toExternal
+import com.team.data.local.entity.profile.toDomainModel
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.account.toExternal
+import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.model.account.Account
@@ -67,7 +67,7 @@ class DefaultAccountRepository @Inject constructor(
                         val account = withContext(ioDispatcher) {
                             myProfileDao.refresh(result.data.profile.toEntity())
                             val myProfileEntities = myProfileDao.getAllProfile().first()
-                            result.data.toExternal(myProfileEntities.toExternal())
+                            result.data.toDomainModel(myProfileEntities.toDomainModel())
                         }
 
                         //TODO 현재 저장된 ProfileId가 없다면 저장 (해당 위치가 맞는지 확인 필요)

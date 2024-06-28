@@ -1,7 +1,7 @@
 package com.team.data.repository.fake
 
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.comment.toExternal
+import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.comment.Comment
 import com.team.domain.model.comment.NewComment
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 class FakeCommentRepository(
     private val postNetworkDataSource: PostNetworkDataSource
@@ -35,7 +34,7 @@ class FakeCommentRepository(
 //                    val comments = withContext(ioDispatcher) {
 //                        result.data.comments.toExternal()
 //                    }
-                    val comments = result.data.comments.toExternal()
+                    val comments = result.data.comments.toDomainModel()
                     emit(Result.Success(comments))
                 } else {
                     emit(Result.Success(emptyList()))

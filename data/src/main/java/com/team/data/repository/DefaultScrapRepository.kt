@@ -3,7 +3,7 @@ package com.team.data.repository
 import com.team.data.di.IODispatcher
 import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.domain.model.post.Post
 import com.team.domain.model.scrap.NewScrap
@@ -35,7 +35,7 @@ class DefaultScrapRepository @Inject constructor(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val scrapList = withContext(ioDispatcher) {
-                        result.data.posts.toExternal()
+                        result.data.posts.toDomainModel()
                     }
                     emit(Result.Success(scrapList))
                 } else {

@@ -20,8 +20,8 @@ data class DisplayProfileResponse(
 fun DisplayProfileResponse.toEntity(): DisplayProfileEntity =
     DisplayProfileEntity(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
-fun DisplayProfileResponse.toExternal(): DisplayProfile =
+fun DisplayProfileResponse.toDomainModel(): DisplayProfile =
     DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
-fun List<DisplayProfileResponse>.toExternal(): List<DisplayProfile> =
-    this.map { it.toExternal() }
+fun List<DisplayProfileResponse>.toDomainModel(): List<DisplayProfile> =
+    this.map { it.toDomainModel() }
