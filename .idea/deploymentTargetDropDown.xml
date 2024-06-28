@@ -2,6 +2,12 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="HomeTabPreview">
+        <State />
+      </entry>
+      <entry key="PhotoCropExample">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>

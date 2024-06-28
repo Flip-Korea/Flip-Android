@@ -1,13 +1,17 @@
 package com.team.presentation.login.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.team.designsystem.theme.FlipTheme
 import com.team.domain.type.SocialLoginPlatform
 import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
@@ -26,6 +30,7 @@ fun LoginNavigation(
 ) {
 
     NavHost(
+        modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
         navController = navController,
         startDestination = ScreenItem.LOGIN.name
     ) {

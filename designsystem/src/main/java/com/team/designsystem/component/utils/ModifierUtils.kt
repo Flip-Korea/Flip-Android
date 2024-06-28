@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 //    }
 //}
 
-/** 일정 시간 동안 연속 클릭을 제한하는 Modifier 확장 함수 - 2 **/
+/** 일정 시간 동안 연속 클릭을 제한하는 Modifier 확장 함수 **/
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.clickableSingle(
     throttleTime: Long = 300,
@@ -58,6 +58,38 @@ fun Modifier.clickableSingle(
     clickable(
         interactionSource = interactionSource ?: remember { MutableInteractionSource() },
         indication = indication ?: rememberRipple(),
+        enabled = enabled,
+        onClickLabel = onClickLabel,
+        role = role,
+        onClick = {
+            val currentTimestamp = System.currentTimeMillis()
+            if (currentTimestamp - lastClickTimestamp.value >= throttleTime) {
+                coroutineScope.launch {
+                    withContext(Dispatchers.Main) {
+                        onClick()
+                    }
+                }
+                lastClickTimestamp.value = currentTimestamp
+            }
+        }
+    )
+}
+
+/** 일정 시간 동안 연속 클릭을 제한하는 Modifier 확장 함수(Ripple 효과 제거 버전) */
+@SuppressLint("ModifierFactoryUnreferencedReceiver")
+fun Modifier.clickableSingleWithoutRipple(
+    throttleTime: Long = 300,
+    enabled: Boolean = true,
+    onClickLabel: String? = null,
+    role: Role? = null,
+    onClick: () -> Unit
+) = composed {
+    val lastClickTimestamp = remember { mutableStateOf(0L) }
+    val coroutineScope = rememberCoroutineScope()
+
+    clickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = null,
         enabled = enabled,
         onClickLabel = onClickLabel,
         role = role,

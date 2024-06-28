@@ -2,7 +2,6 @@ package com.team.designsystem.theme
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class FlipShapes(
@@ -11,4 +10,5 @@ data class FlipShapes(
     val roundedCornerLarge: CornerBasedShape = RoundedCornerShape(12.dp),
     val roundedCornerExtraLarge: CornerBasedShape = RoundedCornerShape(24.dp),
     val roundedCornerTextField: CornerBasedShape = RoundedCornerShape(6.dp),
+    val roundedCornerFlipCard: CornerBasedShape = RoundedCornerShape(6.dp)
 )
