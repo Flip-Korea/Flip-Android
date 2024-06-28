@@ -2,7 +2,7 @@ package com.team.data.repository.fake
 
 import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.domain.model.post.Post
 import com.team.domain.model.scrap.NewScrap
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 
 class FakeScrapRepository(
@@ -37,7 +36,7 @@ class FakeScrapRepository(
 //                    val scrapList = withContext(ioDispatcher) {
 //                        result.data.posts.toExternal()
 //                    }
-                    val scrapList = result.data.posts.toExternal()
+                    val scrapList = result.data.posts.toDomainModel()
                     emit(Result.Success(scrapList))
                 } else {
                     emit(Result.Success(emptyList()))

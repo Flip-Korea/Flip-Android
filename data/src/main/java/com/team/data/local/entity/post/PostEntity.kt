@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.team.data.local.entity.profile.DisplayProfileEntity
 import com.team.data.local.entity.profile.toEntity
-import com.team.data.local.entity.profile.toExternal
+import com.team.data.local.entity.profile.toDomainModel
 import com.team.domain.model.post.Post
 
 @Entity
@@ -28,12 +28,12 @@ data class PostEntity(
     val createdAt: String,
 )
 
-fun List<PostEntity>.toExternal(): List<Post> = this.map { it.toExternal() }
+fun List<PostEntity>.toDomainModel(): List<Post> = this.map { it.toDomainModel() }
 
-fun PostEntity.toExternal(): Post =
+fun PostEntity.toDomainModel(): Post =
     Post(
         postId = postId,
-        profile = profile.toExternal(),
+        profile = profile.toDomainModel(),
         title = title,
         content = content,
         liked = liked,

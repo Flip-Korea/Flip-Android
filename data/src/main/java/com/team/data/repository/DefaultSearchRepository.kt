@@ -3,10 +3,10 @@ package com.team.data.repository
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.entity.RecentSearchEntity
-import com.team.data.local.entity.toExternal
-import com.team.data.network.model.response.post.toExternal
-import com.team.data.network.model.response.profile.toExternal
-import com.team.data.network.model.response.tag.toExternal
+import com.team.data.local.entity.toDomainModel
+import com.team.data.network.model.response.post.toDomainModel
+import com.team.data.network.model.response.profile.toDomainModel
+import com.team.data.network.model.response.tag.toDomainModel
 import com.team.data.network.source.SearchNetworkDataSource
 import com.team.domain.model.RecentSearch
 import com.team.domain.model.post.Post
@@ -33,7 +33,7 @@ class DefaultSearchRepository @Inject constructor(
 
     override fun getRecentSearchList(): Flow<List<RecentSearch>> =
         recentSearchDao.getRecentSearchList()
-            .map { it.toExternal() }
+            .map { it.toDomainModel() }
             .catch { emit(emptyList()) }
 
     override suspend fun deleteRecentSearchById(id: Long): Boolean {
@@ -64,7 +64,7 @@ class DefaultSearchRepository @Inject constructor(
 
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val posts = withContext(ioDispatcher) {
-                        result.data.posts.toExternal()
+                        result.data.posts.toDomainModel()
                     }
                     emit(Result.Success(posts))
                 } else {
@@ -92,7 +92,7 @@ class DefaultSearchRepository @Inject constructor(
 
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val profiles = withContext(ioDispatcher) {
-                        result.data.profiles.toExternal()
+                        result.data.profiles.toDomainModel()
                     }
                     emit(Result.Success(profiles))
                 } else {
@@ -119,7 +119,7 @@ class DefaultSearchRepository @Inject constructor(
 
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val tags = withContext(ioDispatcher) {
-                        result.data.tags.toExternal()
+                        result.data.tags.toDomainModel()
                     }
                     emit(Result.Success(tags))
                 } else {

@@ -2,25 +2,16 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.network.model.response.category.CategoryResponseWrapper
 import com.team.data.network.model.response.post.PostListResponse
-import com.team.data.network.model.response.post.toExternal
 import com.team.data.network.model.response.profile.DisplayProfileListResponse
 import com.team.data.network.model.response.tag.TagListResponse
-import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.retrofit.api.SearchNetworkApi
-import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeSearchNetworkDataSource
 import com.team.data.testdoubles.network.displayProfileListResponseTestData
-import com.team.data.testdoubles.network.networkCategoriesTestData
 import com.team.data.testdoubles.network.postsResponseTestData
 import com.team.data.testdoubles.network.tagListResponseTestData
-import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer

@@ -1,11 +1,11 @@
 package com.team.data.repository.fake
 
 import com.team.data.local.dao.PostDao
-import com.team.data.local.entity.post.toExternal
+import com.team.data.local.entity.post.toDomainModel
 import com.team.data.network.model.request.LikeRequest
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.post.toEntity
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.Post
@@ -30,7 +30,7 @@ class FakePostRepository(
     private val ioDispatcher = Dispatchers.IO
 
     override fun getPosts(): Flow<List<Post>> =
-        postDao.getPosts().map { it.toExternal() }
+        postDao.getPosts().map { it.toDomainModel() }
 
     override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>> {
         return flow {
@@ -62,7 +62,7 @@ class FakePostRepository(
         val postEntity = postDao.getPostById(postId).firstOrNull()
         if (postEntity != null) {
 //            val post = withContext((ioDispatcher)) { postEntity.toExternal() }
-            val post = postEntity.toExternal()
+            val post = postEntity.toDomainModel()
             emit(Result.Success(post))
         } else {
             // If Can't Fetch Data, Then Fetch From Server
@@ -74,7 +74,7 @@ class FakePostRepository(
 //                    val post = withContext(ioDispatcher) {
 //                        result.data.toEntity().toExternal()
 //                    }
-                    val post = result.data.toEntity().toExternal()
+                    val post = result.data.toEntity().toDomainModel()
                     emit(Result.Success(post))
                 }
                 is Result.Error -> { emit(Result.Error(result.error)) }
@@ -128,7 +128,7 @@ class FakePostRepository(
 //                    val postList = withContext(ioDispatcher) {
 //                        result.data.posts.toExternal()
 //                    }
-                    val postList = result.data.posts.toExternal()
+                    val postList = result.data.posts.toDomainModel()
                     emit(Result.Success(postList))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -167,7 +167,7 @@ class FakePostRepository(
 //                    val postList = withContext(ioDispatcher) {
 //                        result.data.posts.toExternal()
 //                    }
-                    val postList = result.data.posts.toExternal()
+                    val postList = result.data.posts.toDomainModel()
                     emit(Result.Success(postList))
                 } else {
                     emit(Result.Success(emptyList()))

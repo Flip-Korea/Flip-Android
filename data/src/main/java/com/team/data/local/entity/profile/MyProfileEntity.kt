@@ -19,10 +19,10 @@ data class MyProfileEntity(
     val rating: String,
 )
 
-fun List<MyProfileEntity>.toExternal(): List<MyProfile> =
-    this.map { it.toExternal() }
+fun List<MyProfileEntity>.toDomainModel(): List<MyProfile> =
+    this.map { it.toDomainModel() }
 
-fun MyProfileEntity.toExternal(): MyProfile =
+fun MyProfileEntity.toDomainModel(): MyProfile =
     MyProfile(
         profileId = profileId,
         nickname = nickname,

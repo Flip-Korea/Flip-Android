@@ -7,57 +7,32 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.di.IODispatcher
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.MyProfileDao
-import com.team.data.local.dao.PostDao
-import com.team.data.local.entity.profile.MyProfileEntity
-import com.team.data.network.model.request.BlockRequest
-import com.team.data.network.model.request.CategoryRequest
-import com.team.data.network.model.request.EditProfileRequest
-import com.team.data.network.model.request.FollowRequest
-import com.team.data.network.model.request.ReportRequest
-import com.team.data.network.model.request.ScrapCommentRequest
-import com.team.data.network.model.request.ScrapRequest
-import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.block.BlockListResponse
-import com.team.data.network.model.response.block.toExternal
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.block.toDomainModel
 import com.team.data.network.model.response.comment.MyCommentListResponse
-import com.team.data.network.model.response.comment.toExternal
+import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
-import com.team.data.network.model.response.post.PostListResponse
-import com.team.data.network.model.response.profile.MyProfileResponse
 import com.team.data.network.model.response.profile.ProfileResponse
-import com.team.data.network.model.response.profile.toExternal
-import com.team.data.network.retrofit.api.PostNetworkApi
+import com.team.data.network.model.response.profile.toDomainModel
 import com.team.data.network.retrofit.api.UserNetworkApi
-import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSource
-import com.team.data.network.source.fake.FakePostNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
-import com.team.data.repository.fake.FakePostRepository
-import com.team.data.repository.fake.FakeTempPostRepository
 import com.team.data.repository.fake.FakeUserRepository
 import com.team.data.testdoubles.local.makeMyProfileEntityTestData
-import com.team.data.testdoubles.network.addScrapRequestTestData
 import com.team.data.testdoubles.network.makeNetworkMyProfileTestData
 import com.team.data.testdoubles.network.networkBlocksTestData
 import com.team.data.testdoubles.network.networkBlocksTestDataEndOfPage
-import com.team.data.testdoubles.network.networkCategoriesTestData
 import com.team.data.testdoubles.network.networkFollowersTestData
 import com.team.data.testdoubles.network.networkFollowersTestDataEndOfPage
 import com.team.data.testdoubles.network.networkFollowingsTestData
 import com.team.data.testdoubles.network.networkFollowingsTestDataEndOfPage
 import com.team.data.testdoubles.network.networkMyCommentsTestData
 import com.team.data.testdoubles.network.networkMyCommentsTestDataEndOfPage
-import com.team.data.testdoubles.network.networkMyProfileTestData
 import com.team.data.testdoubles.network.networkProfileTestData
-import com.team.data.testdoubles.network.postsResponseTestDataWithScrapComment
-import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.profile.EditProfile
-import com.team.domain.model.profile.MyProfile
 import com.team.domain.model.report_block.BlockReq
 import com.team.domain.model.report_block.ReportReq
-import com.team.domain.repository.UserRepository
 import com.team.domain.type.ReportType
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -183,7 +158,7 @@ class DefaultUserRepositoryTest {
         })
 
         val adapter = moshi.adapter(ProfileResponse::class.java)
-        val mockResponseToObject = adapter.fromJson(networkProfileTestData)!!.toExternal()
+        val mockResponseToObject = adapter.fromJson(networkProfileTestData)!!.toDomainModel()
 
         val response = userRepository.getProfile("testprofileid").last()
 
@@ -325,7 +300,7 @@ class DefaultUserRepositoryTest {
         val expectedResponse = moshi
             .adapter(FollowerListResponse::class.java)
             .fromJson(networkFollowersTestData)!!
-            .followers.toExternal()
+            .followers.toDomainModel()
 
         val actualResponse = userRepository.getFollowerListPagination("1", "1", 20).last()
 
@@ -354,7 +329,7 @@ class DefaultUserRepositoryTest {
         val expectedResponse = moshi
             .adapter(FollowingListResponse::class.java)
             .fromJson(networkFollowingsTestData)!!
-            .followings.toExternal()
+            .followings.toDomainModel()
 
         val actualResponse = userRepository.getFollowingListPagination("1", "1", 20).last()
 
@@ -383,7 +358,7 @@ class DefaultUserRepositoryTest {
         val expectedResponse = moshi
             .adapter(BlockListResponse::class.java)
             .fromJson(networkBlocksTestData)!!
-            .blockList.toExternal()
+            .blockList.toDomainModel()
 
         val actualResponse = userRepository.getBlockListPagination("1", "1", 20).last()
 
@@ -412,7 +387,7 @@ class DefaultUserRepositoryTest {
         val expectedResponse = moshi
             .adapter(MyCommentListResponse::class.java)
             .fromJson(networkMyCommentsTestData)!!
-            .posts.toExternal()
+            .posts.toDomainModel()
 
         val actualResponse = userRepository.getMyCommentListPagination("1", "1", 20).last()
 

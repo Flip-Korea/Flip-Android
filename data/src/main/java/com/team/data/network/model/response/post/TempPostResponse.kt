@@ -16,8 +16,8 @@ data class TempPostResponse(
     @Json(name = "tags") val tags: List<String>,
 )
 
-fun List<TempPostResponse>.toExternal(): List<TempPost> =
-    this.map { it.toExternal() }
+fun List<TempPostResponse>.toDomainModel(): List<TempPost> =
+    this.map { it.toDomainModel() }
 
-fun TempPostResponse.toExternal(): TempPost =
+fun TempPostResponse.toDomainModel(): TempPost =
     TempPost(profileId, title, content, createdAt, categoryId, bgColorId, fontStyleId, tags)

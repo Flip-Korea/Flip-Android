@@ -2,10 +2,10 @@ package com.team.data.repository.fake
 
 import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.entity.RecentSearchEntity
-import com.team.data.local.entity.toExternal
-import com.team.data.network.model.response.post.toExternal
-import com.team.data.network.model.response.profile.toExternal
-import com.team.data.network.model.response.tag.toExternal
+import com.team.data.local.entity.toDomainModel
+import com.team.data.network.model.response.post.toDomainModel
+import com.team.data.network.model.response.profile.toDomainModel
+import com.team.data.network.model.response.tag.toDomainModel
 import com.team.data.network.source.SearchNetworkDataSource
 import com.team.domain.model.RecentSearch
 import com.team.domain.model.post.Post
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class FakeSearchRepository(
@@ -32,7 +31,7 @@ class FakeSearchRepository(
 
     override fun getRecentSearchList(): Flow<List<RecentSearch>> =
         recentSearchDao.getRecentSearchList()
-            .map { it.toExternal() }
+            .map { it.toDomainModel() }
             .catch { emit(emptyList()) }
 
     override suspend fun deleteRecentSearchById(id: Long): Boolean {
@@ -65,7 +64,7 @@ class FakeSearchRepository(
 //                    val posts = withContext(ioDispatcher) {
 //                        result.data.posts.toExternal()
 //                    }
-                    val posts = result.data.posts.toExternal()
+                    val posts = result.data.posts.toDomainModel()
                     emit(Result.Success(posts))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -94,7 +93,7 @@ class FakeSearchRepository(
 //                    val profiles = withContext(ioDispatcher) {
 //                        result.data.profiles.toExternal()
 //                    }
-                    val profiles = result.data.profiles.toExternal()
+                    val profiles = result.data.profiles.toDomainModel()
                     emit(Result.Success(profiles))
                 } else {
                     emit(Result.Success(emptyList()))
@@ -122,7 +121,7 @@ class FakeSearchRepository(
 //                    val tags = withContext(ioDispatcher) {
 //                        result.data.tags.toExternal()
 //                    }
-                    val tags = result.data.tags.toExternal()
+                    val tags = result.data.tags.toDomainModel()
                     emit(Result.Success(tags))
                 } else {
                     emit(Result.Success(emptyList()))

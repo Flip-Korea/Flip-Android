@@ -3,14 +3,14 @@ package com.team.data.repository.fake
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.MyProfileEntity
-import com.team.data.local.entity.profile.toExternal
+import com.team.data.local.entity.profile.toDomainModel
 import com.team.data.network.model.request.CategoryRequest
 import com.team.data.network.model.request.FollowRequest
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.block.toExternal
-import com.team.data.network.model.response.comment.toExternal
+import com.team.data.network.model.response.block.toDomainModel
+import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
-import com.team.data.network.model.response.profile.toExternal
+import com.team.data.network.model.response.profile.toDomainModel
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.domain.model.post.DisplayPost
 import com.team.domain.model.profile.BlockProfile
@@ -24,7 +24,6 @@ import com.team.domain.repository.UserRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -56,7 +55,7 @@ class FakeUserRepository(
     override fun getMyProfile(profileId: String): Flow<Result<MyProfile?, ErrorType>> {
         return myProfileDao.getProfileById(profileId)
             .distinctUntilChanged()
-            .map<MyProfileEntity?, Result<MyProfile?, ErrorType>> { Result.Success(it?.toExternal()) }
+            .map<MyProfileEntity?, Result<MyProfile?, ErrorType>> { Result.Success(it?.toDomainModel()) }
             .catch {
                 // 만약 조회하려는 데이터가 없어도 NullPointerException 발생 X
                 // 위 map 블록에서 그냥 null 처리됨 -> Result.Success(null) 반환
@@ -93,7 +92,7 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.getProfile(profileId)) {
             is Result.Success -> {
-                val profile = withContext(ioDispatcher) { result.data.toExternal() }
+                val profile = withContext(ioDispatcher) { result.data.toDomainModel() }
                 emit(Result.Success(profile))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -230,7 +229,7 @@ class FakeUserRepository(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val followers = withContext(ioDispatcher) {
-                        result.data.followers.toExternal()
+                        result.data.followers.toDomainModel()
                     }
                     emit(Result.Success(followers))
                 } else {
@@ -256,7 +255,7 @@ class FakeUserRepository(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val followings = withContext(ioDispatcher) {
-                        result.data.followings.toExternal()
+                        result.data.followings.toDomainModel()
                     }
                     emit(Result.Success(followings))
                 } else {
@@ -282,7 +281,7 @@ class FakeUserRepository(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val blockList = withContext(ioDispatcher) {
-                        result.data.blockList.toExternal()
+                        result.data.blockList.toDomainModel()
                     }
                     emit(Result.Success(blockList))
                 } else {
@@ -308,7 +307,7 @@ class FakeUserRepository(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val displayPosts = withContext(ioDispatcher) {
-                        result.data.posts.toExternal()
+                        result.data.posts.toDomainModel()
                     }
                     emit(Result.Success(displayPosts))
                 } else {

@@ -7,7 +7,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.domain.util.FlipPagination
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.PostDao
-import com.team.data.local.entity.post.toExternal
+import com.team.data.local.entity.post.toDomainModel
 import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.post.toEntity
 import com.team.data.network.retrofit.api.PostNetworkApi
@@ -119,7 +119,7 @@ class DefaultPostRepositoryTest {
 
         val posts = postRepository.getPosts().first()
 
-        assert(posts.contains(postEntities[0].toExternal()))
+        assert(posts.contains(postEntities[0].toDomainModel()))
         assertEquals(posts.size, 5)
     }
 

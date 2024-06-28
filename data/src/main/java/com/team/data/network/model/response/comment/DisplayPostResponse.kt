@@ -13,8 +13,8 @@ data class DisplayPostResponse(
     @Json(name = "created_at") val createdAt: String,
 )
 
-fun DisplayPostResponse.toExternal(): DisplayPost =
+fun DisplayPostResponse.toDomainModel(): DisplayPost =
     DisplayPost(postId, title, nickname, myComment, createdAt)
 
-fun List<DisplayPostResponse>.toExternal(): List<DisplayPost> =
-    this.map { it.toExternal() }
+fun List<DisplayPostResponse>.toDomainModel(): List<DisplayPost> =
+    this.map { it.toDomainModel() }

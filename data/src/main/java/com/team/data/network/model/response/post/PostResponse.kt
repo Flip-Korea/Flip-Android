@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 import com.team.data.local.entity.post.PostEntity
 import com.team.data.network.model.response.profile.DisplayProfileResponse
 import com.team.data.network.model.response.profile.toEntity
-import com.team.data.network.model.response.profile.toExternal
+import com.team.data.network.model.response.profile.toDomainModel
 import com.team.domain.model.post.Post
 
 @JsonClass(generateAdapter = true)
@@ -46,12 +46,12 @@ fun PostResponse.toEntity(): PostEntity =
         createdAt = createdAt,
     )
 
-fun List<PostResponse>.toExternal(): List<Post> = this.map { it.toExternal() }
+fun List<PostResponse>.toDomainModel(): List<Post> = this.map { it.toDomainModel() }
 
-fun PostResponse.toExternal(): Post =
+fun PostResponse.toDomainModel(): Post =
     Post(
         postId = postId,
-        profile = profile.toExternal(),
+        profile = profile.toDomainModel(),
         title = title,
         content = content,
         liked = liked,

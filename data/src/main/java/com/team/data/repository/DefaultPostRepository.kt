@@ -3,11 +3,11 @@ package com.team.data.repository
 import com.team.data.di.ApplicationScope
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.PostDao
-import com.team.data.local.entity.post.toExternal
+import com.team.data.local.entity.post.toDomainModel
 import com.team.data.network.model.request.LikeRequest
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.post.toEntity
-import com.team.data.network.model.response.post.toExternal
+import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.Post
@@ -39,7 +39,7 @@ class DefaultPostRepository @Inject constructor(
 ) : PostRepository {
 
     override fun getPosts(): Flow<List<Post>> =
-        postDao.getPosts().map { it.toExternal() }
+        postDao.getPosts().map { it.toDomainModel() }
 
     override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>> {
         return flow {
@@ -69,7 +69,7 @@ class DefaultPostRepository @Inject constructor(
         // Fetch Data From Local DB
         val postEntity = postDao.getPostById(postId).firstOrNull()
         if (postEntity != null) {
-            val post = withContext((ioDispatcher)) { postEntity.toExternal() }
+            val post = withContext((ioDispatcher)) { postEntity.toDomainModel() }
             emit(Result.Success(post))
         } else {
             // If Can't Fetch Data, Then Fetch From Server
@@ -79,7 +79,7 @@ class DefaultPostRepository @Inject constructor(
             when (val result = postNetworkDataSource.getPostById(postId)) {
                 is Result.Success -> {
                     val post = withContext(ioDispatcher) {
-                        result.data.toEntity().toExternal()
+                        result.data.toEntity().toDomainModel()
                     }
                     emit(Result.Success(post))
                 }
@@ -130,7 +130,7 @@ class DefaultPostRepository @Inject constructor(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val postList = withContext(ioDispatcher) {
-                        result.data.posts.toExternal()
+                        result.data.posts.toDomainModel()
                     }
                     emit(Result.Success(postList))
                 } else {
@@ -168,7 +168,7 @@ class DefaultPostRepository @Inject constructor(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val postList = withContext(ioDispatcher) {
-                        result.data.posts.toExternal()
+                        result.data.posts.toDomainModel()
                     }
                     emit(Result.Success(postList))
                 } else {

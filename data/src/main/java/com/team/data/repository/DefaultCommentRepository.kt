@@ -1,9 +1,8 @@
 package com.team.data.repository
 
-import com.team.data.di.ApplicationScope
 import com.team.data.di.IODispatcher
 import com.team.data.network.model.request.toNetwork
-import com.team.data.network.model.response.comment.toExternal
+import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.comment.Comment
 import com.team.domain.model.comment.NewComment
@@ -11,7 +10,6 @@ import com.team.domain.repository.CommentRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -36,7 +34,7 @@ class DefaultCommentRepository @Inject constructor(
             is Result.Success -> {
                 if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
                     val comments = withContext(ioDispatcher) {
-                        result.data.comments.toExternal()
+                        result.data.comments.toDomainModel()
                     }
                     emit(Result.Success(comments))
                 } else {

@@ -9,7 +9,7 @@ import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
-import com.team.data.network.model.response.account.toExternal
+import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.fake.FakeAccountNetworkDataSource
@@ -122,7 +122,7 @@ class DefaultAccountRepositoryTest {
         val actualData =
             moshi.adapter(AccountResponse::class.java)
                 .fromJson(networkAccountJsonTestData)!!
-                .toExternal((result as Result.Success).data.profiles)
+                .toDomainModel((result as Result.Success).data.profiles)
 
         val expectedCurrentProfileId =
             dataStoreManager.getToken(FakeDataStoreManager.AccountType.CURRENT_PROFILE_ID).first()

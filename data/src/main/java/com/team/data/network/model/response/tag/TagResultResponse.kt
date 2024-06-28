@@ -10,6 +10,6 @@ data class TagResultResponse(
     @Json(name = "tag_name") val tagName: String
 )
 
-fun TagResultResponse.toExternal(): TagResult = TagResult(postCnt, tagName)
+fun TagResultResponse.toDomainModel(): TagResult = TagResult(postCnt, tagName)
 
-fun List<TagResultResponse>.toExternal(): List<TagResult> = this.map { it.toExternal() }
+fun List<TagResultResponse>.toDomainModel(): List<TagResult> = this.map { it.toDomainModel() }
