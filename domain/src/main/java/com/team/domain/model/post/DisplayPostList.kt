@@ -1,8 +1,7 @@
 package com.team.domain.model.post
 
-data class PostList(
+data class DisplayPostList(
     val hasNext: Boolean,
     val nextCursor: String,
-    val postCnt: Long,
-    val posts: List<Post>
+    val displayPosts: List<DisplayPost>
 )

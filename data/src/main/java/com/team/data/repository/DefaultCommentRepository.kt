@@ -4,7 +4,7 @@ import com.team.data.di.IODispatcher
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
-import com.team.domain.model.comment.Comment
+import com.team.domain.model.comment.CommentList
 import com.team.domain.model.comment.NewComment
 import com.team.domain.repository.CommentRepository
 import com.team.domain.util.ErrorType
@@ -26,20 +26,16 @@ class DefaultCommentRepository @Inject constructor(
         postId: Long,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<Comment>, ErrorType>> = flow {
+    ): Flow<Result<CommentList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             postNetworkDataSource.getComments(postId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val comments = withContext(ioDispatcher) {
-                        result.data.comments.toDomainModel()
-                    }
-                    emit(Result.Success(comments))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val comments = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(comments))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }

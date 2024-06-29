@@ -1,9 +1,9 @@
 package com.team.domain.repository
 
 import com.team.domain.model.RecentSearch
-import com.team.domain.model.post.Post
-import com.team.domain.model.profile.DisplayProfile
-import com.team.domain.model.tag.TagResult
+import com.team.domain.model.post.PostList
+import com.team.domain.model.profile.DisplayProfileList
+import com.team.domain.model.tag.TagResultList
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -20,17 +20,17 @@ interface SearchRepository {
         searchQuery: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<Post>, ErrorType>>
+    ): Flow<Result<PostList, ErrorType>>
 
     fun searchByNicknamePagination(
         searchQuery: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<DisplayProfile>, ErrorType>>
+    ): Flow<Result<DisplayProfileList, ErrorType>>
 
     fun searchByTagPagination(
         searchQuery: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<TagResult>, ErrorType>>
+    ): Flow<Result<TagResultList, ErrorType>>
 }

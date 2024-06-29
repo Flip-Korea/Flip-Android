@@ -1,6 +1,6 @@
 package com.team.domain.usecase.home
 
-import com.team.domain.model.post.Post
+import com.team.domain.model.post.PostList
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
@@ -26,7 +26,7 @@ class GetPostsByTypeUseCase @Inject constructor(
         type: PathParameterType,
         typeId: String,
         cursor: String,
-    ): Flow<Result<List<Post>, ErrorType>> =
+    ): Flow<Result<PostList, ErrorType>> =
         postRepository.getPostsByTypePagination(
             type,
             typeId,

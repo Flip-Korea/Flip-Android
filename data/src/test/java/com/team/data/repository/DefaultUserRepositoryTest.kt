@@ -304,7 +304,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getFollowerListPagination("1", "1", 20).last()
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.displayProfileList)
     }
 
     @Test
@@ -316,7 +316,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getFollowerListPagination("1", "1", 20).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 
     @Test
@@ -333,7 +333,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getFollowingListPagination("1", "1", 20).last()
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.displayProfileList)
     }
 
     @Test
@@ -345,7 +345,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getFollowingListPagination("1", "1", 20).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 
     @Test
@@ -362,7 +362,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getBlockListPagination("1", "1", 20).last()
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.blockProfileList)
     }
 
     @Test
@@ -374,7 +374,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getBlockListPagination("1", "1", 20).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 
     @Test
@@ -391,7 +391,7 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getMyCommentListPagination("1", "1", 20).last()
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.displayPosts)
     }
 
     @Test
@@ -403,6 +403,6 @@ class DefaultUserRepositoryTest {
 
         val actualResponse = userRepository.getMyCommentListPagination("1", "1", 20).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 }

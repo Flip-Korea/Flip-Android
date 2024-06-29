@@ -1,16 +1,13 @@
 package com.team.domain.repository
 
-import com.team.domain.model.category.Category
-import com.team.domain.model.post.DisplayPost
-import com.team.domain.model.post.Post
-import com.team.domain.model.profile.BlockProfile
-import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.model.post.DisplayPostList
+import com.team.domain.model.profile.BlockProfileList
+import com.team.domain.model.profile.DisplayProfileList
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.profile.MyProfile
 import com.team.domain.model.profile.Profile
 import com.team.domain.model.report_block.BlockReq
 import com.team.domain.model.report_block.ReportReq
-import com.team.domain.model.scrap.NewScrap
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -58,23 +55,23 @@ interface UserRepository {
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<DisplayProfile>, ErrorType>>
+    ): Flow<Result<DisplayProfileList, ErrorType>>
 
     fun getFollowingListPagination(
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<DisplayProfile>, ErrorType>>
+    ): Flow<Result<DisplayProfileList, ErrorType>>
 
     fun getBlockListPagination(
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<BlockProfile>, ErrorType>>
+    ): Flow<Result<BlockProfileList, ErrorType>>
 
     fun getMyCommentListPagination(
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<DisplayPost>, ErrorType>>
+    ): Flow<Result<DisplayPostList, ErrorType>>
 }

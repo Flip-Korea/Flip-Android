@@ -9,12 +9,13 @@ import com.team.data.network.model.request.FollowRequest
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.block.toDomainModel
 import com.team.data.network.model.response.comment.toDomainModel
-import com.team.data.network.model.response.profile.toEntity
+import com.team.data.network.model.response.follow.toDomainModel
 import com.team.data.network.model.response.profile.toDomainModel
+import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.UserNetworkDataSource
-import com.team.domain.model.post.DisplayPost
-import com.team.domain.model.profile.BlockProfile
-import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.model.post.DisplayPostList
+import com.team.domain.model.profile.BlockProfileList
+import com.team.domain.model.profile.DisplayProfileList
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.profile.MyProfile
 import com.team.domain.model.profile.Profile
@@ -228,20 +229,16 @@ class DefaultUserRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<DisplayProfile>, ErrorType>> = flow {
+    ): Flow<Result<DisplayProfileList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             userNetworkDataSource.getFollowerList(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val followers = withContext(ioDispatcher) {
-                        result.data.followers.toDomainModel()
-                    }
-                    emit(Result.Success(followers))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val followers = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(followers))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -254,20 +251,16 @@ class DefaultUserRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<DisplayProfile>, ErrorType>> = flow {
+    ): Flow<Result<DisplayProfileList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             userNetworkDataSource.getFollowingList(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val followings = withContext(ioDispatcher) {
-                        result.data.followings.toDomainModel()
-                    }
-                    emit(Result.Success(followings))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val followings = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(followings))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -280,20 +273,16 @@ class DefaultUserRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<BlockProfile>, ErrorType>> = flow {
+    ): Flow<Result<BlockProfileList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             userNetworkDataSource.getBlockList(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val blockList = withContext(ioDispatcher) {
-                        result.data.blockList.toDomainModel()
-                    }
-                    emit(Result.Success(blockList))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val blockList = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(blockList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -306,20 +295,16 @@ class DefaultUserRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<DisplayPost>, ErrorType>> = flow {
+    ): Flow<Result<DisplayPostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             userNetworkDataSource.getMyCommentList(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val displayPosts = withContext(ioDispatcher) {
-                        result.data.posts.toDomainModel()
-                    }
-                    emit(Result.Success(displayPosts))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val displayPosts = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(displayPosts))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }

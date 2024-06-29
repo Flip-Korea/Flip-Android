@@ -246,7 +246,7 @@ class DefaultPostRepositoryTest {
                 pageSize
             ).last()
 
-        assertEquals(pageSize, (result as Result.Success).data.size)
+        assertEquals(pageSize, (result as Result.Success).data.posts.size)
     }
 
     @Test
@@ -277,7 +277,7 @@ class DefaultPostRepositoryTest {
                 FlipPagination.PAGE_SIZE
             ).last()
 
-        assertEquals(pageSize, (result as Result.Success).data.size)
+        assertEquals(pageSize, (result as Result.Success).data.posts.size)
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.team.domain.repository
 
-import com.team.domain.model.post.Post
+import com.team.domain.model.post.PostList
 import com.team.domain.model.scrap.NewScrap
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -12,7 +12,7 @@ interface ScrapRepository {
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<Post>, ErrorType>>
+    ): Flow<Result<PostList, ErrorType>>
 
     fun editScrapComment(
         profileId: String,

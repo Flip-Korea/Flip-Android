@@ -150,7 +150,7 @@ val networkBlocksTestData = """
 """.trimIndent()
 val networkBlocksTestDataEndOfPage = """
     {
-      "has_next": true,
+      "has_next": false,
       "next_cursor": "",
       "block_list": [
         {

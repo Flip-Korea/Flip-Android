@@ -35,7 +35,6 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -171,7 +170,7 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByPostPagination("123", "aaa", 15).last()
 
-        Assert.assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.posts)
     }
 
     @Test
@@ -183,7 +182,7 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByPostPagination("123", "aaa", 15).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 
     @Test
@@ -199,7 +198,7 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByNicknamePagination("123", "aaa", 15).last()
 
-        Assert.assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.displayProfileList)
     }
 
     @Test
@@ -211,7 +210,7 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByNicknamePagination("123", "aaa", 15).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 
     @Test
@@ -227,7 +226,7 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByTagPagination("123", "aaa", 15).last()
 
-        Assert.assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        assertEquals(expectedResponse, (actualResponse as Result.Success).data.tags)
     }
 
     @Test
@@ -239,6 +238,6 @@ class DefaultSearchRepositoryTest {
 
         val actualResponse = searchRepository.searchByTagPagination("123", "aaa", 15).last()
 
-        assert((actualResponse as Result.Success).data.isEmpty())
+        assert(!(actualResponse as Result.Success).data.hasNext)
     }
 }
