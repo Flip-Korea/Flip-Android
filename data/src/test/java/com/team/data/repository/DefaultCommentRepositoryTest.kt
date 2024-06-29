@@ -78,7 +78,7 @@ class DefaultCommentRepositoryTest {
 
         val result = commentRepository.getCommentsPagination(1, "2", FlipPagination.PAGE_SIZE).last()
 
-        assertEquals(pageSize, (result as Result.Success).data.size)
+        assertEquals(pageSize, (result as Result.Success).data.comments.size)
     }
 
     @Test

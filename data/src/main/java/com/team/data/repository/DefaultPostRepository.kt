@@ -11,6 +11,7 @@ import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.Post
+import com.team.domain.model.post.PostList
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
@@ -41,7 +42,7 @@ class DefaultPostRepository @Inject constructor(
     override fun getPosts(): Flow<List<Post>> =
         postDao.getPosts().map { it.toDomainModel() }
 
-    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<Boolean, ErrorType>> {
+    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<PostList, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
@@ -53,7 +54,8 @@ class DefaultPostRepository @Inject constructor(
                             }
                         postDao.refresh(postListEntities)
                     }
-                    emit(Result.Success(result.data.hasNext))
+                    val postList = result.data.toDomainModel()
+                    emit(Result.Success(postList))
                 }
                 is Result.Error -> { emit(Result.Error(result.error)) }
                 Result.Loading -> { }
@@ -122,20 +124,16 @@ class DefaultPostRepository @Inject constructor(
         typeId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<Post>, ErrorType>> = flow {
+    ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val postList = withContext(ioDispatcher) {
-                        result.data.posts.toDomainModel()
-                    }
-                    emit(Result.Success(postList))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val postList = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(postList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -160,20 +158,16 @@ class DefaultPostRepository @Inject constructor(
         categoryId: Int,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<Post>, ErrorType>> = flow {
+    ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             postNetworkDataSource.getPostsByPopularUser(categoryId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val postList = withContext(ioDispatcher) {
-                        result.data.posts.toDomainModel()
-                    }
-                    emit(Result.Success(postList))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val postList = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(postList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }

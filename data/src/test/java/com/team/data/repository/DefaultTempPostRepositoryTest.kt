@@ -78,7 +78,7 @@ class DefaultTempPostRepositoryTest {
         val result =
             tempPostRepository.getTempPostsPagination("TestProfileId", "1", pageSize).last()
 
-        Assert.assertEquals(pageSize, (result as Result.Success).data.size)
+        Assert.assertEquals(pageSize, (result as Result.Success).data.tempPosts.size)
     }
 
     @Test

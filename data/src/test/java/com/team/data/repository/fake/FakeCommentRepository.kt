@@ -3,7 +3,7 @@ package com.team.data.repository.fake
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
-import com.team.domain.model.comment.Comment
+import com.team.domain.model.comment.CommentList
 import com.team.domain.model.comment.NewComment
 import com.team.domain.repository.CommentRepository
 import com.team.domain.util.ErrorType
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class FakeCommentRepository(
     private val postNetworkDataSource: PostNetworkDataSource
@@ -24,21 +25,16 @@ class FakeCommentRepository(
         postId: Long,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<Comment>, ErrorType>> = flow {
+    ): Flow<Result<CommentList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             postNetworkDataSource.getComments(postId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-//                    val comments = withContext(ioDispatcher) {
-//                        result.data.comments.toExternal()
-//                    }
-                    val comments = result.data.comments.toDomainModel()
-                    emit(Result.Success(comments))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val comments = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(comments))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
@@ -53,10 +49,9 @@ class FakeCommentRepository(
     ): Flow<Result<Boolean, ErrorType>> = flow<Result<Boolean, ErrorType>> {
         emit(Result.Loading)
 
-//        val commentRequest = withContext(ioDispatcher) {
-//            newComment.toNetwork()
-//        }
-        val commentRequest = newComment.toNetwork()
+        val commentRequest = withContext(ioDispatcher) {
+            newComment.toNetwork()
+        }
 
         when (val result =
             postNetworkDataSource.addComment(postId = postId, commentRequest = commentRequest)) {

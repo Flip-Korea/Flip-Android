@@ -1,6 +1,6 @@
 package com.team.domain.repository
 
-import com.team.domain.model.comment.Comment
+import com.team.domain.model.comment.CommentList
 import com.team.domain.model.comment.NewComment
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -12,7 +12,7 @@ interface CommentRepository {
         postId: Long,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<Comment>, ErrorType>>
+    ): Flow<Result<CommentList, ErrorType>>
 
     fun addComment(postId: Long, newComment: NewComment): Flow<Result<Boolean, ErrorType>>
 

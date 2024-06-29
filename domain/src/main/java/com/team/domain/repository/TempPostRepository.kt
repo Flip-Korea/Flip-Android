@@ -1,7 +1,7 @@
 package com.team.domain.repository
 
 import com.team.domain.model.post.NewPost
-import com.team.domain.model.post.TempPost
+import com.team.domain.model.post.TempPostList
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ interface TempPostRepository {
         profileId: String,
         cursor: String,
         limit: Int
-    ): Flow<Result<List<TempPost>, ErrorType>>
+    ): Flow<Result<TempPostList, ErrorType>>
 
     fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>>
 

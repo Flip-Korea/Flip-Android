@@ -5,7 +5,7 @@ import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
-import com.team.domain.model.post.TempPost
+import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -26,20 +26,16 @@ class DefaultTempPostRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<TempPost>, ErrorType>> = flow {
+    ): Flow<Result<TempPostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             postNetworkDataSource.getTemporaryPosts(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val tempPosts = withContext(ioDispatcher) {
-                        result.data.tempPosts.toDomainModel()
-                    }
-                    emit(Result.Success(tempPosts))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val tempPosts = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(tempPosts))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }

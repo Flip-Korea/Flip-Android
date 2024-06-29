@@ -5,7 +5,7 @@ import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.UserNetworkDataSource
-import com.team.domain.model.post.Post
+import com.team.domain.model.post.PostList
 import com.team.domain.model.scrap.NewScrap
 import com.team.domain.repository.ScrapRepository
 import com.team.domain.util.ErrorType
@@ -27,20 +27,16 @@ class DefaultScrapRepository @Inject constructor(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<List<Post>, ErrorType>> = flow {
+    ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
             userNetworkDataSource.getScrapList(profileId, cursor, limit)) {
             is Result.Success -> {
-                if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                    val scrapList = withContext(ioDispatcher) {
-                        result.data.posts.toDomainModel()
-                    }
-                    emit(Result.Success(scrapList))
-                } else {
-                    emit(Result.Success(emptyList()))
+                val scrapList = withContext(ioDispatcher) {
+                    result.data.toDomainModel()
                 }
+                emit(Result.Success(scrapList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
             Result.Loading -> { }
