@@ -9,7 +9,7 @@ import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.block.BlockListResponse
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.network.model.response.comment.MyCommentListResponse
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
@@ -151,7 +151,7 @@ interface UserNetworkApi {
     @GET("/api/v1/profile/{profile_id}/category")
     suspend fun getMyCategories(
         @Path("profile_id") profileId: String
-    ): Response<CategoryResponseWrapper>
+    ): Response<List<CategoryResponse>>
 
     /** API-049 (본인 프로필 조회) **/
     @GET("/api/v1/profile/my/{profile_id}")

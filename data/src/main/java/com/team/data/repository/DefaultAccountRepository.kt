@@ -1,6 +1,5 @@
 package com.team.data.repository
 
-import com.team.data.datastore.TokenDataStore
 import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.toDomainModel
@@ -8,9 +7,11 @@ import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.AccountNetworkDataSource
+import com.team.domain.DataStoreManager
 import com.team.domain.model.account.Account
 import com.team.domain.model.account.Register
 import com.team.domain.repository.AccountRepository
+import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
@@ -29,7 +30,7 @@ import javax.inject.Inject
 class DefaultAccountRepository @Inject constructor(
     private val accountNetworkDataSource: AccountNetworkDataSource,
     private val myProfileDao: MyProfileDao,
-    private val dataStoreManager: TokenDataStore,
+    private val dataStoreManager: DataStoreManager,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ): AccountRepository {
 
@@ -38,8 +39,8 @@ class DefaultAccountRepository @Inject constructor(
 
 //        dataStoreManager.deleteToken(DataStoreManager.AccountType.CURRENT_PROFILE_ID)
         try {
-            dataStoreManager.saveToken(
-                TokenDataStore.AccountType.CURRENT_PROFILE_ID,
+            dataStoreManager.saveData(
+                DataStoreType.AccountType.CURRENT_PROFILE_ID,
                 profileId
             )
             emit(Result.Success(true))
@@ -56,7 +57,7 @@ class DefaultAccountRepository @Inject constructor(
         return flow {
             emit(Result.Loading)
 
-            val accessToken = dataStoreManager.getToken(TokenDataStore.TokenType.ACCESS_TOKEN).firstOrNull()
+            val accessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).firstOrNull()
             accessToken?.let { aT ->
                 when (val result = accountNetworkDataSource.getUserAccount(aT)) {
                     is Result.Success -> {
@@ -72,12 +73,12 @@ class DefaultAccountRepository @Inject constructor(
 
                         //TODO 현재 저장된 ProfileId가 없다면 저장 (해당 위치가 맞는지 확인 필요)
                         // 만약 멀티프로필 기능 추가 시 현재 프로필ID로 바꿔주는 함수 필요
-                        val currentProfile = dataStoreManager.getToken(TokenDataStore.AccountType.CURRENT_PROFILE_ID)
+                        val currentProfile = dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
                             .catch { emit("") }
                             .first()
                         if (currentProfile.isNullOrEmpty()) {
-                            dataStoreManager.saveToken(
-                                TokenDataStore.AccountType.CURRENT_PROFILE_ID,
+                            dataStoreManager.saveData(
+                                DataStoreType.AccountType.CURRENT_PROFILE_ID,
                                 account.profiles[0].profileId
                             )
                         }
@@ -161,7 +162,7 @@ class DefaultAccountRepository @Inject constructor(
     }
 
     private suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        dataStoreManager.saveToken(TokenDataStore.TokenType.ACCESS_TOKEN, accessToken)
-        dataStoreManager.saveToken(TokenDataStore.TokenType.REFRESH_TOKEN, refreshToken)
+        dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, accessToken)
+        dataStoreManager.saveData(DataStoreType.TokenType.REFRESH_TOKEN, refreshToken)
     }
 }

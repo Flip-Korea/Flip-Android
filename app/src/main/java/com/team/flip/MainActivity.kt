@@ -13,8 +13,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.team.data.datastore.TokenDataStore
 import com.team.designsystem.theme.FlipAppTheme
+import com.team.domain.DataStoreManager
+import com.team.domain.type.DataStoreType
 import com.team.flip.navigation.MainNavigation
 import com.team.flip.navigation.bottom_nav.FlipBottomNavigation
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var tokenDataStore: TokenDataStore
+    lateinit var tokenDataStore: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -51,8 +52,8 @@ class MainActivity : ComponentActivity() {
                             //TODO 임시 테스트용 코드이므로 반드시 삭제할 것
                             lifecycleScope.launch {
                                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                                    tokenDataStore.deleteToken(TokenDataStore.TokenType.ACCESS_TOKEN)
-                                    tokenDataStore.deleteToken(TokenDataStore.TokenType.REFRESH_TOKEN)
+                                    tokenDataStore.deleteData(DataStoreType.TokenType.ACCESS_TOKEN)
+                                    tokenDataStore.deleteData(DataStoreType.TokenType.REFRESH_TOKEN)
                                 }
                             }
                             val intent = Intent(this, LoginActivity::class.java)

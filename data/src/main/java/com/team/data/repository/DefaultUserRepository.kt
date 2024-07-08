@@ -39,7 +39,7 @@ import javax.inject.Inject
 // updateMyCategory, editMyProfile 부분은 데이터 동기화 과정으로 작성했으나,
 // 만약, Local/Network 작업 중 하나라도 에러가 발생하면 데이터 일관성이 깨짐
 // 1. WorkManager를 통한 Sync 작업을 요함
-// 2. 혹은 서버 우선 작업을 요함
+// 2. 혹은 서버 우선 작업을 요함 (선택)
 // (-> 서버의 성공적인 응답에 따라 Local 작업 진행)
 class DefaultUserRepository @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
@@ -47,28 +47,16 @@ class DefaultUserRepository @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ): UserRepository {
 
-    suspend fun getMyProfileRefresh(profileId: String) {
-        when (val result = userNetworkDataSource.getMyProfile(profileId)) {
-            is Result.Success -> {
-                val profileEntity = withContext(ioDispatcher) {
-                    result.data.toEntity()
-                }
-                myProfileDao.upsertProfile(profileEntity)
-            }
-            is Result.Error -> {  }
-            Result.Loading -> { }
-        }
-    }
-
-    override fun getMyProfile(profileId: String): Flow<Result<MyProfile?, ErrorType>> {
+    override fun getMyProfileFromLocal(profileId: String): Flow<Result<MyProfile?, ErrorType>> {
         return myProfileDao.getProfileById(profileId)
             .distinctUntilChanged()
             .map<MyProfileEntity?, Result<MyProfile?, ErrorType>> { Result.Success(it?.toDomainModel()) }
             .catch {
-                // 만약 조회하려는 데이터가 없어도 NullPointerException 발생 X
-                // 위 map 블록에서 그냥 null 처리됨 -> Result.Success(null) 반환
-                // 결국 밑에 if문 실행 X (혹여나 일단 작성해둠)
-                if (it is NullPointerException) emit(Result.Error(ErrorType.Local.EMPTY))
+                /** 만약 조회하려는 데이터가 없어도 NullPointerException 발생 X
+                 * 위 map 블록에서 그냥 null 처리됨 -> Result.Success(null) 반환
+                 * 결국 밑에 if문 실행 X (혹여나 일단 작성해둠)
+                 */
+                if (it is NullPointerException) emit(Result.Success(null))
                 else emit(Result.Error(ErrorType.Exception.EXCEPTION))
             }
 
@@ -93,6 +81,19 @@ class DefaultUserRepository @Inject constructor(
 //                }
 //            }
 //        }
+    }
+
+    override suspend fun refreshMyProfile(profileId: String) {
+        when (val result = userNetworkDataSource.getMyProfile(profileId)) {
+            is Result.Success -> {
+                val profileEntity = withContext(ioDispatcher) {
+                    result.data.toEntity()
+                }
+                myProfileDao.upsertProfile(profileEntity)
+            }
+            is Result.Error -> { }
+            Result.Loading -> { }
+        }
     }
 
     override fun getProfile(profileId: String): Flow<Result<Profile, ErrorType>> = flow {

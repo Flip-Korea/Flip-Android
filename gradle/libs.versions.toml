@@ -18,6 +18,7 @@ hilt = "2.50"
 hiltJavax = "1"
 junit = "4.13.2"
 mockito = "4.8.0"
+mockK = "1.13.11"
 robolectric = "4.10.3"
 kotlin = "1.9.22"
 kotlinxDatetime = "0.4.1"
@@ -75,6 +76,7 @@ hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", 
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric"}
 mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockK = { module = "io.mockk:mockk", version.ref = "mockK" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }

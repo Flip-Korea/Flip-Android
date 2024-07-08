@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.team.domain.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +20,7 @@ class DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideDataStoreManager(@ApplicationContext context: Context): TokenDataStore = TokenDataStore(context)
+    fun provideDataStoreManager(
+        @ApplicationContext context: Context
+    ): DataStoreManager = DefaultDataStoreManager(context)
 }

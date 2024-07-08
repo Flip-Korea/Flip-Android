@@ -3,7 +3,8 @@ package com.team.flip
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.team.data.datastore.TokenDataStore
+import com.team.domain.DataStoreManager
+import com.team.domain.type.DataStoreType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val tokenDataStore: TokenDataStore
+    private val dataStoreManager: DataStoreManager
 ): ViewModel() {
     private val TAG = this.javaClass.simpleName
 
@@ -25,7 +26,7 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val accessToken = tokenDataStore.getToken(TokenDataStore.TokenType.ACCESS_TOKEN).first()
+            val accessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).first()
             delay(500L)
             if (!accessToken.isNullOrEmpty()) {
                 Log.d(TAG, accessToken)

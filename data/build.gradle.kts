@@ -28,6 +28,7 @@ android {
         }
 
         buildConfigField("String", "FLIP_SERVER_URL", gradleLocalProperties(rootDir).getProperty("FLIP_SERVER_URL"))
+        buildConfigField("String", "FLIP_MOCK_SERVER_URL", gradleLocalProperties(rootDir).getProperty("FLIP_MOCK_SERVER_URL"))
     }
 
     testOptions {

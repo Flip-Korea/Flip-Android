@@ -9,10 +9,9 @@ data class CategoryEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Int,
     val name: String,
-    val icon: Int?,
 )
 
 fun CategoryEntity.toDomainModel(): Category =
-    Category(id, name, icon)
+    Category(id, name)
 
 fun List<CategoryEntity>.toDomainModel(): List<Category> = this.map { it.toDomainModel() }

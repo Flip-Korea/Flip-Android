@@ -1,8 +1,10 @@
 package com.team.data.network.retrofit.api
 
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.testdoubles.network.networkCategoriesTestData
 import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,11 +58,12 @@ class CategoryNetworkApiTest {
 
         val actualResponse = categoryNetworkApi.getCategories()
 
-        val adapter = moshi.adapter(CategoryResponseWrapper::class.java)
+        val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+        val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
         val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
         assertNotNull(actualResponse.body())
         assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse!!.categories, actualResponse.body()!!.categories)
+        assertEquals(expectedResponse!!, actualResponse.body()!!)
     }
 }

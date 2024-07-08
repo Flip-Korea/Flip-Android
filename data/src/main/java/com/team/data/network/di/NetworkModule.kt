@@ -3,10 +3,9 @@ package com.team.data.network.di
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.BuildConfig
-import com.team.data.datastore.TokenDataStore
-import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
+import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.retrofit.api.SearchNetworkApi
@@ -21,6 +20,7 @@ import com.team.data.network.source.SearchNetworkDataSource
 import com.team.data.network.source.SearchNetworkDataSourceImpl
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSourceImpl
+import com.team.domain.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,14 +84,14 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideTokenAuthentication(
-        dataStoreManager: TokenDataStore,
+        dataStoreManager: DataStoreManager,
         authNetworkApi: AccountNetworkApi,
     ): TokenAuthenticator = TokenAuthenticator(dataStoreManager, authNetworkApi)
 
     @Singleton
     @Provides
     fun provideTokenInterceptor(
-        dataStoreManager: TokenDataStore,
+        dataStoreManager: DataStoreManager,
     ): TokenInterceptor = TokenInterceptor(dataStoreManager)
 
     /** Retrofit Instance **/
@@ -105,7 +105,7 @@ object NetworkModule {
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BuildConfig.FLIP_SERVER_URL)
+            .baseUrl(BuildConfig.FLIP_MOCK_SERVER_URL)
     }
 
     /** ApiService **/

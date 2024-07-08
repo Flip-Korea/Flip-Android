@@ -10,7 +10,6 @@ fun makeCategoriesTestData(categoryIds: List<Int>): List<CategoryEntity> {
             CategoryEntity(
                 id = id,
                 name = "TestCategory($id)",
-                icon = null
             )
         )
     }
@@ -22,5 +21,4 @@ fun makeCategoryTestData(categoryId: Int): CategoryEntity =
     CategoryEntity(
         id = categoryId,
         name = "TestCategory($categoryId)",
-        icon = null
     )

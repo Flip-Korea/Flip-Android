@@ -20,7 +20,6 @@ class GetPostsByTypeUseCase @Inject constructor(
      * @param type 타입 구분 (카테고리, 태그, 프로필ID 등)
      * @param typeId 타입 구분에 맞는 ID
      * @param cursor 페이지네이션을 위한 커서
-     * @param limit 1 페이지 당 항목 개수
      */
     operator fun invoke(
         type: PathParameterType,
