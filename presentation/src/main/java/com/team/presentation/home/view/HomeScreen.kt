@@ -1,5 +1,7 @@
 package com.team.presentation.home.view
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +27,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
@@ -35,6 +38,7 @@ import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.state.CategoryState
 import com.team.presentation.home.state.PostState
 import com.team.presentation.home.util.HomeScreenPaddingValues
+import kotlin.math.abs
 
 /**
  * Flip의 메인 화면이자 홈 화면
@@ -52,17 +56,48 @@ fun HomeScreen(
 
     var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var topBarHeightDp by remember { mutableStateOf(0.dp) }
-    val topBarHeightOffsetPx = remember { mutableFloatStateOf(0f) }
+    var isPostFling by remember { mutableStateOf(false) }
+    var animatedOffset by remember { mutableFloatStateOf(0f) }
+    val animatedTopBarOffset by animateFloatAsState(
+        targetValue = animatedOffset,
+        label = "",
+        animationSpec = tween(durationMillis = if (isPostFling) 300 else 0)
+    )
 
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
 
+                isPostFling = false
+
                 val delta = available.y
-                val newOffset = topBarHeightOffsetPx.floatValue + delta
-                topBarHeightOffsetPx.floatValue = newOffset.coerceIn(-topBarHeightPx, 0f)
+                val newOffset = animatedOffset + delta
+                animatedOffset = newOffset.coerceIn(-topBarHeightPx, 0f)
 
                 return Offset.Zero
+            }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+
+                isPostFling = true
+
+                val top = 0f
+                val middle = topBarHeightPx / 2
+                val topMiddle = (top + middle) / 2
+                val bottomMiddle = middle + topMiddle
+                val bottom = topBarHeightPx
+                val offset = abs(animatedOffset)
+
+                animatedOffset = when {
+                    top < offset && offset <= topMiddle -> { -top }
+                    topMiddle < offset && offset <= middle -> { -middle }
+                    middle < offset && offset <= bottomMiddle -> { -middle }
+                    bottomMiddle < offset && offset <= bottom -> { -bottom }
+                    offset > bottom -> { -bottom }
+                    else -> { 0f }
+                }
+
+                return Velocity.Zero
             }
         }
     }
@@ -78,7 +113,7 @@ fun HomeScreen(
                     val heightDp = with(density) { it.height.toDp() }
                     topBarHeightDp = heightDp + HomeScreenPaddingValues.TopBarTopPadding
                 },
-            topBarHeightOffsetPx = topBarHeightOffsetPx.floatValue,
+            animatedTopBarOffset = animatedTopBarOffset
         ) {
             HomeTopBar(
                 modifier = Modifier
