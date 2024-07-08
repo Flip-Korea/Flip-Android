@@ -9,7 +9,7 @@ import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.block.BlockListResponse
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.network.model.response.comment.MyCommentListResponse
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
@@ -120,7 +120,7 @@ class UserNetworkDataSourceImpl(
     ): Result<MyCommentListResponse, ErrorType> =
         networkCall { userNetworkApi.getMyCommentList(profileId, cursor, limit) }
 
-    override suspend fun getMyCategories(profileId: String): Result<CategoryResponseWrapper, ErrorType> =
+    override suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType> =
         networkCall { userNetworkApi.getMyCategories(profileId) }
 
     override suspend fun getMyProfile(profileId: String): Result<MyProfileResponse, ErrorType> =

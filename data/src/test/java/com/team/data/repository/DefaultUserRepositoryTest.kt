@@ -134,7 +134,7 @@ class DefaultUserRepositoryTest {
             setBody(makeNetworkMyProfileTestData(profileId))
         })
 
-        userRepository.getMyProfileRefresh(profileId)
+        userRepository.refreshMyProfile(profileId)
 
         val updatedMyProfileEntity = myProfileDao.getProfileById(profileId).firstOrNull()
 

@@ -49,7 +49,7 @@ fun HomeTab(
 
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedItemId by rememberSaveable { mutableIntStateOf(0) }
+    var selectedItemId by rememberSaveable { mutableIntStateOf(100) }
     val listState = rememberLazyListState()
 
     LazyRow(

@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +32,9 @@ fun MainNavigation(
 ) {
 
     NavHost(
-        modifier = modifier.fillMaxSize().background(FlipTheme.colors.white),
+        modifier = modifier
+            .fillMaxSize()
+            .background(FlipTheme.colors.white),
         navController = navController,
         startDestination = ScreenItem.HOME.name,
         enterTransition = { EnterTransition.None },
@@ -42,7 +44,7 @@ fun MainNavigation(
     ) {
         composable(ScreenItem.HOME.name) {
 
-            val homeViewModel: HomeViewModel = viewModel()
+            val homeViewModel: HomeViewModel = hiltViewModel()
             val categoryState by homeViewModel.categoriesState.collectAsStateWithLifecycle()
             val postState by homeViewModel.postState.collectAsStateWithLifecycle()
 

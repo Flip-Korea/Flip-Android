@@ -40,20 +40,7 @@ class FakeUserRepository(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): UserRepository {
 
-    suspend fun getMyProfileRefresh(profileId: String) {
-        when (val result = userNetworkDataSource.getMyProfile(profileId)) {
-            is Result.Success -> {
-                val profileEntity = withContext(ioDispatcher) {
-                    result.data.toEntity()
-                }
-                myProfileDao.upsertProfile(profileEntity)
-            }
-            is Result.Error -> {  }
-            Result.Loading -> { }
-        }
-    }
-
-    override fun getMyProfile(profileId: String): Flow<Result<MyProfile?, ErrorType>> {
+    override fun getMyProfileFromLocal(profileId: String): Flow<Result<MyProfile?, ErrorType>> {
         return myProfileDao.getProfileById(profileId)
             .distinctUntilChanged()
             .map<MyProfileEntity?, Result<MyProfile?, ErrorType>> { Result.Success(it?.toDomainModel()) }
@@ -86,6 +73,19 @@ class FakeUserRepository(
 //                }
 //            }
 //        }
+    }
+
+    override suspend fun refreshMyProfile(profileId: String) {
+        when (val result = userNetworkDataSource.getMyProfile(profileId)) {
+            is Result.Success -> {
+                val profileEntity = withContext(ioDispatcher) {
+                    result.data.toEntity()
+                }
+                myProfileDao.upsertProfile(profileEntity)
+            }
+            is Result.Error -> { }
+            Result.Loading -> { }
+        }
     }
 
     override fun getProfile(profileId: String): Flow<Result<Profile, ErrorType>> = flow {

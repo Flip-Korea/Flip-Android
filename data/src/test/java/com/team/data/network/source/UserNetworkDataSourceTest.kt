@@ -1,6 +1,8 @@
 package com.team.data.network.source
 
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.network.model.request.BlockRequest
 import com.team.data.network.model.request.CategoryRequest
@@ -11,7 +13,7 @@ import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.block.BlockListResponse
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.network.model.response.comment.MyCommentListResponse
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
@@ -377,9 +379,9 @@ class UserNetworkDataSourceTest {
             setBody(networkCategoriesTestData)
         })
 
-        val expectedResponse = moshi
-            .adapter(CategoryResponseWrapper::class.java)
-            .fromJson(networkCategoriesTestData)
+        val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+        val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
+        val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
         val actualResponse = userNetworkDataSource.getMyCategories("1")
 

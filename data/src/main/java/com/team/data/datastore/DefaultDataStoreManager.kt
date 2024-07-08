@@ -5,23 +5,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.team.domain.DataStoreManager
+import com.team.domain.type.DataStoreType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 // TODO 나중에 Encrypt/Decrypt 추가하기, 좀 더 자세히 작성할 필요 있음 (now in android 참고)
-class TokenDataStore(private val context: Context) {
-    object TokenType {
-        val ACCESS_TOKEN = stringPreferencesKey("access_token")
-        val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
-    }
+class DefaultDataStoreManager(private val context: Context): DataStoreManager {
 
-    object AccountType {
-        val CURRENT_PROFILE_ID = stringPreferencesKey("current_profile_id")
-    }
-
-    fun getToken(type: Preferences.Key<String>): Flow<String?> {
+    override fun getData(type: DataStoreType): Flow<String?> {
+        val key = getKey(type)
         return context.dataStore.data
             .catch { exception ->
                 // dataStore.data throws an IOException when an error is encountered when reading data
@@ -32,19 +27,28 @@ class TokenDataStore(private val context: Context) {
                 }
             }
             .map { preferences ->
-            preferences[type]
+            preferences[key]
         }
     }
 
-    suspend fun saveToken(type: Preferences.Key<String>, token: String) {
+    override suspend fun saveData(type: DataStoreType, data: String) {
+        val key = getKey(type)
         context.dataStore.edit { preferences ->
-            preferences[type] = token
+            preferences[key] = data
         }
     }
 
-    suspend fun deleteToken(type: Preferences.Key<String>) {
+    override suspend fun deleteData(type: DataStoreType) {
+        val key = getKey(type)
         context.dataStore.edit { preferences ->
-            preferences.remove(type)
+            preferences.remove(key)
         }
     }
+
+    private fun getKey(type: DataStoreType): Preferences.Key<String> =
+        when (type) {
+            DataStoreType.AccountType.CURRENT_PROFILE_ID -> stringPreferencesKey("current_profile_id")
+            DataStoreType.TokenType.ACCESS_TOKEN -> stringPreferencesKey("access_token")
+            DataStoreType.TokenType.REFRESH_TOKEN -> stringPreferencesKey("refresh_token")
+        }
 }

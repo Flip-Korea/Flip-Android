@@ -9,14 +9,13 @@ import com.team.data.network.model.request.ScrapCommentRequest
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.block.BlockListResponse
-import com.team.data.network.model.response.category.CategoryResponseWrapper
+import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.network.model.response.comment.MyCommentListResponse
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
 import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.profile.MyProfileResponse
 import com.team.data.network.model.response.profile.ProfileResponse
-import com.team.data.network.networkCall
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.domain.util.ErrorType
@@ -225,7 +224,7 @@ class FakeUserNetworkDataSource(
         }
     }
 
-    override suspend fun getMyCategories(profileId: String): Result<CategoryResponseWrapper, ErrorType> {
+    override suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType> {
         val result = userNetworkApi.getMyCategories(profileId)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

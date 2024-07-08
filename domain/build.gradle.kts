@@ -12,6 +12,8 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     implementation(libs.dagger.hilt.javax)
 
+    // Testing
     testImplementation(libs.junit)
-    testImplementation(libs.mockito)
+    testImplementation(libs.mockK)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
