@@ -21,21 +21,6 @@ class GetCategoriesUseCase @Inject constructor(
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<List<Category>> {
-
-        // 1.
-//        val localCategories = categoryRepository.getCategoriesFromLocal().first()
-//
-//        if (localCategories.isNotEmpty()) {
-//            emit(localCategories)
-//        } else {
-//            when (categoryRepository.refreshCategories()) {
-//                is Result.Success -> { emit(categoryRepository.getCategoriesFromLocal().first()) }
-//                is Result.Error -> { emit(emptyList()) }
-//                Result.Loading -> { emit(emptyList()) }
-//            }
-//        }
-
-        // 2.
         return categoryRepository.getCategoriesFromLocal().flatMapLatest { categories ->
             if (categories.isNotEmpty()) {
                 flowOf(categories)

@@ -20,7 +20,7 @@ import androidx.compose.ui.zIndex
 @Composable
 fun BoxScope.HomeTopBarWrapper(
     modifier: Modifier = Modifier,
-    topBarHeightOffsetPx: Float,
+    animatedTopBarOffset: Float,
     content: @Composable () -> Unit,
 ) {
 
@@ -30,7 +30,7 @@ fun BoxScope.HomeTopBarWrapper(
             .align(Alignment.TopCenter)
             .graphicsLayer(
                 translationX = 0f,
-                translationY = topBarHeightOffsetPx
+                translationY = animatedTopBarOffset
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
