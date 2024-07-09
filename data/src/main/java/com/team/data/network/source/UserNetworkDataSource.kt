@@ -28,11 +28,6 @@ interface UserNetworkDataSource {
         category: CategoryRequest
     ): Result<Boolean, ErrorType>
 
-    suspend fun updateMyCategory(
-        profileId: String,
-        category: CategoryRequest,
-    ): Result<Boolean, ErrorType>
-
     suspend fun getScrapList(
         profileId: String,
         cursor: String,

@@ -96,36 +96,7 @@ class UserNetworkApiTest {
 
         assertNotNull(response.body())
         assertEquals(201, response.code())
-        assertEquals(expectedRequestBody!!.categories, realRequestBody!!.categories)
-    }
-
-    @Test
-    fun `updateMyCategory Call Test`() = runTest {
-
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-        })
-
-        val response =
-            userNetworkApi.updateMyCategory(
-                profileId = "honggd",
-                category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3)),
-            )
-
-        val recordedRequest = server.takeRequest()
-
-        val adapter = moshi.adapter(com.team.data.network.model.request.CategoryRequest::class.java)
-        val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
-        val requestBody = """
-            {
-                "categories": [1,2,3]
-            }
-        """.trimIndent()
-        val expectedRequestBody = adapter.fromJson(requestBody)
-
-        assertNotNull(response.body())
-        assertEquals(201, response.code())
-        assertEquals(expectedRequestBody!!.categories, realRequestBody!!.categories)
+        assertEquals(expectedRequestBody!!.categoryIds, realRequestBody!!.categoryIds)
     }
 
     @Test

@@ -56,18 +56,6 @@ class FakeUserNetworkDataSource(
         }
     }
 
-    override suspend fun updateMyCategory(
-        profileId: String,
-        category: CategoryRequest,
-    ): Result<Boolean, ErrorType> {
-        val result = userNetworkApi.updateMyCategory(profileId, category)
-        return if (result.isSuccessful) {
-            Result.Success(true)
-        } else {
-            Result.Error(ErrorType.Network.UNEXPECTED)
-        }
-    }
-
     override suspend fun getScrapList(
         profileId: String,
         cursor: String,

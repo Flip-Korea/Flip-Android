@@ -7,7 +7,14 @@ import kotlin.random.Random
 
 // TODO 매개변수들 다른 서비스들 참고해서 실제 수치로 변경하기
 // TODO 주의사항: 올바른 사용자 인증 정보가 제공되기 전까지는 승인되지 않는 HTTP 요청은 다시 시도해서는 안됨 (By Google)
-/** Retry Function, Exponential Backoff With Jitter **/
+/** Retry Function, Exponential Backoff With Jitter
+ *
+ * @param attempt 재시도 횟수 'Ex) attempt = 2, 총 재시도 횟수는 3(attempt+1)번'
+ * @param initialDelayMillis 초기 딜레이
+ * @param maxDelayMillis 최대 딜레이
+ * @param factor factor 밑 (지수는 attempt - 1)
+ * @param block suspend function
+ */
 suspend fun <T> retry(
     attempt: Int = 2,
     initialDelayMillis: Long = 500,

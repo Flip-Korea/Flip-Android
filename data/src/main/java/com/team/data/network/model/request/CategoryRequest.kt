@@ -6,9 +6,9 @@ import com.team.domain.model.category.Category
 
 @JsonClass(generateAdapter = true)
 data class CategoryRequest(
-    @Json(name = "categories")
-    val categories: List<Int>
+    @Json(name = "categoryIds")
+    val categoryIds: List<Int>
 )
 
 fun List<Category>.toNetwork(): CategoryRequest =
-    CategoryRequest(categories = this.map { it.id })
+    CategoryRequest(categoryIds = this.map { it.id })

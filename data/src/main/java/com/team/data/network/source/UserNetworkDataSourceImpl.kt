@@ -38,13 +38,6 @@ class UserNetworkDataSourceImpl(
         userNetworkApi.selectMyCategory(profileId, category)
     }
 
-    override suspend fun updateMyCategory(
-        profileId: String,
-        category: CategoryRequest,
-    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
-        userNetworkApi.updateMyCategory(profileId, category)
-    }
-
     override suspend fun getScrapList(
         profileId: String,
         cursor: String,

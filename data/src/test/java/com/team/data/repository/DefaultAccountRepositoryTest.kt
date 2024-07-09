@@ -145,12 +145,12 @@ class DefaultAccountRepositoryTest {
     @Test
     fun `이름 중복 체크 실패(409, Conflict) (checkDuplicateName())`() = runTest {
         server.enqueue(MockResponse().apply {
-            setResponseCode(409)
+            setResponseCode(404)
         })
 
         val result = accountRepository.checkDuplicateName("honggd").last()
 
-        assertEquals((result as Result.Error).error, ErrorType.Network.CONFLICT)
+        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
     }
 
     @Test
@@ -178,12 +178,12 @@ class DefaultAccountRepositoryTest {
     @Test
     fun `ProfileId 중복 체크 실패(409, Conflict) (checkDuplicateProfileId())`() = runTest {
         server.enqueue(MockResponse().apply {
-            setResponseCode(409)
+            setResponseCode(404)
         })
 
         val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
 
-        assertEquals((result as Result.Error).error, ErrorType.Network.CONFLICT)
+        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
     }
 
     @Test

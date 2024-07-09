@@ -45,12 +45,10 @@ interface UserRepository {
      *
      * Local/Network 간에 데이터 동기화가 이뤄진다.
      *
-     * @param profileId 나의 프로필 ID
-     * @param categories 수정한 카테고리 리스트
+     * @param categoryIds 수정한 카테고리 리스트
      */
-    fun updateMyCategory(
-        profileId: String,
-        categories: List<Int>
+    fun updateMyCategories(
+        categoryIds: List<Int>
     ): Flow<Result<Boolean, ErrorType>>
 
     /**

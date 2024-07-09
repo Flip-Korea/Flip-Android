@@ -12,7 +12,9 @@ import com.team.data.network.model.response.comment.toDomainModel
 import com.team.data.network.model.response.follow.toDomainModel
 import com.team.data.network.model.response.profile.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
+import com.team.data.network.source.InterestCategoryNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSource
+import com.team.domain.DataStoreManager
 import com.team.domain.model.post.DisplayPostList
 import com.team.domain.model.profile.BlockProfileList
 import com.team.domain.model.profile.DisplayProfileList
@@ -22,12 +24,14 @@ import com.team.domain.model.profile.Profile
 import com.team.domain.model.report_block.BlockReq
 import com.team.domain.model.report_block.ReportReq
 import com.team.domain.repository.UserRepository
+import com.team.domain.type.DataStoreType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -43,6 +47,8 @@ import javax.inject.Inject
 // (-> 서버의 성공적인 응답에 따라 Local 작업 진행)
 class DefaultUserRepository @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
+    private val interestCategoryNetworkDataSource: InterestCategoryNetworkDataSource,
+    private val dataStoreManager: DataStoreManager,
     private val myProfileDao: MyProfileDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ): UserRepository {
@@ -111,19 +117,19 @@ class DefaultUserRepository @Inject constructor(
         .flowOn(ioDispatcher)
         .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun updateMyCategory(
-        profileId: String,
-        categories: List<Int>,
+    override fun updateMyCategories(
+        categoryIds: List<Int>,
     ): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val categoryRequest = CategoryRequest(categories)
+        val categoryRequest = CategoryRequest(categoryIds)
         when (val result =
-            userNetworkDataSource.updateMyCategory(profileId, categoryRequest)) {
+            interestCategoryNetworkDataSource.updateMyCategories(categoryRequest)) {
             is Result.Success -> {
                 val myProfileEntity = withContext(ioDispatcher) {
-                    myProfileDao.updateCategories(profileId, categories)
-                    myProfileDao.getProfileById(profileId).firstOrNull()
+                    val profileId = dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
+                    myProfileDao.updateCategories(profileId ?: "", categoryIds)
+                    myProfileDao.getProfileById(profileId ?: "").firstOrNull()
                 }
                 emit(Result.Success(myProfileEntity != null))
             }

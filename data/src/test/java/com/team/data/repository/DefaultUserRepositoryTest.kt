@@ -15,9 +15,13 @@ import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
 import com.team.data.network.model.response.profile.ProfileResponse
 import com.team.data.network.model.response.profile.toDomainModel
+import com.team.data.network.retrofit.api.InterestCategoryNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
+import com.team.data.network.source.InterestCategoryNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSource
+import com.team.data.network.source.fake.FakeInterestCategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
+import com.team.data.repository.fake.FakeDataStoreManager
 import com.team.data.repository.fake.FakeUserRepository
 import com.team.data.testdoubles.local.makeMyProfileEntityTestData
 import com.team.data.testdoubles.network.makeNetworkMyProfileTestData
@@ -33,6 +37,7 @@ import com.team.data.testdoubles.network.networkProfileTestData
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.report_block.BlockReq
 import com.team.domain.model.report_block.ReportReq
+import com.team.domain.type.DataStoreType
 import com.team.domain.type.ReportType
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -78,11 +83,15 @@ class DefaultUserRepositoryTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var userNetworkDataSource: UserNetworkDataSource
+    private lateinit var interestCategoryNetworkDataSource: InterestCategoryNetworkDataSource
     private lateinit var userRepository: FakeUserRepository
 
     private lateinit var userNetworkApi: UserNetworkApi
+    private lateinit var interestCategoryNetworkApi: InterestCategoryNetworkApi
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
+
+    private val fakeDataStoreManager = FakeDataStoreManager()
 
     @Inject
     @Named("test_db")
@@ -110,9 +119,24 @@ class DefaultUserRepositoryTest {
             .build()
             .create(UserNetworkApi::class.java)
 
+        interestCategoryNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(InterestCategoryNetworkApi::class.java)
+
         myProfileDao = database.myProfileDao()
+
         userNetworkDataSource = FakeUserNetworkDataSource(userNetworkApi)
-        userRepository = FakeUserRepository(userNetworkDataSource, myProfileDao, ioDispatcher)
+        interestCategoryNetworkDataSource = FakeInterestCategoryNetworkDataSource(interestCategoryNetworkApi)
+
+        userRepository = FakeUserRepository(
+            userNetworkDataSource,
+            interestCategoryNetworkDataSource,
+            fakeDataStoreManager,
+            myProfileDao,
+            ioDispatcher
+        )
     }
 
     @After
@@ -167,21 +191,19 @@ class DefaultUserRepositoryTest {
     }
 
     @Test
-    fun `카테고리 업데이트 (updateMyCategory())`() = runTest {
+    fun `카테고리 업데이트 (updateMyCategories())`() = runTest {
 
         val profileId = "honggd"
         val categories = listOf(1, 2, 3)
         myProfileDao.upsertProfile(makeMyProfileEntityTestData(profileId))
+        fakeDataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
 
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
         })
 
         val response =
-            userRepository.updateMyCategory(
-                profileId = profileId,
-                categories = categories,
-            ).last()
+            userRepository.updateMyCategories(categoryIds = categories).last()
 
         val myProfileEntity = myProfileDao.getProfileById(profileId).firstOrNull()
 

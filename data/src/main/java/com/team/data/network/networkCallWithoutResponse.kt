@@ -3,7 +3,10 @@ package com.team.data.network
 import android.util.MalformedJsonException
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.util.retry
+import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import retrofit2.HttpException
@@ -11,7 +14,17 @@ import retrofit2.Response
 import java.io.IOException
 import java.util.concurrent.TimeoutException
 
-/** 응답 값의 body가 없을 때만 사용 **/
+/**
+ * 모든 네트워크 호출에 사용 되는 제네릭 함수
+ *
+ * 'networkCall()' 과 차이는 해당 함수는 응답 값의 body 가 없을 때만 사용 한다.
+ *
+ * @param call suspend function 이어야 하며, 반환 값은 Response 타입
+ *
+ * @return Result<T, ErrorType>
+ * @see ErrorType
+ * @see networkCall
+ */
 suspend fun <T> networkCallWithoutResponse(
     call: suspend () -> Response<T>
 ): Result<Boolean, ErrorType> {
@@ -22,12 +35,10 @@ suspend fun <T> networkCallWithoutResponse(
             401 -> ErrorType.Network.UNAUTHORIZED
             403 -> ErrorType.Network.FORBIDDEN
             404 -> ErrorType.Network.NOT_FOUND
-            408 -> ErrorType.Network.TIMEOUT
-            429 -> ErrorType.Network.TOO_MANY_REQUESTS
-            409 -> ErrorType.Network.CONFLICT
+            500 -> ErrorType.Network.INTERNAL_SERVER_ERROR
             else -> {
                 if (code/100 == 5) {
-                    ErrorType.Network.SERVER_ERROR
+                    ErrorType.Network.UNEXPECTED_SERVER
                 } else {
                     ErrorType.Network.UNEXPECTED
                 }
@@ -35,15 +46,21 @@ suspend fun <T> networkCallWithoutResponse(
         }
     }
 
-    // Main Logic
     try {
         val response = retry { call() }
         return if (response.isSuccessful) {
             Result.Success(true)
         } else {
+            val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+            val adapter = moshi.adapter(ErrorBody::class.java)
+            val errorBody = response.errorBody()?.source()?.let { source ->
+                adapter.fromJson(source)
+            }
             Result.Error(
                 error = toNetworkErrorType(response.code()),
-                message = response.message()
+                errorBody = errorBody
             )
         }
     } catch (e: HttpException) {
