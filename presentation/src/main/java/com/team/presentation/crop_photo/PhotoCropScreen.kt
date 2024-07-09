@@ -66,7 +66,6 @@ fun PhotoCropScreen(
     var viewHeight by remember { mutableIntStateOf(0) }
 
     var imageBitmap: ImageBitmap? by remember { mutableStateOf(null) }
-    var imageLoaded by remember { mutableStateOf(true) }
 
     var scale by remember { mutableFloatStateOf(1.5f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -82,13 +81,12 @@ fun PhotoCropScreen(
             )
         }
 
-    LaunchedEffect(imageLoaded) {
+    LaunchedEffect(selectedImageUri) {
         selectedImageUri?.let { image ->
             val imageBitmapDeferred = coroutineScope.async(Dispatchers.IO) {
                 uriToBitmap(context, image)
             }
             imageBitmap = imageBitmapDeferred.await()
-            imageLoaded = true
         }
     }
 
@@ -209,4 +207,5 @@ private fun DrawScope.drawWithLayer(block: DrawScope.() -> Unit) {
     }
 }
 
+/** px: 480.9375 */
 const val HOLE_RADIUS = 171

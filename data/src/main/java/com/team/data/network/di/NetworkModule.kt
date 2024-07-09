@@ -7,6 +7,7 @@ import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.retrofit.api.CategoryNetworkApi
+import com.team.data.network.retrofit.api.InterestCategoryNetworkApi
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
@@ -14,6 +15,8 @@ import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.AccountNetworkDataSourceImpl
 import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.data.network.source.CategoryNetworkDataSourceImpl
+import com.team.data.network.source.InterestCategoryNetworkDataSource
+import com.team.data.network.source.InterestCategoryNetworkDataSourceImpl
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.PostNetworkDataSourceImpl
 import com.team.data.network.source.SearchNetworkDataSource
@@ -152,12 +155,22 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideCategoryApiService(
-        @LoggingOkHttpClient logginOkHttpClient: OkHttpClient,
+        @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder
     ): CategoryNetworkApi = retrofit
-        .client(logginOkHttpClient)
+        .client(loggingOkHttpClient)
         .build()
         .create(CategoryNetworkApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideInterestCategoryApiService(
+        @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
+    ): InterestCategoryNetworkApi = retrofit
+        .client(tokenOkHttpClient)
+        .build()
+        .create(InterestCategoryNetworkApi::class.java)
 
     /** DataSource **/
     @Singleton
@@ -176,6 +189,12 @@ object NetworkModule {
     @Provides
     fun provideCategoryNetworkDataSource(categoryNetworkApi: CategoryNetworkApi): CategoryNetworkDataSource {
         return CategoryNetworkDataSourceImpl(categoryNetworkApi)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInterestCategoryNetworkDataSource(interestCategoryNetworkApi: InterestCategoryNetworkApi): InterestCategoryNetworkDataSource {
+        return InterestCategoryNetworkDataSourceImpl(interestCategoryNetworkApi)
     }
 
     @Singleton

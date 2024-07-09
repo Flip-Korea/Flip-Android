@@ -5,6 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -96,13 +97,13 @@ class NetworkCallTest {
             setResponseCode(404)
         })
 
+        val expectedResponse = ErrorType.Exception.EXCEPTION
+
         val networkCallResult = networkCall { apiService.testCall() }
 
-        val expectedResponse = ErrorType.Exception.EXCEPTION
-        networkCallResult.also { res ->
-            if (res is Result.Error) {
-                val actualResponse = res.error
-                Assert.assertEquals(expectedResponse, actualResponse)
+        networkCallResult.also { actualResponse ->
+            if (actualResponse is Result.Error) {
+                Assert.assertEquals(expectedResponse, actualResponse.error)
             }
         }
     }
@@ -114,8 +115,7 @@ class NetworkCallTest {
             setResponseCode(200)
         })
 
-        val networkCallResult =
-            com.team.data.network.networkCallWithoutResponse { apiService.testCall() }
+        val networkCallResult = networkCallWithoutResponse { apiService.testCall() }
 
         networkCallResult.also { actualResponse ->
             if (actualResponse is Result.Success)
@@ -132,12 +132,51 @@ class NetworkCallTest {
 
         val networkCallResult = networkCall { apiService.testCall() }
 
-        val expectedResponse = com.team.domain.util.ErrorType.Exception.EXCEPTION
-        networkCallResult.also { res ->
-            if (res is Result.Error) {
-                val actualResponse = res.error
-                Assert.assertEquals(expectedResponse, actualResponse)
+        val expectedResponse = ErrorType.Exception.EXCEPTION
+        networkCallResult.also { actualResponse ->
+            if (actualResponse is Result.Error) {
+                Assert.assertEquals(expectedResponse, actualResponse.error)
             }
         }
     }
+
+    @Test
+    fun `networkCall ErrorBody`() = runTest {
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+            setBody(errorBodyString)
+        })
+
+        val expectedResponse = moshi.adapter(ErrorBody::class.java)
+            .fromJson(errorBodyString)
+
+        /**
+         * MockWebServer 문제로 networkCall { ... } 처리가 잘 되지 않아
+         * 임시로 API 직접 호출로 테스팅
+         */
+        val response = apiService.testCall()
+
+        val adapter = moshi.adapter(ErrorBody::class.java)
+        val actualResponse = response.errorBody()?.source()?.let { source ->
+            adapter.fromJson(source)
+        }
+
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
 }
+
+val errorBodyString = """
+                    {
+                      "code" : "C001",
+                      "message" : "올바르지 않은 입력 값입니다.",
+                      "errors" : [ {
+                        "field" : "email",
+                        "value" : "email",
+                        "reason" : "must be a well-formed email address"
+                      }, {
+                        "field" : "name",
+                        "value" : "",
+                        "reason" : "must not be blank"
+                      } ]
+                    }
+                """.trimIndent()

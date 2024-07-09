@@ -120,35 +120,7 @@ class UserNetworkDataSourceTest {
         val expectedRequestBody = adapter.fromJson(requestBody)
 
         assertNotNull(response)
-        assertEquals(expectedRequestBody!!.categories, realRequestBody!!.categories)
-    }
-
-    @Test
-    fun `카테고리 업데이트(updateMyCategory())`() = runTest {
-
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-        })
-
-        val response =
-            userNetworkDataSource.updateMyCategory(
-                profileId = "honggd",
-                category = CategoryRequest(listOf(1, 2, 3)),
-            )
-
-        val recordedRequest = server.takeRequest()
-
-        val adapter = moshi.adapter(CategoryRequest::class.java)
-        val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
-        val requestBody = """
-            {
-                "categories": [1,2,3]
-            }
-        """.trimIndent()
-        val expectedRequestBody = adapter.fromJson(requestBody)
-
-        assertNotNull(response)
-        assertEquals(expectedRequestBody!!.categories, realRequestBody!!.categories)
+        assertEquals(expectedRequestBody!!.categoryIds, realRequestBody!!.categoryIds)
     }
 
     @Test

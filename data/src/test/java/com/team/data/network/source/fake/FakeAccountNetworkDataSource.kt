@@ -30,7 +30,6 @@ class FakeAccountNetworkDataSource(
             }
         } else {
             when (result.code()) {
-                409 -> { Result.Error(ErrorType.Network.CONFLICT) }
                 400 -> { Result.Error(ErrorType.Network.BAD_REQUEST) }
                 404 -> { Result.Error(ErrorType.Network.NOT_FOUND) }
                 else -> { Result.Error(ErrorType.Network.UNEXPECTED) }
@@ -47,7 +46,6 @@ class FakeAccountNetworkDataSource(
             }
         } else {
             when (result.code()) {
-                409 -> { Result.Error(ErrorType.Network.CONFLICT) }
                 400 -> { Result.Error(ErrorType.Network.BAD_REQUEST) }
                 404 -> { Result.Error(ErrorType.Network.NOT_FOUND) }
                 else -> { Result.Error(ErrorType.Network.UNEXPECTED) }

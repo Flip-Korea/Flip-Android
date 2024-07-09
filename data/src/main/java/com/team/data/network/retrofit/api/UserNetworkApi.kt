@@ -22,7 +22,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -40,13 +39,6 @@ interface UserNetworkApi {
     suspend fun selectMyCategory(
         @Path("profile_id") profileId: String,
         @Body category: CategoryRequest
-    ): Response<Unit>
-
-    /** API-012 (관심분야 카테고리 변경) **/
-    @PUT("/api/v1/profile/{profile_id}/category")
-    suspend fun updateMyCategory(
-        @Path("profile_id") profileId: String,
-        @Body category: CategoryRequest,
     ): Response<Unit>
 
     /** API-043 (스크랩 목록 조회) **/
