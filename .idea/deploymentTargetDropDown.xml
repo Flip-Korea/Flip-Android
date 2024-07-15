@@ -2,7 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="FlipDropdownMenu2Preview">
+      <entry key="EditInterestCategoriesScreenPreview">
+        <State />
+      </entry>
+      <entry key="PopUpPreview">
+        <State />
+      </entry>
+      <entry key="RefreshScreenPreview">
+        <State />
+      </entry>
+      <entry key="RefreshTestScreenPreview">
+        <State />
+      </entry>
+      <entry key="SpeechBubbleWrapperPreview">
         <State />
       </entry>
       <entry key="app">

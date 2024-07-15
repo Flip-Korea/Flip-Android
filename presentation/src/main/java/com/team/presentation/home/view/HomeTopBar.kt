@@ -21,7 +21,10 @@ import com.team.presentation.R
 
 /**
  * 홈 화면에서 사용되는 TopBar
- * @param icons 옵션 아이콘들
+ * @param logo Flip 로고의 리소스 ID
+ * @param onSearchClick 검색 클릭 시
+ * @param onNotiClick 알림 클릭 시
+ * @param onSettingClick 설정 클릭 시
  */
 @Composable
 fun HomeTopBar(

@@ -18,7 +18,8 @@ android {
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.team.presentation.TestRunner"
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", gradleLocalProperties(rootDir).getProperty("GOOGLE_WEB_CLIENT_ID"))
@@ -60,6 +61,11 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/LICENSE-notice.md")
     }
 }
 
@@ -126,7 +132,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
-    testImplementation(libs.mockito)
+    testImplementation(libs.mockK)
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.robolectric)
 
@@ -134,4 +140,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.arch.core.testing)
+    androidTestImplementation(libs.mockK.android)
 }

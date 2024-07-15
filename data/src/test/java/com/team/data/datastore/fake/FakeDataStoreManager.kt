@@ -1,41 +1,42 @@
 package com.team.data.datastore.fake
 
+import com.team.domain.DataStoreManager
+import com.team.domain.type.DataStoreType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-class FakeDataStoreManager {
+class FakeDataStoreManager: DataStoreManager {
 
-    private val keyMap = mutableMapOf<String, String>()
+    private val maps = mutableMapOf<String, String?>()
+    private val fakeDelay = 500L
 
-    object TokenType {
-        const val ACCESS_TOKEN = "access_token"
-        const val REFRESH_TOKEN = "refresh_token"
+    override fun getData(type: DataStoreType): Flow<String?> = flow {
+        delay(fakeDelay)
+        val value = maps[getKey(type)]
+        emit(value)
     }
 
-    object AccountType {
-        const val CURRENT_PROFILE_ID = "current_profile_id"
+    override suspend fun saveData(type: DataStoreType, data: String) {
+        delay(fakeDelay)
+        val key = getKey(type)
+        maps[key] = data
     }
 
-    fun getToken(keyType: String): Flow<String?> {
-        return flow {
-            delay(1000L)
-            emit(keyMap[keyType])
-        }.catch { emit(null) }
+    override suspend fun deleteData(type: DataStoreType) {
+        delay(fakeDelay)
+        val key = getKey(type)
+        maps.remove(key)
     }
 
-    suspend fun saveToken(keyType: String, value: String) {
-        delay(1000L)
-        keyMap[keyType] = value
+    override suspend fun clearAll() {
+        maps.clear()
     }
 
-    suspend fun deleteToken(keyType: String) {
-        delay(1000L)
-        keyMap.remove(keyType)
-    }
-
-    fun clearAll() {
-        keyMap.clear()
-    }
+    private fun getKey(type: DataStoreType): String =
+        when (type) {
+            DataStoreType.AccountType.CURRENT_PROFILE_ID -> "current_profile_id"
+            DataStoreType.TokenType.ACCESS_TOKEN -> "access_token"
+            DataStoreType.TokenType.REFRESH_TOKEN -> "refresh_token"
+        }
 }

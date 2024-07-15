@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +23,11 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 /**
- * @param option 사용 시 modifier 연결해서 사용
+ * 타이틀이 왼쪽 정렬된 Flip TopBar
+ *
+ * @param title TopBar 를 사용하는 화면을 설명할 수 있는 제목
+ * @param onBackPress 뒤로가기 버튼 클릭 시
+ * @param options 오른쪽 부분에 옵션(Composable)을 추가할 수 있다 (RowScope 범위 내)
  */
 @Composable
 fun FlipTopBar(
@@ -35,9 +38,7 @@ fun FlipTopBar(
 ) {
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 18.dp, bottom = 24.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

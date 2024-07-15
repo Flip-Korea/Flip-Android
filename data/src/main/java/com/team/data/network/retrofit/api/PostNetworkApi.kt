@@ -26,7 +26,7 @@ interface PostNetworkApi {
     /** API-013 (모든 게시글 조회) **/
     @GET("/api/v1/post/list")
     suspend fun getPosts(
-        @Query("cursor") cursor: String,
+        @Query("cursor") cursor: String?,
         @Query("limit") limit: Int
     ): Response<PostListResponse>
 
@@ -56,7 +56,7 @@ interface PostNetworkApi {
     suspend fun getPostsByType(
         @Path("type") type: String,
         @Path("type_id") typeId: String,
-        @Query("cursor") cursor: String,
+        @Query("cursor") cursor: String?,
         @Query("limit") limit: Int
     ): Response<PostListResponse>
 
@@ -72,7 +72,7 @@ interface PostNetworkApi {
     @GET("/api/v1/post/list/{category_id}/popular")
     suspend fun getPostsByPopularUser(
         @Path("category_id") categoryId: Int,
-        @Query("cursor") cursor: String,
+        @Query("cursor") cursor: String?,
         @Query("limit") limit: Int
     ): Response<PostListResponse>
 
@@ -80,7 +80,7 @@ interface PostNetworkApi {
     @GET("/api/v1/post/{post_id}/comment")
     suspend fun getComments(
         @Path("post_id") postId: Long,
-        @Query("cursor") cursor: String,
+        @Query("cursor") cursor: String?,
         @Query("limit") limit: Int
     ): Response<CommentListResponse>
 
@@ -127,7 +127,7 @@ interface PostNetworkApi {
     @GET("/api/v1/post/list/temporary/{profile_id}")
     suspend fun getTemporaryPosts(
         @Path("profile_id") profileId: String,
-        @Query("cursor") cursor: String,
+        @Query("cursor") cursor: String?,
         @Query("limit") limit: Int,
     ): Response<TempPostListResponse>
 

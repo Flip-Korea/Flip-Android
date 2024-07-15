@@ -5,5 +5,6 @@ enum class ScreenItem {
     HOME,
     FLIP,
     ADD_FLIP,
-    PROFILE
+    PROFILE,
+    EDIT_MY_CATEGORIES,
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,13 +14,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.team.designsystem.R
 import com.team.designsystem.component.button.FlipIconButton
 import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+/**
+ * 타이틀이 중앙 정렬된 Flip TopBar
+ *
+ * @param title TopBar 를 사용하는 화면을 설명할 수 있는 제목
+ * @param onBackPress 뒤로가기 버튼 클릭 시
+ * @param options 오른쪽 부분에 옵션(Composable)을 추가할 수 있다 (RowScope 범위 내)
+ */
 @Composable
 fun FlipCenterAlignedTopBar(
     modifier: Modifier = Modifier,
@@ -32,8 +37,6 @@ fun FlipCenterAlignedTopBar(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 18.dp, bottom = 24.dp)
     ) {
         if (onBackPress != null) {
             FlipIconButton(
@@ -67,7 +70,7 @@ fun FlipCenterAlignedTopBar(
 @Composable
 private fun FlipCenterAlignedTopBarPreview() {
     FlipAppTheme {
-        FlipCenterAlignedTopBar(title = "화면 이름", onBackPress = { })
+        FlipCenterAlignedTopBar(modifier = Modifier.fillMaxWidth(), title = "화면 이름", onBackPress = { })
     }
 }
 
@@ -76,6 +79,7 @@ private fun FlipCenterAlignedTopBarPreview() {
 private fun FlipCenterAlignedTopBarPreview2() {
     FlipAppTheme {
         FlipCenterAlignedTopBar(
+            modifier = Modifier.fillMaxWidth(),
             title = "화면 이름",
             options = {
                 FlipIconButton(
@@ -100,6 +104,7 @@ private fun FlipCenterAlignedTopBarPreview2() {
 private fun FlipCenterAlignedTopBarPreview3() {
     FlipAppTheme {
         FlipCenterAlignedTopBar(
+            modifier = Modifier.fillMaxWidth(),
             title = "화면 이름",
             onBackPress = { },
             options = {

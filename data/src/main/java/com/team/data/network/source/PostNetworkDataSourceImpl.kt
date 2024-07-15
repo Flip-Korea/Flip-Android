@@ -20,7 +20,7 @@ class PostNetworkDataSourceImpl(
 ): PostNetworkDataSource {
 
     override suspend fun getPosts(
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> =
         networkCall { postNetworkApi.getPosts(cursor, limit) }
@@ -37,7 +37,7 @@ class PostNetworkDataSourceImpl(
     override suspend fun getPostsByType(
         type: PathParameterType,
         typeId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> =
         networkCall {
@@ -49,14 +49,14 @@ class PostNetworkDataSourceImpl(
 
     override suspend fun getPostsByPopularUser(
         categoryId: Int,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> =
         networkCall { postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit) }
 
     override suspend fun getComments(
         postId: Long,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<CommentListResponse, ErrorType> =
         networkCall { postNetworkApi.getComments(postId, cursor, limit) }
@@ -84,7 +84,7 @@ class PostNetworkDataSourceImpl(
 
     override suspend fun getTemporaryPosts(
         profileId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<TempPostListResponse, ErrorType> =
         networkCall { postNetworkApi.getTemporaryPosts(profileId, cursor, limit) }

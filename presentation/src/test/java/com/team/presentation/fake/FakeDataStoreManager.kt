@@ -1,4 +1,4 @@
-package com.team.data.repository.fake
+package com.team.presentation.fake
 
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
@@ -27,6 +27,10 @@ class FakeDataStoreManager: DataStoreManager {
         delay(fakeDelay)
         val key = getKey(type)
         maps.remove(key)
+    }
+
+    override suspend fun clearAll() {
+        maps.clear()
     }
 
     private fun getKey(type: DataStoreType): String =

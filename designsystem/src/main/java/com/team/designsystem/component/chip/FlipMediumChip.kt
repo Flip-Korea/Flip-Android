@@ -27,7 +27,7 @@ import com.team.designsystem.theme.FlipTheme
 fun FlipMediumChip(
     modifier: Modifier = Modifier,
     text: String,
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int?,
     solid: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -46,12 +46,14 @@ fun FlipMediumChip(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
         ) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                imageVector = ImageVector.vectorResource(icon),
-                contentDescription = text,
-                tint = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6
-            )
+            icon?.let {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = ImageVector.vectorResource(icon),
+                    contentDescription = text,
+                    tint = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6
+                )
+            }
             Text(
                 modifier = Modifier,
                 text = text,

@@ -104,20 +104,20 @@ class DefaultPostRepositoryTest {
     }
 
     @Test
-    fun `플립 글 LocalDB에서 불러오기 (데이터 X) (getPosts())`() = runTest {
-        val posts = postRepository.getPosts().first()
+    fun `플립 글 LocalDB에서 불러오기 (데이터 X) (getCachedPosts())`() = runTest {
+        val posts = postRepository.getCachedPosts().first()
 
         assert(posts.isEmpty())
     }
 
     @Test
-    fun `플립 글 LocalDB에서 불러오기 (데이터 O) (getPosts())`() = runTest {
+    fun `플립 글 LocalDB에서 불러오기 (데이터 O) (getCachedPosts())`() = runTest {
         val postIds = makePostIds(5)
         val postEntities = makeMultiplePostEntityTestData(postIds)
 
         postDao.upsertAll(postEntities)
 
-        val posts = postRepository.getPosts().first()
+        val posts = postRepository.getCachedPosts().first()
 
         assert(posts.contains(postEntities[0].toDomainModel()))
         assertEquals(posts.size, 5)
@@ -135,7 +135,7 @@ class DefaultPostRepositoryTest {
 
         postRepository.getPostsPagination("1", pageSize).last()
 
-        val posts = postRepository.getPosts().first()
+        val posts = postRepository.getCachedPosts().first()
 
         assertEquals(pageSize, posts.size)
     }

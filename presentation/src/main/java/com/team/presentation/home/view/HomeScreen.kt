@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,39 +27,51 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.team.designsystem.component.skeleton.HomeSkeletonScreen
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
+import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.home.FlipCardUiEvent
+import com.team.presentation.home.HomeUiEvent
 import com.team.presentation.home.state.CategoryState
 import com.team.presentation.home.state.PostState
 import com.team.presentation.home.util.HomeScreenPaddingValues
+import kotlinx.coroutines.delay
 import kotlin.math.abs
 
 /**
  * Flip의 메인 화면이자 홈 화면
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     categoryState: CategoryState,
     postState: PostState,
+    onSettingClick: () -> Unit,
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
+    homeUiEvent: (HomeUiEvent) -> Unit,
 ) {
+
     val density = LocalDensity.current
 
     val lazyListState = rememberLazyListState()
 
+    /** TopBar Animation By Scrolled */
     var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var topBarHeightDp by remember { mutableStateOf(0.dp) }
     var isPostFling by remember { mutableStateOf(false) }
@@ -63,7 +81,6 @@ fun HomeScreen(
         label = "",
         animationSpec = tween(durationMillis = if (isPostFling) 300 else 0)
     )
-
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -102,16 +119,32 @@ fun HomeScreen(
         }
     }
 
+    /** Pull To Refresh */
+    val refreshState = rememberPullToRefreshState()
+    val refreshIconScale by animateFloatAsState(
+        targetValue = if (!refreshState.isRefreshing) {
+            refreshState.verticalOffset / 450f
+        } else 1f,
+        label = ""
+    )
+    LaunchedEffect(refreshState.isRefreshing) {
+        if (refreshState.isRefreshing) {
+            delay(2000L)
+            refreshState.endRefresh()
+        }
+    }
+
     Box(
-        modifier = modifier.nestedScroll(nestedScrollConnection)
+        modifier = modifier
     ) {
         HomeTopBarWrapper(
             modifier = Modifier
+                .align(Alignment.TopCenter)
                 .onSizeChanged {
-                    val padding = with(density) { HomeScreenPaddingValues.TopBarTopPadding.toPx() }
+                    val padding = with(density) { CommonPaddingValues.TopBarVertical.toPx() }
                     topBarHeightPx = it.height + padding
                     val heightDp = with(density) { it.height.toDp() }
-                    topBarHeightDp = heightDp + HomeScreenPaddingValues.TopBarTopPadding
+                    topBarHeightDp = heightDp + CommonPaddingValues.TopBarVertical
                 },
             animatedTopBarOffset = animatedTopBarOffset
         ) {
@@ -119,10 +152,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .background(FlipTheme.colors.white)
                     .fillMaxWidth()
-                    .padding(HomeScreenPaddingValues.TopBarPadding),
+                    .padding(CommonPaddingValues.TopBarWithLogo),
                 logo = R.drawable.ic_logo_dark,
                 onSearchClick = { },
-                onSettingClick = { },
+                onSettingClick = onSettingClick,
                 onNotiClick = { }
             )
             HomeTab(
@@ -136,28 +169,68 @@ fun HomeScreen(
             )
         }
 
-        LazyColumn(
-            modifier = modifier
+        /** Home Content */
+        Box(
+            modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxSize()
-                .padding(HomeScreenPaddingValues.Horizontal),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
-            contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
-            state = lazyListState
+                .padding(HomeScreenPaddingValues.Horizontal)
+                .nestedScroll(refreshState.nestedScrollConnection)
         ) {
-            items(
-                items = postState.posts,
-                key = { post -> post.postId }
-            ) { post ->
-                HomeFlipCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    post = post,
-                    flipCardUiEvent = { flipCardUiEvent(it) }
-                )
+            if (postState.loading) {
+                HomeSkeletonScreen(Modifier.padding(top = topBarHeightDp))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .nestedScroll(nestedScrollConnection),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
+                    contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
+                    state = lazyListState,
+                ) {
+                    //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
+                    items(
+                        items = postState.posts,
+                        key = { post -> post.postId }
+                    ) { post ->
+                        HomeFlipCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            post = post,
+                            flipCardUiEvent = { flipCardUiEvent(it) }
+                        )
+                    }
+                }
             }
+
+            CustomPullToRefreshContainer(
+                pullToRefreshState = refreshState,
+                topPadding = (topBarHeightDp - 20.dp - CommonPaddingValues.TopBarVertical).coerceAtLeast(0.dp),
+                animatedScale = refreshIconScale
+            )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BoxScope.CustomPullToRefreshContainer(
+    pullToRefreshState: PullToRefreshState,
+    topPadding: Dp,
+    animatedScale: Float
+) {
+    PullToRefreshContainer(
+        state = pullToRefreshState,
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .zIndex(1f)
+            .padding(top = topPadding)
+            .graphicsLayer(
+                scaleX = animatedScale,
+                scaleY = animatedScale,
+            ),
+        containerColor = FlipTheme.colors.white,
+        contentColor = FlipTheme.colors.main
+    )
 }
 
 @Preview(showBackground = true)
@@ -191,7 +264,9 @@ private fun HomeScreenPreview() {
                     )
                 )
             ),
-            flipCardUiEvent = { }
+            flipCardUiEvent = { },
+            homeUiEvent = { },
+            onSettingClick = { }
         )
     }
 }

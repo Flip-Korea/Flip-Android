@@ -1,4 +1,4 @@
-package com.team.domain.usecase.interest_category
+package com.team.domain.usecase.interestcategory
 
 import com.team.domain.repository.FakeUserRepository
 import com.team.domain.usecase.category.myCategoriesTestData

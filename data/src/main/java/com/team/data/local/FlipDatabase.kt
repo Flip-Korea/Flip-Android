@@ -11,7 +11,7 @@ import com.team.data.local.entity.CategoryEntity
 import com.team.data.local.entity.RecentSearchEntity
 import com.team.data.local.entity.post.PostEntity
 import com.team.data.local.entity.profile.MyProfileEntity
-import com.team.data.local.type_converter.ListTypeConverter
+import com.team.data.local.typeconverter.ListTypeConverter
 
 @TypeConverters(
     ListTypeConverter::class

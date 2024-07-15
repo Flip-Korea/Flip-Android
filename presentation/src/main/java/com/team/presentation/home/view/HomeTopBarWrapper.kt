@@ -1,7 +1,6 @@
 package com.team.presentation.home.view
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,7 +17,7 @@ import androidx.compose.ui.zIndex
  * @param content Composable 함수로 TopBar 에 해당 되는 부분
  */
 @Composable
-fun BoxScope.HomeTopBarWrapper(
+fun HomeTopBarWrapper(
     modifier: Modifier = Modifier,
     animatedTopBarOffset: Float,
     content: @Composable () -> Unit,
@@ -27,7 +26,6 @@ fun BoxScope.HomeTopBarWrapper(
     Column(
         modifier = modifier
             .zIndex(1f)
-            .align(Alignment.TopCenter)
             .graphicsLayer(
                 translationX = 0f,
                 translationY = animatedTopBarOffset

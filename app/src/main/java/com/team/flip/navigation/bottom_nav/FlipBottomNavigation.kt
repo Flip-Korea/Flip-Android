@@ -35,16 +35,12 @@ import com.team.presentation.ScreenItem
 @Composable
 fun FlipBottomNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-//    AnimatedVisibility(
-//        visible = bottomNavItems.map { it.route }.contains(currentRoute)
-//    ) {
-//    }
     if (allowedBottomNavItems.map { it.route }.contains(currentRoute)) {
         NavigationBar(
             modifier = modifier
@@ -55,7 +51,9 @@ fun FlipBottomNavigation(
             contentColor = FlipTheme.colors.gray5
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -99,7 +97,7 @@ private fun RowScope.FlipNavigationBarItem(
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
     label: @Composable () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -129,7 +127,7 @@ private fun RowScope.FlipNavigationBarItem(
  */
 private fun onItemClickWithOptions(
     navController: NavHostController,
-    route: String
+    route: String,
 ) {
     navController.navigate(route) {
         navController.graph.startDestinationRoute?.let {

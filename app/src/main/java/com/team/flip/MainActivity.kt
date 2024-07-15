@@ -22,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 /** Flip 메인액티비티 **/
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

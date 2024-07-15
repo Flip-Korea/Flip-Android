@@ -30,4 +30,9 @@ interface DataStoreManager {
      * @param type DataStore 키 타입
      */
     suspend fun deleteData(type: DataStoreType)
+
+    /**
+     * DataStore 데이터를 전부 삭제한다.
+     */
+    suspend fun clearAll()
 }
