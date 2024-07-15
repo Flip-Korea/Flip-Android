@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 // TODO 나중에 Encrypt/Decrypt 추가하기, 좀 더 자세히 작성할 필요 있음 (now in android 참고)
-class DefaultDataStoreManager(private val context: Context): DataStoreManager {
+class DefaultDataStoreManager(private val context: Context) : DataStoreManager {
 
     override fun getData(type: DataStoreType): Flow<String?> {
         val key = getKey(type)
@@ -27,8 +27,8 @@ class DefaultDataStoreManager(private val context: Context): DataStoreManager {
                 }
             }
             .map { preferences ->
-            preferences[key]
-        }
+                preferences[key]
+            }
     }
 
     override suspend fun saveData(type: DataStoreType, data: String) {
@@ -43,6 +43,10 @@ class DefaultDataStoreManager(private val context: Context): DataStoreManager {
         context.dataStore.edit { preferences ->
             preferences.remove(key)
         }
+    }
+
+    override suspend fun clearAll() {
+        context.dataStore.edit { it.clear() }
     }
 
     private fun getKey(type: DataStoreType): Preferences.Key<String> =

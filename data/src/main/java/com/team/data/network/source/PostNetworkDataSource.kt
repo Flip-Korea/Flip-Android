@@ -13,7 +13,7 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface PostNetworkDataSource {
-    suspend fun getPosts(cursor: String, limit: Int): Result<PostListResponse, ErrorType>
+    suspend fun getPosts(cursor: String?, limit: Int): Result<PostListResponse, ErrorType>
 
     suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType>
 
@@ -24,18 +24,18 @@ interface PostNetworkDataSource {
     suspend fun getPostsByType(
         type: PathParameterType,
         typeId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Result<PostListResponse, ErrorType>
     suspend fun deletePost(postId: Long): Result<Boolean, ErrorType>
     suspend fun getPostsByPopularUser(
         categoryId: Int,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Result<PostListResponse, ErrorType>
     suspend fun getComments(
         postId: Long,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Result<CommentListResponse, ErrorType>
     suspend fun addComment(
@@ -49,7 +49,7 @@ interface PostNetworkDataSource {
     suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType>
     suspend fun getTemporaryPosts(
         profileId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Result<TempPostListResponse, ErrorType>
     suspend fun editTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType>

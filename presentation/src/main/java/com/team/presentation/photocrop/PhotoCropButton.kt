@@ -1,4 +1,4 @@
-package com.team.presentation.crop_photo
+package com.team.presentation.photocrop
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues

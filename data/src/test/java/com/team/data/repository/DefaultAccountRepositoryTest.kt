@@ -18,6 +18,7 @@ import com.team.data.testdoubles.network.networkAccountJsonTestData
 import com.team.data.testdoubles.network.networkRegisterTestData
 import com.team.data.testdoubles.network.networkTokenTestData
 import com.team.data.testdoubles.network.toExternal
+import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -98,7 +99,6 @@ class DefaultAccountRepositoryTest {
     @After
     fun teardown() {
         server.shutdown()
-        dataStoreManager.clearAll()
         database.close()
     }
 
@@ -116,7 +116,7 @@ class DefaultAccountRepositoryTest {
             setBody(networkAccountJsonTestData)
         })
 
-        dataStoreManager.saveToken(FakeDataStoreManager.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
+        dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
         val result = accountRepository.getUserAccount().last()
 
         val actualData =
@@ -125,7 +125,7 @@ class DefaultAccountRepositoryTest {
                 .toDomainModel((result as Result.Success).data.profiles)
 
         val expectedCurrentProfileId =
-            dataStoreManager.getToken(FakeDataStoreManager.AccountType.CURRENT_PROFILE_ID).first()
+            dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
 
         assertEquals(result.data, actualData)
         assertEquals(expectedCurrentProfileId, actualData.profiles[0].profileId)
@@ -214,8 +214,8 @@ class DefaultAccountRepositoryTest {
             .fromJson(networkTokenTestData)!!
             .refreshToken
 
-        val actualAccessToken = dataStoreManager.getToken(FakeDataStoreManager.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken = dataStoreManager.getToken(FakeDataStoreManager.TokenType.REFRESH_TOKEN).first()
+        val actualAccessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+        val actualRefreshToken = dataStoreManager.getData(DataStoreType.TokenType.REFRESH_TOKEN).first()
 
         assertEquals((result as Result.Success).data, true)
         assertEquals(expectedAccessToken, actualAccessToken)
@@ -239,8 +239,8 @@ class DefaultAccountRepositoryTest {
             .fromJson(networkTokenTestData)!!
             .refreshToken
 
-        val actualAccessToken = dataStoreManager.getToken(FakeDataStoreManager.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken = dataStoreManager.getToken(FakeDataStoreManager.TokenType.REFRESH_TOKEN).first()
+        val actualAccessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+        val actualRefreshToken = dataStoreManager.getData(DataStoreType.TokenType.REFRESH_TOKEN).first()
 
         assertEquals((result as Result.Success).data, true)
         assertEquals(expectedAccessToken, actualAccessToken)

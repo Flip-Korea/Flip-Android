@@ -1,4 +1,4 @@
-package com.team.presentation.crop_photo
+package com.team.presentation.photocrop
 
 import android.content.Context
 import android.graphics.Bitmap

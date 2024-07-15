@@ -31,10 +31,10 @@ class FakePostRepository(
 
     private val ioDispatcher = Dispatchers.IO
 
-    override fun getPosts(): Flow<List<Post>> =
+    override fun getCachedPosts(): Flow<List<Post>> =
         postDao.getPosts().map { it.toDomainModel() }
 
-    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<PostList, ErrorType>> {
+    override fun getPostsPagination(cursor: String?, limit: Int): Flow<Result<PostList, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
@@ -114,7 +114,7 @@ class FakePostRepository(
     override fun getPostsByTypePagination(
         type: PathParameterType,
         typeId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)
@@ -152,7 +152,7 @@ class FakePostRepository(
 
     override fun getPostsByPopularUserPagination(
         categoryId: Int,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)

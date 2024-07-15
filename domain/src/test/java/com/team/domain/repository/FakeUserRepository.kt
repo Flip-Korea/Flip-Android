@@ -71,9 +71,8 @@ class FakeUserRepository(
         return emptyFlow()
     }
 
-    override fun updateMyCategory(
-        profileId: String,
-        categories: List<Int>,
+    override fun updateMyCategories(
+        categoryIds: List<Int>,
     ): Flow<Result<Boolean, ErrorType>> {
         return emptyFlow()
     }

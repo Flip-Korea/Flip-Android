@@ -1,4 +1,4 @@
-package com.team.presentation.add_flip.view
+package com.team.presentation.addflip.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

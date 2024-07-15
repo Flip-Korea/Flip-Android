@@ -9,7 +9,7 @@ import com.team.data.local.dao.CategoryDao
 import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
-import com.team.data.local.type_converter.ListTypeConverter
+import com.team.data.local.typeconverter.ListTypeConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

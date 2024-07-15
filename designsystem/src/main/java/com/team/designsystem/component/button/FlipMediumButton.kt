@@ -26,6 +26,14 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import kotlinx.coroutines.delay
 
+/**
+ * 중간 사이즈 Button
+ *
+ * @param text 버튼 텍스트
+ * @param enabled 버튼 활성화 여부
+ * @param isLoading 로딩 여부 (true -> 로딩 애니메이션 재생)
+ * @param onClick 버튼 클릭 시
+ */
 @Composable
 fun FlipMediumButton(
     modifier: Modifier = Modifier,
@@ -40,7 +48,6 @@ fun FlipMediumButton(
     Button(
         onClick = { clickableSingle.onEvent(onClick) },
         modifier = modifier
-            .fillMaxWidth()
             .height(48.dp)
             .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
         colors = ButtonDefaults.buttonColors(

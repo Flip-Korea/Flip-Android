@@ -39,10 +39,12 @@ class DefaultPostRepository @Inject constructor(
     // 앱 실행 중 단 하나의 코루틴 스코프를 생성하고 유지하도록 Module에서 관리
 ) : PostRepository {
 
-    override fun getPosts(): Flow<List<Post>> =
-        postDao.getPosts().map { it.toDomainModel() }
+    override fun getCachedPosts(): Flow<List<Post>> =
+        postDao.getPosts()
+            .map { it.toDomainModel() }
+            .catch { emit(emptyList()) }
 
-    override fun getPostsPagination(cursor: String, limit: Int): Flow<Result<PostList, ErrorType>> {
+    override fun getPostsPagination(cursor: String?, limit: Int): Flow<Result<PostList, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
@@ -122,7 +124,7 @@ class DefaultPostRepository @Inject constructor(
     override fun getPostsByTypePagination(
         type: PathParameterType,
         typeId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)
@@ -156,7 +158,7 @@ class DefaultPostRepository @Inject constructor(
 
     override fun getPostsByPopularUserPagination(
         categoryId: Int,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Flow<Result<PostList, ErrorType>> = flow {
         emit(Result.Loading)

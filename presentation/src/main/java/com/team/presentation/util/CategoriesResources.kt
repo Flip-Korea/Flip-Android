@@ -1,9 +1,9 @@
-package com.team.presentation.home.util
+package com.team.presentation.util
 
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 
-val HomeTabMockItems = listOf(
+val CategoriesTestData = listOf(
     Category(1, "일상"),
     Category(2, "독서"),
     Category(3, "자기계발"),
@@ -18,7 +18,10 @@ val HomeTabMockItems = listOf(
     Category(12, "글로벌"),
 )
 
-val HomeTabMockIcons = mapOf(
+/**
+ * 임시 아이콘 Map
+ */
+val CategoryIconsMap = mapOf(
     1 to R.drawable.ic_category_daily,
     2 to R.drawable.ic_category_book,
     3 to R.drawable.ic_category_self_development,

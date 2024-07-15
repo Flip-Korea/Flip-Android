@@ -11,7 +11,6 @@ import com.team.data.network.model.response.post.TempPostListResponse
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.type.PathParameterType
-import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
@@ -20,7 +19,7 @@ class FakePostNetworkDataSource(
 ) : PostNetworkDataSource {
 
     override suspend fun getPosts(
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> {
         val result = postNetworkApi.getPosts(cursor, limit)
@@ -61,7 +60,7 @@ class FakePostNetworkDataSource(
     override suspend fun getPostsByType(
         type: PathParameterType,
         typeId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> {
         val result = postNetworkApi.getPostsByType(type.asString(), typeId, cursor, limit)
@@ -83,7 +82,7 @@ class FakePostNetworkDataSource(
 
     override suspend fun getPostsByPopularUser(
         categoryId: Int,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> {
         val result = postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit)
@@ -96,7 +95,7 @@ class FakePostNetworkDataSource(
 
     override suspend fun getComments(
         postId: Long,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<CommentListResponse, ErrorType> {
         val result = postNetworkApi.getComments(postId, cursor, limit)
@@ -166,7 +165,7 @@ class FakePostNetworkDataSource(
 
     override suspend fun getTemporaryPosts(
         profileId: String,
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Result<TempPostListResponse, ErrorType> {
         val result = postNetworkApi.getTemporaryPosts(profileId, cursor, limit)

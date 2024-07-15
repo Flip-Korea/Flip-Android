@@ -35,10 +35,13 @@ import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
-import com.team.presentation.home.util.HomeTabMockIcons
-import com.team.presentation.home.util.HomeTabMockItems
+import com.team.presentation.util.CategoryIconsMap
+import com.team.presentation.util.CategoriesTestData
 import kotlinx.coroutines.launch
 
+/**
+ * 홈 화면에서 사용되는 카테고리 탭 바
+ */
 @Composable
 fun HomeTab(
     modifier: Modifier = Modifier,
@@ -66,7 +69,7 @@ fun HomeTab(
             TabItem(
                 selected = category.id == selectedItemId,
                 text = category.name,
-                icon = HomeTabMockIcons[category.id],
+                icon = CategoryIconsMap[category.id],
                 onClick = {
                     if (category.id != selectedItemId) {
                         selectedItemId = category.id
@@ -154,7 +157,7 @@ private fun HomeTabPreview() {
     FlipAppTheme {
         HomeTab(
             modifier = Modifier.fillMaxWidth(),
-            items = HomeTabMockItems,
+            items = CategoriesTestData,
             itemSplitSize = 3,
             onItemClick = { }
         )

@@ -21,7 +21,7 @@ import com.team.data.network.source.InterestCategoryNetworkDataSource
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.fake.FakeInterestCategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
-import com.team.data.repository.fake.FakeDataStoreManager
+import com.team.data.datastore.fake.FakeDataStoreManager
 import com.team.data.repository.fake.FakeUserRepository
 import com.team.data.testdoubles.local.makeMyProfileEntityTestData
 import com.team.data.testdoubles.network.makeNetworkMyProfileTestData

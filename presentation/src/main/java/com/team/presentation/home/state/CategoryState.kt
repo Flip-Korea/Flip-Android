@@ -4,5 +4,5 @@ import com.team.domain.model.category.Category
 
 data class CategoryState(
     val categories: List<Category> = emptyList(),
-    val splitSize: Int = 0
+    val splitSize: Int = 3
 )

@@ -1,4 +1,4 @@
-package com.team.data.local.type_converter
+package com.team.data.local.typeconverter
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
