@@ -11,7 +11,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 
 data class FlipTransition(
@@ -28,9 +30,69 @@ data class FlipTransition(
         targetScale = .8f,
         animationSpec = tween(easing = EaseInBack)
     ),
-    val slideInVertically: EnterTransition = slideInVertically(initialOffsetY = { it }),
-    val slideOutVertically: ExitTransition = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-)
+) {
+    fun enterTransition(direction: FlipTransitionDirection): EnterTransition {
+        val delay = 100
+
+        return when(direction) {
+            FlipTransitionDirection.Left -> {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+            FlipTransitionDirection.Right -> {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+            FlipTransitionDirection.Top -> {
+                slideInVertically(
+                    initialOffsetY = { -it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+            FlipTransitionDirection.Bottom -> {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+        }
+    }
+
+    fun exitTransition(direction: FlipTransitionDirection): ExitTransition {
+        val delay = 100
+
+        return when(direction) {
+            FlipTransitionDirection.Left -> {
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+            FlipTransitionDirection.Right -> {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(delayMillis = delay)
+                )
+            }
+            FlipTransitionDirection.Top -> {
+                slideOutVertically(
+                    targetOffsetY = { -it },
+                    animationSpec = tween(delayMillis = delay)
+                ) + fadeOut()
+            }
+            FlipTransitionDirection.Bottom -> {
+                slideOutVertically(
+                    targetOffsetY = { it },
+                    animationSpec = tween(delayMillis = delay)
+                ) + fadeOut()
+            }
+        }
+    }
+}
 
 object FlipTransitionObject {
     private val flipTransition = FlipTransition()
@@ -38,6 +100,15 @@ object FlipTransitionObject {
     val fadeOut = flipTransition.fadeOut
     val dialogEnter = flipTransition.dialogEnter
     val dialogExit = flipTransition.dialogExit
-    val slideInVertically = flipTransition.slideInVertically
-    val slideOutVertically = flipTransition.slideOutVertically
+    val enterTransition: (FlipTransitionDirection) -> EnterTransition = {
+        flipTransition.enterTransition(it)
+    }
+    val exitTransition: (FlipTransitionDirection) -> ExitTransition = {
+        flipTransition.exitTransition(it)
+    }
+}
+
+enum class FlipTransitionDirection {
+    Left, Right,
+    Top, Bottom
 }

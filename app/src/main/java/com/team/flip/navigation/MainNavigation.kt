@@ -1,138 +1,116 @@
 package com.team.flip.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.team.designsystem.theme.FlipTheme
+import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
+import com.team.flip.R
+import com.team.flip.navigation.bottom_nav.FlipBottomNavigationBar
+import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
-import com.team.presentation.addflip.view.AddFlipScreen
 import com.team.presentation.editcategories.view.EditMyCategoriesScreen
 import com.team.presentation.editcategories.viewmodel.EditMyCategoriesViewModel
-import com.team.presentation.flip.view.FlipScreen
-import com.team.presentation.home.view.HomeScreen
-import com.team.presentation.home.viewmodel.HomeViewModel
-import com.team.presentation.profile.view.ProfileScreen
 
 /**
- * Flip의 메인 네비게이션
+ * Flip 의 메인 네비게이션
  */
 @Composable
 fun MainNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
+    mainNavController: NavHostController,
+    bottomNavController: NavHostController,
     deleteToken: () -> Unit,
 ) {
 
     NavHost(
-        modifier = modifier
-            .fillMaxSize()
-            .background(FlipTheme.colors.white),
-        navController = navController,
-        startDestination = ScreenItem.HOME.name,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None},
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
+        modifier = modifier,
+        navController = mainNavController,
+        startDestination = NavigationItem.BOTTOM_NAV.name,
+        enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
+        exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
+        popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
+        popExitTransition = {FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) }
     ) {
-        val currentRoute = navController.currentDestination?.route
+        composable(NavigationItem.BOTTOM_NAV.name) {
 
-        composable(
-            route = ScreenItem.HOME.name,
-            enterTransition = {
-                  if (currentRoute == ScreenItem.EDIT_MY_CATEGORIES.name) {
-                      slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-                  } else {
-                      EnterTransition.None
-                  }
-            },
-            exitTransition = {
-                if (currentRoute == ScreenItem.EDIT_MY_CATEGORIES.name) {
-                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-                } else {
-                    ExitTransition.None
-                }
-            },
-            popEnterTransition = {
-                if (currentRoute == ScreenItem.EDIT_MY_CATEGORIES.name) {
-                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-                } else {
-                    EnterTransition.None
-                }
-            },
-            popExitTransition = {
-                if (currentRoute == ScreenItem.EDIT_MY_CATEGORIES.name) {
-                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-                } else {
-                    ExitTransition.None
-                }
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) }
+            ) { paddingValues ->
+
+                BottomNavigation(
+                    //TODO 아직 못정함, 정하고 변경 예정
+                    // modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
+                    modifier = Modifier.padding(paddingValues),
+                    bottomNavController = bottomNavController,
+                    onSettingClick = {
+                        mainNavController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)
+                    },
+                    deleteToken = deleteToken,
+                )
             }
-        ) {
-
-            val homeViewModel: HomeViewModel = hiltViewModel()
-            val categoryState by homeViewModel.categoriesState.collectAsStateWithLifecycle()
-            val postState by homeViewModel.postState.collectAsStateWithLifecycle()
-
-            HomeScreen(
-                categoryState = categoryState,
-                postState = postState,
-                flipCardUiEvent = homeViewModel::onFlipCardEvent,
-                homeUiEvent = homeViewModel::onHomeUiEvent,
-                onSettingClick = {
-                    navController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)
-                }
-            )
         }
 
-        composable(route = ScreenItem.FLIP.name) {
-            FlipScreen()
-        }
-
-        composable(
-            route = ScreenItem.ADD_FLIP.name,
-            enterTransition = { FlipTransitionObject.slideInVertically },
-            exitTransition = { FlipTransitionObject.slideOutVertically },
-            popEnterTransition = { FlipTransitionObject.slideInVertically },
-            popExitTransition = { FlipTransitionObject.slideOutVertically }
-        ) {
-            AddFlipScreen()
-        }
-
-        composable(route = ScreenItem.PROFILE.name) {
-            ProfileScreen(
-                deleteToken = deleteToken
-            )
-        }
-
-        /** 어차피 프로필 정보중에 이름만 받아오는데 인자 값으로 받아오면 안되나? argument 기능 써가지고... */
+        //TODO 어차피 프로필 정보중에 이름만 받아오는데 인자 값으로 받아오면 안되나? argument 기능 써가지고...
         composable(
             route = ScreenItem.EDIT_MY_CATEGORIES.name,
-            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-            exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) },
-            popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) },
-            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
+            enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
+            exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
+            popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
+            popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
         ) {
 
+            val context = LocalContext.current
             val editMyCategoriesViewModel: EditMyCategoriesViewModel = hiltViewModel()
             val myCategoriesState by editMyCategoriesViewModel.myCategoriesState.collectAsStateWithLifecycle()
-            val myProfileState by editMyCategoriesViewModel.myProfileState.collectAsStateWithLifecycle()
+            val nicknameState by editMyCategoriesViewModel.nicknameState.collectAsStateWithLifecycle()
+            val speechBubbleState by editMyCategoriesViewModel.speechBubbleState.collectAsStateWithLifecycle()
+            val myCategoriesUpdateState by editMyCategoriesViewModel.myCategoriesUpdateState.collectAsStateWithLifecycle()
+
+            val nickname = nicknameState.ifEmpty {
+                context.resources.getString(R.string.placeholder_nickname)
+            }
+
+            LaunchedEffect(myCategoriesUpdateState) {
+                if (myCategoriesUpdateState.success) {
+                    mainNavController.popBackStack()
+                }
+            }
 
             EditMyCategoriesScreen(
-                modifier = Modifier.fillMaxSize().background(Color.White),
-                nickname = myProfileState.myProfile?.nickname ?: "플리퍼",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(FlipTheme.colors.white)
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
+                    .padding(bottom = 26.dp),
+                nickname = nickname,
                 myCategoriesState = myCategoriesState,
-                onBackPress = { navController.popBackStack() }
+                speechBubbleState = speechBubbleState,
+                myCategoriesUpdateState = myCategoriesUpdateState,
+                updateMyCategories = editMyCategoriesViewModel::updateMyCategories,
+                uiEvent = editMyCategoriesViewModel::onUiEvent,
+                onBackPress = {
+                    //TODO 실행 시 HomeScreen 으로 돌아가는데 이 부분에서 딜레이 발생, 해결 필요
+                    // (HomeScreen, HomeViewModel 체크)
+                    mainNavController.popBackStack()
+                }
             )
         }
     }

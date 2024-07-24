@@ -26,7 +26,9 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val accessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+            val accessToken = dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+            // test.accesstoken.240615
+            Log.d("access_token_log", accessToken ?: "")
             delay(500L)
             if (!accessToken.isNullOrEmpty()) {
                 Log.d(TAG, accessToken)

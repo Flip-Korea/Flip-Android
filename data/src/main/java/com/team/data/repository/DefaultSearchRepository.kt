@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -61,9 +60,7 @@ class DefaultSearchRepository @Inject constructor(
         when (val result = searchNetworkDataSource.searchByPost(searchQuery, cursor, limit)) {
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
-                    val posts = withContext(ioDispatcher) {
-                        result.data.toDomainModel()
-                    }
+                    val posts = result.data.toDomainModel()
                     emit(Result.Success(posts))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -85,9 +82,7 @@ class DefaultSearchRepository @Inject constructor(
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
 
-                val profiles = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val profiles = result.data.toDomainModel()
                 emit(Result.Success(profiles))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -108,9 +103,7 @@ class DefaultSearchRepository @Inject constructor(
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
 
-                val tags = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val tags = result.data.toDomainModel()
                 emit(Result.Success(tags))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }

@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class DefaultAccountRepository @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ): AccountRepository {
 
-    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> = flow {
+    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> = flow<Result<Boolean, ErrorType>> {
         emit(Result.Loading)
 
 //        dataStoreManager.deleteToken(DataStoreManager.AccountType.CURRENT_PROFILE_ID)
@@ -52,12 +51,13 @@ class DefaultAccountRepository @Inject constructor(
             emit(Result.Error(ErrorType.Exception.EXCEPTION))
         }
     }
+        .flowOn(ioDispatcher)
 
     override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
         return flow {
             emit(Result.Loading)
 
-            val accessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).firstOrNull()
+            val accessToken = dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).firstOrNull()
             accessToken?.let { aT ->
                 when (val result = accountNetworkDataSource.getUserAccount(aT)) {
                     is Result.Success -> {
@@ -65,15 +65,13 @@ class DefaultAccountRepository @Inject constructor(
                         // 민감데이터를 제외한 프로필 데이터만 기기에 저장
                         // 민감데이터 필요 시, 서버에서 가져온 데이터 그대로 사용
                         // API 명세서에 따라 현재 프로필 제외하고는 ID만 가져오게 바뀔 가능성 있음
-                        val account = withContext(ioDispatcher) {
-                            myProfileDao.refresh(result.data.profile.toEntity())
-                            val myProfileEntities = myProfileDao.getAllProfile().first()
-                            result.data.toDomainModel(myProfileEntities.toDomainModel())
-                        }
+                        myProfileDao.refresh(result.data.profile.toEntity())
+                        val myProfileEntities = myProfileDao.getAllProfile().first()
+                        val account = result.data.toDomainModel(myProfileEntities.toDomainModel())
 
                         //TODO 현재 저장된 ProfileId가 없다면 저장 (해당 위치가 맞는지 확인 필요)
                         // 만약 멀티프로필 기능 추가 시 현재 프로필ID로 바꿔주는 함수 필요
-                        val currentProfile = dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
+                        val currentProfile = dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
                             .catch { emit("") }
                             .first()
                         if (currentProfile.isNullOrEmpty()) {

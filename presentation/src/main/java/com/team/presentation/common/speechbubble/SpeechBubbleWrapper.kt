@@ -62,6 +62,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SpeechBubbleWrapper(
     modifier: Modifier = Modifier,
+    enabled: Boolean,
     showed: Boolean,
     tipStartOffset: IntOffset = IntOffset(10, 0),
     onDismissRequest: () -> Unit,
@@ -74,75 +75,80 @@ fun SpeechBubbleWrapper(
     var height by remember { mutableIntStateOf(0) }
     val pivotFractionX = with(density) { tipStartOffset.x.toDp().toPx() / width }
 
-    var enabled by remember { mutableStateOf(false) }
+    var showedForPopup by remember { mutableStateOf(false) }
     LaunchedEffect(showed) {
         if (showed) {
             delay(ENABLED_DELAY)
-            enabled = true
+            showedForPopup = true
         }
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    onDismissRequest()
-                }
-            }
-    ) {
+    if (!enabled) {
+        content()
+    } else {
         Box(
             modifier = modifier
-                .onSizeChanged {
-                    width = it.width
-                    height = it.height
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        onDismissRequest()
+                    }
                 }
         ) {
-            content()
+            Box(
+                modifier = modifier
+                    .onSizeChanged {
+                        width = it.width
+                        height = it.height
+                    }
+            ) {
+                content()
 
-            if (enabled) {
-                CustomPopup(
-                    showed = showed,
-                    onDismissRequest = { },
-                    popupPositionProvider = object : PopupPositionProvider {
-                        override fun calculatePosition(
-                            anchorBounds: IntRect,
-                            windowSize: IntSize,
-                            layoutDirection: LayoutDirection,
-                            popupContentSize: IntSize,
-                        ): IntOffset {
-                            /** 내부 에서 직접 요소의 경계 선을 찾고 싶을 때 사용 */
+                if (showedForPopup) {
+                    CustomPopup(
+                        showed = showed,
+                        onDismissRequest = { },
+                        popupPositionProvider = object : PopupPositionProvider {
+                            override fun calculatePosition(
+                                anchorBounds: IntRect,
+                                windowSize: IntSize,
+                                layoutDirection: LayoutDirection,
+                                popupContentSize: IntSize,
+                            ): IntOffset {
+                                /** 내부 에서 직접 요소의 경계 선을 찾고 싶을 때 사용 */
 //                            return IntOffset(
 //                                x = anchorBounds.left,
 //                                y = anchorBounds.bottom
 //                            )
-                            return IntOffset(
-                                x = tipStartOffset.x,
-                                y = tipStartOffset.y
-                            )
-                        }
-                    },
-                    //TODO 애니메이션 디자인시스템에 넣기
-                    enter = fadeIn(
-                        animationSpec = tween(durationMillis = 300, easing = EaseOutCubic)
-                    ) + scaleIn(
-                        initialScale = 0.3f,
-                        transformOrigin = TransformOrigin(pivotFractionX, 0f),
-                        animationSpec = tween(durationMillis = 300, easing = EaseOutBack)
-                    ),
-                    exit = fadeOut(
-                        animationSpec = tween(durationMillis = 300, easing = EaseInOutCubic)
-                    ) + scaleOut(
-                        targetScale = 0.3f,
-                        transformOrigin = TransformOrigin(pivotFractionX, 0f),
-                        animationSpec = tween(durationMillis = 300, easing = EaseInOutBack)
-                    )
-                ) {
-                    speechBubbleView(Modifier.zIndex(1f))
+                                return IntOffset(
+                                    x = tipStartOffset.x,
+                                    y = tipStartOffset.y
+                                )
+                            }
+                        },
+                        //TODO 애니메이션 디자인시스템에 넣기
+                        enter = fadeIn(
+                            animationSpec = tween(durationMillis = 300, easing = EaseOutCubic)
+                        ) + scaleIn(
+                            initialScale = 0.3f,
+                            transformOrigin = TransformOrigin(pivotFractionX, 0f),
+                            animationSpec = tween(durationMillis = 300, easing = EaseOutBack)
+                        ),
+                        exit = fadeOut(
+                            animationSpec = tween(durationMillis = 300, easing = EaseInOutCubic)
+                        ) + scaleOut(
+                            targetScale = 0.3f,
+                            transformOrigin = TransformOrigin(pivotFractionX, 0f),
+                            animationSpec = tween(durationMillis = 300, easing = EaseInOutBack)
+                        )
+                    ) {
+                        speechBubbleView(Modifier.zIndex(1f))
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -187,6 +193,7 @@ private fun SpeechBubbleWrapperPreview() {
 
     SpeechBubbleWrapper(
         modifier = Modifier,
+        enabled = true,
         showed = speechBubbleEnabled,
         tipStartOffset = tipStartOffset,
         onDismissRequest = { },

@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +76,7 @@ fun HomeScreen(
     var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var topBarHeightDp by remember { mutableStateOf(0.dp) }
     var isPostFling by remember { mutableStateOf(false) }
-    var animatedOffset by remember { mutableFloatStateOf(0f) }
+    var animatedOffset by rememberSaveable { mutableFloatStateOf(0f) }
     val animatedTopBarOffset by animateFloatAsState(
         targetValue = animatedOffset,
         label = "",
@@ -134,9 +135,8 @@ fun HomeScreen(
         }
     }
 
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
+        //TODO 리스트 맨 위에서 탑 바를 조금씩 올릴 시 공백이 생김, 처리 요망
         HomeTopBarWrapper(
             modifier = Modifier
                 .align(Alignment.TopCenter)

@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultPostRepository @Inject constructor(
@@ -42,6 +41,7 @@ class DefaultPostRepository @Inject constructor(
     override fun getCachedPosts(): Flow<List<Post>> =
         postDao.getPosts()
             .map { it.toDomainModel() }
+            .flowOn(ioDispatcher)
             .catch { emit(emptyList()) }
 
     override fun getPostsPagination(cursor: String?, limit: Int): Flow<Result<PostList, ErrorType>> {
@@ -51,9 +51,7 @@ class DefaultPostRepository @Inject constructor(
             when (val result = postNetworkDataSource.getPosts(cursor, limit)) {
                 is Result.Success -> {
                     if (result.data.hasNext && result.data.nextCursor.isNotEmpty()) {
-                        val postListEntities = withContext(ioDispatcher) {
-                                result.data.posts.map { it.toEntity() }
-                            }
+                        val postListEntities = result.data.posts.map { it.toEntity() }
                         postDao.refresh(postListEntities)
                     }
                     val postList = result.data.toDomainModel()
@@ -73,7 +71,7 @@ class DefaultPostRepository @Inject constructor(
         // Fetch Data From Local DB
         val postEntity = postDao.getPostById(postId).firstOrNull()
         if (postEntity != null) {
-            val post = withContext((ioDispatcher)) { postEntity.toDomainModel() }
+            val post = postEntity.toDomainModel()
             emit(Result.Success(post))
         } else {
             // If Can't Fetch Data, Then Fetch From Server
@@ -82,9 +80,7 @@ class DefaultPostRepository @Inject constructor(
             // 2. 대부분 페이지네이션 된 글을 읽을 것으로 예상 -> 밑에 코드 실행 확률 극히 적음
             when (val result = postNetworkDataSource.getPostById(postId)) {
                 is Result.Success -> {
-                    val post = withContext(ioDispatcher) {
-                        result.data.toEntity().toDomainModel()
-                    }
+                    val post = result.data.toEntity().toDomainModel()
                     emit(Result.Success(post))
                 }
                 is Result.Error -> { emit(Result.Error(result.error)) }
@@ -98,7 +94,7 @@ class DefaultPostRepository @Inject constructor(
     override fun addPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
         when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -111,7 +107,7 @@ class DefaultPostRepository @Inject constructor(
     override fun editPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
         when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -132,9 +128,7 @@ class DefaultPostRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)) {
             is Result.Success -> {
-                val postList = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val postList = result.data.toDomainModel()
                 emit(Result.Success(postList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -166,9 +160,7 @@ class DefaultPostRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.getPostsByPopularUser(categoryId, cursor, limit)) {
             is Result.Success -> {
-                val postList = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val postList = result.data.toDomainModel()
                 emit(Result.Success(postList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }

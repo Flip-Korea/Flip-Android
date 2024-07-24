@@ -55,7 +55,7 @@ class FakeAccountRepository(
         return flow {
             emit(Result.Loading)
 
-            val accessToken = dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN).firstOrNull()
+            val accessToken = dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).firstOrNull()
             accessToken?.let { aT ->
                 when (val result = accountNetworkDataSource.getUserAccount(aT)) {
                     is Result.Success -> {
@@ -75,7 +75,7 @@ class FakeAccountRepository(
 
                         //TODO 현재 저장된 ProfileId가 없다면 저장 (해당 위치가 맞는지 확인 필요)
                         // 만약 멀티프로필 기능 추가 시 현재 프로필ID로 바꿔주는 함수 필요
-                        val currentProfile = dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
+                        val currentProfile = dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
                             .catch { emit("") }
                             .first()
                         if (currentProfile.isNullOrEmpty()) {

@@ -22,7 +22,7 @@ class TokenInterceptor @Inject constructor(
 
         // get accessToken & just continue request when accessToken is null
         val accessToken = runBlocking {
-            dataStoreManager.getData(DataStoreType.TokenType.ACCESS_TOKEN)
+            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN)
                 .catch { emit("") }
                 .first()
         } ?: return chain.proceed(chain.request())

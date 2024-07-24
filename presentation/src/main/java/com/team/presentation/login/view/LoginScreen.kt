@@ -45,7 +45,6 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.type.SocialLoginPlatform
 import com.team.presentation.R
 import com.team.presentation.login.state.LoginState
-import com.team.presentation.util.asUiText
 
 @Composable
 fun LoginScreen(
@@ -58,7 +57,7 @@ fun LoginScreen(
 
     LaunchedEffect(loginState.error) {
         if (loginState.error != null) {
-            val error = loginState.error.asUiText().asString(context)
+            val error = loginState.error.asString(context)
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
     }

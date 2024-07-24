@@ -1,4 +1,4 @@
-package com.team.presentation.home.viewmodel.testdoubles
+package com.team.presentation.home.testdoubles
 
 import com.team.domain.model.category.Category
 

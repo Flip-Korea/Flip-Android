@@ -64,7 +64,7 @@ fun HomeTab(
     ) {
         itemsIndexed(
             items = items,
-            key = { idx, category -> category.id }
+//            key = { idx, category -> category.id }
         ) { index, category ->
             TabItem(
                 selected = category.id == selectedItemId,

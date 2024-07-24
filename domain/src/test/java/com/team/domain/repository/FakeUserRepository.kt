@@ -11,6 +11,7 @@ import com.team.domain.model.report_block.ReportReq
 import com.team.domain.usecase.category.myCategoriesTestData
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -18,17 +19,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 
 class FakeUserRepository(
+    private val profileId: String,
     private val hasLocalData: Boolean,
     private val isNetworkError: Boolean,
 ) : UserRepository {
 
-    private val profile: MutableStateFlow<MyProfile?> = MutableStateFlow(null)
+    private val _profile: MutableStateFlow<MyProfile?> = MutableStateFlow(null)
 
     init {
         if (hasLocalData) {
-            profile.update {
+            _profile.update {
                 MyProfile(
-                    "profileId",
+                    profileId,
                     "",
                     "",
                     "",
@@ -44,14 +46,16 @@ class FakeUserRepository(
 
     override fun getMyProfileFromLocal(profileId: String): Flow<Result<MyProfile?, ErrorType>> =
         flow {
-            emit(Result.Success(profile.value))
+            emit(Result.Loading)
+            delay(100)
+            emit(Result.Success(_profile.value))
         }
 
     override suspend fun refreshMyProfile(profileId: String) {
         if (isNetworkError) {
-            profile.update { null }
+            _profile.update { null }
         } else {
-            profile.update {
+            _profile.update {
                 MyProfile(
                     profileId,
                     "",
