@@ -1,9 +1,10 @@
 package com.team.data.datastore
 
-import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
@@ -12,12 +13,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-// TODO 나중에 Encrypt/Decrypt 추가하기, 좀 더 자세히 작성할 필요 있음 (now in android 참고)
-class DefaultDataStoreManager(private val context: Context) : DataStoreManager {
+private sealed class PreferenceKeyType {
+    data class StringType(val key: Preferences.Key<String>): PreferenceKeyType()
+    data class IntType(val key: Preferences.Key<Int>): PreferenceKeyType()
+    data class BooleanType(val key: Preferences.Key<Boolean>): PreferenceKeyType()
+}
 
-    override fun getData(type: DataStoreType): Flow<String?> {
-        val key = getKey(type)
-        return context.dataStore.data
+class DefaultDataStoreManager(private val dataStore: DataStore<Preferences>) : DataStoreManager {
+    override fun getStringData(type: DataStoreType): Flow<String?> {
+        val key = (getKey(type) as PreferenceKeyType.StringType).key
+        return dataStore.data
             .catch { exception ->
                 // dataStore.data throws an IOException when an error is encountered when reading data
                 if (exception is IOException) {
@@ -31,28 +36,71 @@ class DefaultDataStoreManager(private val context: Context) : DataStoreManager {
             }
     }
 
-    override suspend fun saveData(type: DataStoreType, data: String) {
-        val key = getKey(type)
-        context.dataStore.edit { preferences ->
+    override fun getIntData(type: DataStoreType): Flow<Int?> {
+        val key = (getKey(type) as PreferenceKeyType.IntType).key
+        return dataStore.data
+            .catch { exception ->
+                // dataStore.data throws an IOException when an error is encountered when reading data
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                preferences[key]
+            }
+    }
+
+    override suspend fun <T : DataStoreType.TokenType> saveData(type: T, data: String) {
+        val key = (getKey(type) as PreferenceKeyType.StringType).key
+        dataStore.edit { preferences ->
+            preferences[key] = data
+        }
+    }
+
+    override suspend fun <T : DataStoreType.AccountType> saveData(type: T, data: String) {
+        val key = (getKey(type) as PreferenceKeyType.StringType).key
+        dataStore.edit { preferences ->
+            preferences[key] = data
+        }
+    }
+
+    override suspend fun <T : DataStoreType.CheckType> saveData(type: T, data: Int) {
+        val key = (getKey(type) as PreferenceKeyType.IntType).key
+        dataStore.edit { preferences ->
             preferences[key] = data
         }
     }
 
     override suspend fun deleteData(type: DataStoreType) {
-        val key = getKey(type)
-        context.dataStore.edit { preferences ->
+        val key = when(val k = getKey(type)) {
+            is PreferenceKeyType.IntType -> k.key
+            is PreferenceKeyType.StringType -> k.key
+            is PreferenceKeyType.BooleanType -> k.key
+        }
+        dataStore.edit { preferences ->
             preferences.remove(key)
         }
     }
 
     override suspend fun clearAll() {
-        context.dataStore.edit { it.clear() }
+        dataStore.edit { it.clear() }
     }
 
-    private fun getKey(type: DataStoreType): Preferences.Key<String> =
+    private fun getKey(type: DataStoreType): PreferenceKeyType =
         when (type) {
-            DataStoreType.AccountType.CURRENT_PROFILE_ID -> stringPreferencesKey("current_profile_id")
-            DataStoreType.TokenType.ACCESS_TOKEN -> stringPreferencesKey("access_token")
-            DataStoreType.TokenType.REFRESH_TOKEN -> stringPreferencesKey("refresh_token")
+            DataStoreType.AccountType.CURRENT_PROFILE_ID -> {
+                PreferenceKeyType.StringType(stringPreferencesKey("current_profile_id"))
+            }
+            DataStoreType.TokenType.ACCESS_TOKEN -> {
+                PreferenceKeyType.StringType(stringPreferencesKey("access_token"))
+            }
+            DataStoreType.TokenType.REFRESH_TOKEN -> {
+                PreferenceKeyType.StringType(stringPreferencesKey("refresh_token"))
+            }
+            DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE -> {
+                PreferenceKeyType.IntType(intPreferencesKey("edit_my_categories_speech_bubble"))
+            }
         }
 }

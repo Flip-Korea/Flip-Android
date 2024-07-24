@@ -28,7 +28,7 @@ class TokenAuthenticator @Inject constructor(
 
         // get originalRefreshToken
         val originalRefreshToken = runBlocking {
-            dataStoreManager.getData(DataStoreType.TokenType.REFRESH_TOKEN)
+            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN)
                 .catch { emit("") }
                 .first()
         }

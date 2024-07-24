@@ -39,7 +39,7 @@ fun FlipSmallButton(
     val clickableSingle = remember { ClickableSingle.get() }
 
     Button(
-        onClick = { clickableSingle.onEvent(onClick) },
+        onClick = { if (!isLoading) clickableSingle.onEvent(onClick) },
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp),

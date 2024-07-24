@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultScrapRepository @Inject constructor(
@@ -33,9 +32,7 @@ class DefaultScrapRepository @Inject constructor(
         when (val result =
             userNetworkDataSource.getScrapList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val scrapList = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val scrapList = result.data.toDomainModel()
                 emit(Result.Success(scrapList))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -65,7 +62,7 @@ class DefaultScrapRepository @Inject constructor(
     override fun addScrap(newScrap: NewScrap): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newScrapNetwork = withContext(ioDispatcher) { newScrap.toNetwork() }
+        val newScrapNetwork = newScrap.toNetwork()
 
         when (val result =
             userNetworkDataSource.addScrap(newScrapNetwork)) {

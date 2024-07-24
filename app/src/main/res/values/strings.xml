@@ -12,5 +12,9 @@
     <string name="bottom_nav_flip">플립</string>
     <string name="bottom_nav_add_flip">글쓰기</string>
     <string name="bottom_nav_profile">프로필</string>
+
     <!-- BottomNavigation Item(Content Description) -->
+
+    <!-- PlaceHolder (Text) -->
+    <string name="placeholder_nickname">플리퍼</string>
 </resources>

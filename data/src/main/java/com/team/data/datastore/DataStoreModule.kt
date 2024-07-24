@@ -22,5 +22,5 @@ class DataStoreModule {
     @Provides
     fun provideDataStoreManager(
         @ApplicationContext context: Context
-    ): DataStoreManager = DefaultDataStoreManager(context)
+    ): DataStoreManager = DefaultDataStoreManager(context.dataStore)
 }

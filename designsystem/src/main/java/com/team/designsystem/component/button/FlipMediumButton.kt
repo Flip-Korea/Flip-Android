@@ -46,7 +46,7 @@ fun FlipMediumButton(
     val clickableSingle = remember { ClickableSingle.get() }
 
     Button(
-        onClick = { clickableSingle.onEvent(onClick) },
+        onClick = { if (!isLoading) clickableSingle.onEvent(onClick) },
         modifier = modifier
             .height(48.dp)
             .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),

@@ -23,6 +23,9 @@ import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+/**
+ * 중간 사이즈의 Flip Chip
+ */
 @Composable
 fun FlipMediumChip(
     modifier: Modifier = Modifier,

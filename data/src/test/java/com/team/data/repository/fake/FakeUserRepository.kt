@@ -120,7 +120,7 @@ class FakeUserRepository(
             interestCategoryNetworkDataSource.updateMyCategories(categoryRequest)) {
             is Result.Success -> {
                 val myProfileEntity = withContext(ioDispatcher) {
-                    val profileId = dataStoreManager.getData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
+                    val profileId = dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
                     myProfileDao.updateCategories(profileId ?: "", categoryIds)
                     myProfileDao.getProfileById(profileId ?: "").firstOrNull()
                 }

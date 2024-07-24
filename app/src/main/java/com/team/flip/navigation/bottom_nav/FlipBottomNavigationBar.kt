@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.team.designsystem.component.utils.dropShadow1
@@ -33,7 +34,7 @@ import com.team.presentation.ScreenItem
  * Flip의 BottomNavigationBar
  */
 @Composable
-fun FlipBottomNavigation(
+fun FlipBottomNavigationBar(
     modifier: Modifier = Modifier,
     navController: NavHostController,
 ) {
@@ -46,7 +47,8 @@ fun FlipBottomNavigation(
             modifier = modifier
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 61.dp)
-                .dropShadow1(),
+                .dropShadow1()
+                .zIndex(1f),
             containerColor = FlipTheme.colors.white,
             contentColor = FlipTheme.colors.gray5
         ) {

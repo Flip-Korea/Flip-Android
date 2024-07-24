@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DefaultTempPostRepository @Inject constructor(
@@ -32,9 +31,7 @@ class DefaultTempPostRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.getTemporaryPosts(profileId, cursor, limit)) {
             is Result.Success -> {
-                val tempPosts = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val tempPosts = result.data.toDomainModel()
                 emit(Result.Success(tempPosts))
             }
             is Result.Error -> { emit(Result.Error(result.error)) }
@@ -47,7 +44,7 @@ class DefaultTempPostRepository @Inject constructor(
     override fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
             postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
@@ -72,7 +69,7 @@ class DefaultTempPostRepository @Inject constructor(
     override fun editTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
             postNetworkDataSource.editTemporaryPost(newPostNetwork)) {
