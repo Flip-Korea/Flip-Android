@@ -45,6 +45,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
+import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
@@ -65,6 +66,7 @@ fun HomeScreen(
     postState: PostState,
     onSettingClick: () -> Unit,
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
+    reportAndBlockUiEvent: (ReportAndBlockUiEvent) -> Unit,
     homeUiEvent: (HomeUiEvent) -> Unit,
 ) {
 
@@ -196,7 +198,8 @@ fun HomeScreen(
                         HomeFlipCard(
                             modifier = Modifier.fillMaxWidth(),
                             post = post,
-                            flipCardUiEvent = { flipCardUiEvent(it) }
+                            flipCardUiEvent = { flipCardUiEvent(it) },
+                            reportAndBlockUiEvent = { uiEvent -> reportAndBlockUiEvent(uiEvent) }
                         )
                     }
                 }
@@ -265,6 +268,7 @@ private fun HomeScreenPreview() {
                 )
             ),
             flipCardUiEvent = { },
+            reportAndBlockUiEvent = { },
             homeUiEvent = { },
             onSettingClick = { }
         )

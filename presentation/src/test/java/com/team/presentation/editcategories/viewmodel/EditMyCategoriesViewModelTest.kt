@@ -5,8 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.team.domain.DataStoreManager
 import com.team.domain.model.category.Category
 import com.team.domain.usecase.category.GetCategoriesUseCase
-import com.team.domain.usecase.datastore.GetSpeechBubbleCountUseCase
-import com.team.domain.usecase.datastore.IncrementSpeechBubbleCountUseCase
+import com.team.domain.usecase.speechbubble.GetSpeechBubbleCountUseCase
+import com.team.domain.usecase.speechbubble.IncrementSpeechBubbleCountUseCase
 import com.team.domain.usecase.interestcategory.UpdateMyCategoriesUseCase
 import com.team.domain.usecase.profile.GetMyProfileUseCase
 import com.team.domain.util.ErrorType
