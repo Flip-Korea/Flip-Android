@@ -1,4 +1,4 @@
-package com.team.domain.usecase.datastore
+package com.team.domain.usecase.speechbubble
 
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType

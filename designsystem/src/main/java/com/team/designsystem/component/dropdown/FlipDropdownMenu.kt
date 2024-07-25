@@ -65,7 +65,7 @@ import kotlin.math.min
 
 @Composable
 fun FlipDropdownMenu(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     expanded: Boolean,
     offset: DpOffset,
     dropDownItems: List<DropdownItem>,

@@ -89,9 +89,9 @@ fun headline5(): TextStyle {
         color = FlipTheme.colors.main,
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
-        fontSize = 22.sp,
-        lineHeight = 22.sp * 1.5,
-        letterSpacing = 22.sp * (-0.006),
+        fontSize = 18.sp,
+        lineHeight = 18.sp * 1.5,
+        letterSpacing = 18.sp * (-0.006),
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None

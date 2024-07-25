@@ -73,4 +73,29 @@
     <string name="edit_interest_categories_speechbubble">관심분야를 자유롭게 추가하고 삭제해보세요.\n꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!</string>
     <string name="edit_interest_categories_list_title_1">관심사 리스트</string>
     <string name="edit_interest_categories_list_title_2">전체 선택</string>
+
+    <!-- BottomSheet (ContentDescription) -->
+    <string name="bottom_sheet_report_content_desc_complete">신고 완료</string>
+    <string name="bottom_sheet_block_content_desc_complete">차단 완료</string>
+
+    <!-- BottomSheet (Report) -->
+    <string name="bottom_sheet_report_title">게시글을 신고하시겠어요?</string>
+    <string name="bottom_sheet_report_sub_title">이 게시글을 신고합니다. 신고 내용은 Flip 이용약관 및 정책에 의해서 처리되며, 허위신고 시 서비스 이용이 제한될 수 있습니다.</string>
+    <string name="bottom_sheet_report_btn">신고하기</string>
+    <string name="bottom_sheet_report_complete_title">알려주셔서 감사합니다!</string>
+    <string name="bottom_sheet_report_complete_sub_title_1">게시글 신고를 완료했습니다.\n추가로 게시글을 작성한 @</string>
+    <string name="bottom_sheet_report_complete_sub_title_2">님을 차단하시겠어요?</string>
+    <string name="bottom_sheet_report_complete_btn_ok">괜찮아요</string>
+    <string name="bottom_sheet_report_complete_btn_with_block">함께 차단하기</string>
+
+    <!-- BottomSheet (Block) -->
+    <string name="bottom_sheet_block_title"> 님을 차단하시겠어요?</string>
+    <string name="bottom_sheet_block_sub_title_1">회원님은 앞으로 @</string>
+    <string name="bottom_sheet_block_sub_title_2">님의 게시글을 볼 수 없습니다.\n@</string>
+    <string name="bottom_sheet_block_sub_title_3">님도 회원님을 팔로우하거나 회원님의 게시글을 볼 수 없습니다.</string>
+    <string name="bottom_sheet_block_btn">차단하기</string>
+    <string name="bottom_sheet_block_btn_ok">확인</string>
+    <string name="bottom_sheet_block_complete_title">차단되었습니다.</string>
+    <string name="bottom_sheet_block_complete_sub_title_1">이제부터 @</string>
+    <string name="bottom_sheet_block_complete_sub_title_2">님이 작성한\n게시글과 댓글도 모두 차단됩니다.\n설정에서 언제든지 차단을 해제할 수 있습니다.</string>
 </resources>

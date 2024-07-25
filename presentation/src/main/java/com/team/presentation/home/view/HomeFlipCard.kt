@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,12 +31,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.team.designsystem.component.button.FlipIconButton
+import com.team.designsystem.component.dropdown.DropdownItem
+import com.team.designsystem.component.dropdown.FlipDropdownMenu
+import com.team.designsystem.component.dropdown.FlipDropdownWrapper
 import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
+import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.util.FlipCardTokens
 
@@ -51,6 +56,7 @@ fun HomeFlipCard(
     modifier: Modifier = Modifier,
     post: Post, //TODO Post 말고 보여지는 정보만 가지고 있는 객체 따로 생성
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
+    reportAndBlockUiEvent: (ReportAndBlockUiEvent) -> Unit
 ) {
 
     Box(
@@ -71,7 +77,9 @@ fun HomeFlipCard(
                 photoUrl = post.profile.photoUrl,
                 nickname = post.profile.nickname,
                 profileId = post.profile.profileId,
-                onMoreClick = { flipCardUiEvent(FlipCardUiEvent.OnMoreClick) }
+                reportAndBlockUiEvent = { uiEvent ->
+                    reportAndBlockUiEvent(uiEvent)
+                }
             )
             CardMiddleSection(
                 modifier = Modifier.fillMaxWidth(),
@@ -97,8 +105,10 @@ private fun CardTopSection(
     photoUrl: String,
     nickname: String,
     profileId: String,
-    onMoreClick: () -> Unit,
+    reportAndBlockUiEvent: (ReportAndBlockUiEvent) -> Unit,
 ) {
+
+    var expanded by remember { mutableStateOf(false) }
 
     Row(
         modifier = modifier,
@@ -131,12 +141,33 @@ private fun CardTopSection(
             }
         }
 
-        FlipIconButton(
-            modifier = Modifier.size(24.dp),
-            imageVector = ImageVector.vectorResource(R.drawable.ic_more),
-            contentDescription = stringResource(id = R.string.home_flip_card_content_desc_more),
-            tint = FlipTheme.colors.main,
-            onClick = onMoreClick
+        FlipDropdownWrapper(
+            button = {
+                FlipIconButton(
+                    modifier = Modifier.size(24.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_more),
+                    contentDescription = stringResource(id = R.string.home_flip_card_content_desc_more),
+                    tint = FlipTheme.colors.main,
+                    onClick = { expanded = true }
+                )
+            },
+            menu = { modifier, dpOffset ->
+                FlipDropdownMenu(
+                    modifier = modifier,
+                    expanded = expanded,
+                    offset = dpOffset,
+                    dropDownItems = dropdownItem,
+                    onDismissRequest = { expanded = false },
+                    onItemClick = { item ->
+                        /** 0: 신고하기, 1: 차단하기 */
+                        when (item.id) {
+                            0 -> reportAndBlockUiEvent(ReportAndBlockUiEvent.OnReport(profileId, photoUrl))
+                            1 -> reportAndBlockUiEvent(ReportAndBlockUiEvent.OnBlock(profileId, photoUrl))
+                        }
+                        expanded = false
+                    }
+                )
+            }
         )
     }
 }
@@ -257,6 +288,11 @@ private fun CardBottomSection(
     }
 }
 
+private val dropdownItem = listOf(
+    DropdownItem(0, "신고하기"),
+    DropdownItem(1, "차단하기")
+)
+
 @Preview(showBackground = true)
 @Composable
 private fun CardTopSectionPreview() {
@@ -265,7 +301,7 @@ private fun CardTopSectionPreview() {
             photoUrl = "",
             nickname = "어스름늑대",
             profileId = "90WXYZ6789A1B2C3",
-            onMoreClick = { }
+            reportAndBlockUiEvent = { }
         )
     }
 }
@@ -326,7 +362,8 @@ private fun HomeFlipCardPreview() {
                 scraped = false,
                 bgColorId = 2
             ),
-            flipCardUiEvent = { }
+            flipCardUiEvent = { },
+            reportAndBlockUiEvent = {}
         )
     }
 }

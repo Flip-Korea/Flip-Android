@@ -10,8 +10,11 @@ import com.team.domain.model.category.Category
 import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
 import com.team.domain.usecase.post.PostUseCases
+import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
+import com.team.presentation.common.bottomsheet.block.BlockState
+import com.team.presentation.common.bottomsheet.report.ReportState
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
 import com.team.presentation.home.state.CategoryState
@@ -23,8 +26,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +40,15 @@ class HomeViewModel @Inject constructor(
     private val postUseCases: PostUseCases,
     private val getMyCategoriesUseCase: GetMyCategoriesUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase,
 ) : ViewModel() {
+
+    val currentProfileID = getCurrentProfileIdUseCase()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            ""
+        )
 
     private val _categoriesState = MutableStateFlow(CategoryState())
     val categoriesState = _categoriesState.asStateFlow()
@@ -46,6 +59,12 @@ class HomeViewModel @Inject constructor(
     private var getPostsJob by mutableStateOf<Job?>(null)
 
     private var nextCursor by mutableStateOf<String?>(null)
+
+    private val _reportState = MutableStateFlow(ReportState())
+    val reportState = _reportState.asStateFlow()
+
+    private val _blockState = MutableStateFlow(BlockState())
+    val blockState = _blockState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -59,7 +78,6 @@ class HomeViewModel @Inject constructor(
         when (uiEvent) {
             FlipCardUiEvent.OnCommentClick -> {}
             FlipCardUiEvent.OnLikeClick -> {}
-            FlipCardUiEvent.OnMoreClick -> {}
             FlipCardUiEvent.OnScrapClick -> {}
             FlipCardUiEvent.OnFlipCardClick -> {}
         }
@@ -188,6 +206,28 @@ class HomeViewModel @Inject constructor(
 //                }
 //            }.launchIn(viewModelScope)
         }
+    }
+
+    //TODO API 문서 확정되고 나서 개발 마저 진행
+    fun onReport(
+        /** ReportReq 를 위한 매개변수 */
+//        reportType: ReportType,
+//        reportId: String,
+//        reporterId: String,
+//        postId: Long? = null,
+//        commentId: Long? = null
+    ) {
+
+    }
+
+    //TODO API 문서 확정되고 나서 개발 마저 진행
+    fun onBlock(
+        /** BlockReq 를 위한 매개변수 */
+//        profileId: String,
+//        postId: Long?,
+//        blockedId: String
+    ) {
+
     }
 
     override fun onCleared() {
