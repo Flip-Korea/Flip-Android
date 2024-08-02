@@ -128,6 +128,9 @@ dependencies {
     implementation(libs.kakao.sdk.v2.navi)
     implementation(libs.kakao.sdk.v2.cert)
 
+    // Icons Extended
+    implementation(libs.androidx.material.icons.extended)
+
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)

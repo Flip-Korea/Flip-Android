@@ -17,7 +17,7 @@ interface PostNetworkDataSource {
 
     suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType>
 
-    suspend fun addPost(postRequest: PostRequest): Result<ResultIdResponse, ErrorType>
+    suspend fun addPost(postRequest: PostRequest): Result<Boolean, ErrorType>
 
     suspend fun editPost(postRequest: PostRequest): Result<Boolean, ErrorType>
 

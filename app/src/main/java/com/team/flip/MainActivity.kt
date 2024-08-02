@@ -42,7 +42,9 @@ class MainActivity : ComponentActivity() {
             FlipAppTheme {
 
                 MainNavigation(
-                    modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(FlipTheme.colors.white),
                     mainNavController = mainNavController,
                     bottomNavController = bottomNavController,
                     deleteToken = {

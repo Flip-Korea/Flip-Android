@@ -3,7 +3,9 @@ package com.team.flip.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.ScreenItem
 import com.team.presentation.addflip.view.AddFlipScreen
+import com.team.presentation.addflip.viewmodel.AddFlipViewModel
 import com.team.presentation.common.bottomsheet.ReportAndBlockBottomSheet
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.flip.view.FlipScreen
@@ -45,6 +48,7 @@ fun BottomNavigation(
     bottomNavController: NavHostController,
     onSettingClick: () -> Unit,
     deleteToken: () -> Unit,
+    innerPadding: PaddingValues
 ) {
 
     NavHost(
@@ -67,7 +71,6 @@ fun BottomNavigation(
             val blockState by homeViewModel.blockState.collectAsStateWithLifecycle()
 
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-            var showBottomSheet by remember { mutableStateOf(false) }
             var startFromReportView: Boolean? by remember { mutableStateOf(null) }
             var reportAndBlockProfileId by remember { mutableStateOf("") }
             var reportAndBlockPhotoUrl by remember { mutableStateOf("") }
@@ -91,7 +94,6 @@ fun BottomNavigation(
                 onDismissRequest = {
                     coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
                         if (!sheetState.isVisible) {
-                            showBottomSheet = false
                             startFromReportView = null
                         }
                     }
@@ -103,14 +105,14 @@ fun BottomNavigation(
             HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(FlipTheme.colors.white),
+                    .background(FlipTheme.colors.white)
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
                 categoryState = categoryState,
                 postState = postState,
                 flipCardUiEvent = homeViewModel::onFlipCardEvent,
                 homeUiEvent = homeViewModel::onHomeUiEvent,
                 onSettingClick = onSettingClick,
                 reportAndBlockUiEvent = { reportAndBlockUiEvent ->
-                    showBottomSheet = true
                     when (reportAndBlockUiEvent) {
                         is ReportAndBlockUiEvent.OnReport -> {
                             reportAndBlockProfileId = reportAndBlockUiEvent.profileId
@@ -138,7 +140,17 @@ fun BottomNavigation(
             popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom) },
             popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom) }
         ) {
-            AddFlipScreen()
+
+            val addFlipViewModel: AddFlipViewModel = hiltViewModel()
+            val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
+            val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
+
+            AddFlipScreen(
+                categoriesState = categoriesState,
+                selectedCategory = selectedCategory,
+                onUiEvent = addFlipViewModel::onUiEvent,
+                onBackPress = { bottomNavController.popBackStack() },
+            )
         }
 
         composable(route = ScreenItem.PROFILE.name) {
@@ -147,4 +159,5 @@ fun BottomNavigation(
             )
         }
     }
+
 }

@@ -50,19 +50,20 @@ fun MainNavigation(
         composable(NavigationItem.BOTTOM_NAV.name) {
 
             Scaffold(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding(),
                 bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) }
-            ) { paddingValues ->
+            ) { innerPadding ->
 
                 BottomNavigation(
-                    //TODO 아직 못정함, 정하고 변경 예정
-                    // modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier.fillMaxSize(),
                     bottomNavController = bottomNavController,
                     onSettingClick = {
                         mainNavController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)
                     },
                     deleteToken = deleteToken,
+                    innerPadding = innerPadding
                 )
             }
         }

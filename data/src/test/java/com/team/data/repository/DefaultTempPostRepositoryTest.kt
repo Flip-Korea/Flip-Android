@@ -89,13 +89,11 @@ class DefaultTempPostRepositoryTest {
         })
 
         val newPost = NewPost(
-            profileId = "PID",
             title = "title",
             content = "content",
-            createdAt = "24-04-24",
             categoryId = 1,
-            bgColorId = 1,
-            fontStyleId = 1,
+            bgColorType = "RED",
+            fontStyleType = "ITALIC",
             tags = listOf("a", "b")
         )
 
@@ -122,13 +120,11 @@ class DefaultTempPostRepositoryTest {
         })
 
         val newPost = NewPost(
-            profileId = "PID",
             title = "title",
             content = "content",
-            createdAt = "24-04-24",
             categoryId = 1,
-            bgColorId = 1,
-            fontStyleId = 1,
+            bgColorType = "RED",
+            fontStyleType = "ITALIC",
             tags = listOf("a", "b")
         )
 

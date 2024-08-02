@@ -34,7 +34,6 @@ val CategoryIconsMap = mapOf(
     10 to R.drawable.ic_category_travel,
     11 to R.drawable.ic_category_health_exercise,
     12 to R.drawable.ic_category_global,
-    100 to R.drawable.ic_category_following,
     101 to R.drawable.ic_category_following,
     102 to R.drawable.ic_category_popular
 )
