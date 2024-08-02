@@ -184,13 +184,11 @@ class DefaultPostRepositoryTest {
         })
 
         val newPost = NewPost(
-            profileId = "testId",
             title = "testTitle",
             content = "testContent",
-            createdAt = "testDate",
             categoryId = 1,
-            bgColorId = 1,
-            fontStyleId = 1,
+            bgColorType = "RED",
+            fontStyleType = "ITALIC",
             tags = listOf("a", "b", "c")
         )
 
@@ -207,13 +205,11 @@ class DefaultPostRepositoryTest {
         })
 
         val newPost = NewPost(
-            profileId = "testId",
             title = "testTitle",
             content = "testContent",
-            createdAt = "testDate",
             categoryId = 1,
-            bgColorId = 1,
-            fontStyleId = 1,
+            bgColorType = "RED",
+            fontStyleType = "ITALIC",
             tags = listOf("a", "b", "c")
         )
 

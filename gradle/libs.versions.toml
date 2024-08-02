@@ -38,6 +38,7 @@ googleGms = "4.4.1"
 credentials = "1.2.2"
 firebaseBom = "33.0.0"
 kakaoSdk = "2.19.0"
+material-icons-extended = "1.6.8"
 
 [libraries]
 # add
@@ -111,6 +112,7 @@ kakao-sdk-v2-share = { module = "com.kakao.sdk:v2-share", version.ref = "kakaoSd
 kakao-sdk-v2-friend = { module = "com.kakao.sdk:v2-friend", version.ref = "kakaoSdk" }
 kakao-sdk-v2-navi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk" }
 kakao-sdk-v2-cert = { module = "com.kakao.sdk:v2-cert", version.ref = "kakaoSdk" }
+androidx-material-icons-extended = {  group = "androidx.compose.material", name = "material-icons-extended"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

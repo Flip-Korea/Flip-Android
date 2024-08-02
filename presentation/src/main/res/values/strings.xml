@@ -98,4 +98,37 @@
     <string name="bottom_sheet_block_complete_title">차단되었습니다.</string>
     <string name="bottom_sheet_block_complete_sub_title_1">이제부터 @</string>
     <string name="bottom_sheet_block_complete_sub_title_2">님이 작성한\n게시글과 댓글도 모두 차단됩니다.\n설정에서 언제든지 차단을 해제할 수 있습니다.</string>
+
+    <!-- AddFlip Screen -->
+    <string name="add_flip_screen_topbar_title">플립 작성하기</string>
+    <string name="add_flip_screen_topbar_btn">임시저장</string>
+    <string name="add_flip_screen_select_category_bar_placeholder">분야를 선택해주세요</string>
+    <string name="add_flip_screen_select_bottom_sheet_title">분야 선택</string>
+    <string name="add_flip_screen_title_tf_placeholder">제목</string>
+    <string name="add_flip_screen_content_tf_placeholder">내용을 자유롭게 작성해보세요.</string>
+    <string name="add_flip_screen_letter_guide_title">글자 수 도우미</string>
+    <string name="add_flip_screen_letter_guide_notice_1">읽기 좋은 글을 위해 </string>
+    <string name="add_flip_screen_letter_guide_notice_1_2">플립이 도와드릴게요! 🙌</string>
+    <string name="add_flip_screen_letter_guide_notice_2">내 글의 첫 시작! </string>
+    <string name="add_flip_screen_letter_guide_notice_2_2">어떤 글을 쓰고 계신가요? 👀</string>
+    <string name="add_flip_screen_letter_guide_notice_3">열심히 달려가는 중… </string>
+    <string name="add_flip_screen_letter_guide_notice_3_2">조금 더 적어봐도 좋아요. 💨</string>
+    <string name="add_flip_screen_letter_guide_notice_4">한 눈에 보기 적당해요. </string>
+    <string name="add_flip_screen_letter_guide_notice_4_2">정말 멋진 글이네요! 📗</string>
+    <string name="add_flip_screen_letter_guide_notice_5">글의 양이 많아요! </string>
+    <string name="add_flip_screen_letter_guide_notice_5_2">조금 줄여보는 건 어떨까요? 🔥</string>
+    <string name="add_flip_screen_setting_background_color">배경 컬러</string>
+    <string name="add_flip_screen_add_tags_bottom_sheet_title">태그 추가</string>
+    <string name="add_flip_screen_add_tags_bottom_sheet_btn">개 등록하기</string>
+    <string name="add_flip_screen_add_tags_placeholder">태그를 입력해주세요. 최대 10개까지 가능합니다.</string>
+    <string name="add_flip_screen_add_tags_title">태그</string>
+    <string name="add_flip_screen_add_tags_btn">추가</string>
+    <string name="add_flip_screen_bottom_btn">완료</string>
+
+    <!-- AddFlip Screen (Content Description) -->
+    <string name="add_flip_screen_content_desc_select_category">분야 선택</string>
+    <string name="add_flip_screen_content_desc_add_content">내용 추가</string>
+    <string name="add_flip_screen_content_desc_setting_background_color">배경 컬러</string>
+    <string name="add_flip_screen_content_desc_show_more">더보기</string>
+    <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
 </resources>

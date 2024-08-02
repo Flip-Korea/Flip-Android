@@ -107,19 +107,16 @@ class PostNetworkDataSourceTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
-            setBody(resultIdResponseTestData)
         })
 
         val requestAdapter = moshi.adapter(PostRequest::class.java)
-        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
 
         val actualResponse = postNetworkDataSource.addPost(requestAdapter.fromJson(
             postRequestTestData
         )!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
 
         assertNotNull(actualResponse)
-        assertEquals(expectedResponse!!.resultId, (actualResponse as Result.Success).data.resultId)
+        assert((actualResponse as Result.Success).data)
     }
 
     @Test

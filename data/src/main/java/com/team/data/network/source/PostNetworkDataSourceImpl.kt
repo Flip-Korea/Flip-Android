@@ -28,8 +28,8 @@ class PostNetworkDataSourceImpl(
     override suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType> =
         networkCall { postNetworkApi.getPostById(postId) }
 
-    override suspend fun addPost(postRequest: PostRequest): Result<ResultIdResponse, ErrorType> =
-        networkCall { postNetworkApi.addPost(postRequest) }
+    override suspend fun addPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse { postNetworkApi.addPost(postRequest) }
 
     override suspend fun editPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
         networkCallWithoutResponse { postNetworkApi.editPost(postRequest) }

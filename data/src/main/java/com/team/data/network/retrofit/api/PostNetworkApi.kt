@@ -37,10 +37,10 @@ interface PostNetworkApi {
     ): Response<PostResponse>
 
     /** API-014 (게시글 작성) **/
-    @POST("/api/v1/post")
+    @POST("/api/v1/posts")
     suspend fun addPost(
         @Body postRequest: PostRequest
-    ): Response<ResultIdResponse>
+    ): Response<Unit>
 
     /** API-052 (게시글 편집) **/
     @PATCH("/api/v1/posts/{post_id}")

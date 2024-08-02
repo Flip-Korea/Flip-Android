@@ -26,7 +26,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Flip" />
+            android:theme="@style/Theme.Flip"
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

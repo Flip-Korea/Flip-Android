@@ -19,7 +19,6 @@ import com.team.data.testdoubles.network.postsResponseTestData
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.data.testdoubles.network.tempPostListResponseTestData
 import com.team.domain.type.PathParameterType
-import com.team.domain.type.asString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -105,18 +104,20 @@ class PostNetworkApiTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
-            setBody(resultIdResponseTestData)
         })
 
         val requestAdapter = moshi.adapter(PostRequest::class.java)
-        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
 
-        val actualResponse = postNetworkApi.addPost(requestAdapter.fromJson(postRequestTestData)!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
+        val expectedPostRequest = requestAdapter.fromJson(postRequestTestData)!!
+        val actualResponse = postNetworkApi.addPost(expectedPostRequest)
 
-        assertNotNull(actualResponse)
+        val recordedRequest = server.takeRequest()
+
+        val actualPostRequest = requestAdapter.fromJson(recordedRequest.body.peek())
+
+        assertNotNull(actualPostRequest)
         assertEquals(201, actualResponse.code())
-        assertEquals(expectedResponse!!.resultId, actualResponse.body()!!.resultId)
+        assertEquals(expectedPostRequest, actualPostRequest)
     }
 
     @Test

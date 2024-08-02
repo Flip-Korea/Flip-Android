@@ -190,14 +190,12 @@ val postResponseTestData = """
 
 val postRequestTestData = """
     {
-      "profile_id": "honggd",
-      "title": "오늘의 일기!",
-      "content": "API 명세서 작성하느라 매우 머리가 아팠다.",
-      "created_at": "2024-03-04 MON",
-      "category_id": 5,
-      "bg_color_id": 3,
-      "font_style_id": 1,
-      "tags": ["일기", "일상"]
+      "title" : "title",
+      "content" : "content",
+      "bgColorType" : "BLUE",
+      "fontStyleType" : "NORMAL",
+      "tags" : [ "tag1", "tag2" ],
+      "categoryId" : 1
     }
 """.trimIndent()
 
