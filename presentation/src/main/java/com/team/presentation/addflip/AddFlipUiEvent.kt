@@ -9,18 +9,14 @@ sealed interface AddFlipUiEvent {
 
     data class OnSaveTempPost(
         val title: String,
-        val content: String,
-        val content2: String? = null,
-        val content3: String? = null,
+        val content: List<String> = emptyList(),
         val selectedColor: BackgroundColorType,
         val tags: List<String> = emptyList(),
     ): AddFlipUiEvent
 
     data class OnSavePost(
         val title: String,
-        val content: String,
-        val content2: String? = null,
-        val content3: String? = null,
+        val content: List<String> = emptyList(),
         val selectedColor: BackgroundColorType,
         val tags: List<String> = emptyList(),
     ): AddFlipUiEvent

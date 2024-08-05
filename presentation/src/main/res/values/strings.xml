@@ -119,11 +119,13 @@
     <string name="add_flip_screen_letter_guide_notice_5_2">조금 줄여보는 건 어떨까요? 🔥</string>
     <string name="add_flip_screen_setting_background_color">배경 컬러</string>
     <string name="add_flip_screen_add_tags_bottom_sheet_title">태그 추가</string>
-    <string name="add_flip_screen_add_tags_bottom_sheet_btn">개 등록하기</string>
+    <string name="add_flip_screen_add_tags_bottom_sheet_btn">등록하기</string>
     <string name="add_flip_screen_add_tags_placeholder">태그를 입력해주세요. 최대 10개까지 가능합니다.</string>
     <string name="add_flip_screen_add_tags_title">태그</string>
     <string name="add_flip_screen_add_tags_btn">추가</string>
+    <string name="add_flip_screen_add_tags_save_btn">저장하기</string>
     <string name="add_flip_screen_bottom_btn">완료</string>
+    <string name="add_flip_screen_delete_page_btn">삭제</string>
 
     <!-- AddFlip Screen (Content Description) -->
     <string name="add_flip_screen_content_desc_select_category">분야 선택</string>

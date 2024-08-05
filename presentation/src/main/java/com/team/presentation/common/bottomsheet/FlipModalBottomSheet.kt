@@ -41,8 +41,9 @@ fun FlipModalBottomSheet(
         dragHandle = { FlipDragHandle(verticalPadding = BottomSheetTokens.handlePadding) },
         sheetState = sheetState,
         containerColor = FlipTheme.colors.white,
-        windowInsets = WindowInsets(0, 0, 0, 0)
+        windowInsets = WindowInsets(0, 0, 0, 0),
     ) {
-        content(Modifier.padding(bottom = 47.dp))
+        /** BottomSheet 내부영역 하단 패딩 */
+        content(Modifier.padding(bottom = 12.dp))
     }
 }

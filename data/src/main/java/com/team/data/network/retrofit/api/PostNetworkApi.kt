@@ -112,10 +112,10 @@ interface PostNetworkApi {
     ): Response<Unit>
 
     /** API-032 (임시저장 게시글 추가) **/
-    @POST("/api/v1/post/temporary")
+    @POST("/api/v1/temp-posts")
     suspend fun addTemporaryPost(
         @Body postRequest: PostRequest
-    ): Response<ResultIdResponse>
+    ): Response<Unit>
 
     /** API-033 (임시저장 게시글 삭제) **/
     @DELETE("/api/v1/post/temporary/{temp_post_id}")

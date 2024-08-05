@@ -8,7 +8,7 @@ data class PostRequest(
     val title: String,
     val content: String,
     val bgColorType: String,
-    val fontStyleType: String,
+    val fontStyleType: String = "NORMAL",
     val tags: List<String>,
     val categoryId: Int,
 )
