@@ -137,6 +137,7 @@ fun HomeScreen(
         }
     }
 
+    /** 메인 컨텐츠 */
     Box(modifier = modifier) {
         //TODO 리스트 맨 위에서 탑 바를 조금씩 올릴 시 공백이 생김, 처리 요망
         HomeTopBarWrapper(

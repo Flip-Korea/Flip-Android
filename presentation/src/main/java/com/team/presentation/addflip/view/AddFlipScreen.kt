@@ -26,21 +26,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,7 +82,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipMediumButton
-import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.component.chip.FlipMediumChip
 import com.team.designsystem.component.chip.FlipOutlinedSmallChip
 import com.team.designsystem.component.textfield.FlipTextFieldStyles
@@ -113,7 +112,6 @@ import kotlinx.coroutines.launch
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param onBackPress 뒤로가기 시
- * @param onSaveTempPost Flip 글 임시저장 시
  */
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -130,8 +128,17 @@ fun AddFlipScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    var currentMaxPage by rememberSaveable { mutableIntStateOf(1) }
-    val pagerState = rememberPagerState { currentMaxPage }
+    val contentScrollState = rememberLazyListState()
+
+    val (title, onTitleChanged) = rememberSaveable { mutableStateOf("") }
+    var contents by rememberSaveable { mutableStateOf(listOf("")) }
+    var tags by rememberSaveable { mutableStateOf(listOf<String>()) }
+    var selectedColor by rememberSaveable { mutableStateOf(BackgroundColorType.DEFAULT) }
+
+    val pagerState = rememberPagerState { contents.size }
+    val currentContent = rememberSaveable(pagerState.currentPage, contents) {
+        contents.getOrNull(pagerState.currentPage.coerceIn(0, contents.lastIndex)) ?: ""
+    }
 
     var showCategoryBottomSheet by remember { mutableStateOf(false) }
     val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -142,21 +149,16 @@ fun AddFlipScreen(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    val (title, onTitleChanged) = rememberSaveable { mutableStateOf("") }
-    val (content, onContentChanged) = rememberSaveable { mutableStateOf("") }
-    val (content2, onContent2Changed) = rememberSaveable { mutableStateOf("") }
-    val (content3, onContent3Changed) = rememberSaveable { mutableStateOf("") }
-    var tags by rememberSaveable { mutableStateOf(listOf<String>()) }
-    var selectedColor by rememberSaveable { mutableStateOf(BackgroundColorType.DEFAULT) }
+    var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
 
     var isShowMoreClicked by remember { mutableStateOf(false) }
 
     var enableSaveButton by remember { mutableStateOf(false) }
-    LaunchedEffect(selectedCategory, title, content) {
+    LaunchedEffect(selectedCategory, title, contents) {
         enableSaveButton =
             selectedCategory != null &&
             title.isNotEmpty() &&
-            content.isNotEmpty()
+            contents.filter { it.isEmpty() }.isEmpty()
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -220,11 +222,21 @@ fun AddFlipScreen(
                 onBackPress = onBackPress,
                 title = stringResource(id = R.string.add_flip_screen_topbar_title),
                 options = {
-                    FlipTextButton(
+                    Text(
+                        modifier = Modifier
+                            .clickableSingleWithoutRipple {
+                                onUiEvent(
+                                    AddFlipUiEvent.OnSaveTempPost(
+                                        title,
+                                        contents,
+                                        selectedColor
+                                    )
+                                )
+                            }
+                            .padding(10.dp),
                         text = stringResource(id = R.string.add_flip_screen_topbar_btn),
-                        onClick = {
-                            onUiEvent(AddFlipUiEvent.OnSaveTempPost(title, content, content2, content3, selectedColor))
-                        }
+                        style = FlipTheme.typography.body6,
+                        color = FlipTheme.colors.gray6
                     )
                 }
             )
@@ -235,160 +247,177 @@ fun AddFlipScreen(
                 text = stringResource(id = R.string.add_flip_screen_bottom_btn),
                 enabled = enableSaveButton,
                 onClick = {
-                    onUiEvent(AddFlipUiEvent.OnSavePost(title, content, content2, content3, selectedColor))
+                    onUiEvent(AddFlipUiEvent.OnSavePost(title, contents, selectedColor))
                 }
             )
         },
         containerColor = FlipTheme.colors.white,
     ) { paddingValues ->
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(top = 6.dp)
-                .verticalScroll(rememberScrollState())
-                .imePadding(),
+            //TODO 해당 패딩을 추가하면 키보드 활성화 시 레이아웃 간섭 발생
+//                .imePadding()
+            ,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
+            contentPadding = PaddingValues(vertical = 9.dp),
+            state = contentScrollState
         ) {
-            /** 카테고리 선택 바 */
-            SelectCategoryBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                selectedCategory = selectedCategory,
-                onClick = { showCategoryBottomSheet = true }
-            )
-
-            /** 제목 입력 텍스트필드 */
-            AddFlipTitleTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 17.dp)
-                    .padding(horizontal = 16.dp),
-                title = title,
-                onTitleChanged = { onTitleChanged(it) },
-                placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
-            )
-
-            /** 본문 입력 텍스트필드 */
-            HorizontalPager(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                state = pagerState,
-                userScrollEnabled = true,
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                pageSpacing = 16.dp,
-                verticalAlignment = Alignment.Top
-            ) { page ->
-
-                Row(
+            item {
+                /** 카테고리 선택 바 */
+                SelectCategoryBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .flipGradient(color = selectedColor.asColor())
-                        .padding(start = 8.dp, top = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AddFlipContentTextField(
-                        modifier = Modifier.fillMaxWidth(0.95f),
-                        focusRequester = focusRequester,
-                        placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
-                        content = when(page) {
-                            0 -> content
-                            1 -> content2
-                            2 -> content3
-                            else -> content
-                        },
-                        onContentChanged = {
-                            when(page) {
-                                0 -> onContentChanged(it)
-                                1 -> onContent2Changed(it)
-                                2 -> onContent3Changed(it)
-                            }
-                        }
-                    )
+                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                    selectedCategory = selectedCategory,
+                    onClick = { showCategoryBottomSheet = true }
+                )
 
-                    if (page + 1 != MAX_PAGE) {
-                        Icon(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .sizeIn(maxWidth = 24.dp, maxHeight = 24.dp)
-                                .clickableSingle {
-                                    coroutineScope.launch {
-                                        currentMaxPage = (currentMaxPage + 1).coerceAtMost(MAX_PAGE)
-                                        pagerState.animateScrollToPage(
-                                            (page + 1).coerceAtMost(
-                                                MAX_PAGE
-                                            )
-                                        )
-                                    }
-                                },
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_plus),
-                            contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_content),
-                            tint = Color.Black
+                /** 제목 입력 텍스트필드 */
+                AddFlipTitleTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 17.dp)
+                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                    title = title,
+                    onTitleChanged = { onTitleChanged(it) },
+                    placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
+                )
+
+                /** 본문 입력 텍스트필드 */
+                HorizontalPager(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
+                    state = pagerState,
+                    userScrollEnabled = true,
+                    contentPadding = PaddingValues(horizontal = CommonPaddingValues.HorizontalPadding),
+                    pageSpacing = CommonPaddingValues.HorizontalPadding,
+                    verticalAlignment = Alignment.Top
+                ) { page ->
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .flipGradient(color = selectedColor.asColor())
+                            .padding(start = 8.dp, top = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AddFlipContentTextField(
+                            modifier = Modifier.fillMaxWidth(0.95f),
+                            focusRequester = focusRequester,
+                            placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
+                            content = contents[page],
+                            onContentChanged = {
+                                contents = contents.toMutableList().apply {
+                                    this[page] = it
+                                }
+                            },
+                            onFocusChanged = {
+                                contentTextFieldFocused = it
+                            }
                         )
+
+                        if (page + 1 != MAX_PAGE) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .sizeIn(maxWidth = 24.dp, maxHeight = 24.dp)
+                                    .clickableSingleWithoutRipple {
+                                        coroutineScope.launch {
+                                            val newPageIndex = pagerState.currentPage + 1
+
+                                            if (contents.size + 1 <= MAX_PAGE) {
+                                                contents = contents
+                                                    .toMutableList()
+                                                    .apply {
+                                                        add(newPageIndex, "")
+                                                    }
+                                            }
+
+                                            pagerState.animateScrollToPage(newPageIndex)
+                                        }
+                                    },
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_plus),
+                                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_content),
+                                tint = Color.Black
+                            )
+                        }
                     }
                 }
-            }
 
-            /** 페이지 카운터 */
-            PageCounter(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .padding(horizontal = 16.dp),
-                currentPage = pagerState.currentPage + 1,
-                currentMaxPage = currentMaxPage
-            )
-
-            /** 글자 수 도우미 */
-            if (content.isNotEmpty()) {
-                LetterCounterGuide(
+                /** 페이지 카운터 & 페이지 삭제 버튼 */
+                PageCounterWithButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 12.dp),
-                    length = when (pagerState.currentPage) {
-                        0 -> content.length.toFloat()
-                        1 -> content2.length.toFloat()
-                        2 -> content3.length.toFloat()
-                        else -> content.length.toFloat()
-                   },
-                    limit = MAX_LETTER_LIMIT,
-                    progress = when (pagerState.currentPage) {
-                        0 -> content.length.toFloat() / MAX_LETTER_LIMIT
-                        1 -> content2.length.toFloat() / MAX_LETTER_LIMIT
-                        2 -> content3.length.toFloat() / MAX_LETTER_LIMIT
-                        else -> content.length.toFloat() / MAX_LETTER_LIMIT
+                        .padding(top = 7.dp)
+                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                    currentPage = pagerState.currentPage + 1,
+                    currentMaxPage = contents.size,
+                    onClick = {
+                        if (contents.size > 1) {
+                            coroutineScope.launch {
+                                val currentPage = pagerState.currentPage
+
+                                val newPage = (currentPage - 1).coerceAtLeast(0)
+                                pagerState.animateScrollToPage(newPage)
+
+                                contents = contents.toMutableList().apply {
+                                    removeAt(currentPage)
+                                }
+                            }
+                        }
+                    }
+                )
+
+                /** 글자 수 도우미 */
+                if (contentTextFieldFocused) {
+                    LetterCounterGuide(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = CommonPaddingValues.HorizontalPadding)
+                            .padding(top = 12.dp),
+                        length = currentContent.length.toFloat(),
+                        limit = MAX_LETTER_LIMIT,
+                        progress = currentContent.length.toFloat() / MAX_LETTER_LIMIT
+                    )
+                }
+
+                /** 배경 컬러 설정 바 */
+                SettingBackgroundColor(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = CommonPaddingValues.HorizontalPadding,
+                            end = CommonPaddingValues.HorizontalPadding,
+                            top = 28.dp
+                        ),
+                    selectedColor = selectedColor,
+                    isShowMoreClicked = isShowMoreClicked,
+                    showMore = { isShowMoreClicked = !isShowMoreClicked },
+                    onSelectedColor = { color -> selectedColor = color }
+                )
+
+                /** 태그 추가 바 */
+                AddTags(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = CommonPaddingValues.HorizontalPadding,
+                            end = CommonPaddingValues.HorizontalPadding,
+                            top = 24.dp
+                        ),
+                    tags = tags,
+                    onDeleteTag = { tag ->
+                        tags = tags - tag
+                    },
+                    showTagBottomSheet = {
+                        showTagBottomSheet = true
                     }
                 )
             }
-
-            /** 배경 컬러 설정 바 */
-            SettingBackgroundColor(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 28.dp),
-                selectedColor = selectedColor,
-                isShowMoreClicked = isShowMoreClicked,
-                showMore = { isShowMoreClicked = !isShowMoreClicked },
-                onSelectedColor = { color -> selectedColor = color }
-            )
-
-            /** 태그 추가 바 */
-            AddTags(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp),
-                tags = tags,
-                onDeleteTag = { tag ->
-                    tags = tags - tag
-                },
-                showTagBottomSheet = {
-                    showTagBottomSheet = true
-                }
-            )
         }
     }
 }
@@ -562,20 +591,37 @@ private fun SelectCategoryBottomSheetContent(
 }
 
 /**
- * 페이지 카운터
+ * 페이지 카운터 & (페이지 삭제) 버튼
  */
 @Composable
-private fun PageCounter(
+private fun PageCounterWithButton(
     modifier: Modifier = Modifier,
     currentPage: Int,
-    currentMaxPage: Int
+    currentMaxPage: Int,
+    onClick: () -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = "$currentPage/$currentMaxPage",
-            style = FlipTheme.typography.body3,
-            color = FlipTheme.colors.gray6
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 25.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "$currentPage/$currentMaxPage",
+                style = FlipTheme.typography.body3,
+                color = FlipTheme.colors.gray6
+            )
+            if (currentMaxPage > 1) {
+                Text(
+                    modifier = Modifier.clickableSingleWithoutRipple { onClick() },
+                    text = stringResource(id = R.string.add_flip_screen_delete_page_btn),
+                    style = FlipTheme.typography.body5,
+                    color = FlipTheme.colors.gray6
+                )
+            }
+        }
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -813,18 +859,18 @@ private fun AddTagsBottomSheet(
     var tempTags by remember(tags) { mutableStateOf(tags) }
 
     FlipModalBottomSheet(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
     ) { bottomSheetModifier ->
         AddTagsBottomSheetContent(
             modifier = bottomSheetModifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
             focusRequester = focusRequester,
             tags = tempTags,
             onAddTag = { tag ->
-                if (tag.isNotEmpty()) {
+                if (tag.isNotEmpty() && tempTags.size < 10) {
                     tempTags = tempTags + tag
                 }
             },
@@ -854,47 +900,70 @@ private fun AddTagsBottomSheetContent(
 
     val (text, onTextChanged) = remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top)
-    ) {
-        Row(
+    Column(modifier = modifier) {
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top)
         ) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                imageVector = ImageVector.vectorResource(R.drawable.ic_tag),
-                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_tags),
-                tint = FlipTheme.colors.main
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentWidth(Alignment.Start),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_tag),
+                        contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_tags),
+                        tint = FlipTheme.colors.main
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_flip_screen_add_tags_bottom_sheet_title),
+                        style = FlipTheme.typography.headline3
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentWidth(Alignment.End)
+                        .clickableSingleWithoutRipple { onApply() },
+                    text = stringResource(id = R.string.add_flip_screen_add_tags_save_btn),
+                    style = FlipTheme.typography.headline3,
+                    color = FlipTheme.colors.point
+                )
+            }
+
+            TagSearchTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .focusable(),
+                text = text,
+                onTextChanged = { onTextChanged(it) },
+                onAddTag = { tag ->
+                    onAddTag(tag)
+                    onTextChanged("")
+                }
             )
-            Text(
-                text = stringResource(id = R.string.add_flip_screen_add_tags_bottom_sheet_title),
-                style = FlipTheme.typography.headline3
+
+            TagFlowRow(tags = tags, onDeleteTag = { tag -> onDeleteTag(tag) })
+
+            FlipMediumButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 42.dp),
+                enabled = text.isNotEmpty(),
+                text = stringResource(id = R.string.add_flip_screen_add_tags_bottom_sheet_btn),
+                onClick = {
+                    onAddTag(text)
+                    onTextChanged("")
+                }
             )
         }
-
-        TagSearchTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester)
-                .focusable(),
-            text = text,
-            onTextChanged = { onTextChanged(it) },
-            onAddTag = { tag -> onAddTag(tag) }
-        )
-
-        TagFlowRow(tags = tags, onDeleteTag = { tag -> onDeleteTag(tag) })
-        
-        FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            enabled = tags.isNotEmpty(),
-            text = "${tags.size}${stringResource(id = R.string.add_flip_screen_add_tags_bottom_sheet_btn)}",
-            onClick = onApply
-        )
     }
 }
 
@@ -955,10 +1024,7 @@ private fun TagSearchTextField(
         interactionSource = interactionSource,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
-            onDone = {
-                onAddTag(text)
-                onTextChanged("")
-            }
+            onDone = { onAddTag(text) }
         ),
         cursorBrush = FlipTextFieldStyles.cursorBrushBlack
     ) { innerTextField ->
@@ -1160,6 +1226,20 @@ private fun AddTagsBottomSheetContentPreview() {
 @Preview
 @Composable
 private fun AddFlipScreenPreview() {
+
+    FlipAppTheme {
+        AddFlipScreen(
+            categoriesState = CategoriesState(categories = CategoriesTestData),
+            selectedCategory = null,
+            onUiEvent = { },
+            onBackPress = { },
+        )
+    }
+}
+
+@Preview(heightDp = 400)
+@Composable
+private fun AddFlipScreenPreview2() {
 
     FlipAppTheme {
         AddFlipScreen(

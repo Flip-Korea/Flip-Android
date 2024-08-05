@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,15 +33,22 @@ fun AddFlipContentTextField(
     focusRequester: FocusRequester,
     placeholder: String,
     content: String,
-    onContentChanged: (String) -> Unit
+    onContentChanged: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
 ) {
 
     BasicTextField(
         modifier = modifier
-            .heightIn(min = 154.dp)
+            .heightIn(min = 154.dp, max = (154 * 2).dp)
             .focusRequester(focusRequester)
             .focusable()
-            .clickable {},
+            .clickable {}
+            .onFocusChanged {
+                when {
+                    it.isFocused -> onFocusChanged(it.isFocused)
+                    it.isCaptured -> onFocusChanged(it.isCaptured)
+                }
+            },
         value = content,
         onValueChange = { onContentChanged(it) },
         textStyle = FlipTheme.typography.headline1,
@@ -89,7 +97,8 @@ private fun AddFlipContentTextFieldPreview() {
                 content = title,
                 placeholder = "내용을 자유롭게 작성해보세요.",
                 focusRequester = remember { FocusRequester() },
-                onContentChanged = { onTitleChanged(it) }
+                onContentChanged = { onTitleChanged(it) },
+                onFocusChanged = { }
             )
         }
     }

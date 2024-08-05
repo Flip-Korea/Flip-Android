@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.team.designsystem.R
 import com.team.designsystem.component.button.FlipIconButton
-import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
@@ -108,7 +107,11 @@ private fun FlipCenterAlignedTopBarPreview3() {
             title = "화면 이름",
             onBackPress = { },
             options = {
-                FlipTextButton(text = "버튼 이름", onClick = { })
+                Text(
+                    text = "버튼 이름",
+                    style = FlipTheme.typography.body6,
+                    color = FlipTheme.colors.gray6
+                )
             }
         )
     }

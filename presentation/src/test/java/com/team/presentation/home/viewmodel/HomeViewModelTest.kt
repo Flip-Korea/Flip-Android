@@ -9,6 +9,7 @@ import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
 import com.team.domain.usecase.post.GetPostsUseCase
 import com.team.domain.usecase.post.PostUseCases
 import com.team.domain.usecase.post.testdoubles.getPostListTestData
+import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -51,6 +52,7 @@ class HomeViewModelTest {
     private val getPostsUseCase: GetPostsUseCase = mockk()
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
     private val getMyCategoriesUseCase: GetMyCategoriesUseCase = mockk()
+    private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase = mockk()
     private lateinit var dataStoreManager: DataStoreManager
 
     @Before
@@ -60,6 +62,7 @@ class HomeViewModelTest {
         every { postUseCases.getPostsUseCase } returns getPostsUseCase
         every { getCategoriesUseCase.invoke() } returns flowOf(categoriesTestData)
         coEvery { getMyCategoriesUseCase() } returns flowOf(myCategoriesTestData)
+        every { getCurrentProfileIdUseCase() } returns flowOf("currentProfileId")
     }
 
 
@@ -76,6 +79,7 @@ class HomeViewModelTest {
             postUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
+            getCurrentProfileIdUseCase
         )
 
         /** 코루틴(비동기 작업) 다 기다림 */
@@ -104,6 +108,7 @@ class HomeViewModelTest {
             postUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
+            getCurrentProfileIdUseCase
         )
 
         var postState: PostState? = null
@@ -136,6 +141,7 @@ class HomeViewModelTest {
             postUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
+            getCurrentProfileIdUseCase
         )
 
         var postState: PostState? = null
