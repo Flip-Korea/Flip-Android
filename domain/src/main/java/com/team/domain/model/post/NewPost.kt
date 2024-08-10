@@ -6,5 +6,5 @@ data class NewPost(
     val bgColorType: String,
     val fontStyleType: String,
     val tags: List<String>,
-    val categoryId: Int,
+    val categoryId: Int?,
 )

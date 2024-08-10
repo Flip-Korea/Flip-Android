@@ -76,8 +76,8 @@ class PostNetworkDataSourceImpl(
     override suspend fun unLikePost(likeRequest: LikeRequest): Result<Boolean, ErrorType> =
         networkCallWithoutResponse { postNetworkApi.unLikePost(likeRequest) }
 
-    override suspend fun addTemporaryPost(postRequest: PostRequest): Result<ResultIdResponse, ErrorType> =
-        networkCall { postNetworkApi.addTemporaryPost(postRequest) }
+    override suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse { postNetworkApi.addTemporaryPost(postRequest) }
 
     override suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType> =
         networkCallWithoutResponse { postNetworkApi.deleteTemporaryPost(tempPostId) }

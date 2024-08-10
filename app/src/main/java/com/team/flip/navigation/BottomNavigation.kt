@@ -144,12 +144,21 @@ fun BottomNavigation(
             val addFlipViewModel: AddFlipViewModel = hiltViewModel()
             val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
             val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
+            val addPostState by addFlipViewModel.addPostState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(addPostState) {
+                if (addPostState.postSave) {
+                    bottomNavController.popBackStack()
+                }
+            }
 
             AddFlipScreen(
                 categoriesState = categoriesState,
+                addPostState = addPostState,
                 selectedCategory = selectedCategory,
                 onUiEvent = addFlipViewModel::onUiEvent,
                 onBackPress = { bottomNavController.popBackStack() },
+                resetErrorState = addFlipViewModel::resetErrorState
             )
         }
 

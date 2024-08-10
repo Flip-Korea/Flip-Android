@@ -9,7 +9,7 @@ import com.team.data.di.DefaultDispatcher
 import com.team.domain.model.category.Category
 import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
-import com.team.domain.usecase.post.PostUseCases
+import com.team.domain.usecase.post.GetPostUseCases
 import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -37,7 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    private val postUseCases: PostUseCases,
+    private val getPostUseCases: GetPostUseCases,
     private val getMyCategoriesUseCase: GetMyCategoriesUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase,
@@ -152,7 +152,7 @@ class HomeViewModel @Inject constructor(
 
             try {
 
-                postUseCases.getPostsUseCase(nextCursor).collect { result ->
+                getPostUseCases.getPostsUseCase(nextCursor).collect { result ->
                     _postState.update { state ->
                         when (result) {
                             Result.Loading -> state.copy(loading = true)
