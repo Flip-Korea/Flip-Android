@@ -1,7 +1,7 @@
 package com.team.presentation.addflip
 
 import com.team.domain.model.category.Category
-import com.team.presentation.util.BackgroundColorType
+import com.team.domain.type.BackgroundColorType
 
 sealed interface AddFlipUiEvent {
 
@@ -9,14 +9,14 @@ sealed interface AddFlipUiEvent {
 
     data class OnSaveTempPost(
         val title: String,
-        val content: List<String> = emptyList(),
+        val content: List<String>,
         val selectedColor: BackgroundColorType,
         val tags: List<String> = emptyList(),
     ): AddFlipUiEvent
 
     data class OnSavePost(
         val title: String,
-        val content: List<String> = emptyList(),
+        val content: List<String>,
         val selectedColor: BackgroundColorType,
         val tags: List<String> = emptyList(),
     ): AddFlipUiEvent

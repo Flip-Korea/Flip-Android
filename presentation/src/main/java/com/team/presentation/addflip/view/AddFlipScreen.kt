@@ -48,6 +48,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -71,6 +72,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.changedToDown
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -84,6 +86,7 @@ import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.chip.FlipMediumChip
 import com.team.designsystem.component.chip.FlipOutlinedSmallChip
+import com.team.designsystem.component.snackbar.FlipSnackbar
 import com.team.designsystem.component.textfield.FlipTextFieldStyles
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.utils.clickableSingle
@@ -92,23 +95,26 @@ import com.team.designsystem.component.utils.flipGradient
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
+import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.asString
 import com.team.presentation.R
 import com.team.presentation.addflip.AddFlipUiEvent
+import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
 import com.team.presentation.common.util.CommonPaddingValues
-import com.team.presentation.util.BackgroundColorType
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
 import com.team.presentation.util.asColor
-import com.team.presentation.util.asString
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
  * Flip 작성 화면
  *
  * @param categoriesState CategoriesState
+ * @param addPostState AddPostState(저장, 임시저장 상태)
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param onBackPress 뒤로가기 시
@@ -121,12 +127,29 @@ import kotlinx.coroutines.launch
 fun AddFlipScreen(
     modifier: Modifier = Modifier,
     categoriesState: CategoriesState,
+    addPostState: AddPostState,
     selectedCategory: Category?,
     onUiEvent: (AddFlipUiEvent) -> Unit,
     onBackPress: () -> Unit,
+    resetErrorState: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
+    /** 스낵바 */
+    val snackbarState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    var snackbarJob: Job? by remember { mutableStateOf(null) }
+    LaunchedEffect(addPostState.error) {
+        val error = addPostState.error.asString(context)
+        if (error.isNotEmpty()) {
+            snackbarJob?.cancel()
+            snackbarJob = launch {
+                snackbarState.showSnackbar(error)
+                resetErrorState()
+            }
+        }
+    }
 
     val contentScrollState = rememberLazyListState()
 
@@ -225,13 +248,10 @@ fun AddFlipScreen(
                     Text(
                         modifier = Modifier
                             .clickableSingleWithoutRipple {
-                                onUiEvent(
-                                    AddFlipUiEvent.OnSaveTempPost(
-                                        title,
-                                        contents,
-                                        selectedColor
-                                    )
-                                )
+                                //TODO: 임시저장 화면으로 이동해야 함
+//                                onUiEvent(
+//                                    AddFlipUiEvent.OnSaveTempPost(title, contents, selectedColor, tags)
+//                                )
                             }
                             .padding(10.dp),
                         text = stringResource(id = R.string.add_flip_screen_topbar_btn),
@@ -247,10 +267,11 @@ fun AddFlipScreen(
                 text = stringResource(id = R.string.add_flip_screen_bottom_btn),
                 enabled = enableSaveButton,
                 onClick = {
-                    onUiEvent(AddFlipUiEvent.OnSavePost(title, contents, selectedColor))
+                    onUiEvent(AddFlipUiEvent.OnSavePost(title, contents, selectedColor, tags))
                 }
             )
         },
+        snackbarHost = { FlipSnackbar(snackBarHostState = snackbarState) },
         containerColor = FlipTheme.colors.white,
     ) { paddingValues ->
 
@@ -1230,9 +1251,11 @@ private fun AddFlipScreenPreview() {
     FlipAppTheme {
         AddFlipScreen(
             categoriesState = CategoriesState(categories = CategoriesTestData),
+            addPostState = AddPostState(),
             selectedCategory = null,
             onUiEvent = { },
             onBackPress = { },
+            resetErrorState = { }
         )
     }
 }
@@ -1244,9 +1267,11 @@ private fun AddFlipScreenPreview2() {
     FlipAppTheme {
         AddFlipScreen(
             categoriesState = CategoriesState(categories = CategoriesTestData),
+            addPostState = AddPostState(),
             selectedCategory = null,
             onUiEvent = { },
             onBackPress = { },
+            resetErrorState = {}
         )
     }
 }

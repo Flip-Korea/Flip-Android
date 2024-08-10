@@ -30,12 +30,12 @@ class DefaultPostRepository @Inject constructor(
     private val postDao: PostDao,
     private val postNetworkDataSource: PostNetworkDataSource,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-    // -> Hilt에 이 종속성을 CPU 집약적 작업에 최적화된 디스패처인
-    // dispatcher default에 주입하도록 지시할 수 있음
+    /**
+     * 앱의 수명 주기를 따르는 범위 삽입,
+     * 앱의 수명 주기를 따르는 이유:
+     * 앱 실행 중 단 하나의 코루틴 스코프를 생성하고 유지하도록 Module에서 관리
+     */
     @ApplicationScope private val scope: CoroutineScope,
-    // -> 앱의 수명 주기를 따르는 범위 삽입,
-    // 앱의 수명 주기를 따르는 이유:
-    // 앱 실행 중 단 하나의 코루틴 스코프를 생성하고 유지하도록 Module에서 관리
 ) : PostRepository {
 
     override fun getCachedPosts(): Flow<List<Post>> =

@@ -45,7 +45,7 @@ interface PostNetworkDataSource {
     suspend fun deleteComment(commentId: Long): Result<Boolean, ErrorType>
     suspend fun likePost(likeRequest: LikeRequest): Result<ResultIdResponse, ErrorType>
     suspend fun unLikePost(likeRequest: LikeRequest): Result<Boolean, ErrorType>
-    suspend fun addTemporaryPost(postRequest: PostRequest): Result<ResultIdResponse, ErrorType>
+    suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType>
     suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType>
     suspend fun getTemporaryPosts(
         profileId: String,

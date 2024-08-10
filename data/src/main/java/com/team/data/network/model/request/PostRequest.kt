@@ -10,7 +10,7 @@ data class PostRequest(
     val bgColorType: String,
     val fontStyleType: String = "NORMAL",
     val tags: List<String>,
-    val categoryId: Int,
+    val categoryId: Int?,
 )
 
 fun NewPost.toNetwork(): PostRequest =

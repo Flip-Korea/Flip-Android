@@ -3,6 +3,11 @@ package com.team.presentation.util
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 
+/**
+ * Preview 를 위한 카테고리 테스트 데이터
+ *
+ * 절대로 프로덕션 코드에서 사용되면 안됨
+ */
 val CategoriesTestData = listOf(
     Category(1, "일상"),
     Category(2, "독서"),

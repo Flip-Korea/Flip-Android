@@ -1,25 +1,7 @@
 package com.team.presentation.util
 
 import androidx.compose.ui.graphics.Color
-
-enum class BackgroundColorType {
-    DEFAULT,
-    RED,
-    YELLOW,
-    GREEN,
-    BLUE,
-    PURPLE
-}
-
-fun BackgroundColorType.asString(): String =
-    when (this) {
-        BackgroundColorType.DEFAULT -> "기본"
-        BackgroundColorType.RED -> "레드"
-        BackgroundColorType.YELLOW -> "옐로우"
-        BackgroundColorType.GREEN -> "그린"
-        BackgroundColorType.BLUE -> "블루"
-        BackgroundColorType.PURPLE -> "퍼플"
-    }
+import com.team.domain.type.BackgroundColorType
 
 fun BackgroundColorType.asColor(): Color =
     when (this) {

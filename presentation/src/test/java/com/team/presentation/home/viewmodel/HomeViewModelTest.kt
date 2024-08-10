@@ -7,7 +7,7 @@ import com.team.domain.type.DataStoreType
 import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
 import com.team.domain.usecase.post.GetPostsUseCase
-import com.team.domain.usecase.post.PostUseCases
+import com.team.domain.usecase.post.GetPostUseCases
 import com.team.domain.usecase.post.testdoubles.getPostListTestData
 import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorBody
@@ -48,7 +48,7 @@ class HomeViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var homeViewModel: HomeViewModel
-    private val postUseCases: PostUseCases = mockk()
+    private val getPostUseCases: GetPostUseCases = mockk()
     private val getPostsUseCase: GetPostsUseCase = mockk()
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
     private val getMyCategoriesUseCase: GetMyCategoriesUseCase = mockk()
@@ -59,7 +59,7 @@ class HomeViewModelTest {
     fun setUp() {
         dataStoreManager = FakeDataStoreManager()
 
-        every { postUseCases.getPostsUseCase } returns getPostsUseCase
+        every { getPostUseCases.getPostsUseCase } returns getPostsUseCase
         every { getCategoriesUseCase.invoke() } returns flowOf(categoriesTestData)
         coEvery { getMyCategoriesUseCase() } returns flowOf(myCategoriesTestData)
         every { getCurrentProfileIdUseCase() } returns flowOf("currentProfileId")
@@ -76,7 +76,7 @@ class HomeViewModelTest {
 
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
-            postUseCases,
+            getPostUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
             getCurrentProfileIdUseCase
@@ -105,7 +105,7 @@ class HomeViewModelTest {
 
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
-            postUseCases,
+            getPostUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
             getCurrentProfileIdUseCase
@@ -138,7 +138,7 @@ class HomeViewModelTest {
 
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
-            postUseCases,
+            getPostUseCases,
             getMyCategoriesUseCase,
             getCategoriesUseCase,
             getCurrentProfileIdUseCase

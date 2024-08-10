@@ -4,11 +4,13 @@ import com.team.data.repository.DefaultAccountRepository
 import com.team.data.repository.DefaultCategoryRepository
 import com.team.data.repository.DefaultCommentRepository
 import com.team.data.repository.DefaultPostRepository
+import com.team.data.repository.DefaultTempPostRepository
 import com.team.data.repository.DefaultUserRepository
 import com.team.domain.repository.AccountRepository
 import com.team.domain.repository.CategoryRepository
 import com.team.domain.repository.CommentRepository
 import com.team.domain.repository.PostRepository
+import com.team.domain.repository.TempPostRepository
 import com.team.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -24,6 +26,11 @@ interface DataModule {
     fun bindsPostRepository(
         impl: DefaultPostRepository
     ): PostRepository
+
+    @Binds
+    fun bindsTempPostRepository(
+        impl: DefaultTempPostRepository
+    ): TempPostRepository
 
     @Binds
     fun bindsAuthRepository(
