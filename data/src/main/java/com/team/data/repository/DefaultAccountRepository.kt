@@ -83,7 +83,9 @@ class DefaultAccountRepository @Inject constructor(
 
                         emit(Result.Success(account))
                     }
-                    is Result.Error -> { emit(Result.Error(result.error)) }
+                    is Result.Error -> {
+                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                    }
                     Result.Loading -> { }
                 }
             } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
@@ -98,7 +100,9 @@ class DefaultAccountRepository @Inject constructor(
 
             when (val result = accountNetworkDataSource.checkDuplicateName(nickname)) {
                 is Result.Success -> { emit(Result.Success(result.data)) }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -112,7 +116,9 @@ class DefaultAccountRepository @Inject constructor(
 
             when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
                 is Result.Success -> { emit(Result.Success(result.data)) }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -134,7 +140,9 @@ class DefaultAccountRepository @Inject constructor(
                     saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -151,7 +159,9 @@ class DefaultAccountRepository @Inject constructor(
                     saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }

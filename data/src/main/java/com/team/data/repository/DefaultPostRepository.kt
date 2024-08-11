@@ -57,7 +57,9 @@ class DefaultPostRepository @Inject constructor(
                     val postList = result.data.toDomainModel()
                     emit(Result.Success(postList))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -83,7 +85,9 @@ class DefaultPostRepository @Inject constructor(
                     val post = result.data.toEntity().toDomainModel()
                     emit(Result.Success(post))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -97,7 +101,9 @@ class DefaultPostRepository @Inject constructor(
         val newPostNetwork = newPost.toNetwork()
         when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -110,7 +116,9 @@ class DefaultPostRepository @Inject constructor(
         val newPostNetwork = newPost.toNetwork()
         when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -131,7 +139,9 @@ class DefaultPostRepository @Inject constructor(
                 val postList = result.data.toDomainModel()
                 emit(Result.Success(postList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -143,7 +153,9 @@ class DefaultPostRepository @Inject constructor(
 
         when (val result = postNetworkDataSource.deletePost(postId)) {
             is Result.Success -> { emit(Result.Success(result.data)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -163,7 +175,9 @@ class DefaultPostRepository @Inject constructor(
                 val postList = result.data.toDomainModel()
                 emit(Result.Success(postList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -176,7 +190,9 @@ class DefaultPostRepository @Inject constructor(
         val likeResult = LikeRequest(profileId, postId)
         when (val result = postNetworkDataSource.likePost(likeResult)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -187,7 +203,9 @@ class DefaultPostRepository @Inject constructor(
         val likeResult = LikeRequest(profileId, postId)
         when (val result = postNetworkDataSource.unLikePost(likeResult)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

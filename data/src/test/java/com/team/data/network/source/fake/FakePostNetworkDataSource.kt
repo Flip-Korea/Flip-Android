@@ -145,10 +145,10 @@ class FakePostNetworkDataSource(
         }
     }
 
-    override suspend fun addTemporaryPost(postRequest: PostRequest): Result<ResultIdResponse, ErrorType> {
+    override suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType> {
         val result = postNetworkApi.addTemporaryPost(postRequest)
         return if (result.isSuccessful) {
-            Result.Success(result.body()!!)
+            Result.Success(true)
         } else {
             Result.Error(ErrorType.Network.UNEXPECTED)
         }

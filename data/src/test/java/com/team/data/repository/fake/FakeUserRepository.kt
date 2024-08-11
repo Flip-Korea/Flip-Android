@@ -50,6 +50,7 @@ class FakeUserRepository(
         return myProfileDao.getProfileById(profileId)
             .distinctUntilChanged()
             .map<MyProfileEntity?, Result<MyProfile?, ErrorType>> { Result.Success(it?.toDomainModel()) }
+            .flowOn(ioDispatcher)
             .catch {
                 /** 만약 조회하려는 데이터가 없어도 NullPointerException 발생 X
                  * 위 map 블록에서 그냥 null 처리됨 -> Result.Success(null) 반환
@@ -83,12 +84,17 @@ class FakeUserRepository(
     }
 
     override suspend fun refreshMyProfile(profileId: String) {
-        when (val result = userNetworkDataSource.getMyProfile(profileId)) {
+        val result = withContext(ioDispatcher) {
+            userNetworkDataSource.getMyProfile(profileId)
+        }
+        when (result) {
             is Result.Success -> {
                 val profileEntity = withContext(ioDispatcher) {
                     result.data.toEntity()
                 }
-                myProfileDao.upsertProfile(profileEntity)
+                withContext(ioDispatcher) {
+                    myProfileDao.upsertProfile(profileEntity)
+                }
             }
             is Result.Error -> { }
             Result.Loading -> { }
@@ -100,10 +106,12 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.getProfile(profileId)) {
             is Result.Success -> {
-                val profile = withContext(ioDispatcher) { result.data.toDomainModel() }
+                val profile = result.data.toDomainModel()
                 emit(Result.Success(profile))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {  }
         }
     }
@@ -119,14 +127,14 @@ class FakeUserRepository(
         when (val result =
             interestCategoryNetworkDataSource.updateMyCategories(categoryRequest)) {
             is Result.Success -> {
-                val myProfileEntity = withContext(ioDispatcher) {
-                    val profileId = dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
-                    myProfileDao.updateCategories(profileId ?: "", categoryIds)
-                    myProfileDao.getProfileById(profileId ?: "").firstOrNull()
-                }
+                val profileId = dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
+                myProfileDao.updateCategories(profileId ?: "", categoryIds)
+                val myProfileEntity = myProfileDao.getProfileById(profileId ?: "").firstOrNull()
                 emit(Result.Success(myProfileEntity != null))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {}
         }
     }
@@ -138,7 +146,9 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.reportAccount(reportReq.toNetwork())) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -150,7 +160,9 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.blockAccount(blockReq.toNetwork())) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -165,7 +177,9 @@ class FakeUserRepository(
 
         when (val result = userNetworkDataSource.unblockAccount(profileId, blockedId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -189,7 +203,9 @@ class FakeUserRepository(
                 } ?: emit(Result.Error(ErrorType.Local.EMPTY))
                 emit(Result.Success(true))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {}
         }
     }
@@ -202,7 +218,9 @@ class FakeUserRepository(
         val followRequest = FollowRequest(followingId, followerId)
         when (val result = userNetworkDataSource.follow(followRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -218,7 +236,9 @@ class FakeUserRepository(
         val followRequest = FollowRequest(followingId, followerId)
         when (val result = userNetworkDataSource.unfollow(followRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -235,12 +255,12 @@ class FakeUserRepository(
         when (val result =
             userNetworkDataSource.getFollowerList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val followers = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val followers = result.data.toDomainModel()
                 emit(Result.Success(followers))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -257,12 +277,12 @@ class FakeUserRepository(
         when (val result =
             userNetworkDataSource.getFollowingList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val followings = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val followings = result.data.toDomainModel()
                 emit(Result.Success(followings))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -279,12 +299,12 @@ class FakeUserRepository(
         when (val result =
             userNetworkDataSource.getBlockList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val blockList = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val blockList = result.data.toDomainModel()
                 emit(Result.Success(blockList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -301,12 +321,12 @@ class FakeUserRepository(
         when (val result =
             userNetworkDataSource.getMyCommentList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val displayPosts = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val displayPosts = result.data.toDomainModel()
                 emit(Result.Success(displayPosts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

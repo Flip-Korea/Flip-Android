@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
-
 
 class FakeScrapRepository(
     private val userNetworkDataSource: UserNetworkDataSource
@@ -33,12 +31,12 @@ class FakeScrapRepository(
         when (val result =
             userNetworkDataSource.getScrapList(profileId, cursor, limit)) {
             is Result.Success -> {
-                val scrapList = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val scrapList = result.data.toDomainModel()
                 emit(Result.Success(scrapList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -55,7 +53,9 @@ class FakeScrapRepository(
         when (val result =
             userNetworkDataSource.editScrapComment(profileId, scrapId, ScrapCommentRequest(scrapComment))) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -65,12 +65,14 @@ class FakeScrapRepository(
     override fun addScrap(newScrap: NewScrap): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newScrapNetwork = withContext(ioDispatcher) { newScrap.toNetwork() }
+        val newScrapNetwork = newScrap.toNetwork()
 
         when (val result =
             userNetworkDataSource.addScrap(newScrapNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -82,7 +84,9 @@ class FakeScrapRepository(
 
         when (val result = userNetworkDataSource.deleteScrap(scrapId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

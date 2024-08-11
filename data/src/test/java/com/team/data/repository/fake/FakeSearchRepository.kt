@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class FakeSearchRepository(
@@ -59,12 +58,12 @@ class FakeSearchRepository(
         when (val result = searchNetworkDataSource.searchByPost(searchQuery, cursor, limit)) {
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
-                val posts = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val posts = result.data.toDomainModel()
                 emit(Result.Success(posts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -83,12 +82,12 @@ class FakeSearchRepository(
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
 
-                val profiles = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val profiles = result.data.toDomainModel()
                 emit(Result.Success(profiles))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -106,12 +105,12 @@ class FakeSearchRepository(
             is Result.Success -> {
                 recentSearchDao.upsertRecentSearch(RecentSearchEntity(word = searchQuery))
 
-                val tags = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val tags = result.data.toDomainModel()
                 emit(Result.Success(tags))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
