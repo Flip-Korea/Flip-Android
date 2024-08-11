@@ -52,7 +52,9 @@ class DefaultCategoryRepository @Inject constructor(
 
                 Result.Success(true)
             }
-            is Result.Error -> { Result.Error(result.error) }
+            is Result.Error -> {
+                Result.Error(errorBody = result.errorBody, error = result.error)
+            }
             Result.Loading -> { Result.Loading }
         }
     }

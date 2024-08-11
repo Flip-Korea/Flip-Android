@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-//TODO
+//TODO:
 // updateMyCategory, editMyProfile 부분은 데이터 동기화 과정으로 작성했으나,
 // 만약, Local/Network 작업 중 하나라도 에러가 발생하면 데이터 일관성이 깨짐
 // 1. WorkManager를 통한 Sync 작업을 요함
@@ -116,7 +116,9 @@ class DefaultUserRepository @Inject constructor(
                 val profile = result.data.toDomainModel()
                 emit(Result.Success(profile))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {  }
         }
     }
@@ -137,7 +139,9 @@ class DefaultUserRepository @Inject constructor(
                 val myProfileEntity = myProfileDao.getProfileById(profileId ?: "").firstOrNull()
                 emit(Result.Success(myProfileEntity != null))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {}
         }
     }
@@ -149,7 +153,9 @@ class DefaultUserRepository @Inject constructor(
 
         when (val result = userNetworkDataSource.reportAccount(reportReq.toNetwork())) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -161,7 +167,9 @@ class DefaultUserRepository @Inject constructor(
 
         when (val result = userNetworkDataSource.blockAccount(blockReq.toNetwork())) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -176,7 +184,9 @@ class DefaultUserRepository @Inject constructor(
 
         when (val result = userNetworkDataSource.unblockAccount(profileId, blockedId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -200,7 +210,9 @@ class DefaultUserRepository @Inject constructor(
                 } ?: emit(Result.Error(ErrorType.Local.EMPTY))
                 emit(Result.Success(true))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> {}
         }
     }
@@ -213,7 +225,9 @@ class DefaultUserRepository @Inject constructor(
         val followRequest = FollowRequest(followingId, followerId)
         when (val result = userNetworkDataSource.follow(followRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -229,7 +243,9 @@ class DefaultUserRepository @Inject constructor(
         val followRequest = FollowRequest(followingId, followerId)
         when (val result = userNetworkDataSource.unfollow(followRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -249,7 +265,9 @@ class DefaultUserRepository @Inject constructor(
                 val followers = result.data.toDomainModel()
                 emit(Result.Success(followers))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -269,7 +287,9 @@ class DefaultUserRepository @Inject constructor(
                 val followings = result.data.toDomainModel()
                 emit(Result.Success(followings))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -289,7 +309,9 @@ class DefaultUserRepository @Inject constructor(
                 val blockList = result.data.toDomainModel()
                 emit(Result.Success(blockList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -309,7 +331,9 @@ class DefaultUserRepository @Inject constructor(
                 val displayPosts = result.data.toDomainModel()
                 emit(Result.Success(displayPosts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

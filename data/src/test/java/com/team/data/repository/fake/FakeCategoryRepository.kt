@@ -10,6 +10,7 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -21,26 +22,36 @@ class FakeCategoryRepository(
     private val ioDispatcher = Dispatchers.IO
 
     override fun getCategoriesFromLocal(): Flow<List<Category>> =
-        categoryDao.getCategories().map { it.toDomainModel() }
+        categoryDao.getCategories()
+            .map { it.toDomainModel() }
+            .flowOn(ioDispatcher)
 
     override suspend fun refreshCategories(): Result<Boolean, ErrorType> {
 
-        return when (val result =
-            categoryNetworkDataSource.getCategories()) {
+        val result = withContext(ioDispatcher) {
+            categoryNetworkDataSource.getCategories()
+        }
+
+        return when (result) {
             is Result.Success -> {
                 val categoryEntities = withContext(ioDispatcher) {
                     result.data.map { it.toEntity() }
                 }
-                categoryDao.upsertCategories(categoryEntities)
 
-                val categories = withContext(ioDispatcher) {
+                withContext(ioDispatcher) {
+                    categoryDao.upsertCategories(categoryEntities)
+                }
+
+                withContext(ioDispatcher) {
                     categoryEntities.toDomainModel()
                 }
 
                 Result.Success(true)
             }
-            is Result.Error -> { Result.Success(false) }
-            Result.Loading -> { Result.Success(false) }
+            is Result.Error -> {
+                Result.Error(errorBody = result.errorBody, error = result.error)
+            }
+            Result.Loading -> { Result.Loading }
         }
     }
 }

@@ -34,7 +34,9 @@ class DefaultCommentRepository @Inject constructor(
                 val comments = result.data.toDomainModel()
                 emit(Result.Success(comments))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -52,7 +54,9 @@ class DefaultCommentRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.addComment(postId = postId, commentRequest = commentRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -64,7 +68,9 @@ class DefaultCommentRepository @Inject constructor(
 
         when (val result = postNetworkDataSource.deleteComment(commentId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

@@ -274,7 +274,6 @@ class PostNetworkDataSourceTest {
     fun `API-032 (임시저장 게시글 추가)`() = runTest {
         server.enqueue(MockResponse().apply {
             setResponseCode(201)
-            setBody(resultIdResponseTestData)
         })
 
         val requestAdapter = moshi.adapter(PostRequest::class.java)
@@ -282,10 +281,9 @@ class PostNetworkDataSourceTest {
 
         val actualResponse =
             postNetworkDataSource.addTemporaryPost(requestAdapter.fromJson(postRequestTestData)!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
 
         assertNotNull(actualResponse)
-        assertEquals(expectedResponse!!.resultId, (actualResponse as Result.Success).data.resultId)
+        assert((actualResponse as Result.Success).data)
     }
 
     @Test

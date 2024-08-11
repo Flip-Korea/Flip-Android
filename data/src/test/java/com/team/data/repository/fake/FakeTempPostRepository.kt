@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 class FakeTempPostRepository(
     private val postNetworkDataSource: PostNetworkDataSource,
@@ -31,12 +30,12 @@ class FakeTempPostRepository(
         when (val result =
             postNetworkDataSource.getTemporaryPosts(profileId, cursor, limit)) {
             is Result.Success -> {
-                val tempPosts = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val tempPosts = result.data.toDomainModel()
                 emit(Result.Success(tempPosts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -46,12 +45,14 @@ class FakeTempPostRepository(
     override fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
             postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -63,7 +64,9 @@ class FakeTempPostRepository(
 
         when (val result = postNetworkDataSource.deleteTemporaryPost(tempPostId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -71,12 +74,14 @@ class FakeTempPostRepository(
     override fun editTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
-        val newPostNetwork = withContext(ioDispatcher) { newPost.toNetwork() }
+        val newPostNetwork = newPost.toNetwork()
 
         when (val result =
             postNetworkDataSource.editTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

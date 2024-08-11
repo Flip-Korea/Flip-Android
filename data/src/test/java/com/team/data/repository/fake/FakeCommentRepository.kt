@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 class FakeCommentRepository(
     private val postNetworkDataSource: PostNetworkDataSource
@@ -31,12 +30,12 @@ class FakeCommentRepository(
         when (val result =
             postNetworkDataSource.getComments(postId, cursor, limit)) {
             is Result.Success -> {
-                val comments = withContext(ioDispatcher) {
-                    result.data.toDomainModel()
-                }
+                val comments = result.data.toDomainModel()
                 emit(Result.Success(comments))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -49,14 +48,14 @@ class FakeCommentRepository(
     ): Flow<Result<Boolean, ErrorType>> = flow<Result<Boolean, ErrorType>> {
         emit(Result.Loading)
 
-        val commentRequest = withContext(ioDispatcher) {
-            newComment.toNetwork()
-        }
+        val commentRequest = newComment.toNetwork()
 
         when (val result =
             postNetworkDataSource.addComment(postId = postId, commentRequest = commentRequest)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -68,7 +67,9 @@ class FakeCommentRepository(
 
         when (val result = postNetworkDataSource.deleteComment(commentId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

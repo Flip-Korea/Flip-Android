@@ -34,7 +34,9 @@ class DefaultTempPostRepository @Inject constructor(
                 val tempPosts = result.data.toDomainModel()
                 emit(Result.Success(tempPosts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -49,7 +51,9 @@ class DefaultTempPostRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -61,7 +65,9 @@ class DefaultTempPostRepository @Inject constructor(
 
         when (val result = postNetworkDataSource.deleteTemporaryPost(tempPostId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -74,7 +80,9 @@ class DefaultTempPostRepository @Inject constructor(
         when (val result =
             postNetworkDataSource.editTemporaryPost(newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

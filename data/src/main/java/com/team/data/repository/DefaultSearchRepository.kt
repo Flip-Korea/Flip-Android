@@ -63,7 +63,9 @@ class DefaultSearchRepository @Inject constructor(
                     val posts = result.data.toDomainModel()
                     emit(Result.Success(posts))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -85,7 +87,9 @@ class DefaultSearchRepository @Inject constructor(
                 val profiles = result.data.toDomainModel()
                 emit(Result.Success(profiles))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -106,7 +110,9 @@ class DefaultSearchRepository @Inject constructor(
                 val tags = result.data.toDomainModel()
                 emit(Result.Success(tags))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

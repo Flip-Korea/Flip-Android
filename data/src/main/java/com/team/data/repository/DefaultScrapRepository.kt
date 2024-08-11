@@ -35,7 +35,9 @@ class DefaultScrapRepository @Inject constructor(
                 val scrapList = result.data.toDomainModel()
                 emit(Result.Success(scrapList))
             }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -52,7 +54,9 @@ class DefaultScrapRepository @Inject constructor(
         when (val result =
             userNetworkDataSource.editScrapComment(profileId, scrapId, ScrapCommentRequest(scrapComment))) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -67,7 +71,9 @@ class DefaultScrapRepository @Inject constructor(
         when (val result =
             userNetworkDataSource.addScrap(newScrapNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }
@@ -79,7 +85,9 @@ class DefaultScrapRepository @Inject constructor(
 
         when (val result = userNetworkDataSource.deleteScrap(scrapId)) {
             is Result.Success -> { emit(Result.Success(true)) }
-            is Result.Error -> { emit(Result.Error(result.error)) }
+            is Result.Error -> {
+                emit(Result.Error(errorBody = result.errorBody, error = result.error))
+            }
             Result.Loading -> { }
         }
     }

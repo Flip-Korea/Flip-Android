@@ -32,7 +32,7 @@ class FakeAccountRepository(
 
     private val ioDispatcher = Dispatchers.IO
 
-    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> = flow {
+    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> = flow<Result<Boolean, ErrorType>> {
         emit(Result.Loading)
 
 //        dataStoreManager.deleteToken(DataStoreManager.AccountType.CURRENT_PROFILE_ID)
@@ -50,6 +50,7 @@ class FakeAccountRepository(
             emit(Result.Error(ErrorType.Exception.EXCEPTION))
         }
     }
+        .flowOn(ioDispatcher)
 
     override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
         return flow {
@@ -63,12 +64,6 @@ class FakeAccountRepository(
                         // 민감데이터를 제외한 프로필 데이터만 기기에 저장
                         // 민감데이터 필요 시, 서버에서 가져온 데이터 그대로 사용
                         // API 명세서에 따라 현재 프로필 제외하고는 ID만 가져오게 바뀔 가능성 있음
-//                        val account = withContext(ioDispatcher) {
-//                            myProfileDao.refresh(result.data.profile.toEntity())
-//                            val myProfileEntities = myProfileDao.getAllProfile().first()
-//                            result.data.toExternal(myProfileEntities.toExternal())
-//                        }
-
                         myProfileDao.refresh(result.data.profile.toEntity())
                         val myProfileEntities = myProfileDao.getAllProfile().first()
                         val account = result.data.toDomainModel(myProfileEntities.toDomainModel())
@@ -87,7 +82,9 @@ class FakeAccountRepository(
 
                         emit(Result.Success(account))
                     }
-                    is Result.Error -> { emit(Result.Error(result.error)) }
+                    is Result.Error -> {
+                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                    }
                     Result.Loading -> { }
                 }
             } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
@@ -102,7 +99,9 @@ class FakeAccountRepository(
 
             when (val result = accountNetworkDataSource.checkDuplicateName(nickname)) {
                 is Result.Success -> { emit(Result.Success(result.data)) }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -116,7 +115,9 @@ class FakeAccountRepository(
 
             when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
                 is Result.Success -> { emit(Result.Success(result.data)) }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -138,7 +139,9 @@ class FakeAccountRepository(
                     saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
@@ -155,7 +158,9 @@ class FakeAccountRepository(
                     saveTokens(result.data.accessToken, result.data.refreshToken)
                     emit(Result.Success(true))
                 }
-                is Result.Error -> { emit(Result.Error(result.error)) }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
                 Result.Loading -> { }
             }
         }
