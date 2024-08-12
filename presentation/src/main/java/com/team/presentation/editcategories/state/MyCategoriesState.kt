@@ -1,7 +1,7 @@
 package com.team.presentation.editcategories.state
 
 import com.team.domain.model.category.Category
-import com.team.presentation.util.UiText
+import com.team.presentation.util.uitext.UiText
 
 data class MyCategoriesState(
     val myCategories: List<Category> = emptyList(),

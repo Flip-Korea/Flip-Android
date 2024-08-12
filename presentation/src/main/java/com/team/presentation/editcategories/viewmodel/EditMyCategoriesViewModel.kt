@@ -17,8 +17,8 @@ import com.team.domain.util.Result
 import com.team.presentation.editcategories.EditMyCategoriesUiEvent
 import com.team.presentation.editcategories.state.MyCategoriesState
 import com.team.presentation.editcategories.state.MyCategoriesUpdateState
-import com.team.presentation.util.UiText
-import com.team.presentation.util.asUiText
+import com.team.presentation.util.uitext.UiText
+import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher

@@ -141,4 +141,7 @@
     <string name="add_flip_screen_content_desc_setting_background_color">배경 컬러</string>
     <string name="add_flip_screen_content_desc_show_more">더보기</string>
     <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
+
+    <!-- Keyboard Toolbar -->
+    <string name="keyboard_toolbar_btn_done">완료</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.team.presentation.util
+package com.team.presentation.util.uitext
 
 import android.content.Context
 import androidx.annotation.StringRes

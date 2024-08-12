@@ -19,8 +19,8 @@ import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
 import com.team.presentation.home.state.CategoryState
 import com.team.presentation.home.state.PostState
-import com.team.presentation.util.UiText
-import com.team.presentation.util.asUiText
+import com.team.presentation.util.uitext.UiText
+import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job

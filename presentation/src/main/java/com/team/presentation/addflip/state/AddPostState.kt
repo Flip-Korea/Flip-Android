@@ -1,6 +1,6 @@
 package com.team.presentation.addflip.state
 
-import com.team.presentation.util.UiText
+import com.team.presentation.util.uitext.UiText
 
 data class AddPostState(
     val tempPostSave: Boolean = false,

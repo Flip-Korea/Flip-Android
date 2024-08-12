@@ -1,6 +1,6 @@
 package com.team.presentation.common.bottomsheet.block
 
-import com.team.presentation.util.UiText
+import com.team.presentation.util.uitext.UiText
 
 data class BlockState(
     val success: Boolean = false,

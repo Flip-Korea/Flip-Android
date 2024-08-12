@@ -10,8 +10,8 @@ import com.team.domain.util.Result
 import com.team.presentation.login.state.AuthUiState
 import com.team.presentation.login.state.LoginState
 import com.team.presentation.login.util.AuthManager
-import com.team.presentation.util.UiText
-import com.team.presentation.util.asUiText
+import com.team.presentation.util.uitext.UiText
+import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

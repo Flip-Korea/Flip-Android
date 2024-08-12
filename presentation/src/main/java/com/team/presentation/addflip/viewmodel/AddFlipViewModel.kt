@@ -17,8 +17,8 @@ import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
-import com.team.presentation.util.UiText
-import com.team.presentation.util.asUiText
+import com.team.presentation.util.uitext.UiText
+import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async

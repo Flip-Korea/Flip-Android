@@ -18,7 +18,7 @@ import com.team.presentation.editcategories.testdoubles.myProfileTestData
 import com.team.presentation.fake.FakeDataStoreManager
 import com.team.presentation.home.testdoubles.categoriesTestData
 import com.team.presentation.home.testdoubles.myCategoriesTestData
-import com.team.presentation.util.asUiText
+import com.team.presentation.util.uitext.asUiText
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every

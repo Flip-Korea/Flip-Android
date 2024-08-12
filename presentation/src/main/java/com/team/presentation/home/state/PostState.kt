@@ -1,7 +1,7 @@
 package com.team.presentation.home.state
 
 import com.team.domain.model.post.Post
-import com.team.presentation.util.UiText
+import com.team.presentation.util.uitext.UiText
 
 data class PostState(
     val posts: List<Post> = emptyList(),
