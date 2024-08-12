@@ -40,7 +40,7 @@ internal object CommonPaddingValues {
      * bottom: [CommonPaddingValues.TopBarVertical]
      */
     val TopBarWithLogo = PaddingValues(
-        start = TopBarHorizontal,
+        start = 16.dp,
         end = 7.dp,
         top = TopBarVertical,
         bottom = TopBarVertical

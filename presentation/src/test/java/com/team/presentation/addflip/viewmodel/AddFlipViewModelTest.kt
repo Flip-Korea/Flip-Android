@@ -19,7 +19,7 @@ import com.team.presentation.TestDispatcherRule
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.testdoubles.categoriesTestData
-import com.team.presentation.util.UiText
+import com.team.presentation.util.uitext.UiText
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

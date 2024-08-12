@@ -1,4 +1,4 @@
-package com.team.presentation.util
+package com.team.presentation.util.uitext
 
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result

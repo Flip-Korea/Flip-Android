@@ -1,4 +1,4 @@
-package com.team.presentation.util
+package com.team.presentation.util.uitext
 
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.presentation.R

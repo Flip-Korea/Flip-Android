@@ -1,4 +1,4 @@
-package com.team.presentation.util
+package com.team.presentation.util.uitext
 
 import com.team.domain.type.ReportType
 import com.team.presentation.R

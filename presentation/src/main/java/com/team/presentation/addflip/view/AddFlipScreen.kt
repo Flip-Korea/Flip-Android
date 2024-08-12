@@ -8,10 +8,10 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,10 +23,12 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -52,6 +54,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -64,7 +67,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -118,6 +120,7 @@ import kotlinx.coroutines.launch
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param onBackPress 뒤로가기 시
+ * @param resetErrorState 일회성 이벤트 처리를 위한 상태 초기화
  */
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -132,7 +135,7 @@ fun AddFlipScreen(
     onUiEvent: (AddFlipUiEvent) -> Unit,
     onBackPress: () -> Unit,
     resetErrorState: () -> Unit
-) {
+) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
     val context = LocalContext.current
 
@@ -151,7 +154,7 @@ fun AddFlipScreen(
         }
     }
 
-    val contentScrollState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
 
     val (title, onTitleChanged) = rememberSaveable { mutableStateOf("") }
     var contents by rememberSaveable { mutableStateOf(listOf("")) }
@@ -170,7 +173,7 @@ fun AddFlipScreen(
     val tagSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
+//    val focusRequester = remember { FocusRequester() }
 
     var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -180,8 +183,8 @@ fun AddFlipScreen(
     LaunchedEffect(selectedCategory, title, contents) {
         enableSaveButton =
             selectedCategory != null &&
-            title.isNotEmpty() &&
-            contents.filter { it.isEmpty() }.isEmpty()
+                    title.isNotEmpty() &&
+                    contents.filter { it.isEmpty() }.isEmpty()
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -206,7 +209,6 @@ fun AddFlipScreen(
     /** 태그 선택 바텀 시트 */
     if (showTagBottomSheet) {
         AddTagsBottomSheet(
-            focusRequester = focusRequester,
             sheetState = tagSheetState,
             tags = tags,
             onApply = { tags = it },
@@ -273,173 +275,180 @@ fun AddFlipScreen(
         },
         snackbarHost = { FlipSnackbar(snackBarHostState = snackbarState) },
         containerColor = FlipTheme.colors.white,
-    ) { paddingValues ->
+    ) { innerPadding ->
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-            //TODO 해당 패딩을 추가하면 키보드 활성화 시 레이아웃 간섭 발생
-//                .imePadding()
-            ,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-            contentPadding = PaddingValues(vertical = 9.dp),
-            state = contentScrollState
-        ) {
-            item {
-                /** 카테고리 선택 바 */
-                SelectCategoryBar(
+        CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+            FlipImeDoneToolbarWrapper(onDone = {
+                keyboardController?.hide()
+            }) {
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
-                    selectedCategory = selectedCategory,
-                    onClick = { showCategoryBottomSheet = true }
-                )
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding)
+                        .imePadding(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                    contentPadding = PaddingValues(vertical = 9.dp),
+                    state = lazyListState,
+                ) {
+                    item {
+                        /** 카테고리 선택 바 */
+                        SelectCategoryBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                            selectedCategory = selectedCategory,
+                            onClick = { showCategoryBottomSheet = true }
+                        )
 
-                /** 제목 입력 텍스트필드 */
-                AddFlipTitleTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 17.dp)
-                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
-                    title = title,
-                    onTitleChanged = { onTitleChanged(it) },
-                    placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
-                )
+                        /** 제목 입력 텍스트필드 */
+                        AddFlipTitleTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 17.dp)
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                            title = title,
+                            onTitleChanged = { onTitleChanged(it) },
+                            placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
+                        )
 
-                /** 본문 입력 텍스트필드 */
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp),
-                    state = pagerState,
-                    userScrollEnabled = true,
-                    contentPadding = PaddingValues(horizontal = CommonPaddingValues.HorizontalPadding),
-                    pageSpacing = CommonPaddingValues.HorizontalPadding,
-                    verticalAlignment = Alignment.Top
-                ) { page ->
+                        /** 본문 입력 텍스트필드 */
+                        HorizontalPager(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                            state = pagerState,
+                            userScrollEnabled = true,
+                            contentPadding = PaddingValues(horizontal = CommonPaddingValues.HorizontalPadding),
+                            pageSpacing = CommonPaddingValues.HorizontalPadding,
+                            verticalAlignment = Alignment.Top
+                        ) { page ->
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .flipGradient(color = selectedColor.asColor())
-                            .padding(start = 8.dp, top = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AddFlipContentTextField(
-                            modifier = Modifier.fillMaxWidth(0.95f),
-                            focusRequester = focusRequester,
-                            placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
-                            content = contents[page],
-                            onContentChanged = {
-                                contents = contents.toMutableList().apply {
-                                    this[page] = it
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .flipGradient(color = selectedColor.asColor())
+                                    .padding(start = 8.dp, top = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AddFlipContentTextField(
+                                    modifier = Modifier.fillMaxWidth(0.95f),
+                                    focusManager = focusManager,
+                                    placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
+                                    content = contents[page],
+                                    onContentChanged = {
+                                        contents = contents.toMutableList().apply {
+                                            this[page] = it
+                                        }
+                                    },
+                                    onFocusChanged = {
+                                        contentTextFieldFocused = it
+                                    }
+                                )
+
+                                if (page + 1 != MAX_PAGE) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .sizeIn(maxWidth = 24.dp, maxHeight = 24.dp)
+                                            .clickableSingleWithoutRipple {
+                                                coroutineScope.launch {
+                                                    val newPageIndex = pagerState.currentPage + 1
+
+                                                    if (contents.size + 1 <= MAX_PAGE) {
+                                                        contents = contents
+                                                            .toMutableList()
+                                                            .apply {
+                                                                add(newPageIndex, "")
+                                                            }
+                                                    }
+
+                                                    pagerState.animateScrollToPage(newPageIndex)
+                                                }
+                                            },
+                                        imageVector = ImageVector.vectorResource(R.drawable.ic_plus),
+                                        contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_content),
+                                        tint = Color.Black
+                                    )
                                 }
-                            },
-                            onFocusChanged = {
-                                contentTextFieldFocused = it
+                            }
+                        }
+
+                        /** 페이지 카운터 & 페이지 삭제 버튼 */
+                        PageCounterWithButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 7.dp)
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                            currentPage = pagerState.currentPage + 1,
+                            currentMaxPage = contents.size,
+                            onClick = {
+                                if (contents.size > 1) {
+                                    coroutineScope.launch {
+                                        val currentPage = pagerState.currentPage
+
+                                        val newPage = (currentPage - 1).coerceAtLeast(0)
+                                        pagerState.animateScrollToPage(newPage)
+
+                                        contents = contents.toMutableList().apply {
+                                            removeAt(currentPage)
+                                        }
+                                    }
+                                }
                             }
                         )
 
-                        if (page + 1 != MAX_PAGE) {
-                            Icon(
+                        /** 글자 수 도우미 */
+                        if (contentTextFieldFocused) {
+                            LetterCounterGuide(
                                 modifier = Modifier
-                                    .clip(CircleShape)
-                                    .sizeIn(maxWidth = 24.dp, maxHeight = 24.dp)
-                                    .clickableSingleWithoutRipple {
-                                        coroutineScope.launch {
-                                            val newPageIndex = pagerState.currentPage + 1
-
-                                            if (contents.size + 1 <= MAX_PAGE) {
-                                                contents = contents
-                                                    .toMutableList()
-                                                    .apply {
-                                                        add(newPageIndex, "")
-                                                    }
-                                            }
-
-                                            pagerState.animateScrollToPage(newPageIndex)
-                                        }
-                                    },
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_plus),
-                                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_content),
-                                tint = Color.Black
+                                    .fillMaxWidth()
+                                    .padding(horizontal = CommonPaddingValues.HorizontalPadding)
+                                    .padding(top = 12.dp),
+                                length = currentContent.length.toFloat(),
+                                limit = MAX_LETTER_LIMIT,
+                                progress = currentContent.length.toFloat() / MAX_LETTER_LIMIT
                             )
                         }
-                    }
-                }
 
-                /** 페이지 카운터 & 페이지 삭제 버튼 */
-                PageCounterWithButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 7.dp)
-                        .padding(horizontal = CommonPaddingValues.HorizontalPadding),
-                    currentPage = pagerState.currentPage + 1,
-                    currentMaxPage = contents.size,
-                    onClick = {
-                        if (contents.size > 1) {
-                            coroutineScope.launch {
-                                val currentPage = pagerState.currentPage
+                        /** 배경 컬러 설정 바 */
+                        SettingBackgroundColor(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = CommonPaddingValues.HorizontalPadding,
+                                    end = CommonPaddingValues.HorizontalPadding,
+                                    top = 28.dp
+                                ),
+                            selectedColor = selectedColor,
+                            isShowMoreClicked = isShowMoreClicked,
+                            showMore = { isShowMoreClicked = !isShowMoreClicked },
+                            onSelectedColor = { color -> selectedColor = color }
+                        )
 
-                                val newPage = (currentPage - 1).coerceAtLeast(0)
-                                pagerState.animateScrollToPage(newPage)
-
-                                contents = contents.toMutableList().apply {
-                                    removeAt(currentPage)
-                                }
+                        /** 태그 추가 바 */
+                        AddTags(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = CommonPaddingValues.HorizontalPadding,
+                                    end = CommonPaddingValues.HorizontalPadding,
+                                    top = 24.dp
+                                ),
+                            tags = tags,
+                            onDeleteTag = { tag ->
+                                tags = tags - tag
+                            },
+                            showTagBottomSheet = {
+                                focusManager.clearFocus()
+                                showTagBottomSheet = true
                             }
-                        }
+                        )
                     }
-                )
-
-                /** 글자 수 도우미 */
-                if (contentTextFieldFocused) {
-                    LetterCounterGuide(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = CommonPaddingValues.HorizontalPadding)
-                            .padding(top = 12.dp),
-                        length = currentContent.length.toFloat(),
-                        limit = MAX_LETTER_LIMIT,
-                        progress = currentContent.length.toFloat() / MAX_LETTER_LIMIT
-                    )
                 }
-
-                /** 배경 컬러 설정 바 */
-                SettingBackgroundColor(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = CommonPaddingValues.HorizontalPadding,
-                            end = CommonPaddingValues.HorizontalPadding,
-                            top = 28.dp
-                        ),
-                    selectedColor = selectedColor,
-                    isShowMoreClicked = isShowMoreClicked,
-                    showMore = { isShowMoreClicked = !isShowMoreClicked },
-                    onSelectedColor = { color -> selectedColor = color }
-                )
-
-                /** 태그 추가 바 */
-                AddTags(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = CommonPaddingValues.HorizontalPadding,
-                            end = CommonPaddingValues.HorizontalPadding,
-                            top = 24.dp
-                        ),
-                    tags = tags,
-                    onDeleteTag = { tag ->
-                        tags = tags - tag
-                    },
-                    showTagBottomSheet = {
-                        showTagBottomSheet = true
-                    }
-                )
             }
         }
+
     }
 }
 
@@ -870,7 +879,6 @@ private fun AddTags(
 @Composable
 private fun AddTagsBottomSheet(
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester,
     sheetState: SheetState,
     tags: List<String>,
     onApply: (List<String>) -> Unit,
@@ -888,7 +896,6 @@ private fun AddTagsBottomSheet(
             modifier = bottomSheetModifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
-            focusRequester = focusRequester,
             tags = tempTags,
             onAddTag = { tag ->
                 if (tag.isNotEmpty() && tempTags.size < 10) {
@@ -912,7 +919,6 @@ private fun AddTagsBottomSheet(
 @Composable
 private fun AddTagsBottomSheetContent(
     modifier: Modifier = Modifier,
-    focusRequester: FocusRequester,
     tags: List<String>,
     onAddTag: (String) -> Unit,
     onDeleteTag: (String) -> Unit,
@@ -959,10 +965,7 @@ private fun AddTagsBottomSheetContent(
             }
 
             TagSearchTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-                    .focusable(),
+                modifier = Modifier.fillMaxWidth(),
                 text = text,
                 onTextChanged = { onTextChanged(it) },
                 onAddTag = { tag ->
@@ -1227,12 +1230,10 @@ private fun TagSearchTextFieldPreview() {
 @Composable
 private fun AddTagsBottomSheetContentPreview() {
 
-    val focusRequester = remember { FocusRequester() }
     var tags by remember { mutableStateOf(listOf<String>()) }
 
     FlipAppTheme {
         AddTagsBottomSheetContent(
-            focusRequester = focusRequester,
             tags = tags,
             onDeleteTag = { tag ->
                 tags = tags - tag
