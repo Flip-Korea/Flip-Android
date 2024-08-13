@@ -15,6 +15,4 @@
 
     <!-- BottomNavigation Item(Content Description) -->
 
-    <!-- PlaceHolder (Text) -->
-    <string name="placeholder_nickname">플리퍼</string>
 </resources>

@@ -32,6 +32,8 @@ import com.team.presentation.ScreenItem
 
 /**
  * Flip의 BottomNavigationBar
+ *
+ * @param navController BottomNavController
  */
 @Composable
 fun FlipBottomNavigationBar(

@@ -81,6 +81,7 @@
     <string name="edit_interest_categories_speechbubble">관심분야를 자유롭게 추가하고 삭제해보세요.\n꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!</string>
     <string name="edit_interest_categories_list_title_1">관심사 리스트</string>
     <string name="edit_interest_categories_list_title_2">전체 선택</string>
+    <string name="edit_interest_categories_placeholder_nickname">플리퍼</string>
 
     <!-- BottomSheet (ContentDescription) -->
     <string name="bottom_sheet_report_content_desc_complete">신고 완료</string>
