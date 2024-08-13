@@ -119,7 +119,10 @@ private fun MiddleSection(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = { checkedReason = reason }
+                        onClick = {
+                            checkedReason = reason
+                            onCheck(checkedReason)
+                        }
                     )
                     .padding(horizontal = 16.dp, vertical = 13.5.dp)
                     .fillMaxWidth(),

@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val mainNavController = rememberNavController()
-            val bottomNavController = rememberNavController()
 
             FlipAppTheme {
 
@@ -46,7 +45,6 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(FlipTheme.colors.white),
                     mainNavController = mainNavController,
-                    bottomNavController = bottomNavController,
                     deleteToken = {
                         //TODO 임시 테스트용 코드이므로 반드시 삭제할 것
                         lifecycleScope.launch {
