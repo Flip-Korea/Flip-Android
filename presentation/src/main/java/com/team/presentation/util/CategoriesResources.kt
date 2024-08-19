@@ -1,6 +1,7 @@
 package com.team.presentation.util
 
 import com.team.domain.model.category.Category
+import com.team.domain.model.category.fixedCategories
 import com.team.presentation.R
 
 /**
@@ -42,3 +43,5 @@ val CategoryIconsMap = mapOf(
     101 to R.drawable.ic_category_following,
     102 to R.drawable.ic_category_popular
 )
+
+val fixedCategoriesSize = fixedCategories.size

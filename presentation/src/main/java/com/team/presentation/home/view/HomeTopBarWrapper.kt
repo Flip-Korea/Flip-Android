@@ -13,7 +13,7 @@ import androidx.compose.ui.zIndex
  *
  * BoxScope 내에서 사용되어야 한다.
  *
- * @param topBarHeightOffsetPx TopBar(content 부분)의 높이 오프셋 px 값
+ * @param animatedTopBarOffset TopBar(content 부분)의 높이 오프셋 px 값
  * @param content Composable 함수로 TopBar 에 해당 되는 부분
  */
 @Composable
