@@ -16,9 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +40,7 @@ import androidx.compose.ui.zIndex
 import com.team.designsystem.component.skeleton.HomeSkeletonScreen
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
+import com.team.domain.model.category.Category
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
@@ -49,20 +48,19 @@ import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
-import com.team.presentation.home.state.CategoryState
 import com.team.presentation.home.state.PostState
 import com.team.presentation.home.util.HomeScreenPaddingValues
-import kotlinx.coroutines.delay
+import com.team.presentation.util.CategoriesTestData
+import com.team.presentation.util.fixedCategoriesSize
 import kotlin.math.abs
 
 /**
  * Flip의 메인 화면이자 홈 화면
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    categoryState: CategoryState,
+    myCategories: List<Category>,
     postState: PostState,
     onSettingClick: () -> Unit,
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
@@ -122,24 +120,25 @@ fun HomeScreen(
         }
     }
 
-    /** Pull To Refresh */
-    val refreshState = rememberPullToRefreshState()
-    val refreshIconScale by animateFloatAsState(
-        targetValue = if (!refreshState.isRefreshing) {
-            refreshState.verticalOffset / 450f
-        } else 1f,
-        label = ""
-    )
-    LaunchedEffect(refreshState.isRefreshing) {
-        if (refreshState.isRefreshing) {
-            delay(2000L)
-            refreshState.endRefresh()
-        }
-    }
+//    /** Pull To Refresh */
+//    val refreshState = rememberPullToRefreshState()
+//    val refreshIconAlpha by animateFloatAsState(
+//        targetValue = if (!refreshState.isRefreshing && refreshState.progress <= 0f) {
+//            0f
+//        } else 1f,
+//        label = ""
+//    )
+//    LaunchedEffect(refreshState.isRefreshing) {
+//        if (refreshState.isRefreshing) {
+//            delay(2000L)
+//            refreshState.endRefresh()
+//        }
+//    }
 
     /** 메인 컨텐츠 */
     Box(modifier = modifier) {
         //TODO 리스트 맨 위에서 탑 바를 조금씩 올릴 시 공백이 생김, 처리 요망
+        // -> 상위 컴포저블을 Column으로 바꾸면서 해결 예정
         HomeTopBarWrapper(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -166,8 +165,8 @@ fun HomeScreen(
                     .background(FlipTheme.colors.white)
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
-                items = categoryState.categories,
-                itemSplitSize = categoryState.splitSize,
+                items = myCategories,
+                itemSplitSize = fixedCategoriesSize,
                 onItemClick = { }
             )
         }
@@ -178,7 +177,7 @@ fun HomeScreen(
                 .align(Alignment.TopCenter)
                 .fillMaxSize()
                 .padding(HomeScreenPaddingValues.Horizontal)
-                .nestedScroll(refreshState.nestedScrollConnection)
+//                .nestedScroll(refreshState.nestedScrollConnection)
         ) {
             if (postState.loading) {
                 HomeSkeletonScreen(Modifier.padding(top = topBarHeightDp))
@@ -206,11 +205,11 @@ fun HomeScreen(
                 }
             }
 
-            CustomPullToRefreshContainer(
-                pullToRefreshState = refreshState,
-                topPadding = (topBarHeightDp - 20.dp - CommonPaddingValues.TopBarVertical).coerceAtLeast(0.dp),
-                animatedScale = refreshIconScale
-            )
+//            CustomPullToRefreshContainer(
+//                pullToRefreshState = refreshState,
+//                topPadding = (topBarHeightDp - 20.dp - CommonPaddingValues.TopBarVertical).coerceAtLeast(0.dp),
+//                animatedAlpha = refreshIconAlpha
+//            )
         }
     }
 }
@@ -220,7 +219,7 @@ fun HomeScreen(
 private fun BoxScope.CustomPullToRefreshContainer(
     pullToRefreshState: PullToRefreshState,
     topPadding: Dp,
-    animatedScale: Float
+    animatedAlpha: Float
 ) {
     PullToRefreshContainer(
         state = pullToRefreshState,
@@ -229,8 +228,7 @@ private fun BoxScope.CustomPullToRefreshContainer(
             .zIndex(1f)
             .padding(top = topPadding)
             .graphicsLayer(
-                scaleX = animatedScale,
-                scaleY = animatedScale,
+                alpha = animatedAlpha
             ),
         containerColor = FlipTheme.colors.white,
         contentColor = FlipTheme.colors.main
@@ -243,7 +241,7 @@ private fun HomeScreenPreview() {
     FlipAppTheme {
         HomeScreen(
             modifier = Modifier.fillMaxSize(),
-            categoryState = CategoryState(),
+            myCategories = CategoriesTestData.subList(0, 3),
             postState = PostState().copy(
                 posts = listOf(
                     Post(

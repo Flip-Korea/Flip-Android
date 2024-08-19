@@ -41,6 +41,10 @@ import kotlinx.coroutines.launch
 
 /**
  * 홈 화면에서 사용되는 카테고리 탭 바
+ *
+ * @param items (카테고리)탭 바에 표시되는 카테고리 리스트
+ * @param itemSplitSize 고정 카테고리와 나의 관심 카테고리를 구분 짓는 구분선 기준
+ * @param onItemClick 카테고리 클릭 시
  */
 @Composable
 fun HomeTab(

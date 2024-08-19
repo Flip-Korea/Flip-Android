@@ -18,53 +18,56 @@ import javax.inject.Inject
 
 //TODO 프로필에서 카테고리를 가져 오는게 아니라
 // 나중에 '나의 관심 카테고리' 만 가져 오도록 수정 필요
-/**
- * Local DB 에서 나의 관심 카테고리를 가져온다.
- *
- * 만약 비어 있다면 네트워크에서 가져온다.
- */
 class GetMyCategoriesUseCase @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val userRepository: UserRepository,
 ) {
 
+    /**
+     * Local DB 에서 나의 관심 카테고리를 가져온다.
+     *
+     * 만약 비어 있다면 네트워크에서 가져온다.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend operator fun invoke(): Flow<List<Int>?> {
+    operator fun invoke(): Flow<List<Int>?> = flow {
         val profileId = dataStoreManager.getStringData(
             DataStoreType.AccountType.CURRENT_PROFILE_ID
         ).first()
 
         if (profileId == null) {
-            return flowOf(null)
+            emit(null)
+            return@flow
         }
 
-        return userRepository.getMyProfileFromLocal(profileId).flatMapLatest { result ->
-            when (result) {
-                Result.Loading -> {
-                    flowOf(emptyList())
-                }
+        emitAll(
+            userRepository.getMyProfileFromLocal(profileId).flatMapLatest { result ->
+                when (result) {
+                    Result.Loading -> {
+                        flowOf(emptyList())
+                    }
 
-                is Result.Error -> {
-                    flowOf(null)
-                }
+                    is Result.Error -> {
+                        flowOf(null)
+                    }
 
-                is Result.Success -> {
-                    if (result.data == null) {
-                        flow {
-                            userRepository.refreshMyProfile(profileId)
-                            emitAll(
-                                userRepository.getMyProfileFromLocal(profileId)
-                                    .filter { it is Result.Success }
-                                    .map { (it as Result.Success).data?.categories }
-                            )
+                    is Result.Success -> {
+                        if (result.data == null) {
+                            flow {
+                                userRepository.refreshMyProfile(profileId)
+                                emitAll(
+                                    userRepository.getMyProfileFromLocal(profileId)
+                                        .filter { it is Result.Success }
+                                        .map { (it as Result.Success).data?.categories }
+                                )
+                            }
+                                .catch { emit(null) }
+                        } else {
+                            flowOf(result.data.categories)
                         }
-                            .catch { emit(null) }
-                    } else {
-                        flowOf(result.data.categories)
                     }
                 }
             }
-        }
-            .catch { emit(null) }
+                .catch { emit(null) }
+        )
     }
 }

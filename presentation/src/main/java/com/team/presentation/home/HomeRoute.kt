@@ -7,18 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.common.bottomsheet.ReportAndBlockBottomSheet
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
@@ -41,10 +37,10 @@ fun HomeRoute(
     onSettingClick: () -> Unit,
 ) {
 
-    val categoryState by homeViewModel.categoriesState.collectAsStateWithLifecycle()
     val postState by homeViewModel.postState.collectAsStateWithLifecycle()
     val reportState by homeViewModel.reportState.collectAsStateWithLifecycle()
     val blockState by homeViewModel.blockState.collectAsStateWithLifecycle()
+    val filteredMyCategoriesState by homeViewModel.filteredMyCategoriesState.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var startFromReportView: Boolean? by remember { mutableStateOf(null) }
@@ -53,12 +49,12 @@ fun HomeRoute(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-            homeViewModel.fetchCategories()
-        }
-    }
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    LaunchedEffect(lifecycleOwner) {
+//        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+//            homeViewModel.fetchCategories()
+//        }
+//    }
 
     ReportAndBlockBottomSheet(
         startFromReportView = startFromReportView,
@@ -83,7 +79,7 @@ fun HomeRoute(
             .fillMaxSize()
             .background(FlipTheme.colors.white)
             .padding(bottom = innerPadding.calculateBottomPadding()),
-        categoryState = categoryState,
+        myCategories = filteredMyCategoriesState,
         postState = postState,
         flipCardUiEvent = homeViewModel::onFlipCardEvent,
         homeUiEvent = homeViewModel::onHomeUiEvent,
