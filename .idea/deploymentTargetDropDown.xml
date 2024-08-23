@@ -2,16 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="FlipPullRefreshLazyColumn2Preview">
+      <entry key="HomeScreen2Preview">
         <State />
       </entry>
-      <entry key="FlipPullRefreshLazyColumnPreview">
-        <State />
-      </entry>
-      <entry key="PullSample">
-        <State />
-      </entry>
-      <entry key="PullToRefreshAnimationPreview">
+      <entry key="LazyColumnPreview">
         <State />
       </entry>
       <entry key="app">

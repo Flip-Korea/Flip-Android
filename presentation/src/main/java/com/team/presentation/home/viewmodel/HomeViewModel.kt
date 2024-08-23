@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.team.data.di.DefaultDispatcher
 import com.team.domain.model.category.fixedCategories
-import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.interestcategory.GetFilteredMyCategoriesUseCase
-import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
 import com.team.domain.usecase.post.GetPostUseCases
 import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorType
@@ -27,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,8 +35,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     private val getPostUseCases: GetPostUseCases,
-    private val getMyCategoriesUseCase: GetMyCategoriesUseCase,
-    private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase,
     private val getFilteredMyCategoriesUseCase: GetFilteredMyCategoriesUseCase
 ) : ViewModel() {
@@ -50,6 +47,7 @@ class HomeViewModel @Inject constructor(
         )
 
     val filteredMyCategoriesState = getFilteredMyCategoriesUseCase()
+        .flowOn(defaultDispatcher)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
