@@ -1,21 +1,16 @@
 package com.team.presentation.home.view
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -25,18 +20,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.team.designsystem.component.skeleton.HomeSkeletonScreen
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
@@ -45,10 +32,13 @@ import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
+import com.team.presentation.common.pullrefresh.FlipPullRefreshLazyColumn
+import com.team.presentation.common.pullrefresh.PullRefreshConsumeState
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
 import com.team.presentation.home.state.PostState
+import com.team.presentation.home.util.HomeScreenNestedScrollConnection
 import com.team.presentation.home.util.HomeScreenPaddingValues
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.fixedCategoriesSize
@@ -72,83 +62,60 @@ fun HomeScreen(
 
     val lazyListState = rememberLazyListState()
 
-    /** TopBar Animation By Scrolled */
-    var topBarHeightPx by remember { mutableFloatStateOf(0f) }
-    var topBarHeightDp by remember { mutableStateOf(0.dp) }
+    var pullRefreshConsumeState by remember { mutableStateOf(PullRefreshConsumeState.Released) }
+
+    /** TopBar Values */
+    val topBarHeightDp  = with(density) { 310f.toDp() }
+    val topBarHeightPx = with(density) { topBarHeightDp.toPx() }
+    var topBarOffsetHeightPx by rememberSaveable { mutableFloatStateOf(0f) }
     var isPostFling by remember { mutableStateOf(false) }
-    var animatedOffset by rememberSaveable { mutableFloatStateOf(0f) }
-    val animatedTopBarOffset by animateFloatAsState(
-        targetValue = animatedOffset,
+    val animatedTopBarOffsetDp by animateDpAsState(
+        targetValue = with(density) { topBarOffsetHeightPx.toDp() },
         label = "",
         animationSpec = tween(durationMillis = if (isPostFling) 300 else 0)
     )
     val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        HomeScreenNestedScrollConnection(
+            onPreScrollAction = { available ->
+                if (pullRefreshConsumeState == PullRefreshConsumeState.Released) {
+                    isPostFling = false
 
-                isPostFling = false
-
-                val delta = available.y
-                val newOffset = animatedOffset + delta
-                animatedOffset = newOffset.coerceIn(-topBarHeightPx, 0f)
-
-                return Offset.Zero
-            }
-
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-
-                isPostFling = true
-
-                val top = 0f
-                val middle = topBarHeightPx / 2
-                val topMiddle = (top + middle) / 2
-                val bottomMiddle = middle + topMiddle
-                val bottom = topBarHeightPx
-                val offset = abs(animatedOffset)
-
-                animatedOffset = when {
-                    top < offset && offset <= topMiddle -> { -top }
-                    topMiddle < offset && offset <= middle -> { -middle }
-                    middle < offset && offset <= bottomMiddle -> { -middle }
-                    bottomMiddle < offset && offset <= bottom -> { -bottom }
-                    offset > bottom -> { -bottom }
-                    else -> { 0f }
+                    val delta = available.y
+                    val newOffset = topBarOffsetHeightPx + delta
+                    topBarOffsetHeightPx = newOffset.coerceIn(-topBarHeightPx, 0f)
                 }
+            },
+            onPostFlingAction = {
+                if (lazyListState.firstVisibleItemIndex != 0) {
+                    isPostFling = true
 
-                return Velocity.Zero
+                    val top = 0f
+                    val middle = topBarHeightPx / 2
+                    val topMiddle = (top + middle) / 2
+                    val bottomMiddle = middle + topMiddle
+                    val bottom = topBarHeightPx
+                    val offset = abs(topBarOffsetHeightPx)
+
+                    topBarOffsetHeightPx = when {
+                        top < offset && offset <= topMiddle -> { -top }
+                        topMiddle < offset && offset <= middle -> { -middle }
+                        middle < offset && offset <= bottomMiddle -> { -middle }
+                        bottomMiddle < offset && offset <= bottom -> { -bottom }
+                        offset > bottom -> { -bottom }
+                        else -> { 0f }
+                    }
+                }
             }
-        }
+        )
     }
 
-//    /** Pull To Refresh */
-//    val refreshState = rememberPullToRefreshState()
-//    val refreshIconAlpha by animateFloatAsState(
-//        targetValue = if (!refreshState.isRefreshing && refreshState.progress <= 0f) {
-//            0f
-//        } else 1f,
-//        label = ""
-//    )
-//    LaunchedEffect(refreshState.isRefreshing) {
-//        if (refreshState.isRefreshing) {
-//            delay(2000L)
-//            refreshState.endRefresh()
-//        }
-//    }
+    /** Home Content */
+    Box(modifier = modifier.nestedScroll(nestedScrollConnection)) {
 
-    /** 메인 컨텐츠 */
-    Box(modifier = modifier) {
-        //TODO 리스트 맨 위에서 탑 바를 조금씩 올릴 시 공백이 생김, 처리 요망
-        // -> 상위 컴포저블을 Column으로 바꾸면서 해결 예정
+        /** TopBar */
         HomeTopBarWrapper(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .onSizeChanged {
-                    val padding = with(density) { CommonPaddingValues.TopBarVertical.toPx() }
-                    topBarHeightPx = it.height + padding
-                    val heightDp = with(density) { it.height.toDp() }
-                    topBarHeightDp = heightDp + CommonPaddingValues.TopBarVertical
-                },
-            animatedTopBarOffset = animatedTopBarOffset
+            animatedTopBarOffset = animatedTopBarOffsetDp,
+            modifier = Modifier.fillMaxWidth(),
         ) {
             HomeTopBar(
                 modifier = Modifier
@@ -171,24 +138,25 @@ fun HomeScreen(
             )
         }
 
-        /** Home Content */
+        /** 플립 카드뷰 리스트 */
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxSize()
                 .padding(HomeScreenPaddingValues.Horizontal)
-//                .nestedScroll(refreshState.nestedScrollConnection)
         ) {
             if (postState.loading) {
                 HomeSkeletonScreen(Modifier.padding(top = topBarHeightDp))
             } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .nestedScroll(nestedScrollConnection),
+                FlipPullRefreshLazyColumn(
+                    modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
                     contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
                     state = lazyListState,
+                    onConsumeState = { pullRefreshConsumeState = it },
+                    onRefresh = { },
+                    userScrollEnabled = pullRefreshConsumeState != PullRefreshConsumeState.Refreshing
                 ) {
                     //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
                     items(
@@ -204,36 +172,30 @@ fun HomeScreen(
                     }
                 }
             }
-
-//            CustomPullToRefreshContainer(
-//                pullToRefreshState = refreshState,
-//                topPadding = (topBarHeightDp - 20.dp - CommonPaddingValues.TopBarVertical).coerceAtLeast(0.dp),
-//                animatedAlpha = refreshIconAlpha
-//            )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BoxScope.CustomPullToRefreshContainer(
-    pullToRefreshState: PullToRefreshState,
-    topPadding: Dp,
-    animatedAlpha: Float
-) {
-    PullToRefreshContainer(
-        state = pullToRefreshState,
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .zIndex(1f)
-            .padding(top = topPadding)
-            .graphicsLayer(
-                alpha = animatedAlpha
-            ),
-        containerColor = FlipTheme.colors.white,
-        contentColor = FlipTheme.colors.main
-    )
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//private fun BoxScope.CustomPullToRefreshContainer(
+//    pullToRefreshState: PullToRefreshState,
+//    topPadding: Dp,
+//    animatedAlpha: Float
+//) {
+//    PullToRefreshContainer(
+//        state = pullToRefreshState,
+//        modifier = Modifier
+//            .align(Alignment.TopCenter)
+//            .zIndex(1f)
+//            .padding(top = topPadding)
+//            .graphicsLayer(
+//                alpha = animatedAlpha
+//            ),
+//        containerColor = FlipTheme.colors.white,
+//        contentColor = FlipTheme.colors.main
+//    )
+//}
 
 @Preview(showBackground = true)
 @Composable

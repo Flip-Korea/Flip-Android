@@ -2,10 +2,11 @@ package com.team.presentation.home.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
 
 /**
@@ -19,17 +20,14 @@ import androidx.compose.ui.zIndex
 @Composable
 fun HomeTopBarWrapper(
     modifier: Modifier = Modifier,
-    animatedTopBarOffset: Float,
+    animatedTopBarOffset: Dp,
     content: @Composable () -> Unit,
 ) {
 
     Column(
         modifier = modifier
             .zIndex(1f)
-            .graphicsLayer(
-                translationX = 0f,
-                translationY = animatedTopBarOffset
-            ),
+            .offset(y = animatedTopBarOffset),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
