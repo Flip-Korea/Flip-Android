@@ -68,7 +68,7 @@ fun Modifier.dropShadow2() = this
 
 fun Modifier.dropShadow3() = this
     .dropShadow(
-        color = Color(0xFF636363).copy(0.2f),
-        offsetY = 2.dp,
-        blurRadius = 8.dp
+        color = Color(0xFF000000).copy(0.35f),
+        offsetY = 5.dp,
+        blurRadius = 15.dp
     )
