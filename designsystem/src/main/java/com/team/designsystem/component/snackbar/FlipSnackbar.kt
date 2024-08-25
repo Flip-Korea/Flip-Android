@@ -91,13 +91,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlipSnackbar(
-    modifier: Modifier = Modifier,
     snackBarHostState: SnackbarHostState,
     dismissSnackbarState: SwipeToDismissBoxState,
     dismissEnabled: Boolean = true,
     @DrawableRes iconRes: Int? = null,
     @StringRes actionTextRes: Int? = null,
-    onActionClick: (() -> Unit)? = null,
 ) {
     // Material2 사용 시 SwipeToDismiss 사용
     SwipeToDismissBox(
@@ -107,13 +105,11 @@ fun FlipSnackbar(
         enableDismissFromStartToEnd = dismissEnabled,
         content = {
             SnackbarHost(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .imePadding(),
+                modifier = Modifier.imePadding(),
                 hostState = snackBarHostState,
             ) {
                 Snackbar(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 61.dp)
                         .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
@@ -121,7 +117,7 @@ fun FlipSnackbar(
                     contentColor = FlipTheme.colors.white,
                     shape = FlipTheme.shapes.roundedCornerSmall,
                     action = {
-                        if (actionTextRes != null && onActionClick != null) {
+                        if (actionTextRes != null && it.visuals.actionLabel != null) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -130,7 +126,7 @@ fun FlipSnackbar(
                                 contentAlignment = Alignment.CenterEnd
                             ) {
                                 Text(
-                                    modifier = Modifier.clickableSingleWithoutRipple { onActionClick() },
+                                    modifier = Modifier.clickableSingleWithoutRipple { it.performAction() },
                                     text = stringResource(id = actionTextRes),
                                     style = FlipTheme.typography.headline2,
                                     color = FlipTheme.colors.point2
@@ -155,7 +151,7 @@ fun FlipSnackbar(
                             modifier = Modifier
                                 .weight(3f)
                                 .wrapContentWidth(Alignment.Start),
-                            text = snackBarHostState.currentSnackbarData?.visuals?.message ?: "",
+                            text = it.visuals.message,
                             style = FlipTheme.typography.body5,
                             color = FlipTheme.colors.white,
                             maxLines = 3,
@@ -203,9 +199,6 @@ private fun FlipSnackbarPreview() {
                     dismissSnackbarState = dismissSnackbarState,
                     iconRes = R.drawable.ic_outlined_setting,
                     actionTextRes = R.string.btn_follow_back,
-                    onActionClick = {
-                        snackbarJob?.cancel()
-                    }
                 )
             }
         ) {
