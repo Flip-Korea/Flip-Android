@@ -1,10 +1,11 @@
 package com.team.presentation.common.snackbar
 
+import com.team.presentation.util.uitext.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
 data class SnackbarEvent(
-    val message: String,
+    val message: UiText,
     val action: SnackbarAction? = null
 )
 

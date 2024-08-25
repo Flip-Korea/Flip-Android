@@ -2,10 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="FlipDropdownMenu2Preview">
+      <entry key="FlipSnackbarPreview">
         <State />
       </entry>
-      <entry key="FlipSnackbarPreview">
+      <entry key="SnackbarTest">
         <State />
       </entry>
       <entry key="app">

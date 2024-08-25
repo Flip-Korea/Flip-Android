@@ -50,7 +50,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -74,7 +73,6 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.changedToDown
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -88,7 +86,6 @@ import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.chip.FlipMediumChip
 import com.team.designsystem.component.chip.FlipOutlinedSmallChip
-import com.team.designsystem.component.snackbar.FlipSnackbar
 import com.team.designsystem.component.textfield.FlipTextFieldStyles
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.utils.clickableSingle
@@ -109,7 +106,6 @@ import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
 import com.team.presentation.util.asColor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -137,22 +133,7 @@ fun AddFlipScreen(
     resetErrorState: () -> Unit
 ) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
-    val context = LocalContext.current
-
-    /** 스낵바 */
-    val snackbarState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    var snackbarJob: Job? by remember { mutableStateOf(null) }
-    LaunchedEffect(addPostState.error) {
-        val error = addPostState.error.asString(context)
-        if (error.isNotEmpty()) {
-            snackbarJob?.cancel()
-            snackbarJob = launch {
-                snackbarState.showSnackbar(error)
-                resetErrorState()
-            }
-        }
-    }
 
     val lazyListState = rememberLazyListState()
 
@@ -273,7 +254,6 @@ fun AddFlipScreen(
                 }
             )
         },
-        snackbarHost = { FlipSnackbar(snackBarHostState = snackbarState) },
         containerColor = FlipTheme.colors.white,
     ) { innerPadding ->
 

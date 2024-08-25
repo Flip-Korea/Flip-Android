@@ -17,6 +17,9 @@ import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
+import com.team.presentation.common.snackbar.SnackbarAction
+import com.team.presentation.common.snackbar.SnackbarController
+import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -136,12 +139,17 @@ class AddFlipViewModel @Inject constructor(
                             _addPostState.update { it.copy(loading = true) }
                         }
                         is Result.Error -> {
-                            _addPostState.update { it.copy(
-                                loading = false,
-                                error = result.errorBody?.let { errorBody ->
-                                    UiText.DynamicString(errorBody.message)
-                                } ?: result.error.asUiText()
-                            ) }
+                            val message = result.errorBody?.let { errorBody ->
+                                UiText.DynamicString(errorBody.message)
+                            } ?: result.error.asUiText()
+
+                            showSnackbar(message)
+//                            _addPostState.update { it.copy(
+//                                loading = false,
+//                                error = result.errorBody?.let { errorBody ->
+//                                    UiText.DynamicString(errorBody.message)
+//                                } ?: result.error.asUiText()
+//                            ) }
                         }
                         is Result.Success -> {
                             _addPostState.update { it.copy(
@@ -208,5 +216,17 @@ class AddFlipViewModel @Inject constructor(
         viewModelScope.launch {
             _addPostState.update { it.copy(error = UiText.DynamicString("")) }
         }
+    }
+
+    private suspend fun showSnackbar(
+        message: UiText,
+        action: SnackbarAction? = null
+    ) {
+        SnackbarController.sendEvent(
+            event = SnackbarEvent(
+                message = message,
+                action = action
+            )
+        )
     }
 }
