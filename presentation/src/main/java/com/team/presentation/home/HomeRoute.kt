@@ -41,6 +41,7 @@ fun HomeRoute(
     val reportState by homeViewModel.reportState.collectAsStateWithLifecycle()
     val blockState by homeViewModel.blockState.collectAsStateWithLifecycle()
     val filteredMyCategoriesState by homeViewModel.filteredMyCategoriesState.collectAsStateWithLifecycle()
+    val refreshState by homeViewModel.refreshState.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var startFromReportView: Boolean? by remember { mutableStateOf(null) }
@@ -79,6 +80,7 @@ fun HomeRoute(
             .fillMaxSize()
             .background(FlipTheme.colors.white)
             .padding(bottom = innerPadding.calculateBottomPadding()),
+        refreshState = refreshState,
         myCategories = filteredMyCategoriesState,
         postState = postState,
         flipCardUiEvent = homeViewModel::onFlipCardEvent,

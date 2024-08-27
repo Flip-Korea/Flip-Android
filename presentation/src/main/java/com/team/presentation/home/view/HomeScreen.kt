@@ -51,6 +51,7 @@ import kotlin.math.abs
 fun HomeScreen(
     modifier: Modifier = Modifier,
     myCategories: List<Category>,
+    refreshState: Boolean,
     postState: PostState,
     onSettingClick: () -> Unit,
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
@@ -153,9 +154,10 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
                     contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
+                    refreshState = refreshState,
                     state = lazyListState,
                     onConsumeState = { pullRefreshConsumeState = it },
-                    onRefresh = { },
+                    onRefresh = { homeUiEvent(HomeUiEvent.OnRefresh) },
                     userScrollEnabled = pullRefreshConsumeState != PullRefreshConsumeState.Refreshing
                 ) {
                     //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
@@ -204,6 +206,7 @@ private fun HomeScreenPreview() {
         HomeScreen(
             modifier = Modifier.fillMaxSize(),
             myCategories = CategoriesTestData.subList(0, 3),
+            refreshState = false,
             postState = PostState().copy(
                 posts = listOf(
                     Post(
