@@ -22,6 +22,7 @@ import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,6 +54,9 @@ class HomeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList()
         )
+
+    private val _refreshState = MutableStateFlow(false)
+    val refreshState = _refreshState.asStateFlow()
 
     private val _postState = MutableStateFlow(PostState())
     val postState = _postState.asStateFlow()
@@ -86,6 +90,14 @@ class HomeViewModel @Inject constructor(
         when (uiEvent) {
             HomeUiEvent.OnNotificationClick -> {}
             HomeUiEvent.OnSearchClick -> {}
+            HomeUiEvent.OnRefresh -> {
+                viewModelScope.launch {
+                    //TODO: 임시코드, 반드시 삭제할 것
+                    _refreshState.update { true }
+                    delay(2000L)
+                    _refreshState.update { false }
+                }
+            }
         }
     }
 

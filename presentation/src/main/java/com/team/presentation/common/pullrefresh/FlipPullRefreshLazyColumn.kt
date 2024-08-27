@@ -29,11 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -51,8 +49,6 @@ import androidx.compose.ui.zIndex
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.presentation.util.pullrefresh.pullRefresh
 import com.team.presentation.util.pullrefresh.rememberPullRefreshState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
@@ -78,6 +74,7 @@ enum class PullRefreshConsumeState { Pulling, Released, Refreshing }
 @Composable
 fun FlipPullRefreshLazyColumn(
     modifier: Modifier = Modifier,
+    refreshState: Boolean,
     state: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,
@@ -95,22 +92,15 @@ fun FlipPullRefreshLazyColumn(
     val strokeWidthPx = with(density) { strokeWidthDp.toPx() }
     val iconSizePx = with(density) { iconSizeDp.toPx() }
 
-    var isRefreshing by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing by rememberUpdatedState(refreshState)
+
     val coroutineScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         refreshThreshold = positionalThresholdDp,
-        onRefresh = {
-            onRefresh()
-            //TODO: 임시 코드, 반드시 삭제할 것
-            coroutineScope.launch {
-                isRefreshing = true
-                // Mimic refresh
-                delay(2000)
-                isRefreshing = false
-            }
-        })
+        onRefresh = onRefresh
+    )
 
     // 드래그 하는 동안 오프셋 Y의 위치 애니메이션화
     val offsetYAnimation by animateIntAsState(targetValue = when {
@@ -306,6 +296,7 @@ private fun FlipPullRefreshLazyColumn2Preview() {
     FlipAppTheme {
         FlipPullRefreshLazyColumn(
             modifier = Modifier.fillMaxSize(),
+            refreshState = false,
             contentPadding = PaddingValues(top = 50.dp),
             onConsumeState = { },
             onRefresh = { }

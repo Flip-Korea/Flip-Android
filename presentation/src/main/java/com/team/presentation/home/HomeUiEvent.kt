@@ -4,4 +4,6 @@ package com.team.presentation.home
 sealed interface HomeUiEvent {
     data object OnSearchClick: HomeUiEvent
     data object OnNotificationClick: HomeUiEvent
+
+    data object OnRefresh: HomeUiEvent
 }
