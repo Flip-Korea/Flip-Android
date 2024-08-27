@@ -1,6 +1,7 @@
 package com.team.flip.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -42,7 +43,8 @@ fun MainNavigation(
             Scaffold(
                 modifier = Modifier
                     .fillMaxSize()
-                    .statusBarsPadding(),
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
                 bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) }
             ) { innerPadding ->
 
