@@ -28,6 +28,13 @@ import com.team.designsystem.theme.FlipTheme
 @Composable
 private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWindowProvider)?.window
 
+/**
+ * FlipModal 과 함께 사용하는 Wrapper
+ *
+ * @param isOpen Modal 활성화 여부
+ * @param onDismissRequest Modal이 사라질 때 실행할 작업
+ * @param content Modal Composable
+ */
 @Composable
 fun FlipModalWrapper(
     isOpen: Boolean,

@@ -143,6 +143,12 @@
     <string name="add_flip_screen_content_desc_show_more">더보기</string>
     <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
 
+    <!-- AddFlip Screen (Modal) -->
+    <string name="add_flip_screen_modal_main_title">잠깐! 작성 중인 글을 저장할까요?</string>
+    <string name="add_flip_screen_modal_sub_title">지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.</string>
+    <string name="add_flip_screen_modal_item_1">저장하기</string>
+    <string name="add_flip_screen_modal_item_2">저장 안 함</string>
+
     <!-- Keyboard Toolbar -->
     <string name="keyboard_toolbar_btn_done">완료</string>
 </resources>

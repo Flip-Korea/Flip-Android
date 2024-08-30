@@ -21,6 +21,8 @@ internal object CommonPaddingValues {
     /** 16 dp */
     val HorizontalPadding = 16.dp
     /**
+     * TouchTarget이 포함된 요소를 사용하는 TopBar에 적용
+     *
      * horizontal: TopBarHorizontalPadding
      * vertical: TopBarVerticalPadding
      * @see TopBarHorizontal
@@ -31,6 +33,8 @@ internal object CommonPaddingValues {
         vertical = TopBarVertical
     )
     /**
+     * 로고가 포함된 TopBar에 적용
+     *
      * start: [CommonPaddingValues.TopBarHorizontal]
      *
      * end: 7 dp

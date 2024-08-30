@@ -26,6 +26,7 @@ fun AddFlipRoute(
     val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
     val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
     val addPostState by addFlipViewModel.addPostState.collectAsStateWithLifecycle()
+    val safeSaveState by addFlipViewModel.safeSaveState.collectAsStateWithLifecycle()
 
     LaunchedEffect(addPostState) {
         if (addPostState.postSave) {
@@ -38,8 +39,9 @@ fun AddFlipRoute(
         categoriesState = categoriesState,
         addPostState = addPostState,
         selectedCategory = selectedCategory,
+        safeSaveState = safeSaveState,
+        safeSaveStateReset = addFlipViewModel::onSafeSaveReset,
         onUiEvent = addFlipViewModel::onUiEvent,
         onBackPress = { popBackStack() },
-        resetErrorState = addFlipViewModel::resetErrorState
     )
 }

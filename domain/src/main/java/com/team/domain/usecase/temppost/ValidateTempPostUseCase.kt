@@ -11,20 +11,22 @@ class ValidateTempPostUseCase {
      */
     operator fun invoke(
         title: String,
-        content: List<String>,
+        contents: List<String>,
     ): ValidationResult {
 
         /**
          * 만약 제목과 본문이 모두 비어 있다면,
          * 임시저장하는 의미가 없다.
          */
-        return if (
-            title.isNotEmpty() ||
-            content.joinToString(FlipContentSeparator.separator).isNotEmpty()
-        ) {
+        return if (tempPostCondition(title, contents)) {
             ValidationResult.Success
         } else {
             ValidationResult.Error(ValidationErrorType.TempPost.EMPTY_TITLE_AND_CONTENT)
         }
     }
+}
+
+/** 임시 조건 */
+fun tempPostCondition(title: String, contents: List<String>): Boolean {
+    return title.isNotEmpty() || contents.joinToString(FlipContentSeparator.separator).isNotEmpty()
 }

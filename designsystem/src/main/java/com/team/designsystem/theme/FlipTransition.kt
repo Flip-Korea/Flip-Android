@@ -3,7 +3,6 @@ package com.team.designsystem.theme
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.EaseInBack
-import androidx.compose.animation.core.EaseInCirc
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -30,7 +29,7 @@ data class FlipTransition(
             stiffness = Spring.StiffnessMediumLow
         )
     ),
-    val dialogExit: ExitTransition = fadeOut(tween(easing = EaseInCirc)) + scaleOut(
+    val dialogExit: ExitTransition = fadeOut(tween(easing = EaseInBack)) + scaleOut(
         targetScale = .8f,
         animationSpec = tween(easing = EaseInBack)
     ),

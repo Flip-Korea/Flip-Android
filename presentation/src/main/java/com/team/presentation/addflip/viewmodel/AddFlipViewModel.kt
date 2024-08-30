@@ -17,6 +17,7 @@ import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
+import com.team.presentation.addflip.state.SafeSaveState
 import com.team.presentation.common.snackbar.SnackbarAction
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
@@ -50,10 +51,13 @@ class AddFlipViewModel @Inject constructor(
     val categoriesState = _categoriesState.asStateFlow()
 
     private val _selectedCategory: MutableStateFlow<Category?> = MutableStateFlow(null)
-    val selectedCategory = _selectedCategory.asStateFlow()
+    val selectedCategory: StateFlow<Category?> = _selectedCategory.asStateFlow()
 
     private val _addPostState = MutableStateFlow(AddPostState())
     val addPostState: StateFlow<AddPostState> = _addPostState.asStateFlow()
+
+    private val _safeSaveState = MutableStateFlow(SafeSaveState())
+    val safeSaveState = _safeSaveState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -85,7 +89,15 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipUiEvent.OnSaveTempPost -> {
                 onSaveTempPost(uiEvent.title, uiEvent.content, uiEvent.selectedColor, uiEvent.tags)
             }
+
+            is AddFlipUiEvent.OnSafeSave -> {
+                onSafeSave(uiEvent.title, uiEvent.content)
+            }
         }
+    }
+
+    fun onPostContentChanged() {
+
     }
 
     /**
@@ -212,10 +224,29 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    fun resetErrorState() {
-        viewModelScope.launch {
-            _addPostState.update { it.copy(error = UiText.DynamicString("")) }
+    /** 뒤로가기 감지 시 작성된 내용이 있다면 (임시저장)경고모달 표시 */
+    private fun onSafeSave(
+        title: String,
+        content: List<String>,
+    ) {
+        when (validateTempPostUseCase(title, content)) {
+            is ValidationResult.Error -> {
+                _safeSaveState.update { it.copy(
+                    flag = true,
+                    safeSave = false
+                ) }
+            }
+            ValidationResult.Success -> {
+                _safeSaveState.update { it.copy(
+                    flag = true,
+                    safeSave = true
+                ) }
+            }
         }
+    }
+
+    fun onSafeSaveReset() {
+        _safeSaveState.update { it.copy(flag = false) }
     }
 
     private suspend fun showSnackbar(

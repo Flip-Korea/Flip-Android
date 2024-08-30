@@ -1,5 +1,6 @@
 package com.team.presentation.addflip.view
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -86,6 +87,8 @@ import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.chip.FlipMediumChip
 import com.team.designsystem.component.chip.FlipOutlinedSmallChip
+import com.team.designsystem.component.modal.FlipModal
+import com.team.designsystem.component.modal.FlipModalWrapper
 import com.team.designsystem.component.textfield.FlipTextFieldStyles
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.utils.clickableSingle
@@ -95,16 +98,19 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.FlipContentSeparator
 import com.team.domain.type.asString
 import com.team.presentation.R
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
+import com.team.presentation.addflip.state.SafeSaveState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
 import com.team.presentation.util.asColor
+import com.team.presentation.util.composable.FlipBackHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -113,10 +119,10 @@ import kotlinx.coroutines.launch
  *
  * @param categoriesState CategoriesState
  * @param addPostState AddPostState(저장, 임시저장 상태)
+ * @param safeSaveState SafeSaveState 임시저장 여부 상태
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param onBackPress 뒤로가기 시
- * @param resetErrorState 일회성 이벤트 처리를 위한 상태 초기화
  */
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -127,10 +133,11 @@ fun AddFlipScreen(
     modifier: Modifier = Modifier,
     categoriesState: CategoriesState,
     addPostState: AddPostState,
+    safeSaveState: SafeSaveState,
+    safeSaveStateReset: () -> Unit,
     selectedCategory: Category?,
     onUiEvent: (AddFlipUiEvent) -> Unit,
     onBackPress: () -> Unit,
-    resetErrorState: () -> Unit
 ) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
     val coroutineScope = rememberCoroutineScope()
@@ -169,6 +176,33 @@ fun AddFlipScreen(
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    var isModalOpen by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(safeSaveState.flag) {
+        isModalOpen = safeSaveState.safeSave
+        safeSaveStateReset()
+    }
+
+    /** 뒤로가기 핸들러 */
+    //TODO condition 조건을 viewmodel에서 판단하게 해야 함
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    FlipBackHandler(
+        condition = contents.joinToString(FlipContentSeparator.separator).isNotEmpty(),
+        onBack = { onUiEvent(AddFlipUiEvent.OnSafeSave(title, contents)) },
+        onBackPressed = onBackPress
+    )
+
+    /** 임시저장 경고모달 */
+    FlipModalWrapper(isOpen = isModalOpen, onDismissRequest = { isModalOpen = false }) {
+        FlipModal(
+            mainTitle = stringResource(id = R.string.add_flip_screen_modal_main_title),
+            subTitle = stringResource(id = R.string.add_flip_screen_modal_sub_title),
+            itemText = stringResource(id = R.string.add_flip_screen_modal_item_1),
+            itemText2 = stringResource(id = R.string.add_flip_screen_modal_item_2),
+            onItemClick = { isModalOpen = false },
+            onItem2Click = { isModalOpen = false }
+        )
+    }
 
     /** 분야 선택 바텀 시트 */
     if (showCategoryBottomSheet) {
@@ -225,7 +259,7 @@ fun AddFlipScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(CommonPaddingValues.TopBarWithTouchTarget),
-                onBackPress = onBackPress,
+                onBackPress = { onBackPressedDispatcher?.onBackPressed() },
                 title = stringResource(id = R.string.add_flip_screen_topbar_title),
                 options = {
                     Text(
@@ -469,7 +503,9 @@ private fun SelectCategoryBar(
                         .wrapContentWidth(align = Alignment.Start),
                     text = stringResource(id = R.string.add_flip_screen_select_category_bar_placeholder),
                     style = FlipTheme.typography.body5,
-                    color = FlipTheme.colors.gray5
+                    color = FlipTheme.colors.gray5,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             } else {
                 Row(
@@ -680,7 +716,8 @@ private fun SettingBackgroundColor(
             )
             Text(
                 text = stringResource(id = R.string.add_flip_screen_setting_background_color),
-                style = FlipTheme.typography.body6
+                style = FlipTheme.typography.body6,
+                maxLines = 1
             )
         }
 
@@ -1234,9 +1271,10 @@ private fun AddFlipScreenPreview() {
             categoriesState = CategoriesState(categories = CategoriesTestData),
             addPostState = AddPostState(),
             selectedCategory = null,
+            safeSaveState = SafeSaveState(),
+            safeSaveStateReset = { },
             onUiEvent = { },
             onBackPress = { },
-            resetErrorState = { }
         )
     }
 }
@@ -1250,9 +1288,10 @@ private fun AddFlipScreenPreview2() {
             categoriesState = CategoriesState(categories = CategoriesTestData),
             addPostState = AddPostState(),
             selectedCategory = null,
+            safeSaveState = SafeSaveState(),
+            safeSaveStateReset = { },
             onUiEvent = { },
             onBackPress = { },
-            resetErrorState = {}
         )
     }
 }
