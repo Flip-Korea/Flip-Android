@@ -7,6 +7,11 @@ sealed interface AddFlipUiEvent {
 
     data class OnSelectedCategoryChanged(val category: Category): AddFlipUiEvent
 
+    data class OnSafeSave(
+        val title: String,
+        val content: List<String>,
+    ): AddFlipUiEvent
+
     data class OnSaveTempPost(
         val title: String,
         val content: List<String>,

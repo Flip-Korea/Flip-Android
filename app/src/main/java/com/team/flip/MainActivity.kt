@@ -36,7 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 /** Flip 메인액티비티 **/
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter") // for scaffold innerPadding
 @OptIn(ExperimentalMaterial3Api::class)
