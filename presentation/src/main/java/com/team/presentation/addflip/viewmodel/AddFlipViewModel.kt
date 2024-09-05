@@ -17,7 +17,8 @@ import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
-import com.team.presentation.addflip.state.SafeSaveState
+import com.team.presentation.addflip.state.NewPostState
+import com.team.presentation.common.dialogmodal.DialogModalState
 import com.team.presentation.common.snackbar.SnackbarAction
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
@@ -26,6 +27,7 @@ import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,10 +47,13 @@ class AddFlipViewModel @Inject constructor(
     private val addTempPostUseCase: AddTempPostUseCase,
     private val validatePostUseCase: ValidatePostUseCase,
     private val validateTempPostUseCase: ValidateTempPostUseCase,
-): ViewModel() {
+) : ViewModel() {
 
     private val _categoriesState = MutableStateFlow(CategoriesState())
     val categoriesState = _categoriesState.asStateFlow()
+
+    private val _newPostState = MutableStateFlow(NewPostState())
+    val newPostState = _newPostState.asStateFlow()
 
     private val _selectedCategory: MutableStateFlow<Category?> = MutableStateFlow(null)
     val selectedCategory: StateFlow<Category?> = _selectedCategory.asStateFlow()
@@ -56,8 +61,8 @@ class AddFlipViewModel @Inject constructor(
     private val _addPostState = MutableStateFlow(AddPostState())
     val addPostState: StateFlow<AddPostState> = _addPostState.asStateFlow()
 
-    private val _safeSaveState = MutableStateFlow(SafeSaveState())
-    val safeSaveState = _safeSaveState.asStateFlow()
+    private val _dialogModalState: MutableStateFlow<DialogModalState> = MutableStateFlow(DialogModalState.Idle)
+    val dialogModalState: StateFlow<DialogModalState> = _dialogModalState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -70,11 +75,13 @@ class AddFlipViewModel @Inject constructor(
             val categories = getCategoriesUseCase().first()
             _categoriesState.update { it.copy(categories = categories) }
         } catch (e: Exception) {
-            _categoriesState.update { it.copy(
-                error = e.localizedMessage?.let { msg ->
-                    UiText.DynamicString(msg)
-                } ?: ErrorType.Exception.EXCEPTION.asUiText()
-            ) }
+            _categoriesState.update {
+                it.copy(
+                    error = e.localizedMessage?.let { msg ->
+                        UiText.DynamicString(msg)
+                    } ?: ErrorType.Exception.EXCEPTION.asUiText()
+                )
+            }
         }
     }
 
@@ -83,21 +90,42 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipUiEvent.OnSelectedCategoryChanged -> {
                 _selectedCategory.update { uiEvent.category }
             }
+
             is AddFlipUiEvent.OnSavePost -> {
-                onSavePost(uiEvent.title, uiEvent.content, uiEvent.selectedColor, uiEvent.tags)
+                onSavePost(uiEvent.title, uiEvent.contents, uiEvent.selectedColor, uiEvent.tags)
             }
+
             is AddFlipUiEvent.OnSaveTempPost -> {
-                onSaveTempPost(uiEvent.title, uiEvent.content, uiEvent.selectedColor, uiEvent.tags)
+                onSaveTempPost(uiEvent.title, uiEvent.contents, uiEvent.selectedColor, uiEvent.tags)
             }
 
             is AddFlipUiEvent.OnSafeSave -> {
-                onSafeSave(uiEvent.title, uiEvent.content)
+                onSafeSave(
+                    title = uiEvent.title,
+                    contents = uiEvent.contents,
+                )
+            }
+
+            is AddFlipUiEvent.OnCategoryChanged -> {
+                _newPostState.update { it.copy(category = uiEvent.category) }
+            }
+
+            is AddFlipUiEvent.OnTitleChanged -> {
+                _newPostState.update { it.copy(title = uiEvent.title) }
+            }
+
+            is AddFlipUiEvent.OnContentsChanged -> {
+                _newPostState.update { it.copy(contents = uiEvent.contents) }
+            }
+
+            is AddFlipUiEvent.OnBackgroundColorChanged -> {
+                _newPostState.update { it.copy(bgColorType = uiEvent.bgColorType) }
+            }
+
+            is AddFlipUiEvent.OnTagsChanged -> {
+                _newPostState.update { it.copy(tags = uiEvent.tags) }
             }
         }
-    }
-
-    fun onPostContentChanged() {
-
     }
 
     /**
@@ -132,12 +160,14 @@ class AddFlipViewModel @Inject constructor(
 
             // 유효성 검사 결과에 에러가 1개 라도 있을 경우
             if (validationResults.any { it is ValidationResult.Error }) {
-                _addPostState.update { it.copy(
-                    loading = false,
-                    error = validationResults
-                        .filterIsInstance<ValidationResult.Error>()
-                        .first().error.asUiText()
-                ) }
+                _addPostState.update {
+                    it.copy(
+                        loading = false,
+                        error = validationResults
+                            .filterIsInstance<ValidationResult.Error>()
+                            .first().error.asUiText()
+                    )
+                }
             } else {
                 addPostUseCases(
                     title = title,
@@ -150,6 +180,7 @@ class AddFlipViewModel @Inject constructor(
                         Result.Loading -> {
                             _addPostState.update { it.copy(loading = true) }
                         }
+
                         is Result.Error -> {
                             val message = result.errorBody?.let { errorBody ->
                                 UiText.DynamicString(errorBody.message)
@@ -163,11 +194,14 @@ class AddFlipViewModel @Inject constructor(
 //                                } ?: result.error.asUiText()
 //                            ) }
                         }
+
                         is Result.Success -> {
-                            _addPostState.update { it.copy(
-                                loading = false,
-                                postSave = true
-                            ) }
+                            _addPostState.update {
+                                it.copy(
+                                    loading = false,
+                                    postSave = true
+                                )
+                            }
                         }
                     }
                 }.launchIn(viewModelScope)
@@ -188,10 +222,12 @@ class AddFlipViewModel @Inject constructor(
             }
             val validationResult = validationResultDeferred.await()
             if (validationResult is ValidationResult.Error) {
-                _addPostState.update { it.copy(
-                    loading = false,
-                    error = validationResult.error.asUiText()
-                ) }
+                _addPostState.update {
+                    it.copy(
+                        loading = false,
+                        error = validationResult.error.asUiText()
+                    )
+                }
             } else {
                 addTempPostUseCase(
                     title = title,
@@ -204,19 +240,25 @@ class AddFlipViewModel @Inject constructor(
                         Result.Loading -> {
                             _addPostState.update { it.copy(loading = true) }
                         }
+
                         is Result.Error -> {
-                            _addPostState.update { it.copy(
-                                loading = false,
-                                error = result.errorBody?.let { errorBody ->
-                                    UiText.DynamicString(errorBody.message)
-                                } ?: result.error.asUiText()
-                            ) }
+                            _addPostState.update {
+                                it.copy(
+                                    loading = false,
+                                    error = result.errorBody?.let { errorBody ->
+                                        UiText.DynamicString(errorBody.message)
+                                    } ?: result.error.asUiText()
+                                )
+                            }
                         }
+
                         is Result.Success -> {
-                            _addPostState.update { it.copy(
-                                loading = false,
-                                tempPostSave = true
-                            ) }
+                            _addPostState.update {
+                                it.copy(
+                                    loading = false,
+                                    tempPostSave = true
+                                )
+                            }
                         }
                     }
                 }.launchIn(viewModelScope)
@@ -224,29 +266,31 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    /** 뒤로가기 감지 시 작성된 내용이 있다면 (임시저장)경고모달 표시 */
+    /**
+     * 뒤로가기 감지 시 작성된 내용이 있다면 (임시저장)경고모달 표시
+     *
+     * 기능 정의서[RQ-0038] 요약
+     * 제목(title)이나 본문(content) 중 하나 라도 입력 했다면 경고모달 표시
+     */
     private fun onSafeSave(
-        title: String,
-        content: List<String>,
+        title: String = "",
+        contents: List<String> = emptyList(),
     ) {
-        when (validateTempPostUseCase(title, content)) {
+        when (validateTempPostUseCase(title, contents)) {
             is ValidationResult.Error -> {
-                _safeSaveState.update { it.copy(
-                    flag = true,
-                    safeSave = false
-                ) }
+                viewModelScope.launch { showModal(false) }
             }
-            ValidationResult.Success -> {
-                _safeSaveState.update { it.copy(
-                    flag = true,
-                    safeSave = true
-                ) }
-            }
+            ValidationResult.Success -> { showModal(true) }
         }
     }
 
-    fun onSafeSaveReset() {
-        _safeSaveState.update { it.copy(flag = false) }
+    private fun showModal(showed: Boolean) {
+        _dialogModalState.update { DialogModalState.Show(showed) }
+    }
+
+    suspend fun hideModal() {
+        _dialogModalState.update { DialogModalState.Hide }
+        delay(350) // Transition Animation Delay (Required Constant), 일단 '기본 값(300) + 추가 값(50)' 으로 설정
     }
 
     private suspend fun showSnackbar(

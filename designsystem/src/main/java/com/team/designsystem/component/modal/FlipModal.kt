@@ -35,7 +35,7 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 /**
- * Flip Modal
+ * Flip Modal(Dialog)
  *
  * @param mainTitle 메인 제목
  * @param subTitle 서브 제목
