@@ -1,13 +1,11 @@
 package com.team.flip.navigation
 
-import android.util.Log
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -35,13 +33,6 @@ fun BottomNavigation(
 ) {
 
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
-    val previousRoute = bottomNavController.previousBackStackEntry?.destination?.route
-
-    LaunchedEffect(currentRoute, previousRoute) {
-        Log.d("route_log", "" +
-                "currentRoute: $currentRoute, " +
-                "previousRoute: $previousRoute")
-    }
 
     NavHost(
         modifier = modifier

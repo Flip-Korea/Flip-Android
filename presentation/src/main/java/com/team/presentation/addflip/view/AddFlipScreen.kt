@@ -1,5 +1,6 @@
 package com.team.presentation.addflip.view
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -98,30 +99,31 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.domain.type.BackgroundColorType
-import com.team.domain.type.FlipContentSeparator
 import com.team.domain.type.asString
 import com.team.presentation.R
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.state.CategoriesState
-import com.team.presentation.addflip.state.SafeSaveState
+import com.team.presentation.addflip.state.NewPostState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
+import com.team.presentation.common.dialogmodal.DialogModalState
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
 import com.team.presentation.util.asColor
-import com.team.presentation.util.composable.FlipBackHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
  * Flip 작성 화면
  *
- * @param categoriesState CategoriesState
- * @param addPostState AddPostState(저장, 임시저장 상태)
- * @param safeSaveState SafeSaveState 임시저장 여부 상태
+ * @param newPostState [NewPostState] 작성 중인 글 상태 값
+ * @param categoriesState [CategoriesState] 전체 카테고리
+ * @param addPostState [AddPostState] 저장, 임시저장 상태
+ * @param dialogModalState [DialogModalState]
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
+ * @param hideModalBackPress 모달 숨기기 & 뒤로가기
  * @param onBackPress 뒤로가기 시
  */
 @OptIn(
@@ -131,23 +133,23 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddFlipScreen(
     modifier: Modifier = Modifier,
+    newPostState: NewPostState,
     categoriesState: CategoriesState,
     addPostState: AddPostState,
-    safeSaveState: SafeSaveState,
-    safeSaveStateReset: () -> Unit,
+    dialogModalState: DialogModalState,
     selectedCategory: Category?,
     onUiEvent: (AddFlipUiEvent) -> Unit,
+    hideModalBackPress: (backPress: Boolean) -> Unit,
     onBackPress: () -> Unit,
 ) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
     val coroutineScope = rememberCoroutineScope()
-
     val lazyListState = rememberLazyListState()
 
-    val (title, onTitleChanged) = rememberSaveable { mutableStateOf("") }
     var contents by rememberSaveable { mutableStateOf(listOf("")) }
-    var tags by rememberSaveable { mutableStateOf(listOf<String>()) }
-    var selectedColor by rememberSaveable { mutableStateOf(BackgroundColorType.DEFAULT) }
+    LaunchedEffect(contents) {
+        onUiEvent(AddFlipUiEvent.OnContentsChanged(contents))
+    }
 
     val pagerState = rememberPagerState { contents.size }
     val currentContent = rememberSaveable(pagerState.currentPage, contents) {
@@ -156,7 +158,6 @@ fun AddFlipScreen(
 
     var showCategoryBottomSheet by remember { mutableStateOf(false) }
     val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     var showTagBottomSheet by remember { mutableStateOf(false) }
     val tagSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -168,39 +169,44 @@ fun AddFlipScreen(
     var isShowMoreClicked by remember { mutableStateOf(false) }
 
     var enableSaveButton by remember { mutableStateOf(false) }
-    LaunchedEffect(selectedCategory, title, contents) {
+    LaunchedEffect(selectedCategory, newPostState.title, contents) {
         enableSaveButton =
             selectedCategory != null &&
-                    title.isNotEmpty() &&
+                    newPostState.title.isNotEmpty() &&
                     contents.filter { it.isEmpty() }.isEmpty()
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var isModalOpen by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(safeSaveState.flag) {
-        isModalOpen = safeSaveState.safeSave
-        safeSaveStateReset()
+    /** 뒤로가기 핸들러 */
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    var isModalVisible by rememberSaveable { mutableStateOf(false) }
+    BackHandler {
+        onUiEvent(AddFlipUiEvent.OnSafeSave(newPostState.title, contents))
+    }
+    LaunchedEffect(dialogModalState) {
+        when (dialogModalState) {
+            DialogModalState.Idle -> { isModalVisible = false }
+            DialogModalState.Hide -> { isModalVisible = false }
+            is DialogModalState.Show -> {
+                if (dialogModalState.showed) {
+                    isModalVisible = true
+                } else { onBackPress() }
+            }
+        }
     }
 
-    /** 뒤로가기 핸들러 */
-    //TODO condition 조건을 viewmodel에서 판단하게 해야 함
-    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    FlipBackHandler(
-        condition = contents.joinToString(FlipContentSeparator.separator).isNotEmpty(),
-        onBack = { onUiEvent(AddFlipUiEvent.OnSafeSave(title, contents)) },
-        onBackPressed = onBackPress
-    )
-
     /** 임시저장 경고모달 */
-    FlipModalWrapper(isOpen = isModalOpen, onDismissRequest = { isModalOpen = false }) {
+    FlipModalWrapper(isOpen = isModalVisible, onDismissRequest = { hideModalBackPress(false) }) {
         FlipModal(
             mainTitle = stringResource(id = R.string.add_flip_screen_modal_main_title),
             subTitle = stringResource(id = R.string.add_flip_screen_modal_sub_title),
             itemText = stringResource(id = R.string.add_flip_screen_modal_item_1),
             itemText2 = stringResource(id = R.string.add_flip_screen_modal_item_2),
-            onItemClick = { isModalOpen = false },
-            onItem2Click = { isModalOpen = false }
+            onItemClick = {
+                //TODO: 임시저장
+            },
+            onItem2Click = { hideModalBackPress(true) }
         )
     }
 
@@ -225,8 +231,8 @@ fun AddFlipScreen(
     if (showTagBottomSheet) {
         AddTagsBottomSheet(
             sheetState = tagSheetState,
-            tags = tags,
-            onApply = { tags = it },
+            tags = newPostState.tags,
+            onApply = { onUiEvent(AddFlipUiEvent.OnTagsChanged(tags = it)) },
             onDismissRequest = {
                 dismissRequester(
                     coroutineScope = coroutineScope,
@@ -284,7 +290,7 @@ fun AddFlipScreen(
                 text = stringResource(id = R.string.add_flip_screen_bottom_btn),
                 enabled = enableSaveButton,
                 onClick = {
-                    onUiEvent(AddFlipUiEvent.OnSavePost(title, contents, selectedColor, tags))
+                    onUiEvent(AddFlipUiEvent.OnSavePost(newPostState.title, contents, newPostState.bgColorType, newPostState.tags))
                 }
             )
         },
@@ -321,8 +327,8 @@ fun AddFlipScreen(
                                 .fillMaxWidth()
                                 .padding(top = 17.dp)
                                 .padding(horizontal = CommonPaddingValues.HorizontalPadding),
-                            title = title,
-                            onTitleChanged = { onTitleChanged(it) },
+                            title = newPostState.title,
+                            onTitleChanged = { onUiEvent(AddFlipUiEvent.OnTitleChanged(it)) },
                             placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
                         )
 
@@ -341,7 +347,7 @@ fun AddFlipScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .flipGradient(color = selectedColor.asColor())
+                                    .flipGradient(color = newPostState.bgColorType.asColor())
                                     .padding(start = 8.dp, top = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -434,10 +440,10 @@ fun AddFlipScreen(
                                     end = CommonPaddingValues.HorizontalPadding,
                                     top = 28.dp
                                 ),
-                            selectedColor = selectedColor,
+                            selectedColor = newPostState.bgColorType,
                             isShowMoreClicked = isShowMoreClicked,
                             showMore = { isShowMoreClicked = !isShowMoreClicked },
-                            onSelectedColor = { color -> selectedColor = color }
+                            onSelectedColor = { color -> onUiEvent(AddFlipUiEvent.OnBackgroundColorChanged(color)) }
                         )
 
                         /** 태그 추가 바 */
@@ -449,9 +455,10 @@ fun AddFlipScreen(
                                     end = CommonPaddingValues.HorizontalPadding,
                                     top = 24.dp
                                 ),
-                            tags = tags,
+                            tags = newPostState.tags,
                             onDeleteTag = { tag ->
-                                tags = tags - tag
+                                val tags = newPostState.tags - tag
+                                onUiEvent(AddFlipUiEvent.OnTagsChanged(tags))
                             },
                             showTagBottomSheet = {
                                 focusManager.clearFocus()
@@ -1269,10 +1276,11 @@ private fun AddFlipScreenPreview() {
     FlipAppTheme {
         AddFlipScreen(
             categoriesState = CategoriesState(categories = CategoriesTestData),
+            newPostState = NewPostState(),
             addPostState = AddPostState(),
+            dialogModalState = DialogModalState.Idle,
             selectedCategory = null,
-            safeSaveState = SafeSaveState(),
-            safeSaveStateReset = { },
+            hideModalBackPress = { },
             onUiEvent = { },
             onBackPress = { },
         )
@@ -1286,10 +1294,11 @@ private fun AddFlipScreenPreview2() {
     FlipAppTheme {
         AddFlipScreen(
             categoriesState = CategoriesState(categories = CategoriesTestData),
+            newPostState = NewPostState(),
             addPostState = AddPostState(),
+            dialogModalState = DialogModalState.Idle,
             selectedCategory = null,
-            safeSaveState = SafeSaveState(),
-            safeSaveStateReset = { },
+            hideModalBackPress = { },
             onUiEvent = { },
             onBackPress = { },
         )

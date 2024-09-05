@@ -14,6 +14,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ import com.team.designsystem.theme.FlipTheme
 private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWindowProvider)?.window
 
 /**
- * FlipModal 과 함께 사용하는 Wrapper
+ * FlipModal(Dialog) 과 함께 사용하는 Wrapper
  *
  * @param isOpen Modal 활성화 여부
  * @param onDismissRequest Modal이 사라질 때 실행할 작업
@@ -63,7 +64,7 @@ fun FlipModalWrapper(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                var animateIn by remember { mutableStateOf(false) }
+                var animateIn by rememberSaveable { mutableStateOf(false) }
                 LaunchedEffect(Unit) { animateIn = true }
 
                 AnimatedVisibility(
