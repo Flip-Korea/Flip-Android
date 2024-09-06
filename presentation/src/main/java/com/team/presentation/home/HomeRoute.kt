@@ -3,7 +3,6 @@ package com.team.presentation.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -78,8 +77,7 @@ fun HomeRoute(
     HomeScreen(
         modifier = modifier
             .fillMaxSize()
-            .background(FlipTheme.colors.white)
-            .padding(bottom = innerPadding.calculateBottomPadding()),
+            .background(FlipTheme.colors.white),
         refreshState = refreshState,
         myCategories = filteredMyCategoriesState,
         postState = postState,

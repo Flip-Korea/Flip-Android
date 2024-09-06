@@ -2,7 +2,6 @@ package com.team.flip.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -11,7 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.team.designsystem.theme.FlipTheme
 import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.ScreenItem
@@ -35,9 +33,7 @@ fun BottomNavigation(
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
 
     NavHost(
-        modifier = modifier
-            .fillMaxSize()
-            .background(FlipTheme.colors.white),
+        modifier = modifier.fillMaxSize(),
         navController = bottomNavController,
         startDestination = ScreenItem.HOME.name,
         enterTransition = { EnterTransition.None },

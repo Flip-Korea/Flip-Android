@@ -2,7 +2,7 @@ package com.team.presentation.common.dialogmodal
 
 sealed interface DialogModalState {
     data object Idle: DialogModalState
-    data class Show(val showed: Boolean): DialogModalState
+    data class Display(val showed: Boolean): DialogModalState
     data object Hide: DialogModalState
 }
 

@@ -2,7 +2,6 @@ package com.team.designsystem.component.modal
 
 import android.view.Window
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,12 +33,14 @@ private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWin
  *
  * @param isOpen Modal 활성화 여부
  * @param onDismissRequest Modal이 사라질 때 실행할 작업
+ * @param onAnimationFinished 모달 애니메이션이 끝난 직후 실행할 작업
  * @param content Modal Composable
  */
 @Composable
 fun FlipModalWrapper(
     isOpen: Boolean,
     onDismissRequest: () -> Unit,
+    onAnimationFinished: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
 
@@ -55,7 +56,7 @@ fun FlipModalWrapper(
 
             SideEffect {
                 dialogWindow.let { window ->
-                    window?.setDimAmount(0f)
+                    window?.setDimAmount(0.5f)
                     window?.setWindowAnimations(-1)
                 }
             }
@@ -75,7 +76,7 @@ fun FlipModalWrapper(
                     Box(
                         modifier = Modifier
                             .pointerInput(Unit) { detectTapGestures { onDismissRequest() } }
-                            .background(FlipTheme.colors.main.copy(.5f))
+//                            .background(FlipTheme.colors.main.copy(.5f))
                             .fillMaxSize()
                     )
                 }
@@ -89,6 +90,7 @@ fun FlipModalWrapper(
 
                     DisposableEffect(Unit) {
                         onDispose {
+                            onAnimationFinished()
                             isOpenAnimated = false
                         }
                     }

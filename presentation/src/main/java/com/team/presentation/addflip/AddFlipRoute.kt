@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.addflip.view.AddFlipScreen
 import com.team.presentation.addflip.viewmodel.AddFlipViewModel
-import kotlinx.coroutines.launch
 
 /**
  * 플립 글 작성 화면[AddFlipScreen]에 대한 Route
@@ -24,7 +23,6 @@ fun AddFlipRoute(
     addFlipViewModel: AddFlipViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
 
     val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
     val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
@@ -46,12 +44,7 @@ fun AddFlipRoute(
         dialogModalState = dialogModalState,
         selectedCategory = selectedCategory,
         onUiEvent = addFlipViewModel::onUiEvent,
-        hideModalBackPress = { backPress ->
-            scope.launch {
-                addFlipViewModel.hideModal()
-                if (backPress) popBackStack()
-            }
-        },
+        hideModal = { addFlipViewModel.hideModal() },
         onBackPress = { popBackStack() },
     )
 }

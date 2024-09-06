@@ -2,6 +2,7 @@ package com.team.presentation.common.bottomsheet
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -44,6 +45,6 @@ fun FlipModalBottomSheet(
         windowInsets = WindowInsets(0, 0, 0, 0),
     ) {
         /** BottomSheet 내부영역 하단 패딩 */
-        content(Modifier.padding(bottom = 12.dp))
+        content(Modifier.padding(bottom = 12.dp).navigationBarsPadding())
     }
 }

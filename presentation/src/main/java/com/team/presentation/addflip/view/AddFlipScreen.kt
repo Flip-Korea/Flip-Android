@@ -123,7 +123,7 @@ import kotlinx.coroutines.launch
  * @param dialogModalState [DialogModalState]
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
- * @param hideModalBackPress 모달 숨기기 & 뒤로가기
+ * @param hideModal 모달 숨기기 & 뒤로가기
  * @param onBackPress 뒤로가기 시
  */
 @OptIn(
@@ -139,7 +139,7 @@ fun AddFlipScreen(
     dialogModalState: DialogModalState,
     selectedCategory: Category?,
     onUiEvent: (AddFlipUiEvent) -> Unit,
-    hideModalBackPress: (backPress: Boolean) -> Unit,
+    hideModal: () -> Unit,
     onBackPress: () -> Unit,
 ) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
@@ -180,6 +180,7 @@ fun AddFlipScreen(
 
     /** 뒤로가기 핸들러 */
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    var backPressed by rememberSaveable { mutableStateOf(false) }
     var isModalVisible by rememberSaveable { mutableStateOf(false) }
     BackHandler {
         onUiEvent(AddFlipUiEvent.OnSafeSave(newPostState.title, contents))
@@ -188,7 +189,7 @@ fun AddFlipScreen(
         when (dialogModalState) {
             DialogModalState.Idle -> { isModalVisible = false }
             DialogModalState.Hide -> { isModalVisible = false }
-            is DialogModalState.Show -> {
+            is DialogModalState.Display -> {
                 if (dialogModalState.showed) {
                     isModalVisible = true
                 } else { onBackPress() }
@@ -197,7 +198,11 @@ fun AddFlipScreen(
     }
 
     /** 임시저장 경고모달 */
-    FlipModalWrapper(isOpen = isModalVisible, onDismissRequest = { hideModalBackPress(false) }) {
+    FlipModalWrapper(
+        isOpen = isModalVisible,
+        onDismissRequest = { hideModal() },
+        onAnimationFinished = { if (backPressed) onBackPress() }
+    ) {
         FlipModal(
             mainTitle = stringResource(id = R.string.add_flip_screen_modal_main_title),
             subTitle = stringResource(id = R.string.add_flip_screen_modal_sub_title),
@@ -206,7 +211,10 @@ fun AddFlipScreen(
             onItemClick = {
                 //TODO: 임시저장
             },
-            onItem2Click = { hideModalBackPress(true) }
+            onItem2Click = {
+                backPressed = true
+                hideModal()
+            }
         )
     }
 
@@ -1280,7 +1288,7 @@ private fun AddFlipScreenPreview() {
             addPostState = AddPostState(),
             dialogModalState = DialogModalState.Idle,
             selectedCategory = null,
-            hideModalBackPress = { },
+            hideModal = { },
             onUiEvent = { },
             onBackPress = { },
         )
@@ -1298,7 +1306,7 @@ private fun AddFlipScreenPreview2() {
             addPostState = AddPostState(),
             dialogModalState = DialogModalState.Idle,
             selectedCategory = null,
-            hideModalBackPress = { },
+            hideModal = { },
             onUiEvent = { },
             onBackPress = { },
         )
