@@ -27,7 +27,6 @@ import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -278,19 +277,18 @@ class AddFlipViewModel @Inject constructor(
     ) {
         when (validateTempPostUseCase(title, contents)) {
             is ValidationResult.Error -> {
-                viewModelScope.launch { showModal(false) }
+                viewModelScope.launch { displayModal(false) }
             }
-            ValidationResult.Success -> { showModal(true) }
+            ValidationResult.Success -> { displayModal(true) }
         }
     }
 
-    private fun showModal(showed: Boolean) {
-        _dialogModalState.update { DialogModalState.Show(showed) }
+    private fun displayModal(showed: Boolean) {
+        _dialogModalState.update { DialogModalState.Display(showed) }
     }
 
-    suspend fun hideModal() {
+    fun hideModal() {
         _dialogModalState.update { DialogModalState.Hide }
-        delay(350) // Transition Animation Delay (Required Constant), 일단 '기본 값(300) + 추가 값(50)' 으로 설정
     }
 
     private suspend fun showSnackbar(
