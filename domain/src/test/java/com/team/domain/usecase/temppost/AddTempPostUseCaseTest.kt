@@ -32,7 +32,7 @@ class AddTempPostUseCaseTest {
         val result = addTempPostUseCase(
             newPostTestData.title,
             newPostTestData.content.split(FlipContentSeparator.separator),
-            newPostTestData.bgColorType.asBackgroundColorType(),
+            newPostTestData.bgColorType,
             newPostTestData.fontStyleType,
             newPostTestData.tags,
             newPostTestData.categoryId
@@ -54,7 +54,7 @@ class AddTempPostUseCaseTest {
         val result = addTempPostUseCase(
             newPostTestData.title,
             newPostTestData.content.split(FlipContentSeparator.separator),
-            newPostTestData.bgColorType.asBackgroundColorType(),
+            newPostTestData.bgColorType,
             newPostTestData.fontStyleType,
             newPostTestData.tags,
             newPostTestData.categoryId

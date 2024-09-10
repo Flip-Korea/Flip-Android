@@ -312,7 +312,7 @@ class PostNetworkApiTest {
         val adapter = moshi.adapter(TempPostListResponse::class.java)
         val expectedResponse = adapter.fromJson(tempPostListResponseTestData)
 
-        val actualResponse = postNetworkApi.getTemporaryPosts("honggd", "0001", 15)
+        val actualResponse = postNetworkApi.getTemporaryPosts("0001", 15)
 
         assertNotNull(actualResponse)
         assertEquals(200, actualResponse.code())
@@ -328,6 +328,7 @@ class PostNetworkApiTest {
         val adapter = moshi.adapter(PostRequest::class.java)
 
         val actualResponse = postNetworkApi.editTemporaryPost(
+            1,
             adapter.fromJson(postRequestTestData)!!)
 
         assertNotNull(actualResponse)

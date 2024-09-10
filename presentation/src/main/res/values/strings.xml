@@ -149,6 +149,19 @@
     <string name="add_flip_screen_modal_item_1">저장하기</string>
     <string name="add_flip_screen_modal_item_2">저장 안 함</string>
 
+    <!-- TempFlipBox Screen -->
+    <string name="temp_flip_box_screen_topbar_title">임시저장</string>
+    <string name="temp_flip_box_screen_topbar_btn">편집</string>
+    <string name="temp_flip_box_screen_btn_delete">삭제</string>
+    <string name="temp_flip_box_screen_card_title_placeholder">제목없음</string>
+    <string name="temp_flip_box_screen_card_sub_1">총</string>
+    <string name="temp_flip_box_screen_card_sub_2">개</string>
+    <string name="temp_flip_box_screen_card_sub_3">선택</string>
+    <string name="temp_flip_box_screen_card_btn_all_select">전체 선택</string>
+    <string name="temp_flip_box_screen_card_btn_all_select_off">전체 선택 해제</string>
+    <!-- TempFlipBox Screen ContentDescription -->
+    <string name="temp_flip_box_screen_content_desc_card_sub_btn">선택</string>
+
     <!-- Keyboard Toolbar -->
     <string name="keyboard_toolbar_btn_done">완료</string>
 </resources>

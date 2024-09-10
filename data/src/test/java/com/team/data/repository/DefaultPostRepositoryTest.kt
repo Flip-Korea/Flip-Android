@@ -20,6 +20,8 @@ import com.team.data.testdoubles.network.postResponseTestData
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.PostRepository
+import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.FontStyleType
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -187,8 +189,8 @@ class DefaultPostRepositoryTest {
             title = "testTitle",
             content = "testContent",
             categoryId = 1,
-            bgColorType = "RED",
-            fontStyleType = "ITALIC",
+            bgColorType = BackgroundColorType.RED,
+            fontStyleType = FontStyleType.NORMAL,
             tags = listOf("a", "b", "c")
         )
 
@@ -200,16 +202,15 @@ class DefaultPostRepositoryTest {
     @Test
     fun `플립 글 수정 (editPost())`() = runTest {
         server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-            setBody(resultIdResponseTestData)
+            setResponseCode(204)
         })
 
         val newPost = NewPost(
             title = "testTitle",
             content = "testContent",
             categoryId = 1,
-            bgColorType = "RED",
-            fontStyleType = "ITALIC",
+            bgColorType = BackgroundColorType.RED,
+            fontStyleType = FontStyleType.NORMAL,
             tags = listOf("a", "b", "c")
         )
 

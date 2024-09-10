@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface TempPostRepository {
 
     fun getTempPostsPagination(
-        profileId: String,
         cursor: String,
         limit: Int
     ): Flow<Result<TempPostList, ErrorType>>
@@ -18,5 +17,5 @@ interface TempPostRepository {
 
     fun deleteTemporaryPost(tempPostId: Long): Flow<Result<Boolean, ErrorType>>
 
-    fun editTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>>
+    fun editTemporaryPost(tempPostId: Long, newPost: NewPost): Flow<Result<Boolean, ErrorType>>
 }

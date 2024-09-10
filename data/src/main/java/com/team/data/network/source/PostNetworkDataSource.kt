@@ -48,9 +48,11 @@ interface PostNetworkDataSource {
     suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType>
     suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType>
     suspend fun getTemporaryPosts(
-        profileId: String,
         cursor: String?,
         limit: Int
     ): Result<TempPostListResponse, ErrorType>
-    suspend fun editTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType>
+    suspend fun editTemporaryPost(
+        tempPostId: Long,
+        postRequest: PostRequest,
+    ): Result<Boolean, ErrorType>
 }

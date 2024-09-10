@@ -118,22 +118,22 @@ interface PostNetworkApi {
     ): Response<Unit>
 
     /** API-033 (임시저장 게시글 삭제) **/
-    @DELETE("/api/v1/post/temporary/{temp_post_id}")
+    @DELETE("/api/v1/temp-posts/{tempPostId}")
     suspend fun deleteTemporaryPost(
-        @Path("temp_post_id") tempPostId: Long
+        @Path("tempPostId") tempPostId: Long
     ): Response<Unit>
 
     /** API-034 (임시저장 게시글 조회) **/
-    @GET("/api/v1/post/list/temporary/{profile_id}")
+    @GET("/api/v1/temp-posts")
     suspend fun getTemporaryPosts(
-        @Path("profile_id") profileId: String,
         @Query("cursor") cursor: String?,
         @Query("limit") limit: Int,
     ): Response<TempPostListResponse>
 
     /** API-035 (임시저장 게시글 편집) **/
-    @PUT("/api/v1/post/temporary")
+    @PUT("/api/v1/temp-posts/{tempPostId}")
     suspend fun editTemporaryPost(
-        @Body postRequest: PostRequest
+        @Path("tempPostId") tempPostId: Long,
+        @Body postRequest: PostRequest,
     ): Response<Unit>
 }

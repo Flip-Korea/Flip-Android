@@ -7,8 +7,8 @@ import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.post.TempPostListResponse
 import com.team.data.network.model.response.post.TempPostResponse
 import com.team.data.network.model.response.profile.DisplayProfileResponse
-import com.team.data.testdoubles.network.commentResponseTestData
-import com.team.data.testdoubles.network.postResponseTestData
+import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.FontStyleType
 import com.team.domain.type.PathParameterType
 import kotlin.random.Random
 
@@ -131,23 +131,22 @@ fun makeTempPostListResponseTestData(
     repeat(pageSize) { index ->
         list.add(
             TempPostResponse(
-                profileId = "TestProfileId",
                 title = "TestTitle($index)",
                 content = "TestContent($index)",
                 categoryId = 1,
-                bgColorId = 1,
-                fontStyleId = 1,
+                bgColorType = BackgroundColorType.DEFAULT,
+                fontStyleType = FontStyleType.NORMAL,
                 tags = listOf("1","2"),
-                createdAt = cursor
+                postAt = "2024-09-08",
+                categoryName = "일상",
+                tempPostId = index.toLong()
             )
         )
     }
 
     val tempPostListResponse = TempPostListResponse(
-        hasNext = hasNext,
-        nextCursor = nextCursor,
-        tempPostCnt = pageSize,
-        tempPosts = list
+        tempPosts = list,
+        totalCount = pageSize
     )
 
     val json = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()

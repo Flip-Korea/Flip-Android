@@ -1,4 +1,4 @@
-package com.team.designsystem.component.skeleton
+package com.team.designsystem.component.shimmer
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
