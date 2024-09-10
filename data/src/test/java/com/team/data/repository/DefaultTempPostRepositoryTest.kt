@@ -10,6 +10,8 @@ import com.team.data.repository.fake.FakeTempPostRepository
 import com.team.data.testdoubles.network.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.TempPostRepository
+import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.FontStyleType
 import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
@@ -76,7 +78,7 @@ class DefaultTempPostRepositoryTest {
         })
 
         val result =
-            tempPostRepository.getTempPostsPagination("TestProfileId", "1", pageSize).last()
+            tempPostRepository.getTempPostsPagination("1", pageSize).last()
 
         Assert.assertEquals(pageSize, (result as Result.Success).data.tempPosts.size)
     }
@@ -92,8 +94,8 @@ class DefaultTempPostRepositoryTest {
             title = "title",
             content = "content",
             categoryId = 1,
-            bgColorType = "RED",
-            fontStyleType = "ITALIC",
+            bgColorType = BackgroundColorType.RED,
+            fontStyleType = FontStyleType.NORMAL,
             tags = listOf("a", "b")
         )
 
@@ -123,12 +125,12 @@ class DefaultTempPostRepositoryTest {
             title = "title",
             content = "content",
             categoryId = 1,
-            bgColorType = "RED",
-            fontStyleType = "ITALIC",
+            bgColorType = BackgroundColorType.RED,
+            fontStyleType = FontStyleType.NORMAL,
             tags = listOf("a", "b")
         )
 
-        val result = tempPostRepository.editTemporaryPost(newPost).last()
+        val result = tempPostRepository.editTemporaryPost(1, newPost).last()
 
         assert((result as Result.Success).data)
     }

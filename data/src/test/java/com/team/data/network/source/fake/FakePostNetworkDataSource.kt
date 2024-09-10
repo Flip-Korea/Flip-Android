@@ -164,11 +164,10 @@ class FakePostNetworkDataSource(
     }
 
     override suspend fun getTemporaryPosts(
-        profileId: String,
         cursor: String?,
         limit: Int,
     ): Result<TempPostListResponse, ErrorType> {
-        val result = postNetworkApi.getTemporaryPosts(profileId, cursor, limit)
+        val result = postNetworkApi.getTemporaryPosts(cursor, limit)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)
         } else {
@@ -176,8 +175,11 @@ class FakePostNetworkDataSource(
         }
     }
 
-    override suspend fun editTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType> {
-        val result = postNetworkApi.editTemporaryPost(postRequest)
+    override suspend fun editTemporaryPost(
+        tempPostId: Long,
+        postRequest: PostRequest
+    ): Result<Boolean, ErrorType> {
+        val result = postNetworkApi.editTemporaryPost(tempPostId, postRequest)
         return if (result.isSuccessful) {
             Result.Success(true)
         } else {

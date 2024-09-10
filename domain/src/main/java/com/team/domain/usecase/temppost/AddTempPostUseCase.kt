@@ -4,7 +4,7 @@ import com.team.domain.model.post.NewPost
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
-import com.team.domain.type.asString
+import com.team.domain.type.FontStyleType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -21,14 +21,14 @@ class AddTempPostUseCase @Inject constructor(
         title: String,
         content: List<String>,
         bgColorType: BackgroundColorType,
-        fontStyleType: String = "NORMAL",
+        fontStyleType: FontStyleType = FontStyleType.NORMAL,
         tags: List<String>,
         categoryId: Int?
     ): Flow<Result<Boolean, ErrorType>> {
         val newPost = NewPost(
             title = title,
             content = content.joinToString(FlipContentSeparator.separator),
-            bgColorType = bgColorType.asString(),
+            bgColorType = bgColorType,
             fontStyleType = fontStyleType,
             tags = tags,
             categoryId = categoryId

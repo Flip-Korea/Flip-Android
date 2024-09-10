@@ -256,30 +256,37 @@ val addScrapRequestTestData = """
 
 val tempPostListResponseTestData = """
     {
-      "temp_post_cnt": 2,
-      "has_next": true,
-      "next_cursor": "0000002024030854",
-      "temp_posts": [
-        {
-          "profile_id": "honggd",
-          "title": "오늘의 일기!",
-          "content": "API 명세서 작성하느라 매우 머리가 아팠다.",
-          "created_at": "2024-03-04 MON",
-          "category_id": 5,
-          "bg_color_id": 3,
-          "font_style_id": 1,
-          "tags": ["일기","일상"]
-        },
-        {
-          "profile_id": "honggd",
-          "title": "오늘의 일기222!",
-          "content": "222222",
-          "created_at": "2024-03-04 MON",
-          "category_id": 5,
-          "bg_color_id": 3,
-          "font_style_id": 1,
-          "tags": ["일기","일상"]
-        }
-      ]
+      "tempPosts" : [ {
+        "tempPostId" : 1,
+        "title" : "title",
+        "content" : "content",
+        "bgColorType" : "RED",
+        "fontStyleType" : "NORMAL",
+        "postAt" : "2024-08-28 17:19:17",
+        "categoryId" : 1,
+        "categoryName" : "DAILY",
+        "tags" : [ ]
+      }, {
+        "tempPostId" : 3,
+        "title" : "title3",
+        "content" : "content3",
+        "bgColorType" : "RED",
+        "fontStyleType" : "NORMAL",
+        "postAt" : "2024-08-28 17:19:17",
+        "categoryId" : 3,
+        "categoryName" : "TIPS",
+        "tags" : [ "tag1" ]
+      }, {
+        "tempPostId" : 4,
+        "title" : "title4",
+        "content" : "content4",
+        "bgColorType" : "RED",
+        "fontStyleType" : "NORMAL",
+        "postAt" : "2024-08-28 17:19:17",
+        "categoryId" : 2,
+        "categoryName" : "IT_SCIENCE",
+        "tags" : [ "tag1" ]
+      } ],
+      "totalCount" : 3
     }
 """.trimIndent()

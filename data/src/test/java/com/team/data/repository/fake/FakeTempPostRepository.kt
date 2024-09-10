@@ -21,14 +21,13 @@ class FakeTempPostRepository(
     private val ioDispatcher = Dispatchers.IO
 
     override fun getTempPostsPagination(
-        profileId: String,
         cursor: String,
         limit: Int,
     ): Flow<Result<TempPostList, ErrorType>> = flow {
         emit(Result.Loading)
 
         when (val result =
-            postNetworkDataSource.getTemporaryPosts(profileId, cursor, limit)) {
+            postNetworkDataSource.getTemporaryPosts(cursor, limit)) {
             is Result.Success -> {
                 val tempPosts = result.data.toDomainModel()
                 emit(Result.Success(tempPosts))
@@ -71,13 +70,13 @@ class FakeTempPostRepository(
         }
     }
 
-    override fun editTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
+    override fun editTemporaryPost(tempPostId: Long, newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
 
         val newPostNetwork = newPost.toNetwork()
 
         when (val result =
-            postNetworkDataSource.editTemporaryPost(newPostNetwork)) {
+            postNetworkDataSource.editTemporaryPost(tempPostId, newPostNetwork)) {
             is Result.Success -> { emit(Result.Success(true)) }
             is Result.Error -> {
                 emit(Result.Error(errorBody = result.errorBody, error = result.error))

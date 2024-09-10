@@ -1,10 +1,5 @@
 package com.team.domain.type
 
 enum class FontStyleType {
-    DEFAULT,
+    NORMAL,
 }
-
-fun FontStyleType.asString(): String =
-    when (this) {
-        FontStyleType.DEFAULT -> "NORMAL"
-    }

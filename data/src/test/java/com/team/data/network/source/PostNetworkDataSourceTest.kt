@@ -308,7 +308,7 @@ class PostNetworkDataSourceTest {
         val adapter = moshi.adapter(TempPostListResponse::class.java)
         val expectedResponse = adapter.fromJson(tempPostListResponseTestData)
 
-        val actualResponse = postNetworkDataSource.getTemporaryPosts("honggd", "0001", 15)
+        val actualResponse = postNetworkDataSource.getTemporaryPosts("0001", 15)
 
         assertNotNull(actualResponse)
         assertEquals(expectedResponse, (actualResponse as Result.Success).data)
@@ -323,7 +323,7 @@ class PostNetworkDataSourceTest {
         val adapter = moshi.adapter(PostRequest::class.java)
 
         val actualResponse =
-            postNetworkDataSource.editTemporaryPost(adapter.fromJson(postRequestTestData)!!)
+            postNetworkDataSource.editTemporaryPost(1, adapter.fromJson(postRequestTestData)!!)
 
         assertNotNull(actualResponse)
         assertEquals(true, (actualResponse as Result.Success).data)

@@ -83,12 +83,14 @@ class PostNetworkDataSourceImpl(
         networkCallWithoutResponse { postNetworkApi.deleteTemporaryPost(tempPostId) }
 
     override suspend fun getTemporaryPosts(
-        profileId: String,
         cursor: String?,
         limit: Int,
     ): Result<TempPostListResponse, ErrorType> =
-        networkCall { postNetworkApi.getTemporaryPosts(profileId, cursor, limit) }
+        networkCall { postNetworkApi.getTemporaryPosts(cursor, limit) }
 
-    override suspend fun editTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { postNetworkApi.editTemporaryPost(postRequest) }
+    override suspend fun editTemporaryPost(
+        tempPostId: Long,
+        postRequest: PostRequest,
+    ): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse { postNetworkApi.editTemporaryPost(tempPostId, postRequest) }
 }

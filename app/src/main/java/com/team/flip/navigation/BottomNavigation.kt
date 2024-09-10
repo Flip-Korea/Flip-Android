@@ -59,6 +59,7 @@ fun BottomNavigation(
             popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom) },
             popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom) }
         ) {
+            //TODO: 임시저장함 때문에 해당 위치에서 navigation 하나 파야할듯...
             AddFlipRoute(
                 popBackStack = { bottomNavController.popBackStack() }
             )
