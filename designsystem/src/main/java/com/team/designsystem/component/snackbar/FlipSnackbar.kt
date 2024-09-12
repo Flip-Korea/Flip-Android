@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
  * @param dismissEnabled SwipeToDismiss 활성화 여부
  * @param iconRes 스낵바 메시지에 표시할 아이콘 리소스
  * @param actionTextRes 오른쪽 영역에 표시할 액션 텍스트 리소스
- * @param onActionClick 액션 버튼 클릭 시
  *
  * ### 사용 예시
  *    val snackbarHostState = remember { SnackbarHostState() }
@@ -111,8 +110,8 @@ fun FlipSnackbar(
                 Snackbar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 61.dp)
-                        .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                        .padding(start = 16.dp, end = 16.dp, bottom = 80.dp)
+                        .heightIn(min = 61.dp),
                     containerColor = FlipTheme.colors.main,
                     contentColor = FlipTheme.colors.white,
                     shape = FlipTheme.shapes.roundedCornerSmall,

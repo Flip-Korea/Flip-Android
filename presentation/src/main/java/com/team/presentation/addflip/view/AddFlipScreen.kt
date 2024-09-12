@@ -141,7 +141,9 @@ fun AddFlipScreen(
     onUiEvent: (AddFlipUiEvent) -> Unit,
     hideModal: () -> Unit,
     onBackPress: () -> Unit,
-) { //TODO: 키보드 포커싱 처리 좀 더 수정하기
+    onNavigateToTempFlipBox: () -> Unit
+) {
+    //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
@@ -209,7 +211,7 @@ fun AddFlipScreen(
             itemText = stringResource(id = R.string.add_flip_screen_modal_item_1),
             itemText2 = stringResource(id = R.string.add_flip_screen_modal_item_2),
             onItemClick = {
-                //TODO: 임시저장
+                //TODO: 임시저장 수행
             },
             onItem2Click = {
                 backPressed = true
@@ -279,15 +281,12 @@ fun AddFlipScreen(
                     Text(
                         modifier = Modifier
                             .clickableSingleWithoutRipple {
-                                //TODO: 임시저장 화면으로 이동해야 함
-//                                onUiEvent(
-//                                    AddFlipUiEvent.OnSaveTempPost(title, contents, selectedColor, tags)
-//                                )
+                                onNavigateToTempFlipBox()
                             }
                             .padding(10.dp),
                         text = stringResource(id = R.string.add_flip_screen_topbar_btn),
                         style = FlipTheme.typography.body6,
-                        color = FlipTheme.colors.gray6
+                        color = FlipTheme.colors.gray5
                     )
                 }
             )
@@ -1291,6 +1290,7 @@ private fun AddFlipScreenPreview() {
             hideModal = { },
             onUiEvent = { },
             onBackPress = { },
+            onNavigateToTempFlipBox = { }
         )
     }
 }
@@ -1309,6 +1309,7 @@ private fun AddFlipScreenPreview2() {
             hideModal = { },
             onUiEvent = { },
             onBackPress = { },
+            onNavigateToTempFlipBox = { }
         )
     }
 }

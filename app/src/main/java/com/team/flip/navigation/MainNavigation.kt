@@ -3,6 +3,7 @@ package com.team.flip.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -46,8 +47,7 @@ fun MainNavigation(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding()
-                    .navigationBarsPadding()
-                ,
+                    .navigationBarsPadding(),
                 bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) }
             ) { innerPadding ->
 
@@ -55,8 +55,7 @@ fun MainNavigation(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(FlipTheme.colors.white) // Background Color of padding
-//                        .padding(innerPadding)
-                    ,
+                        .padding(innerPadding),
                     bottomNavController = bottomNavController,
                     onSettingClick = {
                         mainNavController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)

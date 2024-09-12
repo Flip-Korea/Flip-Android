@@ -42,7 +42,7 @@ abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect:
     }
     protected fun updateState(reducer: State.() -> State) {
         val newState = currentUiState.reducer()
-        _uiState.value = newState
+        _uiState.update { newState }
     }
 
     /** Handle UiEvent */

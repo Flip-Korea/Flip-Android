@@ -10,10 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.ScreenItem
-import com.team.presentation.addflip.AddFlipRoute
 import com.team.presentation.flip.view.FlipScreen
 import com.team.presentation.home.HomeRoute
 import com.team.presentation.profile.view.ProfileScreen
@@ -30,15 +28,15 @@ fun BottomNavigation(
     deleteToken: () -> Unit,
 ) {
 
-    val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+    val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route ?: ""
 
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = bottomNavController,
         startDestination = ScreenItem.HOME.name,
         enterTransition = { EnterTransition.None },
-        popEnterTransition = { popEnterTransition(currentRoute ?: "") },
-        exitTransition = { exitTransition(currentRoute ?: "") },
+        popEnterTransition = { popEnterTransition(currentRoute) },
+        exitTransition = { exitTransition(currentRoute) },
         popExitTransition = { ExitTransition.None }
     ) {
         composable(route = ScreenItem.HOME.name) {
@@ -52,18 +50,11 @@ fun BottomNavigation(
             FlipScreen()
         }
 
-        composable(
-            route = ScreenItem.ADD_FLIP.name,
-            enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom) },
-            exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom) },
-            popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom) },
-            popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom) }
-        ) {
-            //TODO: 임시저장함 때문에 해당 위치에서 navigation 하나 파야할듯...
-            AddFlipRoute(
-                popBackStack = { bottomNavController.popBackStack() }
-            )
-        }
+        addFlipNavigation(
+            currentRoute = currentRoute,
+            popBackStack = { bottomNavController.popBackStack() },
+            onNavigateToTempFlipBox = { bottomNavController.navigate(ScreenItem.TEMP_FLIP_BOX.name) },
+        )
 
         composable(route = ScreenItem.PROFILE.name) {
             ProfileScreen(

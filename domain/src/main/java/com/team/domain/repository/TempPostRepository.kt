@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface TempPostRepository {
 
     fun getTempPostsPagination(
-        cursor: String,
+        cursor: String?,
         limit: Int
     ): Flow<Result<TempPostList, ErrorType>>
 

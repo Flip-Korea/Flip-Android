@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Common ErrorScreen -->
+    <string name="common_error_screen_retry_btn">재시도</string>
+
     <!-- IconButton (Content Description) -->
     <string name="icon_button_like">좋아요</string>
     <string name="icon_button_scrap">스크랩</string>
@@ -52,6 +55,9 @@
     <string name="report_inappropriate">부적절함</string>
     <string name="report_fake">사기 또는 거짓</string>
     <string name="report_hate_speech">혐오 발언</string>
+
+    <!-- SuccessType -->
+    <string name="success_temppost_delete">삭제했습니다.</string>
 
     <!-- LoginScreen -->
     <string name="login_screen_title_1">더욱 쉽게</string>
@@ -110,7 +116,7 @@
 
     <!-- AddFlip Screen -->
     <string name="add_flip_screen_topbar_title">플립 작성하기</string>
-    <string name="add_flip_screen_topbar_btn">임시저장</string>
+    <string name="add_flip_screen_topbar_btn">임시저장함</string>
     <string name="add_flip_screen_select_category_bar_placeholder">분야를 선택해주세요</string>
     <string name="add_flip_screen_select_bottom_sheet_title">분야 선택</string>
     <string name="add_flip_screen_title_tf_placeholder">제목</string>
@@ -150,15 +156,17 @@
     <string name="add_flip_screen_modal_item_2">저장 안 함</string>
 
     <!-- TempFlipBox Screen -->
-    <string name="temp_flip_box_screen_topbar_title">임시저장</string>
+    <string name="temp_flip_box_screen_topbar_title">임시저장함</string>
     <string name="temp_flip_box_screen_topbar_btn">편집</string>
     <string name="temp_flip_box_screen_btn_delete">삭제</string>
     <string name="temp_flip_box_screen_card_title_placeholder">제목없음</string>
     <string name="temp_flip_box_screen_card_sub_1">총</string>
     <string name="temp_flip_box_screen_card_sub_2">개</string>
     <string name="temp_flip_box_screen_card_sub_3">선택</string>
-    <string name="temp_flip_box_screen_card_btn_all_select">전체 선택</string>
-    <string name="temp_flip_box_screen_card_btn_all_select_off">전체 선택 해제</string>
+    <string name="temp_flip_box_screen_card_all_select_btn">전체 선택</string>
+    <string name="temp_flip_box_screen_card_all_select_off_btn">전체 선택 해제</string>
+    <string name="temp_flip_box_screen_empty_title_1">작성 중인 플립이 없어요!</string>
+    <string name="temp_flip_box_screen_empty_title_2">영감이 떠오르면 부담없이 작성하고\n임시저장함에서 정리해보세요.</string>
     <!-- TempFlipBox Screen ContentDescription -->
     <string name="temp_flip_box_screen_content_desc_card_sub_btn">선택</string>
 

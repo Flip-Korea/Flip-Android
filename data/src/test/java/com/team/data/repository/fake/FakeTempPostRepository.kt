@@ -21,7 +21,7 @@ class FakeTempPostRepository(
     private val ioDispatcher = Dispatchers.IO
 
     override fun getTempPostsPagination(
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Flow<Result<TempPostList, ErrorType>> = flow {
         emit(Result.Loading)

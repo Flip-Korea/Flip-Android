@@ -256,37 +256,71 @@ val addScrapRequestTestData = """
 
 val tempPostListResponseTestData = """
     {
-      "tempPosts" : [ {
-        "tempPostId" : 1,
-        "title" : "title",
-        "content" : "content",
-        "bgColorType" : "RED",
-        "fontStyleType" : "NORMAL",
-        "postAt" : "2024-08-28 17:19:17",
-        "categoryId" : 1,
-        "categoryName" : "DAILY",
-        "tags" : [ ]
-      }, {
-        "tempPostId" : 3,
-        "title" : "title3",
-        "content" : "content3",
-        "bgColorType" : "RED",
-        "fontStyleType" : "NORMAL",
-        "postAt" : "2024-08-28 17:19:17",
-        "categoryId" : 3,
-        "categoryName" : "TIPS",
-        "tags" : [ "tag1" ]
-      }, {
-        "tempPostId" : 4,
-        "title" : "title4",
-        "content" : "content4",
-        "bgColorType" : "RED",
-        "fontStyleType" : "NORMAL",
-        "postAt" : "2024-08-28 17:19:17",
-        "categoryId" : 2,
-        "categoryName" : "IT_SCIENCE",
-        "tags" : [ "tag1" ]
-      } ],
-      "totalCount" : 3
+      "tempPosts": [
+        {
+          "tempPostId": 1,
+          "title": "title",
+          "content": "content",
+          "bgColorType": "RED",
+          "fontStyleType": "BOLD",
+          "postAt": "2024-08-27 17:19:17",
+          "categoryId": 1,
+          "categoryName": "DAILY",
+          "tags": []
+        },
+        {
+          "tempPostId": 3,
+          "title": "title3",
+          "content": "content3",
+          "bgColorType": "RED",
+          "fontStyleType": "BOLD",
+          "postAt": "2024-09-01 17:19:17",
+          "categoryId": 3,
+          "categoryName": "TIPS",
+          "tags": [
+            "tag1"
+          ]
+        },
+        {
+          "tempPostId": 4,
+          "title": "title4",
+          "content": "content4",
+          "bgColorType": "RED",
+          "fontStyleType": "BOLD",
+          "postAt": "2024-06-28 17:19:17",
+          "categoryId": 2,
+          "categoryName": "IT_SCIENCE",
+          "tags": [
+            "tag1"
+          ]
+        },
+        {
+          "tempPostId": 5,
+          "title": "title4",
+          "content": "content4",
+          "bgColorType": "RED",
+          "fontStyleType": "BOLD",
+          "postAt": "2024-08-20 17:19:17",
+          "categoryId": 2,
+          "categoryName": "IT_SCIENCE",
+          "tags": [
+            "tag1"
+          ]
+        },
+        {
+          "tempPostId": 6,
+          "title": "title4",
+          "content": "content4",
+          "bgColorType": "RED",
+          "fontStyleType": "BOLD",
+          "postAt": "2024-08-29 17:19:17",
+          "categoryId": 2,
+          "categoryName": "IT_SCIENCE",
+          "tags": [
+            "tag1"
+          ]
+        }
+      ],
+      "totalCount": 5
     }
 """.trimIndent()
