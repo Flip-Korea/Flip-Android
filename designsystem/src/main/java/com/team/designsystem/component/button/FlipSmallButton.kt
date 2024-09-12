@@ -3,7 +3,6 @@ package com.team.designsystem.component.button
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,9 +39,7 @@ fun FlipSmallButton(
 
     Button(
         onClick = { if (!isLoading) clickableSingle.onEvent(onClick) },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(48.dp),
+        modifier = modifier.height(48.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (solid) FlipTheme.colors.main else FlipTheme.colors.gray2,
             contentColor = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray7

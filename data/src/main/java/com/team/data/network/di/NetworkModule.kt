@@ -1,8 +1,10 @@
 package com.team.data.network.di
 
+import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.BuildConfig
+import com.team.data.network.retrofit.CacheInterceptor
 import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
 import com.team.data.network.retrofit.api.AccountNetworkApi
@@ -27,7 +29,9 @@ import com.team.domain.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -80,6 +84,19 @@ object NetworkModule {
             .authenticator(tokenAuthenticator)
             .addInterceptor(tokenInterceptor)
             .addInterceptor(httpLoggingInterceptor)
+            .build()
+    }
+
+    @NetworkCachingOkHttpClient
+    @Singleton
+    @Provides
+    fun provideNetworkCachingOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        val cacheSize = (10 * 1024 * 1024).toLong() // 10MB
+        val cache = Cache(context.cacheDir, cacheSize)
+
+        return OkHttpClient.Builder()
+            .addNetworkInterceptor(CacheInterceptor())
+            .cache(cache)
             .build()
     }
 
@@ -136,8 +153,10 @@ object NetworkModule {
     @Provides
     fun providePostApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
+        @NetworkCachingOkHttpClient networkCachingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
     ): PostNetworkApi = retrofit
+        .client(networkCachingOkHttpClient)
         .client(tokenOkHttpClient)
         .build()
         .create(PostNetworkApi::class.java)
@@ -222,3 +241,7 @@ annotation class DefaultRetrofitBuilder
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NetworkCachingOkHttpClient

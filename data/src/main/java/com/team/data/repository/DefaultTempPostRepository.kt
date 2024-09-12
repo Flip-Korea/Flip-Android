@@ -22,7 +22,7 @@ class DefaultTempPostRepository @Inject constructor(
 ): TempPostRepository {
 
     override fun getTempPostsPagination(
-        cursor: String,
+        cursor: String?,
         limit: Int,
     ): Flow<Result<TempPostList, ErrorType>> = flow {
         emit(Result.Loading)

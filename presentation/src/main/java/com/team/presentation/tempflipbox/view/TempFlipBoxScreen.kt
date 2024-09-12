@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,23 +49,31 @@ import com.team.domain.model.post.TempPost
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.presentation.R
+import com.team.presentation.common.error.FlipErrorScreen
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.tempflipbox.TempFlipBoxContract
 import com.team.presentation.util.asColor
 
+/**
+ * 임시저장함 화면
+ */
 @Composable
 fun TempFlipBoxScreen(
     modifier: Modifier = Modifier,
-    uiState: TempFlipBoxContract.UiState
+    uiState: TempFlipBoxContract.UiState,
+    uiEvent: (TempFlipBoxContract.UiEvent) -> Unit,
+    onBackPress: () -> Unit,
 ) {
 
-    var enableSaveButton by rememberSaveable { mutableStateOf(false) }
     var selectedTempPost by rememberSaveable { mutableStateOf(listOf<TempPost>()) }
     var selectMode by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(!selectMode) {
         selectedTempPost = listOf()
     }
+
+    /** 삭제 경고모달 */
+
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -74,7 +83,7 @@ fun TempFlipBoxScreen(
                     .fillMaxWidth()
                     .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 title = stringResource(id = R.string.temp_flip_box_screen_topbar_title),
-                onBackPress = { },
+                onBackPress = onBackPress,
                 options = {
                     FlipTextButton(
                         text = stringResource(id = R.string.temp_flip_box_screen_topbar_btn),
@@ -88,38 +97,58 @@ fun TempFlipBoxScreen(
                 FlipLargeButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.temp_flip_box_screen_btn_delete),
-                    onClick = {},
+                    onClick = {
+                        uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete(selectedTempPost.map { it.tempPostId }))
+                    },
                     enabled = selectedTempPost.isNotEmpty()
                 )
             }
-        }
+        },
+        containerColor = FlipTheme.colors.white
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .padding(top = 4.dp, start = 16.dp, end = 16.dp)
         ) {
             when(uiState) {
                 TempFlipBoxContract.UiState.Idle -> {
                     TempFlipBoxSkeletonScreen(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxWidth(),
                         itemCount = 7
                     )
                 }
 
                 TempFlipBoxContract.UiState.Loading -> {
                     TempFlipBoxSkeletonScreen(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxWidth(),
                         itemCount = 7
                     )
                 }
 
+                is TempFlipBoxContract.UiState.Error -> {
+                    FlipErrorScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        errorMessage = uiState.error,
+                        onRetry = { }
+                    )
+                }
+
                 is TempFlipBoxContract.UiState.TempPosts -> {
+                    /** 초기화 구문 */
+                    LaunchedEffect(Unit) {
+                        selectMode = false
+                        selectedTempPost = emptyList()
+                    }
                     TempPostsSection(
                         tempPosts = uiState.tempPosts,
                         selectedTempPosts = selectedTempPost,
                         selectMode = selectMode,
+                        innerPadding = innerPadding,
                         onSelect = { tempPost, selected ->
                             selectedTempPost = selectedTempPost
                                 .toMutableList()
@@ -128,7 +157,10 @@ fun TempFlipBoxScreen(
                                 }
                         },
                         onSelectAll = { allSelected ->
-                            selectedTempPost = if (allSelected) uiState.tempPosts else listOf()
+                            selectedTempPost = if (allSelected) uiState.tempPosts else listOf() }
+                        ,
+                        onOpenCard = { tempPost ->
+                            //TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
                         }
                     )
                 }
@@ -137,39 +169,67 @@ fun TempFlipBoxScreen(
     }
 }
 
+/**
+ * 임시저장플립 섹션 (메인 컨텐츠)
+ *
+ * @param tempPosts 임시저장플립 리스트
+ * @param selectMode 편집모드(선택모드)
+ * @param selectedTempPosts 선택 된 임시저장플립 리스트
+ * @param onSelect 임시저장플립 선택 시 수행할 작업
+ * @param onSelectAll 전체선택 시 수행할 작업 (Boolean 값이 true면, 전체 선택 실행)
+ * @param onOpenCard 임시저장플립 열기
+ */
 @Composable
 private fun TempPostsSection(
     modifier: Modifier = Modifier,
     tempPosts: List<TempPost>,
-    selectedTempPosts: List<TempPost>,
     selectMode: Boolean,
+    selectedTempPosts: List<TempPost>,
+    innerPadding: PaddingValues,
     onSelect: (TempPost, Boolean) -> Unit,
     onSelectAll: (Boolean) -> Unit,
+    onOpenCard: (TempPost) -> Unit
 ) {
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top)
-    ) {
-        TopToolBar(
-            modifier = Modifier.fillMaxWidth(),
-            selectMode = selectMode,
-            selectedTempPostsSize = selectedTempPosts.size,
-            tempPostsSize = tempPosts.size,
-            onSelectAll = { onSelectAll(it) }
-        )
-        TempPostList(
-            modifier = Modifier.fillMaxWidth(),
-            tempPosts = tempPosts,
-            selectMode = selectMode,
-            selectedTempPosts = selectedTempPosts,
-            onSelect = onSelect
-        )
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top)
+        ) {
+            TopToolBar(
+                modifier = Modifier.fillMaxWidth(),
+                selectMode = selectMode,
+                selectedTempPostsSize = selectedTempPosts.size,
+                tempPostsSize = tempPosts.size,
+                onSelectAll = { onSelectAll(it) }
+            )
+            if (tempPosts.isNotEmpty()) {
+                TempPostList(
+                    modifier = Modifier.fillMaxWidth(),
+                    tempPosts = tempPosts,
+                    selectMode = selectMode,
+                    selectedTempPosts = selectedTempPosts,
+                    onSelect = onSelect,
+                    onOpenCard = onOpenCard
+                )
+            }
+        }
+
+        if (tempPosts.isEmpty()) {
+            TempPostListEmptyScreen(Modifier.fillMaxSize())
+        }
     }
 }
 
 /**
- * @param onSelectAll Boolean 값이 true면, 전체 선택 실행
+ * TopBar 바로 하단에 위치한 (총 개수와 전체선택 버튼이 있는) 툴바
+ *
+ * @param selectMode 편집모드(선택모드)
+ * @param selectedTempPostsSize 선택 된 임시저장플립 리스트 사이즈
+ * @param tempPostsSize 임시저장플립 리스트 사이즈
+ * @param onSelectAll 전체선택 시 수행할 작업 (Boolean 값이 true면, 전체 선택 실행)
  */
 @Composable
 private fun TopToolBar(
@@ -181,8 +241,8 @@ private fun TopToolBar(
 ) {
 
     val selectModeText = if (tempPostsSize == selectedTempPostsSize) {
-        stringResource(id = R.string.temp_flip_box_screen_card_btn_all_select_off)
-    } else { stringResource(id = R.string.temp_flip_box_screen_card_btn_all_select) }
+        stringResource(id = R.string.temp_flip_box_screen_card_all_select_off_btn)
+    } else { stringResource(id = R.string.temp_flip_box_screen_card_all_select_btn) }
     val selectModeTextColor = if (tempPostsSize == selectedTempPostsSize) FlipTheme.colors.gray5 else FlipTheme.colors.main
 
     Row(modifier = modifier) {
@@ -219,13 +279,23 @@ private fun TopToolBar(
     }
 }
 
+/**
+ * 임시저장플립 리스트
+ *
+ * @param tempPosts 임시저장플립 리스트
+ * @param selectMode 편집모드(선택모드)
+ * @param selectedTempPosts 선택 된 임시저장플립
+ * @param onSelect 임시저장플립 선택 시 수행 할 작업
+ * @param onOpenCard 임시저장플립 열기
+ */
 @Composable
 private fun TempPostList(
     modifier: Modifier = Modifier,
     tempPosts: List<TempPost>,
     selectMode: Boolean,
     selectedTempPosts: List<TempPost>,
-    onSelect: (TempPost, Boolean) -> Unit
+    onSelect: (TempPost, Boolean) -> Unit,
+    onOpenCard: (TempPost) -> Unit
 ) {
 
     var selectedTempPostIds by rememberSaveable { mutableStateOf(listOf<Long>()) }
@@ -251,14 +321,42 @@ private fun TempPostList(
                 bgColorType = tempPost.bgColorType,
                 selectMode = selectMode,
                 selected = selected,
-                onSelect = {
-                    onSelect(tempPost, !selected)
-                }
+                onSelect = { onSelect(tempPost, !selected) },
+                onOpenCard = { onOpenCard(tempPost) }
             )
         }
     }
 }
 
+@Composable
+private fun TempPostListEmptyScreen(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically)
+    ) {
+        Text(
+            text = stringResource(id = R.string.temp_flip_box_screen_empty_title_1),
+            style = FlipTheme.typography.headline4,
+            color = FlipTheme.colors.gray5
+        )
+        Text(
+            text = stringResource(id = R.string.temp_flip_box_screen_empty_title_2),
+            style = FlipTheme.typography.body5,
+            color = FlipTheme.colors.gray5,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+/**
+ * 임시저장 플립 카드
+ *
+ * @param selectMode 편집모드(선택모드)
+ * @param selected 선택 여부
+ * @param onSelect 선택 시 수행 할 작업
+ * @param onOpenCard 임시저장플립 열기
+ */
 @Composable
 private fun TempPostCard(
     modifier: Modifier = Modifier,
@@ -267,13 +365,18 @@ private fun TempPostCard(
     bgColorType: BackgroundColorType,
     selectMode: Boolean,
     selected: Boolean,
-    onSelect: () -> Unit
+    onSelect: () -> Unit,
+    onOpenCard: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clip(FlipTheme.shapes.roundedCornerSmall)
             .background(bgColorType.asColor())
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickableSingleWithoutRipple {
+                if (selectMode) onSelect()
+                else onOpenCard()
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -296,6 +399,9 @@ private fun TempPostCard(
     }
 }
 
+/**
+ * 선택(체크) 버튼
+ */
 @Composable
 private fun SelectButton(
     modifier: Modifier = Modifier,
@@ -334,7 +440,8 @@ private fun TempPostCardPreview() {
             bgColorType = BackgroundColorType.YELLOW,
             selectMode = false,
             selected = false,
-            onSelect = { }
+            onSelect = { },
+            onOpenCard = { }
         )
     }
 }
@@ -351,7 +458,8 @@ private fun TempPostCardPreview2() {
             bgColorType = BackgroundColorType.YELLOW,
             selectMode = true,
             selected = selected,
-            onSelect = { selected = !selected }
+            onSelect = { selected = !selected },
+            onOpenCard = { }
         )
     }
 }
@@ -368,7 +476,8 @@ private fun TempPostCardPreview3() {
             bgColorType = BackgroundColorType.YELLOW,
             selectMode = true,
             selected = selected,
-            onSelect = { selected = !selected }
+            onSelect = { selected = !selected },
+            onOpenCard = { }
         )
     }
 }
@@ -380,9 +489,8 @@ private fun TempPostListPreview() {
         tempPosts = tempPostsTestData,
         selectMode = true,
         selectedTempPosts = emptyList(),
-        onSelect = { tempPost, select ->
-
-        }
+        onSelect = { tempPost, select -> },
+        onOpenCard = { }
     )
 }
 
@@ -391,7 +499,21 @@ private fun TempPostListPreview() {
 private fun TempFlipBoxScreenPreview() {
     FlipAppTheme {
         TempFlipBoxScreen(
-            uiState = TempFlipBoxContract.UiState.TempPosts(tempPostsTestData)
+            uiState = TempFlipBoxContract.UiState.TempPosts(tempPostsTestData),
+            uiEvent = { },
+            onBackPress = { }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TempFlipBoxEmptyScreenPreview() {
+    FlipAppTheme {
+        TempFlipBoxScreen(
+            uiState = TempFlipBoxContract.UiState.TempPosts(listOf()),
+            uiEvent = { },
+            onBackPress = { }
         )
     }
 }
@@ -401,7 +523,9 @@ private fun TempFlipBoxScreenPreview() {
 private fun TempFlipBoxScreenPreview2() {
     FlipAppTheme {
         TempFlipBoxScreen(
-            uiState = TempFlipBoxContract.UiState.Loading
+            uiState = TempFlipBoxContract.UiState.Loading,
+            uiEvent = { },
+            onBackPress = { }
         )
     }
 }
