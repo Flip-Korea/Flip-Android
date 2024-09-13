@@ -4,7 +4,6 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.BuildConfig
-import com.team.data.network.retrofit.CacheInterceptor
 import com.team.data.network.retrofit.TokenAuthenticator
 import com.team.data.network.retrofit.TokenInterceptor
 import com.team.data.network.retrofit.api.AccountNetworkApi
@@ -13,6 +12,8 @@ import com.team.data.network.retrofit.api.InterestCategoryNetworkApi
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
+import com.team.data.network.retrofit.cache.CacheInterceptorManager
+import com.team.data.network.retrofit.cache.NetworkCheckUtil
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.AccountNetworkDataSourceImpl
 import com.team.data.network.source.CategoryNetworkDataSource
@@ -31,7 +32,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -87,19 +87,6 @@ object NetworkModule {
             .build()
     }
 
-    @NetworkCachingOkHttpClient
-    @Singleton
-    @Provides
-    fun provideNetworkCachingOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
-        val cacheSize = (10 * 1024 * 1024).toLong() // 10MB
-        val cache = Cache(context.cacheDir, cacheSize)
-
-        return OkHttpClient.Builder()
-            .addNetworkInterceptor(CacheInterceptor())
-            .cache(cache)
-            .build()
-    }
-
     /** TokenInterceptor & TokenAuthentication **/
     @Singleton
     @Provides
@@ -152,14 +139,31 @@ object NetworkModule {
     @Singleton
     @Provides
     fun providePostApiService(
-        @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
-        @NetworkCachingOkHttpClient networkCachingOkHttpClient: OkHttpClient,
+        @ApplicationContext context: Context,
+        networkCheckUtil: NetworkCheckUtil,
+        tokenAuthenticator: TokenAuthenticator,
+        tokenInterceptor: TokenInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): PostNetworkApi = retrofit
-        .client(networkCachingOkHttpClient)
-        .client(tokenOkHttpClient)
-        .build()
-        .create(PostNetworkApi::class.java)
+    ): PostNetworkApi {
+        val cache = CacheInterceptorManager().getCache(context, 10)
+        val cacheInterceptor = CacheInterceptorManager().createCacheInterceptor(5)
+        val forceCacheInterceptor = CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
+
+        val client = OkHttpClient.Builder()
+            .authenticator(tokenAuthenticator)
+            .cache(cache)
+            .addInterceptor(tokenInterceptor)
+            .addNetworkInterceptor(cacheInterceptor)
+            .addInterceptor(forceCacheInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
+
+        return retrofit
+            .client(client)
+            .build()
+            .create(PostNetworkApi::class.java)
+    }
 
     @Singleton
     @Provides
@@ -241,7 +245,3 @@ annotation class DefaultRetrofitBuilder
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenOkHttpClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class NetworkCachingOkHttpClient
