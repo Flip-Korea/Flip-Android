@@ -44,7 +44,6 @@ import kotlin.time.Duration.Companion.seconds
 @ExperimentalCoroutinesApi
 class EditMyCategoriesViewModelTest {
 
-
     @get:Rule
     val testDispatcher = TestDispatcherRule()
 
@@ -138,12 +137,12 @@ class EditMyCategoriesViewModelTest {
         } just Runs
 
         // Given
-        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData.copy(categories = myCategoriesTestData)))
+        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData.copy(categories = myCategoriesTestData.map { it.id })))
 
         val expectedMyCategories = myCategoriesTestData.mapNotNull { id ->
-            categoriesTestData.find { it.id == id }
+            categoriesTestData.find { it.id == id.id }
         }
-        val expectedExclusiveCategories = categoriesTestData.filter { !myCategoriesTestData.contains(it.id) }
+        val expectedExclusiveCategories = categoriesTestData.filter { !myCategoriesTestData.map { m -> m.id }.contains(it.id) }
 
         var myCategoriesState: MyCategoriesState? = null
         val job = launch {
@@ -218,7 +217,7 @@ class EditMyCategoriesViewModelTest {
 
     @Test
     fun `나의 관심 카테고리 업데이트 - 성공 시`() = runTest {
-        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData.copy(categories = myCategoriesTestData)))
+        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData.copy(categories = myCategoriesTestData.map { it.id })))
         every {
             getSpeechBubbleCountUseCase()
         } returns flowOf(null)

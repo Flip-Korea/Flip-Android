@@ -2,7 +2,6 @@ package com.team.presentation.common.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +21,7 @@ interface BaseUiEffect
  */
 abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect: BaseUiEffect>: ViewModel() {
 
-    /** [createInitialState]를 통해 초기 상태를 지정한다. */
+    /** [createInitialState]를 통해 초기 상태(UI State)를 지정한다. */
     private val initialState : State by lazy { createInitialState() }
     abstract fun createInitialState() : State
 
@@ -54,8 +53,9 @@ abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect:
     protected abstract suspend fun handleEvent(event: Event)
 
     /** Send UiEffect */
-    protected fun CoroutineScope.sendEffect(effect: Effect) {
-        this.launch { _effect.send(effect) }
+    protected fun sendEffect(effect: () -> Effect) {
+        val effectValue = effect()
+        viewModelScope.launch { _effect.send(effectValue) }
     }
 
     override fun onCleared() {

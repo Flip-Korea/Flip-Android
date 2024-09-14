@@ -24,6 +24,7 @@ import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
+import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
@@ -181,16 +182,15 @@ class AddFlipViewModel @Inject constructor(
                         }
 
                         is Result.Error -> {
-                            val message = result.errorBody?.let { errorBody ->
-                                UiText.DynamicString(errorBody.message)
-                            } ?: result.error.asUiText()
+                            val message = errorBodyFirst(
+                                errorBody = result.errorBody,
+                                error = result.error
+                            )
 
                             showSnackbar(message)
 //                            _addPostState.update { it.copy(
 //                                loading = false,
-//                                error = result.errorBody?.let { errorBody ->
-//                                    UiText.DynamicString(errorBody.message)
-//                                } ?: result.error.asUiText()
+//                                error = message
 //                            ) }
                         }
 
@@ -244,9 +244,10 @@ class AddFlipViewModel @Inject constructor(
                             _addPostState.update {
                                 it.copy(
                                     loading = false,
-                                    error = result.errorBody?.let { errorBody ->
-                                        UiText.DynamicString(errorBody.message)
-                                    } ?: result.error.asUiText()
+                                    error = errorBodyFirst(
+                                        errorBody = result.errorBody,
+                                        error = result.error
+                                    )
                                 )
                             }
                         }

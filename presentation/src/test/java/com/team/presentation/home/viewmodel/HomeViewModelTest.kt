@@ -2,13 +2,12 @@ package com.team.presentation.home.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.team.domain.DataStoreManager
-import com.team.domain.model.category.Category
 import com.team.domain.type.DataStoreType
 import com.team.domain.usecase.category.GetCategoriesUseCase
-import com.team.domain.usecase.interestcategory.GetMyCategoriesUseCase
+import com.team.domain.usecase.interestcategory.GetFilteredMyCategoriesUseCase
 import com.team.domain.usecase.post.GetPostsUseCase
 import com.team.domain.usecase.post.GetPostUseCases
-import com.team.domain.usecase.post.testdoubles.getPostListTestData
+import com.team.presentation.home.testdoubles.getPostListTestData
 import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
@@ -51,7 +50,7 @@ class HomeViewModelTest {
     private val getPostUseCases: GetPostUseCases = mockk()
     private val getPostsUseCase: GetPostsUseCase = mockk()
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
-    private val getMyCategoriesUseCase: GetMyCategoriesUseCase = mockk()
+    private val getFilteredMyCategoriesUseCase: GetFilteredMyCategoriesUseCase = mockk()
     private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase = mockk()
     private lateinit var dataStoreManager: DataStoreManager
 
@@ -61,40 +60,38 @@ class HomeViewModelTest {
 
         every { getPostUseCases.getPostsUseCase } returns getPostsUseCase
         every { getCategoriesUseCase.invoke() } returns flowOf(categoriesTestData)
-        coEvery { getMyCategoriesUseCase() } returns flowOf(myCategoriesTestData)
+        coEvery { getFilteredMyCategoriesUseCase() } returns flowOf(myCategoriesTestData)
         every { getCurrentProfileIdUseCase() } returns flowOf("currentProfileId")
     }
 
 
     @Test
-    fun `카테고리 가져와서 정렬하기(고정 + 관심 카테고리 + 나머지)`() = runTest {
+    fun `카테고리 가져와서 정렬하기(고정 + 관심 카테고리)`() = runTest {
         // Given
         val profileId = "profileId"
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
 
-        val expected = getAlignedCategories()
+        val expected = myCategoriesTestData
 
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
             getPostUseCases,
-            getMyCategoriesUseCase,
-            getCategoriesUseCase,
-            getCurrentProfileIdUseCase
+            getCurrentProfileIdUseCase,
+            getFilteredMyCategoriesUseCase
         )
 
         /** 코루틴(비동기 작업) 다 기다림 */
         advanceUntilIdle()
 
         // When
-        val categoriesState = homeViewModel.categoriesState.first()
+        val categoriesState = homeViewModel.filteredMyCategoriesState.first()
 
         // Then
-        val actual = categoriesState.categories
+        val actual = categoriesState
 
         assert(actual.isNotEmpty())
         assertEquals(expected, actual)
         assertEquals(expected[2], actual[2])
-        assertEquals(expected[4], actual[4])
     }
 
     @Test
@@ -106,9 +103,8 @@ class HomeViewModelTest {
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
             getPostUseCases,
-            getMyCategoriesUseCase,
-            getCategoriesUseCase,
-            getCurrentProfileIdUseCase
+            getCurrentProfileIdUseCase,
+            getFilteredMyCategoriesUseCase
         )
 
         var postState: PostState? = null
@@ -139,9 +135,8 @@ class HomeViewModelTest {
         homeViewModel = HomeViewModel(
             UnconfinedTestDispatcher(),
             getPostUseCases,
-            getMyCategoriesUseCase,
-            getCategoriesUseCase,
-            getCurrentProfileIdUseCase
+            getCurrentProfileIdUseCase,
+            getFilteredMyCategoriesUseCase
         )
 
         var postState: PostState? = null
@@ -161,17 +156,5 @@ class HomeViewModelTest {
         assert(postState?.loading == false)
         assert(postState!!.posts.isEmpty())
         assertEquals(UiText.DynamicString(expectedErrorBody.message), postState?.error)
-    }
-
-    /** getAlignedCategories(): HomeViewModel 에서 그대로 복사한 코드 */
-    private suspend fun getAlignedCategories(): List<Category> {
-        val categories = getCategoriesUseCase().first()
-        val myCategoryIds = getMyCategoriesUseCase().first()
-        return myCategoryIds?.let { myCateIds ->
-            fixedCategories + myCateIds.mapNotNull { id ->
-                categories.find { it.id == id }
-            }
-//            fixedCategories + categories.filter { myCateIds.contains(it.id) }
-        } ?: fixedCategories
     }
 }
