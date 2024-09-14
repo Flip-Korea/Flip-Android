@@ -1,8 +1,6 @@
 package com.team.presentation.addflip.viewmodel
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import com.team.domain.model.category.Category
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.usecase.category.GetCategoriesUseCase
@@ -19,6 +17,8 @@ import com.team.presentation.TestDispatcherRule
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
 import com.team.presentation.addflip.testdoubles.categoriesTestData
+import com.team.presentation.common.snackbar.SnackbarController
+import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.util.uitext.UiText
 import io.mockk.every
 import io.mockk.mockk
@@ -35,12 +35,9 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
 class AddFlipViewModelTest {
 
     @get:Rule
@@ -49,8 +46,6 @@ class AddFlipViewModelTest {
     /** 백그라운드 작업을 동기적으로 실행 */
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-
-    private val context = ApplicationProvider.getApplicationContext<Context>()
 
     private lateinit var addFlipViewModel: AddFlipViewModel
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
@@ -82,8 +77,8 @@ class AddFlipViewModelTest {
             validateTempPostUseCase = validateTempPostUseCase,
             ioDispatcher = UnconfinedTestDispatcher()
         )
-
         val categoriesState = addFlipViewModel.categoriesState.first()
+        advanceTimeBy(2.seconds)
 
         assertEquals(categoriesState.categories,  categoriesTestData)
     }
@@ -141,7 +136,7 @@ class AddFlipViewModelTest {
     @Test
     fun `Flip(Post) 등록하기 실패 (onSavePost())`() = runTest {
         // Given
-        val expectedErrorBody = ErrorBody("", emptyList(), "error")
+        val actualErrorBody = ErrorBody("", emptyList(), "error")
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
         every {
@@ -156,7 +151,7 @@ class AddFlipViewModelTest {
                 tags = tags,
                 categoryId = selectedCategory.id
             )
-        } returns flowOf(Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = expectedErrorBody))
+        } returns flowOf(Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = actualErrorBody))
 
         addFlipViewModel = AddFlipViewModel(
             UnconfinedTestDispatcher(),
@@ -169,29 +164,24 @@ class AddFlipViewModelTest {
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
-        var addPostState: AddPostState? = null
+        var snackbarEvent: SnackbarEvent? = null
         val job = launch {
-            addFlipViewModel.addPostState.collectLatest {
-                addPostState = it
+            SnackbarController.events.collectLatest {
+                snackbarEvent = it
             }
         }
 
         // When
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title,content, selectedColor, tags))
-
         advanceTimeBy(1.seconds)
         job.cancel()
 
         // Then
-        val result = addPostState?.postSave
-        val actualError = addPostState?.error
+        val actualError = snackbarEvent?.message
 
-        assertNotNull(result)
-        assertNotNull(actualError)
-        assert(!result!!)
         assertEquals(
-            UiText.DynamicString(expectedErrorBody.message),
-            actualError
+            actualError,
+            UiText.DynamicString(actualErrorBody.message)
         )
     }
 

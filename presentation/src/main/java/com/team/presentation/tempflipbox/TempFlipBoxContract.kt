@@ -6,8 +6,10 @@ import com.team.presentation.common.util.BaseUiEvent
 import com.team.presentation.common.util.BaseUiState
 import com.team.presentation.util.uitext.UiText
 
-//TODO: Error는 어디에 들어가야 하나?
-interface TempFlipBoxContract {
+/**
+ * 임시저장함을 위한 Contract Class
+ */
+class TempFlipBoxContract {
     sealed class UiState: BaseUiState {
         data object Idle: UiState()
         data object Loading: UiState()
@@ -15,14 +17,15 @@ interface TempFlipBoxContract {
         data class TempPosts(val tempPosts: List<TempPost> = emptyList()): UiState()
     }
 
-    sealed interface UiEvent: BaseUiEvent {
-        data class OnTempPostsDelete(val tempPostIds: List<Long>): UiEvent
-        data object NavigateToPostDetail: UiEvent
-        data object NavigateToBack: UiEvent
-        data object GetTempPosts: UiEvent
+    sealed class UiEvent: BaseUiEvent {
+        /** @param tempPostIds null 이면 삭제모달창 표시, null이 아니면 삭제 진행*/
+        data class OnTempPostsDelete(val tempPostIds: List<Long>? = null): UiEvent()
+        data object NavigateToPostDetail: UiEvent()
+        data object NavigateToBack: UiEvent()
+        data object GetTempPosts: UiEvent()
     }
 
-    sealed interface UiEffect: BaseUiEffect {
-
+    sealed class UiEffect: BaseUiEffect {
+        data object ShowDialogModal: UiEffect()
     }
 }

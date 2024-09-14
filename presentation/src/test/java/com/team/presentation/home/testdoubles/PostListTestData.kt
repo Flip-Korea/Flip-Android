@@ -1,10 +1,10 @@
-package com.team.domain.usecase.post.testdoubles
+package com.team.presentation.home.testdoubles
 
 import com.team.domain.model.post.Post
 import com.team.domain.model.post.PostList
 import com.team.domain.model.profile.DisplayProfile
 
-fun getPostListTestData(count: Int = 15): PostList {
+internal fun getPostListTestData(count: Int = 15): PostList {
     val posts = mutableListOf<Post>()
     repeat(count) {
         posts.add(
@@ -31,7 +31,7 @@ fun getPostListTestData(count: Int = 15): PostList {
     )
 }
 
-fun getPostsTestData(count: Int = 15): List<Post> {
+internal fun getPostsTestData(count: Int = 15): List<Post> {
     val posts = mutableListOf<Post>()
     repeat(count) {
         posts.add(

@@ -167,6 +167,10 @@
     <string name="temp_flip_box_screen_card_all_select_off_btn">전체 선택 해제</string>
     <string name="temp_flip_box_screen_empty_title_1">작성 중인 플립이 없어요!</string>
     <string name="temp_flip_box_screen_empty_title_2">영감이 떠오르면 부담없이 작성하고\n임시저장함에서 정리해보세요.</string>
+    <string name="temp_flip_box_screen_modal_title">임시저장된 플립을 삭제하시겠어요?</string>
+    <string name="temp_flip_box_screen_modal_sub_title">선택된 1개의 글을 삭제하시겠습니까?\n삭제된 글은 영구적으로 사라지며 되돌릴 수 없습니다.</string>
+    <string name="temp_flip_box_screen_modal_action_1">삭제하기</string>
+    <string name="temp_flip_box_screen_modal_action_2">취소</string>
     <!-- TempFlipBox Screen ContentDescription -->
     <string name="temp_flip_box_screen_content_desc_card_sub_btn">선택</string>
 

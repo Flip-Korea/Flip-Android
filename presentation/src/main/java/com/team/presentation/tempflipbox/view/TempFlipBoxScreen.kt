@@ -1,5 +1,6 @@
 package com.team.presentation.tempflipbox.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipTextButton
+import com.team.designsystem.component.modal.FlipModal
+import com.team.designsystem.component.modal.FlipModalWrapper
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.utils.clickableSingleWithoutRipple
 import com.team.designsystem.theme.FlipAppTheme
@@ -62,18 +65,38 @@ fun TempFlipBoxScreen(
     modifier: Modifier = Modifier,
     uiState: TempFlipBoxContract.UiState,
     uiEvent: (TempFlipBoxContract.UiEvent) -> Unit,
+    isModalVisible: Boolean,
     onBackPress: () -> Unit,
 ) {
 
     var selectedTempPost by rememberSaveable { mutableStateOf(listOf<TempPost>()) }
     var selectMode by rememberSaveable { mutableStateOf(false) }
-
     LaunchedEffect(!selectMode) {
         selectedTempPost = listOf()
     }
 
-    /** 삭제 경고모달 */
+    var isOpen by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(isModalVisible) {
+        if (isModalVisible) {
+            isOpen = true
+            Log.d("Modal_log", "Modal Triggered ! (In Composable)")
+        }
+    }
 
+    /** 삭제 경고모달 */
+    FlipModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
+        FlipModal(
+            mainTitle = stringResource(id = R.string.temp_flip_box_screen_modal_title),
+            subTitle = stringResource(id = R.string.temp_flip_box_screen_modal_sub_title),
+            itemText = stringResource(id = R.string.temp_flip_box_screen_modal_action_1),
+            itemText2 = stringResource(id = R.string.temp_flip_box_screen_modal_action_2),
+            onItemClick = {
+                uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete(selectedTempPost.map { it.tempPostId }))
+                isOpen = false
+            },
+            onItem2Click = { isOpen = false }
+        )
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -98,7 +121,7 @@ fun TempFlipBoxScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.temp_flip_box_screen_btn_delete),
                     onClick = {
-                        uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete(selectedTempPost.map { it.tempPostId }))
+                        uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete())
                     },
                     enabled = selectedTempPost.isNotEmpty()
                 )
@@ -107,10 +130,7 @@ fun TempFlipBoxScreen(
         containerColor = FlipTheme.colors.white
     ) { innerPadding ->
 
-        Column(
-            modifier = Modifier
-                .padding(top = 4.dp, start = 16.dp, end = 16.dp)
-        ) {
+        Column(modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp)) {
             when(uiState) {
                 TempFlipBoxContract.UiState.Idle -> {
                     TempFlipBoxSkeletonScreen(
@@ -152,9 +172,7 @@ fun TempFlipBoxScreen(
                         onSelect = { tempPost, selected ->
                             selectedTempPost = selectedTempPost
                                 .toMutableList()
-                                .apply {
-                                    if (selected) add(tempPost) else remove(tempPost)
-                                }
+                                .apply { if (selected) add(tempPost) else remove(tempPost) }
                         },
                         onSelectAll = { allSelected ->
                             selectedTempPost = if (allSelected) uiState.tempPosts else listOf() }
@@ -175,6 +193,7 @@ fun TempFlipBoxScreen(
  * @param tempPosts 임시저장플립 리스트
  * @param selectMode 편집모드(선택모드)
  * @param selectedTempPosts 선택 된 임시저장플립 리스트
+ * @param innerPadding Scaffold에서 받아와서 개별 적용을 위한 innerPadding
  * @param onSelect 임시저장플립 선택 시 수행할 작업
  * @param onSelectAll 전체선택 시 수행할 작업 (Boolean 값이 true면, 전체 선택 실행)
  * @param onOpenCard 임시저장플립 열기
@@ -501,6 +520,7 @@ private fun TempFlipBoxScreenPreview() {
         TempFlipBoxScreen(
             uiState = TempFlipBoxContract.UiState.TempPosts(tempPostsTestData),
             uiEvent = { },
+            isModalVisible = false,
             onBackPress = { }
         )
     }
@@ -513,6 +533,7 @@ private fun TempFlipBoxEmptyScreenPreview() {
         TempFlipBoxScreen(
             uiState = TempFlipBoxContract.UiState.TempPosts(listOf()),
             uiEvent = { },
+            isModalVisible = false,
             onBackPress = { }
         )
     }
@@ -525,6 +546,7 @@ private fun TempFlipBoxScreenPreview2() {
         TempFlipBoxScreen(
             uiState = TempFlipBoxContract.UiState.Loading,
             uiEvent = { },
+            isModalVisible = false,
             onBackPress = { }
         )
     }

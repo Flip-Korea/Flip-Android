@@ -38,9 +38,17 @@ class TempFlipBoxViewModel @Inject constructor(
         when (event) {
             TempFlipBoxContract.UiEvent.NavigateToBack -> TODO()
             TempFlipBoxContract.UiEvent.NavigateToPostDetail -> TODO()
-            is TempFlipBoxContract.UiEvent.OnTempPostsDelete -> { deleteTempPosts(event.tempPostIds) }
+            is TempFlipBoxContract.UiEvent.OnTempPostsDelete -> {
+                event.tempPostIds?.let { tempPostIds ->
+                    deleteTempPosts(tempPostIds)
+                } ?: showDialogModal()
+            }
             TempFlipBoxContract.UiEvent.GetTempPosts -> { getTempPosts() }
         }
+    }
+
+    private fun showDialogModal() {
+        sendEffect { TempFlipBoxContract.UiEffect.ShowDialogModal }
     }
 
     /**
@@ -72,8 +80,8 @@ class TempFlipBoxViewModel @Inject constructor(
     /**
      * 임시저장플립 삭제
      */
+    //TODO: 로딩처리는 어떻게?
     private fun deleteTempPosts(tempPostIds: List<Long>) {
-        //TODO: 로딩처리는 어떻게?
         var results = emptyList<Pair<Boolean, UiText>>()
 
         viewModelScope.launch {

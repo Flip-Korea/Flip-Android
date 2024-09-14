@@ -23,4 +23,8 @@ internal val fixedCategoriesTestData = listOf(
     Category(102, "인기 플립"),
 )
 
-internal val myCategoriesTestData = listOf(6, 7, 8)
+internal val myCategoriesTestData = listOf(
+    Category(6, "예술/문화"),
+    Category(7, "디자인"),
+    Category(8, "컴퓨터/IT"),
+)
