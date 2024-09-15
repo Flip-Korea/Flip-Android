@@ -14,35 +14,54 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.team.designsystem.R
 import com.team.designsystem.component.button.FlipIconButton
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+enum class FlipCenterAlignedTopBarActions {
+    BACK_PRESS, CLOSE
+}
+
 /**
  * 타이틀이 중앙 정렬된 Flip TopBar
  *
  * @param title TopBar 를 사용하는 화면을 설명할 수 있는 제목
- * @param onBackPress 뒤로가기 버튼 클릭 시
+ * @param actions 액션 스타일 ([FlipCenterAlignedTopBarActions])
+ * @param onAction 액션 (버튼) 클릭 시
  * @param options 오른쪽 부분에 옵션(Composable)을 추가할 수 있다 (RowScope 범위 내)
  */
 @Composable
 fun FlipCenterAlignedTopBar(
     modifier: Modifier = Modifier,
     title: String,
-    onBackPress: (() -> Unit)? = null,
+    actions: FlipCenterAlignedTopBarActions = FlipCenterAlignedTopBarActions.BACK_PRESS,
+    onAction: (() -> Unit)? = null,
     options: @Composable (RowScope.() -> Unit)? = null
 ) {
 
-    Box(
-        modifier = modifier
-    ) {
-        if (onBackPress != null) {
+    Box(modifier = modifier) {
+        if (onAction != null) {
+            val iconSize = when (actions) {
+                FlipCenterAlignedTopBarActions.BACK_PRESS -> { DpSize(24.dp, 24.dp) }
+                FlipCenterAlignedTopBarActions.CLOSE -> { DpSize(20.dp, 24.dp) }
+            }
+            val contendDesc = when(actions) {
+                FlipCenterAlignedTopBarActions.BACK_PRESS -> R.string.content_desc_arrow_back
+                FlipCenterAlignedTopBarActions.CLOSE -> R.string.content_desc_close
+            }
+            val imageVector = when(actions) {
+                FlipCenterAlignedTopBarActions.BACK_PRESS -> R.drawable.ic_arrow_back
+                FlipCenterAlignedTopBarActions.CLOSE -> R.drawable.ic_close
+            }
             FlipIconButton(
                 modifier = Modifier.align(Alignment.CenterStart),
-                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                contentDescription = stringResource(id = R.string.content_desc_arrow_back),
-                onClick = onBackPress,
+                imageVector = ImageVector.vectorResource(imageVector),
+                contentDescription = stringResource(id = contendDesc),
+                iconSize = iconSize,
+                onClick = onAction,
                 tint = FlipTheme.colors.main
             )
         }
@@ -67,15 +86,15 @@ fun FlipCenterAlignedTopBar(
 
 @Preview(name = "Top bar type2(타이틀 중앙 정렬) - 뒤로가기 버튼/화면이름", showBackground = true)
 @Composable
-private fun FlipCenterAlignedTopBarPreview() {
+private fun Preview() {
     FlipAppTheme {
-        FlipCenterAlignedTopBar(modifier = Modifier.fillMaxWidth(), title = "화면 이름", onBackPress = { })
+        FlipCenterAlignedTopBar(modifier = Modifier.fillMaxWidth(), title = "화면 이름", onAction = { })
     }
 }
 
 @Preview(name = "Top bar type2(타이틀 중앙 정렬) - 화면이름/아이콘 버튼", showBackground = true)
 @Composable
-private fun FlipCenterAlignedTopBarPreview2() {
+private fun Preview2() {
     FlipAppTheme {
         FlipCenterAlignedTopBar(
             modifier = Modifier.fillMaxWidth(),
@@ -100,17 +119,44 @@ private fun FlipCenterAlignedTopBarPreview2() {
 
 @Preview(name = "Top bar type2(타이틀 중앙 정렬) - 뒤로가기 버튼/화면이름/버튼", showBackground = true)
 @Composable
-private fun FlipCenterAlignedTopBarPreview3() {
+private fun Preview3() {
     FlipAppTheme {
         FlipCenterAlignedTopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "화면 이름",
-            onBackPress = { },
+            onAction = { },
             options = {
                 Text(
                     text = "버튼 이름",
                     style = FlipTheme.typography.body6,
                     color = FlipTheme.colors.gray6
+                )
+            }
+        )
+    }
+}
+
+@Preview(name = "Top bar type(타이틀 중앙 정렬) - 화면이름/닫기 버튼", showBackground = true)
+@Composable
+private fun Preview4() {
+    FlipAppTheme {
+        FlipCenterAlignedTopBar(
+            modifier = Modifier.fillMaxWidth(),
+            actions = FlipCenterAlignedTopBarActions.CLOSE,
+            onAction = { },
+            title = "화면 이름",
+            options = {
+                FlipIconButton(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_share_2),
+                    contentDescription = null,
+                    onClick = { },
+                    tint = FlipTheme.colors.main
+                )
+                FlipIconButton(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
+                    contentDescription = null,
+                    onClick = { },
+                    tint = FlipTheme.colors.main
                 )
             }
         )

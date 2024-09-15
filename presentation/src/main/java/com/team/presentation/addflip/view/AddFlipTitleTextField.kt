@@ -57,7 +57,7 @@ fun AddFlipTitleTextField(
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 8.dp, end = 8.dp, bottom = 3.dp)
+                    .padding(top = 3.dp, bottom = 3.dp)
             ) {
                 innerTextField()
                 if (title.isEmpty()) {

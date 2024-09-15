@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.component.modal.FlipModal
+import com.team.designsystem.component.modal.FlipModalStyle
 import com.team.designsystem.component.modal.FlipModalWrapper
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.utils.clickableSingleWithoutRipple
@@ -72,7 +73,7 @@ fun TempFlipBoxScreen(
     var selectedTempPost by rememberSaveable { mutableStateOf(listOf<TempPost>()) }
     var selectMode by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(!selectMode) {
-        selectedTempPost = listOf()
+        if (!selectMode) selectedTempPost = listOf()
     }
 
     var isOpen by rememberSaveable { mutableStateOf(false) }
@@ -86,6 +87,7 @@ fun TempFlipBoxScreen(
     /** 삭제 경고모달 */
     FlipModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
         FlipModal(
+            modalStyle = FlipModalStyle.MEDIUM,
             mainTitle = stringResource(id = R.string.temp_flip_box_screen_modal_title),
             subTitle = stringResource(id = R.string.temp_flip_box_screen_modal_sub_title),
             itemText = stringResource(id = R.string.temp_flip_box_screen_modal_action_1),
@@ -106,7 +108,7 @@ fun TempFlipBoxScreen(
                     .fillMaxWidth()
                     .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 title = stringResource(id = R.string.temp_flip_box_screen_topbar_title),
-                onBackPress = onBackPress,
+                onAction = onBackPress,
                 options = {
                     FlipTextButton(
                         text = stringResource(id = R.string.temp_flip_box_screen_topbar_btn),
@@ -159,11 +161,6 @@ fun TempFlipBoxScreen(
                 }
 
                 is TempFlipBoxContract.UiState.TempPosts -> {
-                    /** 초기화 구문 */
-                    LaunchedEffect(Unit) {
-                        selectMode = false
-                        selectedTempPost = emptyList()
-                    }
                     TempPostsSection(
                         tempPosts = uiState.tempPosts,
                         selectedTempPosts = selectedTempPost,
