@@ -2,9 +2,6 @@ package com.team.designsystem.component.button
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -20,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.R
 import com.team.designsystem.component.utils.ClickableSingle
@@ -28,6 +26,8 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 /**
+ * Flip IconButton
+ *
  * 1. Icon Size는 최소 24dp
  * 2. Button, TextField 같은 작은 요소 안에서 보다 큼직한 요소 및 외부에서 쓰임
  * 3. TouchTarget: 44dp
@@ -37,34 +37,7 @@ fun FlipIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
     contentDescription: String?,
-    tint: Color,
-    onClick: () -> Unit,
-) {
-
-    val clickableSingle = remember { ClickableSingle.get() }
-
-    IconButton(
-        modifier = modifier.size(44.dp),
-        onClick = { clickableSingle.onEvent(onClick) }
-    ) {
-        Icon(
-            modifier = Modifier.sizeIn(minWidth = 24.dp, minHeight = 24.dp),
-            imageVector = imageVector,
-            contentDescription = contentDescription,
-            tint = tint
-        )
-    }
-}
-
-/**
- * 1. Size는 최소 24dp
- * 2. Button, TextField 같은 작은 요소 안에서 보다 큼직한 요소 및 외부에서 쓰임
- */
-@Composable
-fun FlipIconButton(
-    modifier: Modifier = Modifier,
-    painter: Painter,
-    contentDescription: String?,
+    iconSize: DpSize = DpSize(24.dp, 24.dp),
     tint: Color = LocalContentColor.current,
     onClick: () -> Unit,
 ) {
@@ -76,7 +49,39 @@ fun FlipIconButton(
         onClick = { clickableSingle.onEvent(onClick) }
     ) {
         Icon(
-            modifier = Modifier.sizeIn(minWidth = 24.dp, minHeight = 24.dp),
+            modifier = Modifier.size(iconSize),
+            imageVector = imageVector,
+            contentDescription = contentDescription,
+            tint = tint
+        )
+    }
+}
+
+/**
+ * Flip IconButton
+ *
+ * 1. Size는 최소 24dp
+ * 2. Button, TextField 같은 작은 요소 안에서 보다 큼직한 요소 및 외부에서 쓰임
+ * 3. TouchTarget: 44dp
+ */
+@Composable
+fun FlipIconButton(
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    contentDescription: String?,
+    iconSize: DpSize = DpSize(24.dp, 24.dp),
+    tint: Color = LocalContentColor.current,
+    onClick: () -> Unit,
+) {
+
+    val clickableSingle = remember { ClickableSingle.get() }
+
+    IconButton(
+        modifier = modifier.size(44.dp),
+        onClick = { clickableSingle.onEvent(onClick) }
+    ) {
+        Icon(
+            modifier = Modifier.size(iconSize),
             painter = painter,
             contentDescription = contentDescription,
             tint = tint
@@ -92,7 +97,8 @@ private fun FlipIconButtonPreview() {
 //        }
         FlipIconButton(
             modifier = Modifier,
-            imageVector = Icons.Outlined.Settings,
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_outlined_setting),
+            iconSize = DpSize(30.dp, 30.dp),
             contentDescription = null,
             onClick = { },
             tint = FlipTheme.colors.main

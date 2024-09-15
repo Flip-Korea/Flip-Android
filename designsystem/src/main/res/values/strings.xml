@@ -12,6 +12,7 @@
     <string name="content_desc_search">검색</string>
     <string name="content_desc_comment">댓글 등록</string>
     <string name="content_desc_arrow_back">뒤로가기</string>
+    <string name="content_desc_close">닫기</string>
     <string name="content_desc_check">체크</string>
 
     <!-- Button - Follow -->
