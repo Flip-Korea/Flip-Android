@@ -81,6 +81,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.chip.FlipMediumChip
+import com.team.designsystem.component.loading.FlipLoadingScreen
 import com.team.designsystem.component.modal.FlipModal
 import com.team.designsystem.component.modal.FlipModalWrapper
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
@@ -96,10 +97,11 @@ import com.team.domain.type.asString
 import com.team.presentation.R
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
+import com.team.presentation.addflip.state.AddTempPostState
 import com.team.presentation.addflip.state.CategoriesState
 import com.team.presentation.addflip.state.NewPostState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
-import com.team.presentation.common.dialogmodal.DialogModalState
+import com.team.presentation.common.state.ModalState
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
@@ -113,7 +115,7 @@ import kotlinx.coroutines.launch
  * @param newPostState [NewPostState] 작성 중인 글 상태 값
  * @param categoriesState [CategoriesState] 전체 카테고리
  * @param addPostState [AddPostState] 저장, 임시저장 상태
- * @param dialogModalState [DialogModalState]
+ * @param modalState [ModalState]
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param hideModal 모달 숨기기 & 뒤로가기
@@ -129,7 +131,8 @@ fun AddFlipScreen(
     newPostState: NewPostState,
     categoriesState: CategoriesState,
     addPostState: AddPostState,
-    dialogModalState: DialogModalState,
+    addTempPostState: AddTempPostState,
+    modalState: ModalState,
     selectedCategory: Category?,
     onUiEvent: (AddFlipUiEvent) -> Unit,
     hideModal: () -> Unit,
@@ -153,8 +156,6 @@ fun AddFlipScreen(
 
     var showCategoryBottomSheet by remember { mutableStateOf(false) }
     val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showTagBottomSheet by remember { mutableStateOf(false) }
-    val tagSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val focusManager = LocalFocusManager.current
 //    val focusRequester = remember { FocusRequester() }
@@ -180,14 +181,14 @@ fun AddFlipScreen(
     BackHandler {
         onUiEvent(AddFlipUiEvent.OnSafeSave(newPostState.title, contents))
     }
-    LaunchedEffect(dialogModalState) {
-        when (dialogModalState) {
-            DialogModalState.Idle -> { isModalVisible = false }
-            DialogModalState.Hide -> { isModalVisible = false }
-            is DialogModalState.Display -> {
-                if (dialogModalState.showed) {
+    LaunchedEffect(modalState) {
+        when (modalState) {
+            ModalState.Idle -> { isModalVisible = false }
+            ModalState.Hide -> { isModalVisible = false }
+            is ModalState.Display -> {
+                if (modalState.showed) {
                     isModalVisible = true
-                } else { onBackPress() }
+                } else onBackPress()
             }
         }
     }
@@ -205,7 +206,9 @@ fun AddFlipScreen(
             itemText2 = stringResource(id = R.string.add_flip_screen_modal_item_1),
             itemText3 = stringResource(id = R.string.add_flip_screen_modal_item_3),
             onItemClick = {
-                //TODO: 임시저장 수행
+                onUiEvent(AddFlipUiEvent.OnSaveTempPost(newPostState.title, contents, newPostState.bgColorType, newPostState.tags))
+                backPressed = true
+                hideModal()
             },
             onItem2Click = {
                 backPressed = true
@@ -216,6 +219,14 @@ fun AddFlipScreen(
             }
         )
     }
+
+    /** 로딩 화면 */
+    LaunchedEffect(addTempPostState) {
+        if (addTempPostState.tempPostSave) {
+            onBackPress()
+        }
+    }
+    FlipLoadingScreen(isLoading = addTempPostState.loading, text = "임시 저장 중")
 
     /** 분야 선택 바텀 시트 */
     if (showCategoryBottomSheet) {
@@ -964,7 +975,8 @@ private fun AddFlipScreenPreview() {
             categoriesState = CategoriesState(categories = CategoriesTestData),
             newPostState = NewPostState(),
             addPostState = AddPostState(),
-            dialogModalState = DialogModalState.Idle,
+            addTempPostState = AddTempPostState(),
+            modalState = ModalState.Idle,
             selectedCategory = null,
             hideModal = { },
             onUiEvent = { },
@@ -983,7 +995,8 @@ private fun AddFlipScreenPreview2() {
             categoriesState = CategoriesState(categories = CategoriesTestData),
             newPostState = NewPostState(),
             addPostState = AddPostState(),
-            dialogModalState = DialogModalState.Idle,
+            addTempPostState = AddTempPostState(),
+            modalState = ModalState.Idle,
             selectedCategory = null,
             hideModal = { },
             onUiEvent = { },

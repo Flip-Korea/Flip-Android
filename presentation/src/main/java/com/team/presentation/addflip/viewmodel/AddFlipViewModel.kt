@@ -13,15 +13,17 @@ import com.team.domain.usecase.temppost.AddTempPostUseCase
 import com.team.domain.usecase.temppost.ValidateTempPostUseCase
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
+import com.team.domain.util.SuccessType
 import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
+import com.team.presentation.addflip.state.AddTempPostState
 import com.team.presentation.addflip.state.CategoriesState
 import com.team.presentation.addflip.state.NewPostState
-import com.team.presentation.common.dialogmodal.DialogModalState
 import com.team.presentation.common.snackbar.SnackbarAction
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
+import com.team.presentation.common.state.ModalState
 import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
@@ -52,6 +54,7 @@ class AddFlipViewModel @Inject constructor(
     private val _categoriesState = MutableStateFlow(CategoriesState())
     val categoriesState = _categoriesState.asStateFlow()
 
+    /** 작성하고 있는 플립 */
     private val _newPostState = MutableStateFlow(NewPostState())
     val newPostState = _newPostState.asStateFlow()
 
@@ -61,8 +64,11 @@ class AddFlipViewModel @Inject constructor(
     private val _addPostState = MutableStateFlow(AddPostState())
     val addPostState: StateFlow<AddPostState> = _addPostState.asStateFlow()
 
-    private val _dialogModalState: MutableStateFlow<DialogModalState> = MutableStateFlow(DialogModalState.Idle)
-    val dialogModalState: StateFlow<DialogModalState> = _dialogModalState.asStateFlow()
+    private val _addTempPostState = MutableStateFlow(AddTempPostState())
+    val addTempPostState: StateFlow<AddTempPostState> = _addTempPostState.asStateFlow()
+
+    private val _modalState: MutableStateFlow<ModalState> = MutableStateFlow(ModalState.Idle)
+    val modalState: StateFlow<ModalState> = _modalState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -128,9 +134,7 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Flip(Post) 글 등록(= 게시, = 저장)
-     */
+    /** Flip(Post) 글 등록(= 게시, = 저장) */
     private fun onSavePost(
         title: String,
         content: List<String>,
@@ -208,6 +212,7 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
+    /** Flip(Post) 임시 글 등록(= 저장) */
     private fun onSaveTempPost(
         title: String,
         content: List<String>,
@@ -221,7 +226,7 @@ class AddFlipViewModel @Inject constructor(
             }
             val validationResult = validationResultDeferred.await()
             if (validationResult is ValidationResult.Error) {
-                _addPostState.update {
+                _addTempPostState.update {
                     it.copy(
                         loading = false,
                         error = validationResult.error.asUiText()
@@ -237,11 +242,11 @@ class AddFlipViewModel @Inject constructor(
                 ).onEach { result ->
                     when (result) {
                         Result.Loading -> {
-                            _addPostState.update { it.copy(loading = true) }
+                            _addTempPostState.update { it.copy(loading = true) }
                         }
 
                         is Result.Error -> {
-                            _addPostState.update {
+                            _addTempPostState.update {
                                 it.copy(
                                     loading = false,
                                     error = errorBodyFirst(
@@ -253,12 +258,13 @@ class AddFlipViewModel @Inject constructor(
                         }
 
                         is Result.Success -> {
-                            _addPostState.update {
+                            _addTempPostState.update {
                                 it.copy(
                                     loading = false,
                                     tempPostSave = true
                                 )
                             }
+                            showSnackbar(message = SuccessType.TempPost.SAVE.asUiText())
                         }
                     }
                 }.launchIn(viewModelScope)
@@ -285,11 +291,11 @@ class AddFlipViewModel @Inject constructor(
     }
 
     private fun displayModal(showed: Boolean) {
-        _dialogModalState.update { DialogModalState.Display(showed) }
+        _modalState.update { ModalState.Display(showed) }
     }
 
     fun hideModal() {
-        _dialogModalState.update { DialogModalState.Hide }
+        _modalState.update { ModalState.Hide }
     }
 
     private suspend fun showSnackbar(

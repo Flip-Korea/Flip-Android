@@ -1,9 +1,9 @@
-package com.team.presentation.common.dialogmodal
+package com.team.presentation.common.state
 
-sealed interface DialogModalState {
-    data object Idle: DialogModalState
-    data class Display(val showed: Boolean): DialogModalState
-    data object Hide: DialogModalState
+sealed interface ModalState {
+    data object Idle: ModalState
+    data class Display(val showed: Boolean): ModalState
+    data object Hide: ModalState
 }
 
 /** CompositionLocalProvider 를 이용한 Event Bus 주입 방식 */

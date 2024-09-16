@@ -27,9 +27,7 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 /**
- * Flip에서 사용되는 로딩 뷰
- *
- * ([FlipModalWrapper] 사용)
+ * Flip에서 사용되는 로딩 뷰(Dialog, [FlipModalWrapper] 사용)
  *
  * @param isLoading 로딩 여부
  * @param text 로딩 문구
