@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.modal.FlipModalWrapper
 import com.team.designsystem.theme.FlipAppTheme
@@ -68,9 +69,9 @@ fun FlipLoadingScreen(
     }
 }
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
-fun FlipLoadingScreenPreview() {
+private fun FlipLoadingScreenPreview() {
 
     var count by remember { mutableIntStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
