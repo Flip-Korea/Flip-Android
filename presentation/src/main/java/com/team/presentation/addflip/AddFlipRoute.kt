@@ -23,8 +23,9 @@ fun AddFlipRoute(
     val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
     val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
     val addPostState by addFlipViewModel.addPostState.collectAsStateWithLifecycle()
+    val addTempPostState by addFlipViewModel.addTempPostState.collectAsStateWithLifecycle()
     val newPostState by addFlipViewModel.newPostState.collectAsStateWithLifecycle()
-    val dialogModalState by addFlipViewModel.dialogModalState.collectAsStateWithLifecycle()
+    val modalState by addFlipViewModel.modalState.collectAsStateWithLifecycle()
 
     LaunchedEffect(addPostState) {
         if (addPostState.postSave) {
@@ -36,7 +37,8 @@ fun AddFlipRoute(
         newPostState = newPostState,
         categoriesState = categoriesState,
         addPostState = addPostState,
-        dialogModalState = dialogModalState,
+        addTempPostState = addTempPostState,
+        modalState = modalState,
         selectedCategory = selectedCategory,
         onUiEvent = addFlipViewModel::onUiEvent,
         hideModal = { addFlipViewModel.hideModal() },

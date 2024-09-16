@@ -57,7 +57,8 @@
     <string name="report_hate_speech">혐오 발언</string>
 
     <!-- SuccessType -->
-    <string name="success_temppost_delete">삭제했습니다.</string>
+    <string name="success_temppost_save">임시저장을 완료했어요!</string>
+    <string name="success_temppost_delete">임시저장 글을 삭제했어요!</string>
 
     <!-- LoginScreen -->
     <string name="login_screen_title_1">더욱 쉽게</string>

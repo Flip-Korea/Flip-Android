@@ -5,6 +5,6 @@ package com.team.domain.util
  */
 sealed interface SuccessType {
     enum class TempPost: SuccessType {
-        DELETE,
+        SAVE, DELETE,
     }
 }
