@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -31,8 +33,8 @@ import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.presentation.R
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
-import com.team.presentation.common.pullrefresh.FlipPullRefreshLazyColumn
-import com.team.presentation.common.pullrefresh.PullRefreshConsumeState
+import com.team.presentation.common.pullrefresh.FlipPullToRefreshWrapper
+import com.team.presentation.common.pullrefresh.PullToRefreshConsumeState
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.HomeUiEvent
@@ -41,11 +43,13 @@ import com.team.presentation.home.util.HomeScreenNestedScrollConnection
 import com.team.presentation.home.util.HomeScreenPaddingValues
 import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.fixedCategoriesSize
+import com.team.presentation.util.pullrefresh.rememberPullToRefreshStateM3
 import kotlin.math.abs
 
 /**
  * Flip의 메인 화면이자 홈 화면
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -62,7 +66,9 @@ fun HomeScreen(
 
     val lazyListState = rememberLazyListState()
 
-    var pullRefreshConsumeState by remember { mutableStateOf(PullRefreshConsumeState.Released) }
+    /** PullToRefresh */
+    val pullToRefreshState = rememberPullToRefreshStateM3()
+    var pullToRefreshConsumeState by rememberSaveable { mutableStateOf(PullToRefreshConsumeState.Released) }
 
     /** TopBar Values */
     val topBarHeightDp  = with(density) { 310f.toDp() }
@@ -77,7 +83,7 @@ fun HomeScreen(
     val nestedScrollConnection = remember {
         HomeScreenNestedScrollConnection(
             onPreScrollAction = { available ->
-                if (pullRefreshConsumeState == PullRefreshConsumeState.Released) {
+                if (pullToRefreshConsumeState == PullToRefreshConsumeState.Released) {
                     isPostFling = false
 
                     val delta = available.y
@@ -148,55 +154,40 @@ fun HomeScreen(
             if (postState.loading) {
                 HomeSkeletonScreen(Modifier.padding(top = topBarHeightDp))
             } else {
-                FlipPullRefreshLazyColumn(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
-                    contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
-                    refreshState = refreshState,
-                    state = lazyListState,
-                    onConsumeState = { pullRefreshConsumeState = it },
+                FlipPullToRefreshWrapper(
+                    pullToRefreshState = pullToRefreshState,
+                    additionalPadding = topBarHeightDp,
+                    isRefreshing = refreshState,
                     onRefresh = { homeUiEvent(HomeUiEvent.OnRefresh) },
-                    userScrollEnabled = pullRefreshConsumeState != PullRefreshConsumeState.Refreshing
-                ) {
-                    //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
-                    items(
-                        items = postState.posts,
-                        key = { post -> post.postId }
-                    ) { post ->
-                        HomeFlipCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            post = post,
-                            flipCardUiEvent = { flipCardUiEvent(it) },
-                            reportAndBlockUiEvent = { uiEvent -> reportAndBlockUiEvent(uiEvent) }
-                        )
+                    onConsumeState = { consumeState ->
+                        pullToRefreshConsumeState = consumeState
+                    }
+                ) { contentModifier ->
+                    LazyColumn(
+                        modifier = contentModifier,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
+                        contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
+                        state = lazyListState,
+                    ) {
+                        //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
+                        items(
+                            items = postState.posts,
+                            key = { post -> post.postId }
+                        ) { post ->
+                            HomeFlipCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                post = post,
+                                flipCardUiEvent = { flipCardUiEvent(it) },
+                                reportAndBlockUiEvent = { uiEvent -> reportAndBlockUiEvent(uiEvent) }
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//private fun BoxScope.CustomPullToRefreshContainer(
-//    pullToRefreshState: PullToRefreshState,
-//    topPadding: Dp,
-//    animatedAlpha: Float
-//) {
-//    PullToRefreshContainer(
-//        state = pullToRefreshState,
-//        modifier = Modifier
-//            .align(Alignment.TopCenter)
-//            .zIndex(1f)
-//            .padding(top = topPadding)
-//            .graphicsLayer(
-//                alpha = animatedAlpha
-//            ),
-//        containerColor = FlipTheme.colors.white,
-//        contentColor = FlipTheme.colors.main
-//    )
-//}
 
 @Preview(showBackground = true)
 @Composable
