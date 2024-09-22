@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.ScreenItem
-import com.team.presentation.flip.view.FlipScreen
+import com.team.presentation.flip.FlipRoute
 import com.team.presentation.home.HomeRoute
 import com.team.presentation.profile.view.ProfileScreen
 
@@ -47,7 +47,7 @@ fun BottomNavigation(
         }
 
         composable(route = ScreenItem.FLIP.name) {
-            FlipScreen()
+            FlipRoute()
         }
 
         addFlipNavigation(
