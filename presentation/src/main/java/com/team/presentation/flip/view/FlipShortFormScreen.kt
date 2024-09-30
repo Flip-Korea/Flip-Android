@@ -1,27 +1,52 @@
-package com.team.presentation.flip
+package com.team.presentation.flip.view
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.team.designsystem.theme.FlipTheme
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.zIndex
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.domain.type.FlipContentSeparator
-import com.team.presentation.flip.view.FlipScreen
-import com.team.presentation.flip.view.FlipShortFormScreen
+import com.team.domain.util.FlipPagination
+import com.team.presentation.flip.component.FlipPagerWrapper
 
+/**
+ * Flip 숏폼 형태
+ *
+ * @param posts 플립(Post) 리스트 (페이지네이션이 적용 되어 있다면, [posts]사이즈 == PageSize
+ */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FlipRoute() {
+fun FlipShortFormScreen(
+    modifier: Modifier = Modifier,
+    posts: List<Post>
+) {
+    val pagerState = rememberPagerState { FlipPagination.PAGE_SIZE }
 
-    FlipShortFormScreen(
-        modifier = Modifier.background(color = FlipTheme.colors.white),
-        posts = PostsTestData
-    )
+    FlipPagerWrapper(
+        modifier = modifier.fillMaxSize(),
+        pagerState = pagerState
+    ) {
+        FlipScreen(
+            post = posts[pagerState.currentPage]
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FlipShortFormScreenPreview() {
+    FlipShortFormScreen(posts = PostsTestData)
 }
 
 private val PostsTestData = List(15) {
