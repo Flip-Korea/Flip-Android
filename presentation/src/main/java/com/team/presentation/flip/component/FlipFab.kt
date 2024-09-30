@@ -34,13 +34,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.team.designsystem.component.utils.clickableSingle
+import com.team.designsystem.component.utils.clickableSingleWithoutRipple
 import com.team.designsystem.component.utils.dropShadow
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
@@ -48,14 +53,33 @@ import com.team.presentation.R
 import kotlinx.coroutines.delay
 
 /**
- *  @param changeExpanded isExpanded 스위칭 해주는 고차함수
+ *  Flip Floating Action Button
  *
+ *  #### Usage With Wrapper Composable
+ *          Box(
+ *             modifier = Modifier
+ *                 .fillMaxSize()
+ *                 .pointerInput(Unit) {
+ *                     detectTapGestures(onTap = {
+ *                         isExpanded = false
+ *                     })
+ *                 }
+ *         ) {
+ *              // ...
+ *              FlipFab()
+ *              // ...
+ *         }
+ *
+ *  @param isExpanded 확장 여부
+ *  @param changeExpanded isExpanded 스위칭 해주는 고차함수
+ *  @param onDismissRequest FabMenu 숨기는 작업
  */
 @Composable
 fun FlipFab(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
     changeExpanded: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
 
 //    // Expanded Switch
@@ -77,10 +101,26 @@ fun FlipFab(
 
     val fabItems = remember { mutableStateOf(fabItems) }
 
+    if (isExpanded) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(1f)
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        onDismissRequest()
+                    }
+                }
+        )
+    }
+
     Column(
-        modifier = modifier.wrapContentSize(),
+        modifier = modifier
+            .wrapContentSize()
+            .fillMaxSize()
+            .zIndex(2f),
         horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Bottom)
     ) {
         AnimatedVisibility(
             visible = isExpanded,
@@ -191,7 +231,7 @@ private fun MenuItem(
 }
 
 
-@Preview(showBackground = true, widthDp = 200, heightDp = 350)
+@Preview(showBackground = true)
 @Composable
 private fun FlipFabPreview() {
 
@@ -213,7 +253,8 @@ private fun FlipFabPreview() {
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
                 isExpanded = isExpanded,
-                changeExpanded = { isExpanded = !isExpanded }
+                changeExpanded = { isExpanded = !isExpanded },
+                onDismissRequest = { isExpanded = false }
             )
         }
     }

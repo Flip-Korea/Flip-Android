@@ -22,10 +22,23 @@ import com.team.designsystem.component.utils.get
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+/**
+ * Flip Follow 버튼 사이즈
+ *
+ * [FlipFollowButton]에서 사이즈를 제어할 때 사용
+ */
 enum class FlipFollowButtonSize {
-    Large, Medium, Small
+    Large, Medium, Small, Small2
 }
 
+/**
+ * Flip Follow 버튼, 팔로우/팔로잉 버튼에 모두 사용 된다.
+ *
+ * @param size [FlipFollowButtonSize] 버튼 사이즈
+ * @param isFollowing 팔로우 여부
+ * @param isFollower 팔로워 여부
+ * @param onClick 버튼 클릭 시 수행할 작업
+ */
 @Composable
 fun FlipFollowButton(
     modifier: Modifier = Modifier,
@@ -43,16 +56,24 @@ fun FlipFollowButton(
         else -> Triple(R.string.btn_follow, FlipTheme.colors.main, FlipTheme.colors.white)
     }
 
+    val width = when(size) {
+        FlipFollowButtonSize.Large -> 343.dp
+        FlipFollowButtonSize.Medium -> 144.dp
+        FlipFollowButtonSize.Small -> 81.dp
+        FlipFollowButtonSize.Small2 -> 71.dp
+    }
+
     val height = when(size) {
         FlipFollowButtonSize.Large -> 34.dp
         FlipFollowButtonSize.Medium -> 34.dp
         FlipFollowButtonSize.Small -> 30.dp
+        FlipFollowButtonSize.Small2 -> 30.dp
     }
 
     Button(
         onClick = { clickableSingle.onEvent(onClick) },
         modifier = modifier
-            .fillMaxWidth()
+            .width(width)
             .height(height),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
