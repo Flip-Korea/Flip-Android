@@ -89,7 +89,7 @@ class UserNetworkApiTest {
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
         val requestBody = """
             {
-                "categories": [1,2,3]
+                "categoryIds": [1,2,3]
             }
         """.trimIndent()
         val expectedRequestBody = adapter.fromJson(requestBody)

@@ -43,14 +43,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.team.designsystem.component.button.FlipFollowButton
 import com.team.designsystem.component.button.FlipFollowButtonSize
+import com.team.designsystem.component.utils.flipGradient
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.presentation.R
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.flip.component.FlipFab
+import com.team.presentation.util.asColor
 
 /**
  * Flip(ShortForm) 단일 화면
@@ -380,6 +383,6 @@ private val PostTestData = Post(
     likeCnt = 302,
     commentCnt = 28,
     scraped = false,
-    bgColorId = 3,
+    bgColorType = BackgroundColorType.BLUE,
     createdAt = "2023.12.26"
 )

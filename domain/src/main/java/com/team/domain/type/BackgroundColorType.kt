@@ -19,7 +19,7 @@ enum class BackgroundColorType {
 }
 
 /**
- * 배경 컬러 타입을 View 용 텍스트로 변환
+ * [BackgroundColorType]을 View 용 텍스트로 변환
  * //TODO 임시 하드코딩
  * @see BackgroundColorType
  */
@@ -34,7 +34,7 @@ fun BackgroundColorType.asString(): String =
     }
 
 /**
- * 문자열을 BackgroundColorType 으로 변환
+ * 문자열을 [BackgroundColorType] 으로 변환
  * @see BackgroundColorType
  */
 fun String.asBackgroundColorType(): BackgroundColorType =

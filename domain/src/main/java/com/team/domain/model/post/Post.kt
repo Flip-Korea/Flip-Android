@@ -1,6 +1,7 @@
 package com.team.domain.model.post
 
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 
 data class Post(
     val postId: Long,
@@ -14,7 +15,7 @@ data class Post(
     val scraped: Boolean,
     val scrapComment: String?,
     val categoryId: Int,
-    val bgColorId: Int,
+    val bgColorType: BackgroundColorType,
     val fontStyleId: Int,
     val tag: List<String>?,
     val createdAt: String,
@@ -29,7 +30,7 @@ data class Post(
         likeCnt: Long,
         commentCnt: Long,
         scraped: Boolean,
-        bgColorId: Int
+        bgColorType: BackgroundColorType
     ) : this(
         postId = postId,
         profile = profile,
@@ -42,7 +43,7 @@ data class Post(
         scraped = scraped,
         scrapComment = null,
         categoryId = 0,
-        bgColorId = bgColorId,
+        bgColorType = bgColorType,
         fontStyleId = 0,
         tag = emptyList(),
         createdAt = createdAt

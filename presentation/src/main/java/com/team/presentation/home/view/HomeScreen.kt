@@ -31,6 +31,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 import com.team.presentation.R
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.common.pullrefresh.FlipPullToRefreshWrapper
@@ -217,7 +218,7 @@ private fun HomeScreenPreview() {
                         likeCnt = 78,
                         commentCnt = 21,
                         scraped = false,
-                        bgColorId = 1
+                        bgColorType = BackgroundColorType.BLUE
                     )
                 )
             ),

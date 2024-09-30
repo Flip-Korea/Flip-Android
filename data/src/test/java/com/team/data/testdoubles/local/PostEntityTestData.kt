@@ -1,5 +1,6 @@
 package com.team.data.testdoubles.local
 
+import com.team.data.local.entity.post.BackgroundColorTypeEntity
 import com.team.data.local.entity.profile.DisplayProfileEntity
 import com.team.data.local.entity.post.PostEntity
 import kotlin.random.Random
@@ -26,7 +27,7 @@ fun makePostEntityTestData(postId: Long): PostEntity =
         scraped = false,
         scrapComment = "테스트 스크랩 코멘트",
         categoryId = 1,
-        bgColorId = 1,
+        bgColorType = BackgroundColorTypeEntity.BLUE,
         fontStyleId = 1,
         tag = listOf("테스트 태그1", "테스트 태그2"),
         createdAt = "2024-04-11"
@@ -58,7 +59,7 @@ fun makeMultiplePostEntityTestData(postIds: List<Long>): List<PostEntity> {
                 scraped = false,
                 scrapComment = "테스트 스크랩 코멘트",
                 categoryId = 1,
-                bgColorId = 1,
+                bgColorType = BackgroundColorTypeEntity.BLUE,
                 fontStyleId = 1,
                 tag = listOf("테스트 태그1", "테스트 태그2"),
                 createdAt = "2024-04-11"

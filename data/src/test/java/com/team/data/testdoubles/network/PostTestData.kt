@@ -23,7 +23,7 @@ val postsResponseTestData = """
           "scrap_cnt": 331,
           "scraped": false,
           "category_id": 5,
-          "bg_color_id": 3,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-04 MON"
@@ -45,7 +45,7 @@ val postsResponseTestData = """
           "scrap_cnt": 30,
           "scraped": false,
           "category_id": 5,
-          "bg_color_id": 2,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-05 TUE"
@@ -76,7 +76,7 @@ val postsResponseTestDataEndOfPage = """
           "scrap_cnt": 331,
           "scraped": false,
           "category_id": 5,
-          "bg_color_id": 3,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-04 MON"
@@ -98,7 +98,7 @@ val postsResponseTestDataEndOfPage = """
           "scrap_cnt": 30,
           "scraped": false,
           "category_id": 5,
-          "bg_color_id": 2,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-05 TUE"
@@ -131,7 +131,7 @@ val postsResponseTestDataWithScrapComment = """
           "scraped": false,
           "scrap_comment": "스크랩 코멘트 텍스트",
           "category_id": 5,
-          "bg_color_id": 3,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-04 MON"
@@ -154,7 +154,7 @@ val postsResponseTestDataWithScrapComment = """
           "scraped": false,
           "scrap_comment": "스크랩 코멘트 텍스트",
           "category_id": 5,
-          "bg_color_id": 2,
+          "bg_color_id": "DEFAULT",
           "font_style_id": 2,
           "tag": ["일기", "일상"],
           "created_at": "2024-03-05 TUE"
@@ -181,7 +181,7 @@ val postResponseTestData = """
       "scrap_cnt": 30,
       "scraped": false,
       "category_id": 5,
-      "bg_color_id": 2,
+      "bg_color_id": "DEFAULT",
       "font_style_id": 2,
       "tag": ["일기", "일상"],
       "created_at": "2024-03-05 TUE"

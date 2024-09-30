@@ -9,6 +9,7 @@ import com.team.data.local.dao.CategoryDao
 import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
+import com.team.data.local.typeconverter.EnumTypeConverter
 import com.team.data.local.typeconverter.ListTypeConverter
 import dagger.Module
 import dagger.Provides
@@ -36,6 +37,7 @@ object DatabaseModule {
     ): FlipDatabase {
 
         val listTypeConverter = ListTypeConverter(moshi)
+        val enumTypeConverter = EnumTypeConverter()
 
         return Room.databaseBuilder(
             context,
@@ -43,6 +45,7 @@ object DatabaseModule {
             "flip_database.db"
         )
             .addTypeConverter(listTypeConverter)
+            .addTypeConverter(enumTypeConverter)
             .build()
     }
 

@@ -3,6 +3,7 @@ package com.team.presentation.home.testdoubles
 import com.team.domain.model.post.Post
 import com.team.domain.model.post.PostList
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 
 internal fun getPostListTestData(count: Int = 15): PostList {
     val posts = mutableListOf<Post>()
@@ -18,7 +19,7 @@ internal fun getPostListTestData(count: Int = 15): PostList {
                 likeCnt = 10,
                 commentCnt = 10,
                 scraped = false,
-                bgColorId = 1,
+                bgColorType = BackgroundColorType.RED
             )
         )
     }
@@ -45,7 +46,7 @@ internal fun getPostsTestData(count: Int = 15): List<Post> {
                 likeCnt = 10,
                 commentCnt = 10,
                 scraped = false,
-                bgColorId = 1,
+                bgColorType = BackgroundColorType.BLUE
             )
         )
     }
