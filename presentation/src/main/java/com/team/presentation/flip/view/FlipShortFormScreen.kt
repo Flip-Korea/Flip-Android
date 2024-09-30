@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.domain.util.FlipPagination
 import com.team.presentation.flip.component.FlipPagerWrapper
@@ -68,7 +69,7 @@ private val PostsTestData = List(15) {
         likeCnt = 302,
         commentCnt = 28,
         scraped = false,
-        bgColorId = 3,
+        bgColorType = BackgroundColorType.BLUE,
         createdAt = "2023.12.${if (it / 10 == 0) "0${it}" else it}"
     )
 }

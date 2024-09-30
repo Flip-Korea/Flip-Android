@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.presentation.flip.view.FlipScreen
 import com.team.presentation.flip.view.FlipShortFormScreen
@@ -43,7 +44,7 @@ private val PostsTestData = List(15) {
         likeCnt = 302,
         commentCnt = 28,
         scraped = false,
-        bgColorId = 3,
+        bgColorType = BackgroundColorType.DEFAULT,
         createdAt = "2023.12.${if (it / 10 == 0) "0${it}" else it}"
     )
 }

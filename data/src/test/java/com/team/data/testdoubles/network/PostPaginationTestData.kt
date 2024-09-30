@@ -2,6 +2,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.network.model.response.comment.CommentListResponse
 import com.team.data.network.model.response.comment.CommentResponse
+import com.team.data.network.model.response.post.BackgroundColorTypeResponse
 import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.post.TempPostListResponse
@@ -52,7 +53,7 @@ fun makePostListResponseTestData(
                 scraped = false,
                 scrapComment = "My Scrap",
                 categoryId = typeId.toInt(),
-                bgColorId = 1,
+                bgColorType = BackgroundColorTypeResponse.BLUE,
                 fontStyleId = 1,
                 tag = listOf("1","2"),
                 createdAt = cursor

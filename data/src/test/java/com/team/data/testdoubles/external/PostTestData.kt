@@ -2,6 +2,7 @@ package com.team.data.testdoubles.external
 
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 
 fun makePostTestData(postId: Long): Post =
     Post(
@@ -25,7 +26,7 @@ fun makePostTestData(postId: Long): Post =
         scraped = false,
         scrapComment = "테스트 스크랩 코멘트",
         categoryId = 1,
-        bgColorId = 1,
+        bgColorType = BackgroundColorType.BLUE,
         fontStyleId = 1,
         tag = listOf("테스트 태그1", "테스트 태그2"),
         createdAt = "2024-04-11"
