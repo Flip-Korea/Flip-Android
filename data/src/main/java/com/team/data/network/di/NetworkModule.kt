@@ -12,7 +12,6 @@ import com.team.data.network.retrofit.api.InterestCategoryNetworkApi
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.retrofit.api.UserNetworkApi
-import com.team.data.network.retrofit.cache.CacheInterceptorManager
 import com.team.data.network.retrofit.cache.NetworkCheckUtil
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.AccountNetworkDataSourceImpl
@@ -146,16 +145,16 @@ object NetworkModule {
         httpLoggingInterceptor: HttpLoggingInterceptor,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
     ): PostNetworkApi {
-        val cache = CacheInterceptorManager().getCache(context, 10)
-        val cacheInterceptor = CacheInterceptorManager().createCacheInterceptor(5)
-        val forceCacheInterceptor = CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
+//        val cache = CacheInterceptorManager().getCache(context, 10)
+//        val cacheInterceptor = CacheInterceptorManager().createCacheInterceptor(5)
+//        val forceCacheInterceptor = CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
 
         val client = OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
-            .cache(cache)
+//            .cache(cache)
             .addInterceptor(tokenInterceptor)
-            .addNetworkInterceptor(cacheInterceptor)
-            .addInterceptor(forceCacheInterceptor)
+//            .addNetworkInterceptor(cacheInterceptor)
+//            .addInterceptor(forceCacheInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
 

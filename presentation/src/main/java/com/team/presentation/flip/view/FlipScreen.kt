@@ -1,6 +1,5 @@
 package com.team.presentation.flip.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,14 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -38,12 +36,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.team.designsystem.component.button.FlipFollowButton
 import com.team.designsystem.component.button.FlipFollowButtonSize
-import com.team.designsystem.component.utils.flipGradient
+import com.team.designsystem.component.utils.drawFlipGradient
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
@@ -73,7 +70,7 @@ fun FlipScreen(
     /** 컨텐츠(본문) 값들 */
     //TODO: split 연산을 여기서 하지말고 애초에 Post 모델 대신 ComposePost 같은 프레젠테이션 용 모델 생성해서 사용하기
     val contents by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.separator)) }
-    var currentPage by rememberSaveable { mutableIntStateOf(0) }
+    var currentPage by remember { mutableIntStateOf(0) }
     var content by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.separator)[0]) }
     LaunchedEffect(currentPage) { content = contents[currentPage] }
 
@@ -81,6 +78,10 @@ fun FlipScreen(
         modifier = modifier
             .fillMaxSize()
             .onSizeChanged { screenWidth = it.width }
+            .drawWithContent {
+                drawFlipGradient(post.bgColorType.asColor())
+                drawContent()
+            }
     ) {
         Column(
             modifier = modifier

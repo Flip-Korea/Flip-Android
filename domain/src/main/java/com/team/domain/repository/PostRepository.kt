@@ -11,17 +11,9 @@ import kotlinx.coroutines.flow.Flow
 interface PostRepository {
 
     /**
-     * 캐시를 위해 Post(Flip) 리스트를 Local DB 에서 가져 온다.
-     *
-     * 1. Data is retrieved only from local DB
-     */
-    fun getCachedPosts(): Flow<List<Post>>
-
-    /**
      * Post(Flip) 리스트를 네트워크에서 페이지네이션을 통해 가져온다.
      *
      * 1. 카테고리(전체) 및 플립(숏폼부분) 에 해당
-     * 2. Post 를 가져올 땐 최대한 getPostsFromLocal()를 통해서 로컬 DB 에서 가져옴
      *
      * @param cursor nextCursor 즉, 다음 커서로 요청하여 다음 페이지를 불러온다.
      * @param limit 1 페이지 당 불러올 개수

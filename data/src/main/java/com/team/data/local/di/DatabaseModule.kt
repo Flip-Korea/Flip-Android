@@ -6,10 +6,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.CategoryDao
-import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
-import com.team.data.local.typeconverter.EnumTypeConverter
 import com.team.data.local.typeconverter.ListTypeConverter
 import dagger.Module
 import dagger.Provides
@@ -37,7 +35,6 @@ object DatabaseModule {
     ): FlipDatabase {
 
         val listTypeConverter = ListTypeConverter(moshi)
-        val enumTypeConverter = EnumTypeConverter()
 
         return Room.databaseBuilder(
             context,
@@ -45,17 +42,13 @@ object DatabaseModule {
             "flip_database.db"
         )
             .addTypeConverter(listTypeConverter)
-            .addTypeConverter(enumTypeConverter)
+            .fallbackToDestructiveMigration() //TODO: 출시 후에는 제거할 것
             .build()
     }
 
     @Singleton
     @Provides
     fun provideMyProfileDao(flipDatabase: FlipDatabase): MyProfileDao = flipDatabase.myProfileDao()
-
-    @Singleton
-    @Provides
-    fun providePostDao(flipDatabase: FlipDatabase): PostDao = flipDatabase.postDao()
 
     @Singleton
     @Provides

@@ -7,6 +7,7 @@ import com.team.data.network.model.response.comment.MyCommentListResponse
 import com.team.data.network.model.response.follow.FollowerListResponse
 import com.team.data.network.model.response.follow.FollowingListResponse
 import com.team.data.network.model.response.post.BackgroundColorTypeResponse
+import com.team.data.network.model.response.post.FontStyleTypeResponse
 import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.profile.DisplayProfileResponse
@@ -52,9 +53,9 @@ fun makeScrapListResponseTestData(
                 scrapComment = "My Scrap",
                 categoryId = 1,
                 bgColorType = BackgroundColorTypeResponse.BLUE,
-                fontStyleId = 1,
-                tag = listOf("1","2"),
-                createdAt = cursor
+                fontStyleType = FontStyleTypeResponse.NORMAL,
+                tags = listOf("1","2"),
+                postAt = cursor
             )
         )
     }

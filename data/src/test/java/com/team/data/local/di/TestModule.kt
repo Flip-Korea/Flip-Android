@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.local.FlipDatabase
-import com.team.data.local.typeconverter.EnumTypeConverter
 import com.team.data.local.typeconverter.ListTypeConverter
 import dagger.Module
 import dagger.Provides
@@ -27,12 +26,10 @@ object TestModule {
             .build()
 
         val listTypeConverter = ListTypeConverter(moshi)
-        val enumTypeConverter = EnumTypeConverter()
 
         return Room.inMemoryDatabaseBuilder(context, FlipDatabase::class.java)
             .allowMainThreadQueries()
             .addTypeConverter(listTypeConverter)
-            .addTypeConverter(enumTypeConverter)
             .build()
     }
 }

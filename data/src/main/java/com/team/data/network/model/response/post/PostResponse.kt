@@ -1,50 +1,28 @@
 package com.team.data.network.model.response.post
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.team.data.local.entity.post.PostEntity
 import com.team.data.network.model.response.profile.DisplayProfileResponse
-import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.model.response.profile.toDomainModel
 import com.team.domain.model.post.Post
 
 @JsonClass(generateAdapter = true)
 data class PostResponse(
-    @Json(name = "post_id") val postId: Long,
-    @Json(name = "profile") val profile: DisplayProfileResponse,
-    @Json(name = "title") val title: String,
-    @Json(name = "content") val content: String,
-    @Json(name = "liked") val liked: Boolean,
-    @Json(name = "like_cnt") val likeCnt: Long,
-    @Json(name = "comment_cnt") val commentCnt: Long,
-    @Json(name = "scrap_cnt") val scrapCnt: Long,
-    @Json(name = "scraped") val scraped: Boolean,
-    @Json(name = "scrap_comment") val scrapComment: String?,
-    @Json(name = "category_id") val categoryId: Int,
-    @Json(name = "bg_color_id") val bgColorType: BackgroundColorTypeResponse,
-    @Json(name = "font_style_id") val fontStyleId: Int,
-    @Json(name = "tag") val tag: List<String>?,
-    @Json(name = "created_at") val createdAt: String,
+    val postId: Long,
+    val profile: DisplayProfileResponse,
+    val title: String,
+    val content: String,
+    val liked: Boolean,
+    val likeCnt: Long,
+    val commentCnt: Long,
+    val scrapCnt: Long,
+    val scraped: Boolean,
+    val scrapComment: String?,
+    val categoryId: Int,
+    val bgColorType: BackgroundColorTypeResponse,
+    val fontStyleType: FontStyleTypeResponse,
+    val tags: List<String>?,
+    val postAt: String,
 )
-
-fun PostResponse.toEntity(): PostEntity =
-    PostEntity(
-        postId = postId,
-        profile = profile.toEntity(),
-        title = title,
-        content = content,
-        liked = liked,
-        likeCnt = likeCnt,
-        commentCnt = commentCnt,
-        scrapCnt = scrapCnt,
-        scraped = scraped,
-        scrapComment = scrapComment,
-        categoryId = categoryId,
-        bgColorType = bgColorType.toEntity(),
-        fontStyleId = fontStyleId,
-        tag = tag,
-        createdAt = createdAt,
-    )
 
 fun List<PostResponse>.toDomainModel(): List<Post> = this.map { it.toDomainModel() }
 
@@ -62,7 +40,7 @@ fun PostResponse.toDomainModel(): Post =
         scrapComment = scrapComment,
         categoryId = categoryId,
         bgColorType = bgColorType.toDomainModel(),
-        fontStyleId = fontStyleId,
-        tag = tag,
-        createdAt = createdAt,
+        fontStyleType = fontStyleType.toDomainModel(),
+        tags = tags,
+        createdAt = postAt,
     )
