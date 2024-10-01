@@ -1,25 +1,20 @@
 package com.team.presentation.flip.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.zIndex
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.domain.util.FlipPagination
-import com.team.presentation.flip.component.FlipPagerWrapper
 
 /**
  * Flip 숏폼 형태
@@ -34,13 +29,16 @@ fun FlipShortFormScreen(
 ) {
     val pagerState = rememberPagerState { FlipPagination.PAGE_SIZE }
 
-    FlipPagerWrapper(
+    VerticalPager(
         modifier = modifier.fillMaxSize(),
-        pagerState = pagerState
-    ) {
-        FlipScreen(
-            post = posts[pagerState.currentPage]
-        )
+        state = pagerState
+    ) { page ->
+
+        key(posts[page].postId) {
+            FlipScreen(
+                post = posts[page]
+            )
+        }
     }
 }
 

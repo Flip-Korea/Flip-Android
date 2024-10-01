@@ -19,11 +19,28 @@ fun FlipRoute() {
     )
 }
 
-private val colors = List(15) { BackgroundColorType.entries.toTypedArray().random() }
+private val colors = listOf(
+    BackgroundColorType.BLUE,
+    BackgroundColorType.DEFAULT,
+    BackgroundColorType.RED,
+    BackgroundColorType.GREEN,
+    BackgroundColorType.PURPLE,
+    BackgroundColorType.DEFAULT,
+    BackgroundColorType.RED,
+    BackgroundColorType.YELLOW,
+    BackgroundColorType.PURPLE,
+    BackgroundColorType.DEFAULT,
+    BackgroundColorType.YELLOW,
+    BackgroundColorType.BLUE,
+    BackgroundColorType.PURPLE,
+    BackgroundColorType.BLUE,
+    BackgroundColorType.YELLOW,
+)
 private val PostsTestData = List(15) {
     Post(
         postId = it.toLong(),
-        profile = DisplayProfile(profileId = "profileId", nickname = "홍길동", photoUrl = ""),
+        profile = DisplayProfile(profileId = "profileId", nickname = "홍길동", photoUrl = "" +
+                "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg"),
         title = "행정권은 대통령을 수반으로 하는 정부에 속한다.",
         content = "가부동수인 때에는 부결된 것으로 본다.\n" +
                 "행정권은 대통령을 수반으로 하는 정부에\n" +
