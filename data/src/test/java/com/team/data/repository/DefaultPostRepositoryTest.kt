@@ -184,7 +184,6 @@ class DefaultPostRepositoryTest {
             setBody(makePostListResponseTestData(
                 "1",
                 pageSize,
-                PathParameterType.Post.CATEGORY,
                 "1"
                 )
             )
