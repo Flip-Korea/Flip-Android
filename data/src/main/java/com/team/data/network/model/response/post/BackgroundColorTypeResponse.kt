@@ -1,6 +1,5 @@
 package com.team.data.network.model.response.post
 
-import com.team.data.local.entity.post.BackgroundColorTypeEntity
 import com.team.domain.type.BackgroundColorType
 
 enum class BackgroundColorTypeResponse {
@@ -11,16 +10,6 @@ enum class BackgroundColorTypeResponse {
     BLUE,
     PURPLE
 }
-
-fun BackgroundColorTypeResponse.toEntity(): BackgroundColorTypeEntity =
-    when (this) {
-        BackgroundColorTypeResponse.DEFAULT -> BackgroundColorTypeEntity.DEFAULT
-        BackgroundColorTypeResponse.RED -> BackgroundColorTypeEntity.RED
-        BackgroundColorTypeResponse.YELLOW -> BackgroundColorTypeEntity.YELLOW
-        BackgroundColorTypeResponse.GREEN -> BackgroundColorTypeEntity.GREEN
-        BackgroundColorTypeResponse.BLUE -> BackgroundColorTypeEntity.BLUE
-        BackgroundColorTypeResponse.PURPLE -> BackgroundColorTypeEntity.PURPLE
-    }
 
 fun BackgroundColorTypeResponse.toDomainModel(): BackgroundColorType =
     when (this) {

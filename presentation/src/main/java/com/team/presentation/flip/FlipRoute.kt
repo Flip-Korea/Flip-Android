@@ -2,18 +2,12 @@ package com.team.presentation.flip
 
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
-import com.team.presentation.flip.view.FlipScreen
 import com.team.presentation.flip.view.FlipShortFormScreen
 
 @Composable
@@ -25,6 +19,7 @@ fun FlipRoute() {
     )
 }
 
+private val colors = List(15) { BackgroundColorType.entries.toTypedArray().random() }
 private val PostsTestData = List(15) {
     Post(
         postId = it.toLong(),
@@ -44,7 +39,7 @@ private val PostsTestData = List(15) {
         likeCnt = 302,
         commentCnt = 28,
         scraped = false,
-        bgColorType = BackgroundColorType.DEFAULT,
+        bgColorType = colors[it],
         createdAt = "2023.12.${if (it / 10 == 0) "0${it}" else it}"
     )
 }

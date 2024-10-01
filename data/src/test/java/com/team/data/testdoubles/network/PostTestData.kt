@@ -2,106 +2,118 @@ package com.team.data.testdoubles.network
 
 val postsResponseTestData = """
     {
-    	"post_cnt": 12001,
+      "post_cnt": 12001,
       "has_next": true,
       "next_cursor": "0000002024030854",
       "posts": [
         {
-          "post_id": 12345,
+          "postId": 1,
           "profile": {
             "profile_id": "honggd",
-            "nickname": "홍길동이",
-            "photo_url": "https://sample-server.com/65332",
-    				"is_follower": false,
-    				"is_following": false
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기!",
-          "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
           "liked": true,
-          "like_cnt": 4,
-          "comment_cnt": 31,
-          "scrap_cnt": 331,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-04 MON"
+          "categoryId": 5,
+          "bgColorType": "DEFAULT",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         },
         {
-          "post_id": 12346,
+          "postId": 2,
           "profile": {
-            "profile_id": "honggd2",
-            "nickname": "홍길동이2",
-            "photo_url": "https://sample-server.com/24123",
-    				"is_follower": false,
-    				"is_following": false
+            "profile_id": "honggd",
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기2222!",
-          "content": "테스틈당",
-          "liked": false,
-          "like_cnt": 2,
-          "comment_cnt": 31,
-          "scrap_cnt": 30,
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
+          "liked": true,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-05 TUE"
+          "categoryId": 5,
+          "bgColorType": "YELLOW",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         }
       ]
     }
 """.trimIndent()
 val postsResponseTestDataEndOfPage = """
     {
-    	"post_cnt": 12001,
+      "post_cnt": 12001,
       "has_next": false,
       "next_cursor": "0000002024030854",
       "posts": [
         {
-          "post_id": 12345,
+          "postId": 1,
           "profile": {
             "profile_id": "honggd",
-            "nickname": "홍길동이",
-            "photo_url": "https://sample-server.com/65332",
-    				"is_follower": false,
-    				"is_following": false
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기!",
-          "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
           "liked": true,
-          "like_cnt": 4,
-          "comment_cnt": 31,
-          "scrap_cnt": 331,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-04 MON"
+          "categoryId": 5,
+          "bgColorType": "DEFAULT",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         },
         {
-          "post_id": 12346,
+          "postId": 2,
           "profile": {
-            "profile_id": "honggd2",
-            "nickname": "홍길동이2",
-            "photo_url": "https://sample-server.com/24123",
-    				"is_follower": false,
-    				"is_following": false
+            "profile_id": "honggd",
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기2222!",
-          "content": "테스틈당",
-          "liked": false,
-          "like_cnt": 2,
-          "comment_cnt": 31,
-          "scrap_cnt": 30,
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
+          "liked": true,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-05 TUE"
+          "categoryId": 5,
+          "bgColorType": "YELLOW",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         }
       ]
     }
@@ -109,55 +121,61 @@ val postsResponseTestDataEndOfPage = """
 
 val postsResponseTestDataWithScrapComment = """
     {
-    	"post_cnt": 12001,
+      "post_cnt": 12001,
       "has_next": true,
       "next_cursor": "0000002024030854",
       "posts": [
         {
-          "post_id": 12345,
+          "postId": 1,
           "profile": {
             "profile_id": "honggd",
-            "nickname": "홍길동이",
-            "photo_url": "https://sample-server.com/65332",
-    				"is_follower": false,
-    				"is_following": false
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기!",
-          "content": "API 명세서 작성하느라 매우 머리가 어지러웠다.",
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
           "liked": true,
-          "like_cnt": 4,
-          "comment_cnt": 31,
-          "scrap_cnt": 331,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "scrap_comment": "스크랩 코멘트 텍스트",
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-04 MON"
+          "scrapComment": "스크랩 코멘트 테스트",
+          "categoryId": 5,
+          "bgColorType": "DEFAULT",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         },
         {
-          "post_id": 12346,
+          "postId": 2,
           "profile": {
-            "profile_id": "honggd2",
-            "nickname": "홍길동이2",
-            "photo_url": "https://sample-server.com/24123",
-    				"is_follower": false,
-    				"is_following": false
+            "profile_id": "honggd",
+            "nickname": "어스름늑대",
+            "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+            "is_follower": false,
+            "is_following": false
           },
-          "title": "오늘의 일기2222!",
-          "content": "테스틈당",
-          "liked": false,
-          "like_cnt": 2,
-          "comment_cnt": 31,
-          "scrap_cnt": 30,
+          "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+          "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
+          "liked": true,
+          "likeCnt": 4,
+          "commentCnt": 31,
+          "scrapCnt": 331,
           "scraped": false,
-          "scrap_comment": "스크랩 코멘트 텍스트",
-          "category_id": 5,
-          "bg_color_id": "DEFAULT",
-          "font_style_id": 2,
-          "tag": ["일기", "일상"],
-          "created_at": "2024-03-05 TUE"
+          "scrapComment": "스크랩 코멘트 테스트",
+          "categoryId": 5,
+          "bgColorType": "YELLOW",
+          "fontStyleType": "NORMAL",
+          "tags": [
+            "일기",
+            "일상"
+          ],
+          "postAt": "2024-03-04 MON"
         }
       ]
     }
@@ -165,26 +183,29 @@ val postsResponseTestDataWithScrapComment = """
 
 val postResponseTestData = """
     {
-      "post_id": 12346,
+      "postId": 2,
       "profile": {
-        "profile_id": "honggd2",
-        "nickname": "홍길동이2",
-        "photo_url": "https://sample-server.com/24123",
-    		"is_follower": false,
-    		"is_following": false
+        "profile_id": "honggd",
+        "nickname": "어스름늑대",
+        "photo_url": "https://images.dog.ceo/breeds/bulldog-boston/n02096585_11731.jpg",
+        "is_follower": false,
+        "is_following": false
       },
-      "title": "오늘의 일기2222!",
-      "content": "테스틈당",
-      "liked": false,
-      "like_cnt": 2,
-      "comment_cnt": 31,
-      "scrap_cnt": 30,
+      "title": "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+      "content": "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다.",
+      "liked": true,
+      "likeCnt": 4,
+      "commentCnt": 31,
+      "scrapCnt": 331,
       "scraped": false,
-      "category_id": 5,
-      "bg_color_id": "DEFAULT",
-      "font_style_id": 2,
-      "tag": ["일기", "일상"],
-      "created_at": "2024-03-05 TUE"
+      "categoryId": 5,
+      "bgColorType": "YELLOW",
+      "fontStyleType": "NORMAL",
+      "tags": [
+        "일기",
+        "일상"
+      ],
+      "postAt": "2024-03-04 MON"
     }
 """.trimIndent()
 
