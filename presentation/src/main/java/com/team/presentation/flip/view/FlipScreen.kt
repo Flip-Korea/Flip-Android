@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.imageLoader
 import coil.request.ImageRequest
 import com.team.designsystem.component.button.FlipFollowButton
 import com.team.designsystem.component.button.FlipFollowButtonSize
@@ -49,6 +50,7 @@ import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.presentation.R
 import com.team.presentation.common.util.CommonPaddingValues
+import com.team.presentation.flip.component.FabEvent
 import com.team.presentation.flip.component.FlipFab
 import com.team.presentation.util.asColor
 
@@ -108,6 +110,7 @@ fun FlipScreen(
                 modifier = Modifier.weight(1f),
                 content = content,
                 onTap = { offset ->
+                    /** 화면 가로 길이 중간을 기준으로 탭할 때 페이지 넘김 수행 */
                     currentPage = if (offset.x < screenWidth / 2) {
                         (currentPage - 1).coerceIn(contents.indices)
                     } else {
@@ -118,11 +121,11 @@ fun FlipScreen(
             /** 작성자의 정보 및 드롭다운 등이 포함된 하단 영역 (+ 현재 페이지 위치) */
             BottomSection(
                 modifier = Modifier.padding(bottom = 4.dp),
-                imageUrl = "",
-                nickname = "코딩마스터",
-                profileId = "@90WXYZ6789A1B2C3",
-                isFollowing = false,
-                isFollower = false,
+                imageUrl = post.profile.photoUrl,
+                nickname = post.profile.nickname,
+                profileId = post.profile.profileId,
+                isFollowing = post.profile.isFollowing,
+                isFollower = post.profile.isFollower,
                 currentPage = currentPage,
                 onFollowButtonClick = { },
             )
@@ -134,13 +137,31 @@ fun FlipScreen(
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 24.dp, end = 16.dp),
             isExpanded = isFabExpanded,
+            liked = post.liked,
+            scraped = post.scraped,
             changeExpanded = { isFabExpanded = !isFabExpanded },
-            onDismissRequest = { isFabExpanded = false }
+            onDismissRequest = { isFabExpanded = false },
+            fabEvent = { event ->
+                //TODO: 각 이벤트에 맞는 네트워크 요청 로직 수행
+                when (event) {
+                    FabEvent.OnLikeClick -> { }
+                    FabEvent.OnScrapClick -> { }
+                    else -> {}
+                }
+            }
         )
     }
 }
 
-/** 상단 영역 */
+/**
+ * 상단 영역
+ *
+ * @param title 제목
+ * @param createdAt 작성날짜
+ * @param liked 좋아요 여부
+ * @param likeCnt 좋아요 개수
+ * @param commentCnt 댓글 개수
+ */
 @Composable
 private fun TopSection(
     modifier: Modifier = Modifier,
@@ -194,7 +215,12 @@ private fun TopSection(
     }
 }
 
-/** 본문 영역 */
+/**
+ * 본문 영역
+ *
+ * @param content 본문
+ * @param onTap 화면을 탭할 때 수행할 작업
+ */
 @Composable
 private fun ContentSection(
     modifier: Modifier = Modifier,
@@ -214,12 +240,22 @@ private fun ContentSection(
         Text(
             text = content,
             style = FlipTheme.typography.body7,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         )
     }
 }
 
-/** 하단 영역 */
+/**
+ * 하단 영역
+ *
+ * @param imageUrl 프로필 이미지 URL
+ * @param nickname 프로필 닉네임
+ * @param profileId 프로필 ID
+ * @param isFollowing 팔로잉 여부
+ * @param isFollower 팔로워 여부
+ * @param currentPage 현재 페이지
+ * @param onFollowButtonClick 팔로우/잉 버튼 클릭시
+ */
 @Composable
 private fun BottomSection(
     modifier: Modifier = Modifier,
@@ -257,6 +293,16 @@ private fun BottomSection(
     }
 }
 
+/**
+ * 프로필 영역
+ *
+ * @param imageUrl 프로필 이미지 URL
+ * @param nickname 프로필 닉네임
+ * @param profileId 프로필 ID
+ * @param isFollowing 팔로잉 여부
+ * @param isFollower 팔로워 여부
+ * @param onFollowButtonClick 팔로우/잉 버튼 클릭시
+ */
 @Composable
 private fun ProfileSection(
     modifier: Modifier = Modifier,
@@ -275,6 +321,9 @@ private fun ProfileSection(
             .error(R.drawable.ic_logo_dark)
             .build()
     }
+    LaunchedEffect(Unit) {
+        context.imageLoader.enqueue(imageRequest)
+    }
 
     Row(
         modifier = modifier,
@@ -287,7 +336,7 @@ private fun ProfileSection(
                 .size(40.dp),
             model = imageRequest,
             contentDescription = null,
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.Crop,
         )
         Column {
             Text(text = nickname, style = FlipTheme.typography.body5)
