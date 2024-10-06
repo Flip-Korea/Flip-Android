@@ -19,7 +19,7 @@ android {
         manifestPlaceholders += mapOf()
         applicationId = "com.team.flip"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "0.0.1" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 

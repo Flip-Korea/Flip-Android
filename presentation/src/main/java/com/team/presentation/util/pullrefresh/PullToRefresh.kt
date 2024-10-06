@@ -412,7 +412,8 @@ object PullToRefreshDefaults {
         ) {
             Crossfade(
                 targetState = isRefreshing,
-                animationSpec = tween(durationMillis = CrossfadeDurationMs)
+                animationSpec = tween(durationMillis = CrossfadeDurationMs),
+                label = "cross fade"
             ) { refreshing ->
                 if (refreshing) {
                     CircularProgressIndicator(
@@ -537,7 +538,7 @@ private fun CircularArrowProgressIndicator(
     val targetAlpha by remember {
         derivedStateOf { if (progress() >= 1f) MaxAlpha else MinAlpha }
     }
-    val alphaState = animateFloatAsState(targetValue = targetAlpha, animationSpec = AlphaTween)
+    val alphaState = animateFloatAsState(targetValue = targetAlpha, animationSpec = AlphaTween, label = "alphaState")
     Canvas(
         Modifier
             .semantics(mergeDescendants = true) {

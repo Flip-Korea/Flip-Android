@@ -20,11 +20,11 @@ class TokenAuthenticator @Inject constructor(
     private val authNetworkApi: AccountNetworkApi,
 ) : Authenticator {
 
-    private val TAG = this.javaClass.simpleName
+    private val tag = this.javaClass.simpleName
 
     override fun authenticate(route: Route?, response: Response): Request? {
 
-        Log.d(TAG, "Authenticator Triggered!")
+        Log.d(tag, "Authenticator Triggered!")
 
         // get originalRefreshToken
         val originalRefreshToken = runBlocking {
@@ -36,7 +36,7 @@ class TokenAuthenticator @Inject constructor(
         return runBlocking {
             // refreshTokens and get AccessToken & RefreshToken
             val newTokens = refreshToken(originalRefreshToken)
-            Log.d(TAG, "Refresh Token (Response: ${newTokens.code()})")
+            Log.d(tag, "Refresh Token (Response: ${newTokens.code()})")
 
             // couldn't refresh the token, so restart the login process
             if (!newTokens.isSuccessful || newTokens.body() == null) {

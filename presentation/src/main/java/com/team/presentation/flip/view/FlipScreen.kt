@@ -71,9 +71,9 @@ fun FlipScreen(
 
     /** 컨텐츠(본문) 값들 */
     //TODO: split 연산을 여기서 하지말고 애초에 Post 모델 대신 ComposePost 같은 프레젠테이션 용 모델 생성해서 사용하기
-    val contents by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.separator)) }
+    val contents by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR)) }
     var currentPage by remember { mutableIntStateOf(0) }
-    var content by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.separator)[0]) }
+    var content by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR)[0]) }
     LaunchedEffect(currentPage) { content = contents[currentPage] }
 
     Box(
@@ -425,9 +425,9 @@ private val PostTestData = Post(
             "의하여 법률에 의한 재판을 받을 권리를 가진다.\n" +
             " 가부동수인 때에는 부결된 것으로 본다.\n" +
             "행정권은 대통령을 수반으로 하는 정부에\n" +
-            "속한다." + FlipContentSeparator.separator +
+            "속한다." + FlipContentSeparator.SEPARATOR +
             "손금의 정확도는 50%~60%정도 입니다. 얼마전 손금에 대하여 방영이 되고난후 손금에 대한 관심이 부쩍 높아진게 사실입니다. 그러나 손금은 어느일부분의 선만 가지고 이야기 하면 정확히 볼 수 없습니다."
-            + FlipContentSeparator.separator +
+            + FlipContentSeparator.SEPARATOR +
             "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 모든 국민의 재산권은 보장된다.",
     liked = false,
     likeCnt = 302,

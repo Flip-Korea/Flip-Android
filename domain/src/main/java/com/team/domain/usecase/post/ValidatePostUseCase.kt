@@ -1,6 +1,5 @@
 package com.team.domain.usecase.post
 
-import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.domain.util.validation.ValidationResult
@@ -21,13 +20,11 @@ class ValidatePostUseCase {
     operator fun invoke(
         title: String,
         content: List<String>,
-        bgColorType: BackgroundColorType,
         tags: List<String>,
-        categoryId: Int?
     ): List<ValidationResult> {
 
         val validationResults = mutableListOf<ValidationResult>()
-        val joinContents = content.joinToString(FlipContentSeparator.separator)
+        val joinContents = content.joinToString(FlipContentSeparator.SEPARATOR)
 
         if (title.isEmpty()) {
             validationResults.add(ValidationResult.Error(ValidationErrorType.Post.TITLE_IS_EMPTY))

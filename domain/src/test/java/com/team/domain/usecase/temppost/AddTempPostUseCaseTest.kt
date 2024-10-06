@@ -2,7 +2,6 @@ package com.team.domain.usecase.temppost
 
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.type.FlipContentSeparator
-import com.team.domain.type.asBackgroundColorType
 import com.team.domain.usecase.post.testdoubles.newPostTestData
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -31,7 +30,7 @@ class AddTempPostUseCaseTest {
         // When
         val result = addTempPostUseCase(
             newPostTestData.title,
-            newPostTestData.content.split(FlipContentSeparator.separator),
+            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
             newPostTestData.bgColorType,
             newPostTestData.fontStyleType,
             newPostTestData.tags,
@@ -53,7 +52,7 @@ class AddTempPostUseCaseTest {
         // When
         val result = addTempPostUseCase(
             newPostTestData.title,
-            newPostTestData.content.split(FlipContentSeparator.separator),
+            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
             newPostTestData.bgColorType,
             newPostTestData.fontStyleType,
             newPostTestData.tags,
