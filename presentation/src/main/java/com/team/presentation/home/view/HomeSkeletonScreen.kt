@@ -21,12 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.team.designsystem.component.shimmer.shimmerEffect
+import com.team.designsystem.component.skeleton.shimmerEffect
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 /**
- * HomeScreen 에서 사용 되는 스켈레톤 스크린
+ * [HomeScreen] 에서 사용 되는 스켈레톤 스크린
  *
  * @param itemCount CardSection(스켈레톤 컨텐츠) 의 개수
  */

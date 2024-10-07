@@ -154,9 +154,7 @@ class AddFlipViewModel @Inject constructor(
                 validatePostUseCase(
                     title = title,
                     content = content,
-                    bgColorType = selectedColor,
                     tags = tags,
-                    categoryId = selectedCategory.value?.id
                 )
             }
 
