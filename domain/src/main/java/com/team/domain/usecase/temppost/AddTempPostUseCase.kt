@@ -27,7 +27,7 @@ class AddTempPostUseCase @Inject constructor(
     ): Flow<Result<Boolean, ErrorType>> {
         val newPost = NewPost(
             title = title,
-            content = content.joinToString(FlipContentSeparator.separator),
+            content = content.joinToString(FlipContentSeparator.SEPARATOR),
             bgColorType = bgColorType,
             fontStyleType = fontStyleType,
             tags = tags,

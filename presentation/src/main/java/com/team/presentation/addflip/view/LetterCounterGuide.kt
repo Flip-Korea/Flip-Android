@@ -2,6 +2,7 @@ package com.team.presentation.addflip.view
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,7 +78,10 @@ fun LetterCounterGuide(
     }
 
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .background(FlipTheme.colors.gray1)
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         TitleBar(
@@ -228,9 +232,6 @@ fun LetterCounterGuidePreview() {
     FlipAppTheme {
         Box(modifier = Modifier) {
             LetterCounterGuide(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
                 length = 130f,
                 limit = 300f,
                 progress = 0.5f

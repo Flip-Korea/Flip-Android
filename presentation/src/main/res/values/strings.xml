@@ -57,7 +57,8 @@
     <string name="report_hate_speech">혐오 발언</string>
 
     <!-- SuccessType -->
-    <string name="success_temppost_delete">삭제했습니다.</string>
+    <string name="success_temppost_save">임시저장을 완료했어요!</string>
+    <string name="success_temppost_delete">임시저장 글을 삭제했어요!</string>
 
     <!-- LoginScreen -->
     <string name="login_screen_title_1">더욱 쉽게</string>
@@ -121,6 +122,7 @@
     <string name="add_flip_screen_select_bottom_sheet_title">분야 선택</string>
     <string name="add_flip_screen_title_tf_placeholder">제목</string>
     <string name="add_flip_screen_content_tf_placeholder">내용을 자유롭게 작성해보세요.</string>
+    <string name="add_flip_screen_add_page_btn">다음 페이지 추가</string>
     <string name="add_flip_screen_letter_guide_title">글자 수 도우미</string>
     <string name="add_flip_screen_letter_guide_notice_1">읽기 좋은 글을 위해 </string>
     <string name="add_flip_screen_letter_guide_notice_1_2">플립이 도와드릴게요! 🙌</string>
@@ -150,10 +152,11 @@
     <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
 
     <!-- AddFlip Screen (Modal) -->
-    <string name="add_flip_screen_modal_main_title">잠깐! 작성 중인 글을 저장할까요?</string>
-    <string name="add_flip_screen_modal_sub_title">지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.</string>
-    <string name="add_flip_screen_modal_item_1">저장하기</string>
-    <string name="add_flip_screen_modal_item_2">저장 안 함</string>
+    <string name="add_flip_screen_modal_main_title">플립을 삭제할까요?</string>
+    <string name="add_flip_screen_modal_sub_title">지금 돌아가면 변경 사항이 삭제됩니다.</string>
+    <string name="add_flip_screen_modal_item_1">삭제</string>
+    <string name="add_flip_screen_modal_item_2">임시 저장</string>
+    <string name="add_flip_screen_modal_item_3">계속 수정할래요</string>
 
     <!-- TempFlipBox Screen -->
     <string name="temp_flip_box_screen_topbar_title">임시저장함</string>

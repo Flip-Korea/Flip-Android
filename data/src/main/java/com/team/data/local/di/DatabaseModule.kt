@@ -6,7 +6,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.CategoryDao
-import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.typeconverter.ListTypeConverter
@@ -43,16 +42,13 @@ object DatabaseModule {
             "flip_database.db"
         )
             .addTypeConverter(listTypeConverter)
+            .fallbackToDestructiveMigration() //TODO: 출시 후에는 제거할 것
             .build()
     }
 
     @Singleton
     @Provides
     fun provideMyProfileDao(flipDatabase: FlipDatabase): MyProfileDao = flipDatabase.myProfileDao()
-
-    @Singleton
-    @Provides
-    fun providePostDao(flipDatabase: FlipDatabase): PostDao = flipDatabase.postDao()
 
     @Singleton
     @Provides

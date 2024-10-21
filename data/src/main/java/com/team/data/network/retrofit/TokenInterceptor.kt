@@ -14,11 +14,11 @@ class TokenInterceptor @Inject constructor(
     private val dataStoreManager: DataStoreManager
 ): Interceptor {
 
-    private val TAG = this.javaClass.simpleName
+    private val tag = this.javaClass.simpleName
 
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        Log.d(TAG, "Interceptor Triggered!")
+        Log.d(tag, "Interceptor Triggered!")
 
         // get accessToken & just continue request when accessToken is null
         val accessToken = runBlocking {
@@ -37,22 +37,22 @@ class TokenInterceptor @Inject constructor(
         // 1. after Process(OkHttp's Authentication function) for HTTP Status 401
         // 2. just receive response to a request with token
 
-        Log.d(TAG, "Interceptor Triggered! (Proceed Response (after)")
+        Log.d(tag, "Interceptor Triggered! (Proceed Response (after)")
 
         if (response.isSuccessful) {
             when(response.code) {
-                200 -> { Log.d(TAG, "Interceptor Code: 200 OK") }
-                201 -> { Log.d(TAG, "Interceptor Code: 201 Created") }
-                else -> { Log.d(TAG, "Interceptor Code: Anything Success") }
+                200 -> { Log.d(tag, "Interceptor Code: 200 OK") }
+                201 -> { Log.d(tag, "Interceptor Code: 201 Created") }
+                else -> { Log.d(tag, "Interceptor Code: Anything Success") }
             }
         } else {
             // Failure (Ex. 4xx, 5xx)
             when(response.code) {
-                401 -> { Log.d(TAG, "Interceptor Code: 401 UnAuthorized") } // pass
-                404 -> { Log.d(TAG, "Interceptor Code: 404 Not Found") }
-                else -> { Log.d(TAG, "Interceptor Code: Unexpected") }
+                401 -> { Log.d(tag, "Interceptor Code: 401 UnAuthorized") } // pass
+                404 -> { Log.d(tag, "Interceptor Code: 404 Not Found") }
+                else -> { Log.d(tag, "Interceptor Code: Unexpected") }
             }
-            Log.d(TAG, "request: ${response.request}\n" + "message: ${response.message}")
+            Log.d(tag, "request: ${response.request}\n" + "message: ${response.message}")
         }
 
         return response

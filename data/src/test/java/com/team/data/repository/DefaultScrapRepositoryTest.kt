@@ -3,12 +3,12 @@ package com.team.data.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.domain.util.FlipPagination
+import com.team.domain.util.paging.FlipPagingTokens
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
 import com.team.data.repository.fake.FakeScrapRepository
-import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.domain.model.scrap.NewScrap
 import com.team.domain.repository.ScrapRepository
 import com.team.domain.util.Result
@@ -78,7 +78,7 @@ class DefaultScrapRepositoryTest {
             scrapRepository.getScrapListPagination(
                 "TestProfileId",
                 "1",
-                FlipPagination.PAGE_SIZE
+                FlipPagingTokens.POST_PAGE_SIZE
             ).last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)

@@ -1,14 +1,14 @@
 package com.team.designsystem.component.modal
 
-import android.view.Window
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,20 +18,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
+import com.team.designsystem.component.utils.getDialogWindow
 import com.team.designsystem.theme.FlipTheme
-
-@ReadOnlyComposable
-@Composable
-private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWindowProvider)?.window
 
 /**
  * FlipModal(Dialog) 과 함께 사용하는 Wrapper
  *
  * @param isOpen Modal 활성화 여부
+ * @param animated 애니메이션 활성화 여부
  * @param onDismissRequest Modal이 사라질 때 실행할 작업
  * @param onAnimationFinished 모달 애니메이션이 끝난 직후 실행할 작업
  * @param content Modal Composable
@@ -39,6 +35,7 @@ private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWin
 @Composable
 fun FlipModalWrapper(
     isOpen: Boolean,
+    animated: Boolean = true,
     onDismissRequest: () -> Unit,
     onAnimationFinished: () -> Unit = {},
     content: @Composable () -> Unit
@@ -83,8 +80,8 @@ fun FlipModalWrapper(
 
                 AnimatedVisibility(
                     visible = animateIn && isOpen,
-                    enter = FlipTheme.transition.dialogEnter,
-                    exit = FlipTheme.transition.dialogExit
+                    enter = if (animated) FlipTheme.transition.dialogEnter else EnterTransition.None,
+                    exit = if (animated) FlipTheme.transition.dialogExit else ExitTransition.None
                 ) {
                     content()
 

@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.team.designsystem.R
 
@@ -36,8 +37,8 @@ fun headline8(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        lineHeight = 24.sp * 1.5,
-        letterSpacing = 24.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -54,8 +55,8 @@ fun headline7(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
-        lineHeight = 24.sp * 1.5,
-        letterSpacing = 24.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -72,8 +73,8 @@ fun headline6(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
         fontSize = 22.sp,
-        lineHeight = 22.sp * 1.5,
-        letterSpacing = 22.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -90,8 +91,8 @@ fun headline5(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
-        lineHeight = 18.sp * 1.5,
-        letterSpacing = 18.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -108,8 +109,8 @@ fun headline4(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        lineHeight = 16.sp * 1.5,
-        letterSpacing = 16.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -125,8 +126,8 @@ fun headline3(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
-        lineHeight = 16.sp * 1.5,
-        letterSpacing = 16.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -142,8 +143,8 @@ fun headline2(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-        lineHeight = 14.sp * 1.5,
-        letterSpacing = 14.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -159,8 +160,8 @@ fun headline1(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
-        lineHeight = 14.sp * 1.5,
-        letterSpacing = 14.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -174,10 +175,10 @@ fun body7(): TextStyle {
     return TextStyle(
         color = FlipTheme.colors.main,
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight(400),
         fontSize = 18.sp,
-        lineHeight = 18.sp * 1.5,
-        letterSpacing = 18.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -193,8 +194,8 @@ fun body6(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 16.sp * 1.5,
-        letterSpacing = 16.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -210,8 +211,8 @@ fun body5(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 14.sp * 1.5,
-        letterSpacing = 14.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -227,8 +228,8 @@ fun body4Underline(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 14.sp * 1.5,
-        letterSpacing = 14.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -245,8 +246,8 @@ fun body3(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 12.sp * 1.5,
-        letterSpacing = 12.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -262,8 +263,8 @@ fun body2(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontWeight = FontWeight.Medium,
         fontSize = 10.sp,
-        lineHeight = 10.sp * 1.5,
-        letterSpacing = 10.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None
@@ -279,8 +280,8 @@ fun body1(): TextStyle {
         fontFamily = FontFamily(Font(R.font.pretendard_regular)),
         fontWeight = FontWeight.Normal,
         fontSize = 10.sp,
-        lineHeight = 10.sp * 1.5,
-        letterSpacing = 10.sp * (-0.006),
+        lineHeight = 1.5.em,
+        letterSpacing = (-0.006).em,
         lineHeightStyle = LineHeightStyle(
             alignment = LineHeightStyle.Alignment.Center,
             trim = LineHeightStyle.Trim.None

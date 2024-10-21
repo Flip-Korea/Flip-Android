@@ -1,6 +1,8 @@
 package com.team.domain.model.post
 
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
+import com.team.domain.type.FontStyleType
 
 data class Post(
     val postId: Long,
@@ -14,9 +16,9 @@ data class Post(
     val scraped: Boolean,
     val scrapComment: String?,
     val categoryId: Int,
-    val bgColorId: Int,
-    val fontStyleId: Int,
-    val tag: List<String>?,
+    val bgColorType: BackgroundColorType,
+    val fontStyleType: FontStyleType,
+    val tags: List<String>?,
     val createdAt: String,
 ) {
     constructor(
@@ -29,7 +31,7 @@ data class Post(
         likeCnt: Long,
         commentCnt: Long,
         scraped: Boolean,
-        bgColorId: Int
+        bgColorType: BackgroundColorType
     ) : this(
         postId = postId,
         profile = profile,
@@ -42,9 +44,9 @@ data class Post(
         scraped = scraped,
         scrapComment = null,
         categoryId = 0,
-        bgColorId = bgColorId,
-        fontStyleId = 0,
-        tag = emptyList(),
+        bgColorType = bgColorType,
+        fontStyleType = FontStyleType.NORMAL,
+        tags = emptyList(),
         createdAt = createdAt
     )
 }

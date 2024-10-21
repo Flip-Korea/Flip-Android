@@ -38,7 +38,7 @@ fun AddFlipContentTextField(
 
     BasicTextField(
         modifier = modifier
-            .heightIn(min = 154.dp, max = (154 * 2).dp)
+            .heightIn(min = 200.dp, max = (200 * 2).dp)
             .focusCleaner(focusManager)
 //            .focusRequester(focusRequester)
 //            .focusable()

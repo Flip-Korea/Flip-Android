@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.callbackFlow
  */
 class KakaoAuthManager(private val context: Context) : AuthManager {
 
-    private val TAG = this.javaClass.simpleName
+    private val tag = this.javaClass.simpleName
 
     private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -56,7 +56,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         }
 
         awaitClose {
-            Log.d(TAG, "Login With Kakao Finished(maybe success or failure")
+            Log.d(tag, "Login With Kakao Finished(maybe success or failure")
         }
     }
 

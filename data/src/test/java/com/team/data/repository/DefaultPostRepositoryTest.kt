@@ -4,31 +4,25 @@ import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.domain.util.FlipPagination
 import com.team.data.local.FlipDatabase
-import com.team.data.local.dao.PostDao
-import com.team.data.local.entity.post.toDomainModel
 import com.team.data.network.model.response.post.PostResponse
-import com.team.data.network.model.response.post.toEntity
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.fake.FakePostNetworkDataSource
 import com.team.data.repository.fake.FakePostRepository
-import com.team.data.testdoubles.local.makeMultiplePostEntityTestData
-import com.team.data.testdoubles.local.makePostIds
-import com.team.data.testdoubles.network.postResponseTestData
-import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.data.network.testdoubles.postResponseTestData
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.domain.type.PathParameterType
+import com.team.domain.util.paging.FlipPagingTokens
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -36,7 +30,7 @@ import makePostListResponseTestData
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -74,7 +68,6 @@ class DefaultPostRepositoryTest {
     @Inject
     @Named("test_db")
     lateinit var database: FlipDatabase
-    private lateinit var postDao: PostDao
 
     @Before
     fun setUp() {
@@ -93,10 +86,9 @@ class DefaultPostRepositoryTest {
             .build()
             .create(PostNetworkApi::class.java)
 
-        postDao = database.postDao()
 
         postNetworkDataSource = FakePostNetworkDataSource(postNetworkApi)
-        postRepository = FakePostRepository(postDao, postNetworkDataSource)
+        postRepository = FakePostRepository(postNetworkDataSource)
     }
 
     @After
@@ -106,45 +98,23 @@ class DefaultPostRepositoryTest {
     }
 
     @Test
-    fun `플립 글 LocalDB에서 불러오기 (데이터 X) (getCachedPosts())`() = runTest {
-        val posts = postRepository.getCachedPosts().first()
-
-        assert(posts.isEmpty())
-    }
-
-    @Test
-    fun `플립 글 LocalDB에서 불러오기 (데이터 O) (getCachedPosts())`() = runTest {
-        val postIds = makePostIds(5)
-        val postEntities = makeMultiplePostEntityTestData(postIds)
-
-        postDao.upsertAll(postEntities)
-
-        val posts = postRepository.getCachedPosts().first()
-
-        assert(posts.contains(postEntities[0].toDomainModel()))
-        assertEquals(posts.size, 5)
-    }
-
-    @Test
     fun `플립 글 목록 페이지네이션 (getPostsPagination())`() = runTest(UnconfinedTestDispatcher()) {
 
         val pageSize = 15
+        val expected = makePostListResponseTestData("1", pageSize)
 
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
-            setBody(makePostListResponseTestData("1", pageSize))
+            setBody(expected)
         })
 
-        postRepository.getPostsPagination("1", pageSize).last()
+        val actual = postRepository.getPostsPagination("1", pageSize).last()
 
-        val posts = postRepository.getCachedPosts().first()
-
-        assertEquals(pageSize, posts.size)
+        assertEquals(pageSize, (actual as Result.Success).data.posts.size)
     }
 
     @Test
-    fun `ID로 플립 글 불러오기 (로컬캐시 X) (getPostById())`() = runTest {
-        postDao.deleteAll()
+    fun `ID로 플립 글 불러오기 (getPostById())`() = runTest {
 
         server.enqueue(MockResponse().apply {
             setResponseCode(200)
@@ -161,21 +131,6 @@ class DefaultPostRepositoryTest {
 
         assert((post as Result.Success).data != null)
         assertEquals(post.data!!.postId, postId)
-    }
-
-    @Test
-    fun `ID로 플립 글 불러오기 (로컬캐시 O) (getPostById())`() = runTest {
-        val postTestData =
-            moshi
-                .adapter(PostResponse::class.java)
-                .fromJson(postResponseTestData)!!
-                .toEntity()
-        postDao.upsertPost(postTestData)
-
-        val post = postRepository.getPostById(postTestData.postId).last()
-
-        assert((post as Result.Success).data != null)
-        assertEquals(post.data!!.postId, postTestData.postId)
     }
 
     @Test
@@ -229,7 +184,6 @@ class DefaultPostRepositoryTest {
             setBody(makePostListResponseTestData(
                 "1",
                 pageSize,
-                PathParameterType.Post.CATEGORY,
                 "1"
                 )
             )
@@ -271,7 +225,7 @@ class DefaultPostRepositoryTest {
             postRepository.getPostsByPopularUserPagination(
                 2,
                 "1",
-                FlipPagination.PAGE_SIZE
+                FlipPagingTokens.POST_PAGE_SIZE
             ).last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)

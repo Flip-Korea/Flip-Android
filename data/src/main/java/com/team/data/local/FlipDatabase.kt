@@ -4,12 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.team.data.local.dao.CategoryDao
-import com.team.data.local.dao.PostDao
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.dao.RecentSearchDao
 import com.team.data.local.entity.CategoryEntity
 import com.team.data.local.entity.RecentSearchEntity
-import com.team.data.local.entity.post.PostEntity
 import com.team.data.local.entity.profile.MyProfileEntity
 import com.team.data.local.typeconverter.ListTypeConverter
 
@@ -20,7 +18,6 @@ import com.team.data.local.typeconverter.ListTypeConverter
     version = 1,
     entities = [
         MyProfileEntity::class,
-        PostEntity::class,
         CategoryEntity::class,
         RecentSearchEntity::class
     ],
@@ -29,7 +26,6 @@ import com.team.data.local.typeconverter.ListTypeConverter
 abstract class FlipDatabase: RoomDatabase() {
 
     abstract fun myProfileDao(): MyProfileDao
-    abstract fun postDao(): PostDao
     abstract fun categoryDao(): CategoryDao
     abstract fun recentSearchDao(): RecentSearchDao
 }

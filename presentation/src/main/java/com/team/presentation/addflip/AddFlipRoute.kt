@@ -3,7 +3,6 @@ package com.team.presentation.addflip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.team.presentation.addflip.view.AddFlipScreen
@@ -16,7 +15,6 @@ import com.team.presentation.addflip.viewmodel.AddFlipViewModel
  */
 @Composable
 fun AddFlipRoute(
-    modifier: Modifier = Modifier,
     addFlipViewModel: AddFlipViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
     onNavigateToTempFlipBox: () -> Unit
@@ -25,8 +23,9 @@ fun AddFlipRoute(
     val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
     val selectedCategory by addFlipViewModel.selectedCategory.collectAsStateWithLifecycle()
     val addPostState by addFlipViewModel.addPostState.collectAsStateWithLifecycle()
+    val addTempPostState by addFlipViewModel.addTempPostState.collectAsStateWithLifecycle()
     val newPostState by addFlipViewModel.newPostState.collectAsStateWithLifecycle()
-    val dialogModalState by addFlipViewModel.dialogModalState.collectAsStateWithLifecycle()
+    val modalState by addFlipViewModel.modalState.collectAsStateWithLifecycle()
 
     LaunchedEffect(addPostState) {
         if (addPostState.postSave) {
@@ -38,7 +37,8 @@ fun AddFlipRoute(
         newPostState = newPostState,
         categoriesState = categoriesState,
         addPostState = addPostState,
-        dialogModalState = dialogModalState,
+        addTempPostState = addTempPostState,
+        modalState = modalState,
         selectedCategory = selectedCategory,
         onUiEvent = addFlipViewModel::onUiEvent,
         hideModal = { addFlipViewModel.hideModal() },

@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager
 ): ViewModel() {
-    private val TAG = this.javaClass.simpleName
+    private val tag = this.javaClass.simpleName
 
     private val _loggedIn: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val loggedIn: StateFlow<Boolean?> = _loggedIn.asStateFlow()
@@ -31,7 +31,7 @@ class SplashViewModel @Inject constructor(
             Log.d("access_token_log", accessToken ?: "")
             delay(500L)
             if (!accessToken.isNullOrEmpty()) {
-                Log.d(TAG, accessToken)
+                Log.d(tag, accessToken)
                 _loggedIn.update { true }
             } else {
                 _loggedIn.update { false }

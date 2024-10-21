@@ -5,10 +5,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.network.model.request.ScrapRequest
 import com.team.data.network.model.response.ResultIdResponse
 import com.team.data.network.model.response.profile.ProfileResponse
-import com.team.data.testdoubles.network.addScrapRequestTestData
-import com.team.data.testdoubles.network.networkProfileTestData
-import com.team.data.testdoubles.network.resultIdResponseTestData
-import junit.framework.Assert.assertNotNull
+import com.team.data.network.testdoubles.addScrapRequestTestData
+import com.team.data.network.testdoubles.networkProfileTestData
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -16,6 +15,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -89,7 +89,7 @@ class UserNetworkApiTest {
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
         val requestBody = """
             {
-                "categories": [1,2,3]
+                "categoryIds": [1,2,3]
             }
         """.trimIndent()
         val expectedRequestBody = adapter.fromJson(requestBody)

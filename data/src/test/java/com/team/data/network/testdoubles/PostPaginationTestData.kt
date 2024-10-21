@@ -2,6 +2,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.network.model.response.comment.CommentListResponse
 import com.team.data.network.model.response.comment.CommentResponse
+import com.team.data.network.model.response.post.BackgroundColorTypeResponse
+import com.team.data.network.model.response.post.FontStyleTypeResponse
 import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.post.TempPostListResponse
@@ -16,7 +18,6 @@ import kotlin.random.Random
 fun makePostListResponseTestData(
     cursor: String,
     pageSize: Int,
-    type: PathParameterType = PathParameterType.Post.CATEGORY,
     typeId: String = "1"
 ): String {
 
@@ -52,10 +53,10 @@ fun makePostListResponseTestData(
                 scraped = false,
                 scrapComment = "My Scrap",
                 categoryId = typeId.toInt(),
-                bgColorId = 1,
-                fontStyleId = 1,
-                tag = listOf("1","2"),
-                createdAt = cursor
+                bgColorType = BackgroundColorTypeResponse.BLUE,
+                fontStyleType = FontStyleTypeResponse.NORMAL,
+                tags = listOf("1","2"),
+                postAt = cursor
             )
         )
     }

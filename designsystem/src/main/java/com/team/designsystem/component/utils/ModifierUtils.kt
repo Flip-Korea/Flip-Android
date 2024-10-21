@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +53,7 @@ fun Modifier.clickableSingle(
     role: Role? = null,
     onClick: () -> Unit
 ) = composed {
-    val lastClickTimestamp = remember { mutableStateOf(0L) }
+    val lastClickTimestamp = remember { mutableLongStateOf(0L) }
     val coroutineScope = rememberCoroutineScope()
 
     clickable(

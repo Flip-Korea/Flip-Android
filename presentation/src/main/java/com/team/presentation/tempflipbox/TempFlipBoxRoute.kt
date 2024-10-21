@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.team.presentation.common.snackbar.ObserveAsEvents
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TempFlipBoxRoute(
-    modifier: Modifier = Modifier,
     onBackPress: () -> Unit
 ) {
     val tempFlipBoxViewModel: TempFlipBoxViewModel = hiltViewModel()

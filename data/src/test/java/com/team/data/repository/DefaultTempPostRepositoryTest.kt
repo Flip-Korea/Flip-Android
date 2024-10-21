@@ -7,7 +7,7 @@ import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.fake.FakePostNetworkDataSource
 import com.team.data.repository.fake.FakeTempPostRepository
-import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.type.BackgroundColorType

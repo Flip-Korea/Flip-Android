@@ -31,7 +31,7 @@ fun MainNavigation(
 ) {
 
     NavHost(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         navController = mainNavController,
         startDestination = NavigationItem.BOTTOM_NAV.name,
         enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },

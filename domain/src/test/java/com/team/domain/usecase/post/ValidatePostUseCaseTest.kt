@@ -20,7 +20,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(
@@ -39,7 +39,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(
@@ -59,7 +59,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(
@@ -78,7 +78,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(
@@ -97,7 +97,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(
@@ -116,7 +116,7 @@ class ValidatePostUseCaseTest {
         val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, bgColorType, tags, categoryId)
+        val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
         assertEquals(

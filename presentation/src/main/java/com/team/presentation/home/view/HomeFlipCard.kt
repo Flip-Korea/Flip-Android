@@ -39,10 +39,12 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
+import com.team.domain.type.BackgroundColorType
 import com.team.presentation.R
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.home.FlipCardUiEvent
 import com.team.presentation.home.util.FlipCardTokens
+import com.team.presentation.util.asColor
 
 /**
  * Flip Card
@@ -62,7 +64,7 @@ fun HomeFlipCard(
     Box(
        modifier = modifier
            .clip(FlipTheme.shapes.roundedCornerFlipCard)
-           .background(FlipCardTokens.bgColorMap(post.bgColorId))
+           .background(post.bgColorType.asColor())
            .clickableSingle { flipCardUiEvent(FlipCardUiEvent.OnFlipCardClick) },
     ) {
         Column(
@@ -360,7 +362,7 @@ private fun HomeFlipCardPreview() {
                 likeCnt = 78,
                 commentCnt = 21,
                 scraped = false,
-                bgColorId = 2
+                bgColorType = BackgroundColorType.BLUE
             ),
             flipCardUiEvent = { },
             reportAndBlockUiEvent = {}
