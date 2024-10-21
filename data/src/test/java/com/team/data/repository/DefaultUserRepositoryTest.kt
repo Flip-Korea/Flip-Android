@@ -23,17 +23,17 @@ import com.team.data.network.source.fake.FakeInterestCategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
 import com.team.data.datastore.fake.FakeDataStoreManager
 import com.team.data.repository.fake.FakeUserRepository
-import com.team.data.testdoubles.local.makeMyProfileEntityTestData
-import com.team.data.testdoubles.network.makeNetworkMyProfileTestData
-import com.team.data.testdoubles.network.networkBlocksTestData
-import com.team.data.testdoubles.network.networkBlocksTestDataEndOfPage
-import com.team.data.testdoubles.network.networkFollowersTestData
-import com.team.data.testdoubles.network.networkFollowersTestDataEndOfPage
-import com.team.data.testdoubles.network.networkFollowingsTestData
-import com.team.data.testdoubles.network.networkFollowingsTestDataEndOfPage
-import com.team.data.testdoubles.network.networkMyCommentsTestData
-import com.team.data.testdoubles.network.networkMyCommentsTestDataEndOfPage
-import com.team.data.testdoubles.network.networkProfileTestData
+import com.team.data.local.testdoubles.makeMyProfileEntityTestData
+import com.team.data.network.testdoubles.makeNetworkMyProfileTestData
+import com.team.data.network.testdoubles.networkBlocksTestData
+import com.team.data.network.testdoubles.networkBlocksTestDataEndOfPage
+import com.team.data.network.testdoubles.networkFollowersTestData
+import com.team.data.network.testdoubles.networkFollowersTestDataEndOfPage
+import com.team.data.network.testdoubles.networkFollowingsTestData
+import com.team.data.network.testdoubles.networkFollowingsTestDataEndOfPage
+import com.team.data.network.testdoubles.networkMyCommentsTestData
+import com.team.data.network.testdoubles.networkMyCommentsTestDataEndOfPage
+import com.team.data.network.testdoubles.networkProfileTestData
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.report_block.BlockReq
 import com.team.domain.model.report_block.ReportReq
@@ -43,7 +43,6 @@ import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import junit.framework.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
@@ -186,7 +185,7 @@ class DefaultUserRepositoryTest {
 
         val response = userRepository.getProfile("testprofileid").last()
 
-        Assert.assertNotNull(response)
+        assertNotNull(response)
         assertEquals(mockResponseToObject, (response as Result.Success).data)
     }
 

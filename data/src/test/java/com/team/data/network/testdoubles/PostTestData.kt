@@ -1,4 +1,4 @@
-package com.team.data.testdoubles.network
+package com.team.data.network.testdoubles
 
 val postsResponseTestData = """
     {
