@@ -14,8 +14,8 @@ import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
 import com.team.data.repository.fake.FakeCategoryRepository
-import com.team.data.testdoubles.network.categoryEntitiesTestData
-import com.team.data.testdoubles.network.networkCategoriesTestData
+import com.team.data.network.testdoubles.categoryEntitiesTestData
+import com.team.data.network.testdoubles.networkCategoriesTestData
 import com.team.domain.repository.CategoryRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

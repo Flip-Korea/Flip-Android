@@ -4,7 +4,7 @@ import com.team.domain.model.post.PostList
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
-import com.team.domain.util.FlipPagination
+import com.team.domain.util.paging.FlipPagingTokens
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -29,6 +29,6 @@ class GetPostsByTypeUseCase @Inject constructor(
             type,
             typeId,
             cursor,
-            FlipPagination.PAGE_SIZE
+            FlipPagingTokens.POST_PAGE_SIZE
         )
 }

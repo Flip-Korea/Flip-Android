@@ -12,7 +12,7 @@ import com.team.domain.model.post.Post
 import com.team.domain.model.profile.DisplayProfile
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FlipContentSeparator
-import com.team.domain.util.FlipPagination
+import com.team.domain.util.paging.FlipPagingTokens
 
 /**
  * Flip 숏폼 형태
@@ -25,7 +25,7 @@ fun FlipShortFormScreen(
     modifier: Modifier = Modifier,
     posts: List<Post>
 ) {
-    val pagerState = rememberPagerState { FlipPagination.PAGE_SIZE }
+    val pagerState = rememberPagerState { FlipPagingTokens.POST_PAGE_SIZE }
 
     VerticalPager(
         modifier = modifier.fillMaxSize(),

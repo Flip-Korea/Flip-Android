@@ -1,4 +1,4 @@
-package com.team.data.testdoubles.local
+package com.team.data.local.testdoubles
 
 import com.team.data.local.entity.profile.MyProfileEntity
 

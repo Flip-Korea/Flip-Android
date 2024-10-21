@@ -93,6 +93,11 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    testImplementation(libs.androidx.paging.common)
+
     // Testing
     testImplementation(libs.retrofit.mock)
     testImplementation(libs.okhttp.mockWebServer)

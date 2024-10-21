@@ -22,7 +22,7 @@ class FlipApplication: Application(), ImageLoaderFactory {
         super.onCreate()
 
         // Kakao SDK 초기화
-        KakaoSdk.init(this, "ce32139ee6d69fd0b8b94704eff03893")
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 
     override fun newImageLoader(): ImageLoader {

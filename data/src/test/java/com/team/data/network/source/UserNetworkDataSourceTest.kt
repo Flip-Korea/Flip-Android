@@ -21,17 +21,16 @@ import com.team.data.network.model.response.post.PostListResponse
 import com.team.data.network.model.response.profile.ProfileResponse
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
-import com.team.data.testdoubles.network.addScrapRequestTestData
-import com.team.data.testdoubles.network.networkBlocksTestData
-import com.team.data.testdoubles.network.networkCategoriesTestData
-import com.team.data.testdoubles.network.networkFollowersTestData
-import com.team.data.testdoubles.network.networkFollowingsTestData
-import com.team.data.testdoubles.network.networkMyCommentsTestData
-import com.team.data.testdoubles.network.networkProfileTestData
-import com.team.data.testdoubles.network.postsResponseTestDataWithScrapComment
-import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.data.network.testdoubles.addScrapRequestTestData
+import com.team.data.network.testdoubles.networkBlocksTestData
+import com.team.data.network.testdoubles.networkCategoriesTestData
+import com.team.data.network.testdoubles.networkFollowersTestData
+import com.team.data.network.testdoubles.networkFollowingsTestData
+import com.team.data.network.testdoubles.networkMyCommentsTestData
+import com.team.data.network.testdoubles.networkProfileTestData
+import com.team.data.network.testdoubles.postsResponseTestDataWithScrapComment
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.domain.util.Result
-import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -39,6 +38,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -68,7 +68,7 @@ class UserNetworkDataSourceTest {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(server.url("/"))
             .build()
-            .create(com.team.data.network.retrofit.api.UserNetworkApi::class.java)
+            .create(UserNetworkApi::class.java)
 
         userNetworkDataSource = FakeUserNetworkDataSource(userNetworkApi)
     }
@@ -105,7 +105,7 @@ class UserNetworkDataSourceTest {
         val response =
             userNetworkDataSource.selectMyCategory(
                 profileId = "honggd",
-                category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3))
+                category = CategoryRequest(listOf(1, 2, 3))
             )
 
         val recordedRequest = server.takeRequest()

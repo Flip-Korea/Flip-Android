@@ -3,7 +3,7 @@ package com.team.data.local.dao
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.team.data.local.FlipDatabase
-import com.team.data.testdoubles.local.makeMyProfileEntityTestData
+import com.team.data.local.testdoubles.makeMyProfileEntityTestData
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication

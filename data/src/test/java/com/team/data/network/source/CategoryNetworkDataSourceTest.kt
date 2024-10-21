@@ -7,10 +7,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.network.model.response.category.CategoryResponse
 import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
-import com.team.data.testdoubles.network.networkCategoriesTestData
+import com.team.data.network.testdoubles.networkCategoriesTestData
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -19,6 +18,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

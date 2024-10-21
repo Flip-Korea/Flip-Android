@@ -7,9 +7,9 @@ import com.team.data.network.model.response.profile.DisplayProfileListResponse
 import com.team.data.network.model.response.tag.TagListResponse
 import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.source.fake.FakeSearchNetworkDataSource
-import com.team.data.testdoubles.network.displayProfileListResponseTestData
-import com.team.data.testdoubles.network.postsResponseTestData
-import com.team.data.testdoubles.network.tagListResponseTestData
+import com.team.data.network.testdoubles.displayProfileListResponseTestData
+import com.team.data.network.testdoubles.postsResponseTestData
+import com.team.data.network.testdoubles.tagListResponseTestData
 import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

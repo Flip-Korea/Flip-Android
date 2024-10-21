@@ -14,10 +14,10 @@ import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.fake.FakeAccountNetworkDataSource
 import com.team.data.repository.fake.FakeAccountRepository
-import com.team.data.testdoubles.network.networkAccountJsonTestData
-import com.team.data.testdoubles.network.networkRegisterTestData
-import com.team.data.testdoubles.network.networkTokenTestData
-import com.team.data.testdoubles.network.toExternal
+import com.team.data.network.testdoubles.networkAccountJsonTestData
+import com.team.data.network.testdoubles.networkRegisterTestData
+import com.team.data.network.testdoubles.networkTokenTestData
+import com.team.data.network.testdoubles.toExternal
 import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType

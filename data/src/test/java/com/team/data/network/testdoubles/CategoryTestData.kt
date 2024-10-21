@@ -1,4 +1,4 @@
-package com.team.data.testdoubles.network
+package com.team.data.network.testdoubles
 
 import com.team.data.local.entity.CategoryEntity
 import com.team.domain.model.category.Category

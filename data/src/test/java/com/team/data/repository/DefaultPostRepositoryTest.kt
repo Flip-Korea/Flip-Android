@@ -10,14 +10,14 @@ import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.fake.FakePostNetworkDataSource
 import com.team.data.repository.fake.FakePostRepository
-import com.team.data.testdoubles.network.postResponseTestData
-import com.team.data.testdoubles.network.resultIdResponseTestData
+import com.team.data.network.testdoubles.postResponseTestData
+import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.domain.type.PathParameterType
-import com.team.domain.util.FlipPagination
+import com.team.domain.util.paging.FlipPagingTokens
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -225,7 +225,7 @@ class DefaultPostRepositoryTest {
             postRepository.getPostsByPopularUserPagination(
                 2,
                 "1",
-                FlipPagination.PAGE_SIZE
+                FlipPagingTokens.POST_PAGE_SIZE
             ).last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)

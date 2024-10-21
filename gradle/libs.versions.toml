@@ -39,6 +39,7 @@ credentials = "1.2.2"
 firebaseBom = "33.0.0"
 kakaoSdk = "2.19.0"
 material-icons-extended = "1.6.8"
+paging = "3.3.2"
 
 [libraries]
 # add
@@ -114,6 +115,10 @@ kakao-sdk-v2-friend = { module = "com.kakao.sdk:v2-friend", version.ref = "kakao
 kakao-sdk-v2-navi = { module = "com.kakao.sdk:v2-navi", version.ref = "kakaoSdk" }
 kakao-sdk-v2-cert = { module = "com.kakao.sdk:v2-cert", version.ref = "kakaoSdk" }
 androidx-material-icons-extended = {  group = "androidx.compose.material", name = "material-icons-extended"}
+# Paging3
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

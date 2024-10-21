@@ -1,4 +1,4 @@
-package com.team.data.testdoubles.network
+package com.team.data.network.testdoubles
 
 import com.team.data.network.model.request.ProfileRequest
 import com.team.data.network.model.request.RegisterRequest
