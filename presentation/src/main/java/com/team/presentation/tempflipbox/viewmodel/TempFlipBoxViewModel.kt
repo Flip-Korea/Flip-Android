@@ -57,7 +57,7 @@ class TempFlipBoxViewModel @Inject constructor(
     private fun getTempPosts() {
         updateState { TempFlipBoxContract.UiState.Loading }
         viewModelScope.launch {
-            tempPostUseCases.getTempPostsUseCase(cursor.value.toString(), TEMP_POST_PAGE_SIZE).onEach { result ->
+            tempPostUseCases.getTempPostsPaginationUseCase(cursor.value.toString(), TEMP_POST_PAGE_SIZE).onEach { result ->
                 when (result) {
                     Result.Loading -> {
                         updateState { TempFlipBoxContract.UiState.Loading }

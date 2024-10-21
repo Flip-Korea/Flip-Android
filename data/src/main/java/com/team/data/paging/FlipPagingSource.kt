@@ -3,10 +3,10 @@ package com.team.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.team.data.network.networkCall
+import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.domain.util.paging.FlipPagingData
 import com.team.domain.util.paging.FlipPagingTokens
-import retrofit2.Response
 
 /**
  * Flip 에서 사용하는 PagingSource
@@ -44,7 +44,7 @@ import retrofit2.Response
  * @see FlipPagingData
  */
 class FlipPagingSource<T : Any, R : FlipPagingData<T>>(
-    private val apiCall: suspend (loadKey: Long?) -> Response<R>,
+    private val apiCall: suspend (loadKey: Long?) -> Result<R, ErrorType>,
     private val pageSize: Int,
 ) : PagingSource<Long, T>() {
 
@@ -60,9 +60,7 @@ class FlipPagingSource<T : Any, R : FlipPagingData<T>>(
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, T> {
         try {
             val loadKey = params.key
-            val result = networkCall {
-                apiCall(loadKey)
-            }
+            val result = apiCall(loadKey)
             if (result is Result.Error) {
                 return LoadResult.Error(
                     FlipPagingException(

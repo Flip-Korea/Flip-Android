@@ -133,7 +133,7 @@ fun TempFlipBoxScreen(
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp)) {
-            when(uiState) {
+            when (uiState) {
                 TempFlipBoxContract.UiState.Idle -> {
                     TempFlipBoxSkeletonScreen(
                         modifier = Modifier
@@ -172,8 +172,8 @@ fun TempFlipBoxScreen(
                                 .apply { if (selected) add(tempPost) else remove(tempPost) }
                         },
                         onSelectAll = { allSelected ->
-                            selectedTempPost = if (allSelected) uiState.tempPosts else listOf() }
-                        ,
+                            selectedTempPost = if (allSelected) uiState.tempPosts else listOf()
+                        },
                         onOpenCard = { tempPost ->
                             //TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
                         }
@@ -258,8 +258,11 @@ private fun TopToolBar(
 
     val selectModeText = if (tempPostsSize == selectedTempPostsSize) {
         stringResource(id = R.string.temp_flip_box_screen_card_all_select_off_btn)
-    } else { stringResource(id = R.string.temp_flip_box_screen_card_all_select_btn) }
-    val selectModeTextColor = if (tempPostsSize == selectedTempPostsSize) FlipTheme.colors.gray5 else FlipTheme.colors.main
+    } else {
+        stringResource(id = R.string.temp_flip_box_screen_card_all_select_btn)
+    }
+    val selectModeTextColor =
+        if (tempPostsSize == selectedTempPostsSize) FlipTheme.colors.gray5 else FlipTheme.colors.main
 
     Row(modifier = modifier) {
         Text(
@@ -550,5 +553,15 @@ private fun TempFlipBoxScreenPreview2() {
 }
 
 private val tempPostsTestData = List(15) {
-    TempPost(it.toLong(), "테스트 Title #$it", "", BackgroundColorType.entries.random(), FontStyleType.NORMAL, 1, "일상", emptyList(), "2024-08-28 17:19:17")
+    TempPost(
+        it.toLong(),
+        "테스트 Title #$it",
+        "",
+        BackgroundColorType.entries.random(),
+        FontStyleType.NORMAL,
+        1,
+        "일상",
+        emptyList(),
+        "2024-08-28 17:19:17"
+    )
 }
