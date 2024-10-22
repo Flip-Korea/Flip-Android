@@ -1,5 +1,7 @@
 package com.team.domain.usecase.temppost
 
+import androidx.paging.PagingData
+import com.team.domain.model.post.TempPost
 import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.util.ErrorType
@@ -14,6 +16,6 @@ class GetTempPostsPaginationUseCase @Inject constructor(
     /**
      * 임시 저장 한 Flip(Post) 목록을 페이지네이션을 통해 조회한다.
      */
-    operator fun invoke(cursor: String?, limit: Int): Flow<Result<TempPostList, ErrorType>> =
+    operator fun invoke(cursor: String?, limit: Int): Flow<PagingData<TempPost>> =
         tempPostRepository.getTempPostsPagination(cursor, limit)
 }
