@@ -10,7 +10,6 @@ import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.TempPost
-import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
 class DefaultTempPostRepository @Inject constructor(
     private val postNetworkDataSource: PostNetworkDataSource,

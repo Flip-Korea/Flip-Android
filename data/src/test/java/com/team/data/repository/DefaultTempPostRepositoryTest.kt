@@ -2,51 +2,38 @@ package com.team.data.repository
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.factory.TempPostFactory
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.fake.FakePostNetworkDataSource
-import com.team.data.network.testdoubles.factory.TempPostResponseFactory
-import com.team.data.repository.fake.FakeTempPostRepository
 import com.team.data.network.testdoubles.resultIdResponseTestData
 import com.team.data.paging.collectDataForTest
+import com.team.data.repository.fake.FakeTempPostRepository
 import com.team.domain.model.post.NewPost
-import com.team.domain.model.post.TempPost
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.domain.util.Result
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import makeTempPostListResponseTestData
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)

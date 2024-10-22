@@ -1,14 +1,12 @@
 package com.team.data.repository.fake
 
 import androidx.paging.PagingData
-import androidx.paging.map
 import com.team.data.network.model.request.toNetwork
 import com.team.data.network.model.response.post.toDomainModel
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.testdoubles.factory.TempPostResponseFactory
 import com.team.domain.model.post.NewPost
 import com.team.domain.model.post.TempPost
-import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result

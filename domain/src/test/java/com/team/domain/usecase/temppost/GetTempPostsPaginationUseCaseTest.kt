@@ -2,20 +2,15 @@ package com.team.domain.usecase.temppost
 
 import androidx.paging.PagingData
 import com.team.domain.model.post.TempPost
-import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.usecase.temppost.testdoubles.TempPostFactory
-import com.team.domain.usecase.temppost.testdoubles.TempPostPagingDataFactory
-import com.team.domain.util.ErrorType
-import com.team.domain.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
