@@ -65,6 +65,8 @@ class DefaultTempPostRepositoryTest {
     private val tempPostFactory = TempPostFactory()
     private val testDispatcher = UnconfinedTestDispatcher()
 
+    private val pageSize = 15
+
     @Before
     fun setUp() {
         mockkStatic(Log::class)
@@ -88,7 +90,7 @@ class DefaultTempPostRepositoryTest {
             .create(PostNetworkApi::class.java)
 
         postNetworkDataSource = FakePostNetworkDataSource(postNetworkApi)
-        tempPostRepository = FakeTempPostRepository(postNetworkDataSource)
+        tempPostRepository = FakeTempPostRepository(postNetworkDataSource, pageSize)
     }
 
     @After
@@ -98,12 +100,11 @@ class DefaultTempPostRepositoryTest {
 
     @Test
     fun `플립 임시저장 글 목록 페이지네이션 (getTempPostsPagination())`() = runTest {
-        val pageSize = 15
         val expectedList = List(pageSize) {
             tempPostFactory.create()
         }
 
-        val result = tempPostRepository.getTempPostsPagination("1", pageSize).first()
+        val result = tempPostRepository.getTempPostsPagination().first()
         val actualList = result.collectDataForTest(testDispatcher, testDispatcher)
 
         assertEquals(expectedList.size, actualList.size)

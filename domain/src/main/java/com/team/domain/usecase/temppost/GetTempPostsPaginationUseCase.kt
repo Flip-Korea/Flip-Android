@@ -13,9 +13,6 @@ class GetTempPostsPaginationUseCase @Inject constructor(
     private val tempPostRepository: TempPostRepository
 ) {
 
-    /**
-     * 임시 저장 한 Flip(Post) 목록을 페이지네이션을 통해 조회한다.
-     */
-    operator fun invoke(cursor: String?, limit: Int): Flow<PagingData<TempPost>> =
-        tempPostRepository.getTempPostsPagination(cursor, limit)
+    /** 임시 저장 한 Flip(Post) 목록을 페이지네이션을 통해 조회한다. */
+    operator fun invoke(): Flow<PagingData<TempPost>> = tempPostRepository.getTempPostsPagination()
 }

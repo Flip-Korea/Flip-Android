@@ -20,16 +20,14 @@ import kotlinx.coroutines.flow.flowOn
 
 class FakeTempPostRepository(
     private val postNetworkDataSource: PostNetworkDataSource,
+    private val pageSize: Int,
 ) : TempPostRepository {
 
     private val ioDispatcher = Dispatchers.IO
     private val tempPostResponseFactory = TempPostResponseFactory()
 
-    override fun getTempPostsPagination(
-        cursor: String?,
-        limit: Int,
-    ): Flow<PagingData<TempPost>> = flow {
-        val tempPosts = List(limit) {
+    override fun getTempPostsPagination(): Flow<PagingData<TempPost>> = flow {
+        val tempPosts = List(pageSize) {
             tempPostResponseFactory
                 .create()
                 .toDomainModel()

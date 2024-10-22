@@ -29,14 +29,12 @@ class DefaultTempPostRepository @Inject constructor(
     private val pager: Pager<Long, TempPostResponse>
 ) : TempPostRepository {
 
-    override fun getTempPostsPagination(
-        cursor: String?,
-        limit: Int,
-    ): Flow<PagingData<TempPost>> =
+    override fun getTempPostsPagination(): Flow<PagingData<TempPost>> =
         pager
             .flow
             .map { pagingData -> pagingData.map(TempPostResponse::toDomainModel) }
             .flowOn(ioDispatcher)
+            .catch { PagingData.empty<TempPost>() }
 
     override fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)

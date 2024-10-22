@@ -1,13 +1,18 @@
 package com.team.domain.usecase.temppost
 
+import androidx.paging.PagingData
+import com.team.domain.model.post.TempPost
 import com.team.domain.model.post.TempPostList
 import com.team.domain.repository.TempPostRepository
+import com.team.domain.usecase.temppost.testdoubles.TempPostFactory
+import com.team.domain.usecase.temppost.testdoubles.TempPostPagingDataFactory
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
@@ -18,40 +23,42 @@ class GetTempPostsPaginationUseCaseTest {
 
     private val tempPostRepository: TempPostRepository = mockk()
     private val getTempPostsUseCase = GetTempPostsPaginationUseCase(tempPostRepository)
+    private val tempPostFactory = TempPostFactory()
 
     /** 로컬 동기화 페이지네이션 X */
 
     @Test
     fun `임시저장함 목록 조회 실패`() = runTest {
         // Given
-        val limit = 5
-        val actualError = ErrorType.Network.BAD_REQUEST
+        val expected = PagingData.empty<TempPost>()
         every {
-            tempPostRepository.getTempPostsPagination(null, limit)
-        } returns flowOf(Result.Error(actualError))
+            tempPostRepository.getTempPostsPagination()
+        } returns flowOf(expected)
 
         // When
-        val result = getTempPostsUseCase(null, limit).first()
-        val expectedError = (result as Result.Error).error
+        val actual = getTempPostsUseCase().first()
+
 
         // Then
-        assertEquals(actualError, expectedError)
+        assertEquals(expected, actual)
     }
 
     @Test
     fun `임시저장함 목록 조회 성공`() = runTest {
         // Given
         val limit = 5
-        val actualTempPostList = TempPostList(emptyList(), 5)
+        val list = List(limit) {
+            tempPostFactory.create()
+        }
+        val expected = PagingData.from(list)
         every {
-            tempPostRepository.getTempPostsPagination(null, limit)
-        } returns flowOf(Result.Success(actualTempPostList))
+            tempPostRepository.getTempPostsPagination()
+        } returns flowOf(expected)
 
         // When
-        val result = getTempPostsUseCase(null, limit).first()
-        val expectedTempPostList = (result as Result.Success).data
+        val actual = getTempPostsUseCase().first()
 
         // Then
-        assertEquals(actualTempPostList.totalCount, expectedTempPostList.totalCount)
+        assertEquals(expected, actual)
     }
 }
