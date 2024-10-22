@@ -134,6 +134,7 @@ dependencies {
 
     // Paging3
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
     testImplementation(libs.androidx.paging.common)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
