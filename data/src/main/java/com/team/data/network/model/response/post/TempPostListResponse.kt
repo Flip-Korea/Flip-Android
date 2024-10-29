@@ -12,9 +12,9 @@ data class TempPostListResponse(
     override val list: List<TempPostResponse>
         get() = tempPosts
     override val firstKey: Long?
-        get() = if (list.first().tempPostId == 0L) null else list.first().tempPostId
-    override val lastKey: Long
-        get() = list.last().tempPostId
+        get() = null
+    override val lastKey: Long?
+        get() = if (tempPosts.isEmpty()) null else list.last().tempPostId
 }
 
 fun TempPostListResponse.toDomainModel(): TempPostList =

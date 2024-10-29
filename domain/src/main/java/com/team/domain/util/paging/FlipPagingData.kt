@@ -18,5 +18,5 @@ interface FlipPagingData <T> {
     /** 페이징 리스트 */
     val list: List<T>
     val firstKey: Long?
-    val lastKey: Long
+    val lastKey: Long?
 }

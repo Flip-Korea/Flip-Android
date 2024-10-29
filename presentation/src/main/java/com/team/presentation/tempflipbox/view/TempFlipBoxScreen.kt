@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -40,6 +39,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.team.designsystem.component.button.FlipLargeButton
 import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.component.modal.FlipModal
@@ -54,9 +57,14 @@ import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.presentation.R
 import com.team.presentation.common.error.FlipErrorScreen
+import com.team.presentation.common.paging.FlipLoadingIndicator
+import com.team.presentation.common.paging.isEndOfPaginationReached
+import com.team.presentation.common.paging.isError
+import com.team.presentation.common.paging.isLoading
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.tempflipbox.TempFlipBoxContract
 import com.team.presentation.util.asColor
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * 임시저장함 화면
@@ -64,6 +72,8 @@ import com.team.presentation.util.asColor
 @Composable
 fun TempFlipBoxScreen(
     modifier: Modifier = Modifier,
+    tempPostPaging: LazyPagingItems<TempPost>,
+    tempPostTotalSize: Int,
     uiState: TempFlipBoxContract.UiState,
     uiEvent: (TempFlipBoxContract.UiEvent) -> Unit,
     isModalVisible: Boolean,
@@ -89,7 +99,9 @@ fun TempFlipBoxScreen(
         FlipModal(
             modalStyle = FlipModalStyle.MEDIUM,
             mainTitle = stringResource(id = R.string.temp_flip_box_screen_modal_title),
-            subTitle = stringResource(id = R.string.temp_flip_box_screen_modal_sub_title),
+            subTitle = stringResource(id = R.string.temp_flip_box_screen_modal_sub_title_1) +
+                    " ${selectedTempPost.size}" +
+                    stringResource(id = R.string.temp_flip_box_screen_modal_sub_title_2),
             itemText = stringResource(id = R.string.temp_flip_box_screen_modal_action_1),
             itemText2 = stringResource(id = R.string.temp_flip_box_screen_modal_action_2),
             onItemClick = {
@@ -160,9 +172,10 @@ fun TempFlipBoxScreen(
                     )
                 }
 
-                is TempFlipBoxContract.UiState.TempPosts -> {
+                TempFlipBoxContract.UiState.TempPostSuccess -> {
                     TempPostsSection(
-                        tempPosts = uiState.tempPosts,
+                        tempPostPaging = tempPostPaging,
+                        tempPostTotalSize = tempPostTotalSize,
                         selectedTempPosts = selectedTempPost,
                         selectMode = selectMode,
                         innerPadding = innerPadding,
@@ -172,7 +185,8 @@ fun TempFlipBoxScreen(
                                 .apply { if (selected) add(tempPost) else remove(tempPost) }
                         },
                         onSelectAll = { allSelected ->
-                            selectedTempPost = if (allSelected) uiState.tempPosts else listOf()
+                            selectedTempPost =
+                                if (allSelected) tempPostPaging.itemSnapshotList.items else listOf()
                         },
                         onOpenCard = { tempPost ->
                             //TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
@@ -187,7 +201,7 @@ fun TempFlipBoxScreen(
 /**
  * 임시저장플립 섹션 (메인 컨텐츠)
  *
- * @param tempPosts 임시저장플립 리스트
+ * @param tempPostPaging 임시저장플립 리스트
  * @param selectMode 편집모드(선택모드)
  * @param selectedTempPosts 선택 된 임시저장플립 리스트
  * @param innerPadding Scaffold에서 받아와서 개별 적용을 위한 innerPadding
@@ -198,7 +212,8 @@ fun TempFlipBoxScreen(
 @Composable
 private fun TempPostsSection(
     modifier: Modifier = Modifier,
-    tempPosts: List<TempPost>,
+    tempPostPaging: LazyPagingItems<TempPost>,
+    tempPostTotalSize: Int,
     selectMode: Boolean,
     selectedTempPosts: List<TempPost>,
     innerPadding: PaddingValues,
@@ -218,13 +233,13 @@ private fun TempPostsSection(
                 modifier = Modifier.fillMaxWidth(),
                 selectMode = selectMode,
                 selectedTempPostsSize = selectedTempPosts.size,
-                tempPostsSize = tempPosts.size,
+                tempPostsSize = tempPostTotalSize,
                 onSelectAll = { onSelectAll(it) }
             )
-            if (tempPosts.isNotEmpty()) {
+            if (tempPostTotalSize != 0) {
                 TempPostList(
                     modifier = Modifier.fillMaxWidth(),
-                    tempPosts = tempPosts,
+                    tempPostPaging = tempPostPaging,
                     selectMode = selectMode,
                     selectedTempPosts = selectedTempPosts,
                     onSelect = onSelect,
@@ -233,7 +248,7 @@ private fun TempPostsSection(
             }
         }
 
-        if (tempPosts.isEmpty()) {
+        if (tempPostTotalSize == 0) {
             TempPostListEmptyScreen(Modifier.fillMaxSize())
         }
     }
@@ -301,7 +316,7 @@ private fun TopToolBar(
 /**
  * 임시저장플립 리스트
  *
- * @param tempPosts 임시저장플립 리스트
+ * @param tempPostPaging 임시저장플립 리스트
  * @param selectMode 편집모드(선택모드)
  * @param selectedTempPosts 선택 된 임시저장플립
  * @param onSelect 임시저장플립 선택 시 수행 할 작업
@@ -310,7 +325,7 @@ private fun TopToolBar(
 @Composable
 private fun TempPostList(
     modifier: Modifier = Modifier,
-    tempPosts: List<TempPost>,
+    tempPostPaging: LazyPagingItems<TempPost>,
     selectMode: Boolean,
     selectedTempPosts: List<TempPost>,
     onSelect: (TempPost, Boolean) -> Unit,
@@ -324,25 +339,40 @@ private fun TempPostList(
 
     LazyColumn(
         modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.Top),
         contentPadding = PaddingValues(bottom = 8.dp)
     ) {
         items(
-            items = tempPosts,
-            key = { it.tempPostId }
-        ) { tempPost ->
+            count = tempPostPaging.itemCount,
+            key = tempPostPaging.itemKey { it.tempPostId }
+        ) { idx ->
+            val tempPost = tempPostPaging[idx]
+            tempPost?.let {
+                val selected = selectedTempPostIds.contains(tempPost.tempPostId)
+                TempPostCard(
+                    title = tempPost.title,
+                    postAt = tempPost.postAt,
+                    bgColorType = tempPost.bgColorType,
+                    selectMode = selectMode,
+                    selected = selected,
+                    onSelect = { onSelect(tempPost, !selected) },
+                    onOpenCard = { onOpenCard(tempPost) }
+                )
+            }
+        }
 
-            val selected = selectedTempPostIds.contains(tempPost.tempPostId)
-
-            TempPostCard(
-                title = tempPost.title,
-                postAt = tempPost.postAt,
-                bgColorType = tempPost.bgColorType,
-                selectMode = selectMode,
-                selected = selected,
-                onSelect = { onSelect(tempPost, !selected) },
-                onOpenCard = { onOpenCard(tempPost) }
-            )
+        // TODO: 임시
+        item {
+            val pagingError = tempPostPaging.isError()
+            when {
+                pagingError != null -> { Text(text = pagingError.asString(), color = Color.Red) }
+                tempPostPaging.isLoading() -> { FlipLoadingIndicator() }
+                tempPostPaging.isEndOfPaginationReached() -> { Text(
+                    text = "총 \$Total 개",
+                    color = Color.Green
+                ) }
+            }
         }
     }
 }
@@ -504,21 +534,29 @@ private fun TempPostCardPreview3() {
 @Preview(showBackground = true)
 @Composable
 private fun TempPostListPreview() {
-    TempPostList(
-        tempPosts = tempPostsTestData,
-        selectMode = true,
-        selectedTempPosts = emptyList(),
-        onSelect = { tempPost, select -> },
-        onOpenCard = { }
-    )
+    val tempPostPaging = tempPostPagingTestData.collectAsLazyPagingItems()
+
+    FlipAppTheme {
+        TempPostList(
+            tempPostPaging = tempPostPaging,
+            selectMode = true,
+            selectedTempPosts = emptyList(),
+            onSelect = { tempPost, select -> },
+            onOpenCard = { }
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun TempFlipBoxScreenPreview() {
+    val tempPostPaging = tempPostPagingTestData.collectAsLazyPagingItems()
+
     FlipAppTheme {
         TempFlipBoxScreen(
-            uiState = TempFlipBoxContract.UiState.TempPosts(tempPostsTestData),
+            tempPostPaging = tempPostPaging,
+            tempPostTotalSize = 10,
+            uiState = TempFlipBoxContract.UiState.Idle,
             uiEvent = { },
             isModalVisible = false,
             onBackPress = { }
@@ -529,9 +567,13 @@ private fun TempFlipBoxScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun TempFlipBoxEmptyScreenPreview() {
+    val tempPostPaging = tempPostPagingTestData.collectAsLazyPagingItems()
+
     FlipAppTheme {
         TempFlipBoxScreen(
-            uiState = TempFlipBoxContract.UiState.TempPosts(listOf()),
+            tempPostPaging = tempPostPaging,
+            tempPostTotalSize = 10,
+            uiState = TempFlipBoxContract.UiState.Idle,
             uiEvent = { },
             isModalVisible = false,
             onBackPress = { }
@@ -542,8 +584,12 @@ private fun TempFlipBoxEmptyScreenPreview() {
 @Preview(showBackground = true, name = "Loading")
 @Composable
 private fun TempFlipBoxScreenPreview2() {
+    val tempPostPaging = tempPostPagingTestData.collectAsLazyPagingItems()
+
     FlipAppTheme {
         TempFlipBoxScreen(
+            tempPostPaging = tempPostPaging,
+            tempPostTotalSize = 10,
             uiState = TempFlipBoxContract.UiState.Loading,
             uiEvent = { },
             isModalVisible = false,
@@ -552,16 +598,20 @@ private fun TempFlipBoxScreenPreview2() {
     }
 }
 
-private val tempPostsTestData = List(15) {
-    TempPost(
-        it.toLong(),
-        "테스트 Title #$it",
-        "",
-        BackgroundColorType.entries.random(),
-        FontStyleType.NORMAL,
-        1,
-        "일상",
-        emptyList(),
-        "2024-08-28 17:19:17"
+private val tempPostPagingTestData = flowOf(
+    PagingData.from(
+        List(15) {
+            TempPost(
+                it.toLong(),
+                "테스트 Title #$it",
+                "",
+                BackgroundColorType.entries.random(),
+                FontStyleType.NORMAL,
+                1,
+                "일상",
+                emptyList(),
+                "2024-08-28 17:19:17"
+            )
+        }
     )
-}
+)
