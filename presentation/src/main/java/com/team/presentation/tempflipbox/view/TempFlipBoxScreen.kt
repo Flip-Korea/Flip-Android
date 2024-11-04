@@ -184,10 +184,6 @@ fun TempFlipBoxScreen(
                                 .toMutableList()
                                 .apply { if (selected) add(tempPost) else remove(tempPost) }
                         },
-                        onSelectAll = { allSelected ->
-                            selectedTempPost =
-                                if (allSelected) tempPostPaging.itemSnapshotList.items else listOf()
-                        },
                         onOpenCard = { tempPost ->
                             //TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
                         }
@@ -206,7 +202,6 @@ fun TempFlipBoxScreen(
  * @param selectedTempPosts 선택 된 임시저장플립 리스트
  * @param innerPadding Scaffold에서 받아와서 개별 적용을 위한 innerPadding
  * @param onSelect 임시저장플립 선택 시 수행할 작업
- * @param onSelectAll 전체선택 시 수행할 작업 (Boolean 값이 true면, 전체 선택 실행)
  * @param onOpenCard 임시저장플립 열기
  */
 @Composable
@@ -218,7 +213,6 @@ private fun TempPostsSection(
     selectedTempPosts: List<TempPost>,
     innerPadding: PaddingValues,
     onSelect: (TempPost, Boolean) -> Unit,
-    onSelectAll: (Boolean) -> Unit,
     onOpenCard: (TempPost) -> Unit
 ) {
 
@@ -234,7 +228,6 @@ private fun TempPostsSection(
                 selectMode = selectMode,
                 selectedTempPostsSize = selectedTempPosts.size,
                 tempPostsSize = tempPostTotalSize,
-                onSelectAll = { onSelectAll(it) }
             )
             if (tempPostTotalSize != 0) {
                 TempPostList(
@@ -260,7 +253,6 @@ private fun TempPostsSection(
  * @param selectMode 편집모드(선택모드)
  * @param selectedTempPostsSize 선택 된 임시저장플립 리스트 사이즈
  * @param tempPostsSize 임시저장플립 리스트 사이즈
- * @param onSelectAll 전체선택 시 수행할 작업 (Boolean 값이 true면, 전체 선택 실행)
  */
 @Composable
 private fun TopToolBar(
@@ -268,17 +260,7 @@ private fun TopToolBar(
     selectMode: Boolean,
     selectedTempPostsSize: Int,
     tempPostsSize: Int,
-    onSelectAll: (Boolean) -> Unit,
 ) {
-
-    val selectModeText = if (tempPostsSize == selectedTempPostsSize) {
-        stringResource(id = R.string.temp_flip_box_screen_card_all_select_off_btn)
-    } else {
-        stringResource(id = R.string.temp_flip_box_screen_card_all_select_btn)
-    }
-    val selectModeTextColor =
-        if (tempPostsSize == selectedTempPostsSize) FlipTheme.colors.gray5 else FlipTheme.colors.main
-
     Row(modifier = modifier) {
         Text(
             text = buildAnnotatedString {
@@ -297,19 +279,6 @@ private fun TopToolBar(
                 .weight(1f)
                 .wrapContentWidth(Alignment.Start),
         )
-        if (selectMode) {
-            Text(
-                text = selectModeText,
-                style = FlipTheme.typography.headline1,
-                color = selectModeTextColor,
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.End)
-                    .clickableSingleWithoutRipple {
-                        onSelectAll(tempPostsSize != selectedTempPostsSize)
-                    }
-            )
-        }
     }
 }
 
