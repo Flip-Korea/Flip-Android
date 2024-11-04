@@ -4,6 +4,8 @@ package com.team.domain.util.paging
 object FlipPagingTokens {
     /** Post 페이지 사이즈: 15 */
     const val POST_PAGE_SIZE = 15
+    const val POST_PREFETCH_DISTANCE = 15
     /** TempPost 페이지 사이즈: 15 */
     const val TEMP_POST_PAGE_SIZE = 15
+    const val TEMP_POST_PREFETCH_DISTANCE = 15
 }

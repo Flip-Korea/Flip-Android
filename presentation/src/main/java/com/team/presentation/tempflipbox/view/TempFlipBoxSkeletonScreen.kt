@@ -27,13 +27,15 @@ import com.team.designsystem.theme.FlipTheme
 @Composable
 fun TempFlipBoxSkeletonScreen(
     modifier: Modifier = Modifier,
-    itemCount: Int
+    itemCount: Int,
 ) {
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(13.dp, alignment = Alignment.Top),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
         Box(
             modifier = Modifier
                 .align(Alignment.Start)
@@ -42,18 +44,24 @@ fun TempFlipBoxSkeletonScreen(
                 .shimmerEffect()
                 .background(FlipTheme.colors.gray3)
         )
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            for (i in 1..itemCount) {
-                CardSection(
-                    modifier = Modifier.fillMaxWidth(),
-                    containerColor = FlipTheme.colors.gray1,
-                    contentColor = FlipTheme.colors.gray3
-                )
-            }
+            CardSectionList(itemCount)
         }
+    }
+}
+
+@Composable
+private fun CardSectionList(itemCount: Int) {
+    for (i in 1..itemCount) {
+        CardSection(
+            modifier = Modifier.fillMaxWidth(),
+            containerColor = FlipTheme.colors.gray1,
+            contentColor = FlipTheme.colors.gray3
+        )
     }
 }
 

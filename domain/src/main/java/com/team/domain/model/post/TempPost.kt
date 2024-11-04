@@ -13,4 +13,24 @@ data class TempPost(
     val categoryName: String,
     val tags: List<String>,
     val postAt: String,
-)
+) {
+    constructor(
+        tempPostId: Long,
+        title: String,
+        content: String,
+        bgColorType: BackgroundColorType,
+        categoryId: Int,
+        categoryName: String,
+        postAt: String
+    ): this(
+        tempPostId,
+        title,
+        content,
+        bgColorType,
+        FontStyleType.NORMAL,
+        categoryId,
+        categoryName,
+        emptyList(),
+        postAt
+    )
+}

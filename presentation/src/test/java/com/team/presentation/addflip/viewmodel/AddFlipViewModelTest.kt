@@ -16,6 +16,7 @@ import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.TestDispatcherRule
 import com.team.presentation.addflip.AddFlipUiEvent
 import com.team.presentation.addflip.state.AddPostState
+import com.team.presentation.addflip.state.AddTempPostState
 import com.team.presentation.addflip.testdoubles.categoriesTestData
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
@@ -89,7 +90,7 @@ class AddFlipViewModelTest {
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
         every {
-            validatePostUseCase(title, content, bgColorType, tags, categoryId)
+            validatePostUseCase(title, content, tags)
         } returns listOf(ValidationResult.Success)
 
         every {
@@ -140,7 +141,7 @@ class AddFlipViewModelTest {
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
         every {
-            validatePostUseCase(title, content, bgColorType, tags, categoryId)
+            validatePostUseCase(title, content, tags)
         } returns listOf(ValidationResult.Success)
 
         every {
@@ -191,7 +192,7 @@ class AddFlipViewModelTest {
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
         every {
-            validatePostUseCase(title, content, bgColorType, tags, categoryId)
+            validatePostUseCase(title, content, tags)
         } returns listOf(ValidationResult.Success)
 
         every {
@@ -270,10 +271,10 @@ class AddFlipViewModelTest {
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
-        var addPostState: AddPostState? = null
+        var addTempPostState: AddTempPostState? = null
         val job = launch {
-            addFlipViewModel.addPostState.collectLatest {
-                addPostState = it
+            addFlipViewModel.addTempPostState.collectLatest {
+                addTempPostState = it
             }
         }
 
@@ -284,7 +285,7 @@ class AddFlipViewModelTest {
         job.cancel()
 
         // Then
-        val result = addPostState?.tempPostSave
+        val result = addTempPostState?.tempPostSave
 
         assertNotNull(result)
         assert(result!!)
@@ -321,10 +322,10 @@ class AddFlipViewModelTest {
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
-        var addPostState: AddPostState? = null
+        var addTempPostState: AddTempPostState? = null
         val job = launch {
-            addFlipViewModel.addPostState.collectLatest {
-                addPostState = it
+            addFlipViewModel.addTempPostState.collectLatest {
+                addTempPostState = it
             }
         }
 
@@ -335,8 +336,8 @@ class AddFlipViewModelTest {
         job.cancel()
 
         // Then
-        val result = addPostState?.tempPostSave
-        val actualErrorBody = addPostState?.error
+        val result = addTempPostState?.tempPostSave
+        val actualErrorBody = addTempPostState?.error
 
         assertNotNull(result)
         assert(!result!!)

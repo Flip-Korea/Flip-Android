@@ -132,6 +132,11 @@ dependencies {
     // Icons Extended
     implementation(libs.androidx.material.icons.extended)
 
+    // Paging3
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+    testImplementation(libs.androidx.paging.common)
+
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
     testImplementation(libs.junit)

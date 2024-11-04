@@ -1,6 +1,5 @@
 package com.team.presentation.tempflipbox
 
-import com.team.domain.model.post.TempPost
 import com.team.presentation.common.util.BaseUiEffect
 import com.team.presentation.common.util.BaseUiEvent
 import com.team.presentation.common.util.BaseUiState
@@ -14,7 +13,7 @@ class TempFlipBoxContract {
         data object Idle: UiState()
         data object Loading: UiState()
         data class Error(val error: UiText): UiState()
-        data class TempPosts(val tempPosts: List<TempPost> = emptyList()): UiState()
+        data object TempPostSuccess: UiState()
     }
 
     sealed class UiEvent: BaseUiEvent {
@@ -22,7 +21,6 @@ class TempFlipBoxContract {
         data class OnTempPostsDelete(val tempPostIds: List<Long>? = null): UiEvent()
         data object NavigateToPostDetail: UiEvent()
         data object NavigateToBack: UiEvent()
-        data object GetTempPosts: UiEvent()
     }
 
     sealed class UiEffect: BaseUiEffect {

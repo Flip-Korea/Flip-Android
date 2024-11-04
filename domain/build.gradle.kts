@@ -16,4 +16,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockK)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Paging (without Android dependencies)
+    implementation(libs.androidx.paging.common)
 }

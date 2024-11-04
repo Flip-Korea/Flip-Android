@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.team.data.ErrorBodyFactory
+import com.team.data.network.networkCall
 import com.team.domain.util.ErrorType
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -78,7 +79,9 @@ class FlipPagingSourceTest {
         val flipPagingSource = FlipPagingSource(
             pageSize = pageSize,
             apiCall = { loadKey ->
-                apiService.getPosts(loadKey?.toString(), pageSize)
+                networkCall {
+                    apiService.getPosts(loadKey?.toString(), pageSize)
+                }
             }
         )
 
@@ -114,7 +117,9 @@ class FlipPagingSourceTest {
         val flipPagingSource = FlipPagingSource(
             pageSize = pageSize,
             apiCall = { loadKey ->
-                apiService.getPosts(loadKey?.toString(), pageSize)
+                networkCall {
+                    apiService.getPosts(loadKey?.toString(), pageSize)
+                }
             }
         )
 
