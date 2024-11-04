@@ -18,9 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun TempFlipBoxRoute(
-    onBackPress: () -> Unit
-) {
+fun TempFlipBoxRoute(onBackPress: () -> Unit) {
     val tempFlipBoxViewModel: TempFlipBoxViewModel = hiltViewModel()
     val uiState by tempFlipBoxViewModel.uiState.collectAsStateWithLifecycle()
     val tempPostPaging = tempFlipBoxViewModel.tempPostPaging.collectAsLazyPagingItems()

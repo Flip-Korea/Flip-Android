@@ -1,6 +1,5 @@
 package com.team.presentation.tempflipbox.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -66,9 +65,7 @@ import com.team.presentation.tempflipbox.TempFlipBoxContract
 import com.team.presentation.util.asColor
 import kotlinx.coroutines.flow.flowOf
 
-/**
- * 임시저장함 화면
- */
+/** 임시저장함 화면 */
 @Composable
 fun TempFlipBoxScreen(
     modifier: Modifier = Modifier,
@@ -83,14 +80,15 @@ fun TempFlipBoxScreen(
     var selectedTempPost by rememberSaveable { mutableStateOf(listOf<TempPost>()) }
     var selectMode by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(!selectMode) {
-        if (!selectMode) selectedTempPost = listOf()
+        if (!selectMode) {
+            selectedTempPost = listOf()
+        }
     }
 
     var isOpen by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(isModalVisible) {
         if (isModalVisible) {
             isOpen = true
-            Log.d("Modal_log", "Modal Triggered ! (In Composable)")
         }
     }
 
@@ -151,7 +149,7 @@ fun TempFlipBoxScreen(
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxWidth(),
-                        itemCount = 7
+                        itemCount = SKELETON_ITEM_COUNT
                     )
                 }
 
@@ -160,7 +158,7 @@ fun TempFlipBoxScreen(
                         modifier = Modifier
                             .padding(innerPadding)
                             .fillMaxWidth(),
-                        itemCount = 7
+                        itemCount = SKELETON_ITEM_COUNT
                     )
                 }
 
@@ -335,12 +333,20 @@ private fun TempPostList(
         item {
             val pagingError = tempPostPaging.isError()
             when {
-                pagingError != null -> { Text(text = pagingError.asString(), color = Color.Red) }
-                tempPostPaging.isLoading() -> { FlipLoadingIndicator() }
-                tempPostPaging.isEndOfPaginationReached() -> { Text(
-                    text = "총 \$Total 개",
-                    color = Color.Green
-                ) }
+                pagingError != null -> {
+                    Text(text = pagingError.asString(), color = Color.Red)
+                }
+
+                tempPostPaging.isLoading() -> {
+                    FlipLoadingIndicator()
+                }
+
+                tempPostPaging.isEndOfPaginationReached() -> {
+                    Text(
+                        text = "총 \$Total 개",
+                        color = Color.Green
+                    )
+                }
             }
         }
     }
@@ -417,9 +423,7 @@ private fun TempPostCard(
     }
 }
 
-/**
- * 선택(체크) 버튼
- */
+/** 선택(체크) 버튼 */
 @Composable
 private fun SelectButton(
     modifier: Modifier = Modifier,
@@ -447,6 +451,8 @@ private fun SelectButton(
         }
     }
 }
+
+private const val SKELETON_ITEM_COUNT = 7
 
 @Preview(name = "selectMode = false")
 @Composable

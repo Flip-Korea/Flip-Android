@@ -55,8 +55,8 @@ class TempFlipBoxViewModel @Inject constructor(
     /** UiState와 Paging의 LoadState를 동기화하기 위해 사용 */
     fun updateUiStateWithLoadState(flipLoadState: FlipLoadState) {
         when (flipLoadState) {
-            FlipLoadState.Error -> { }
-            FlipLoadState.Loading -> { }
+            FlipLoadState.Error -> {}
+            FlipLoadState.Loading -> {}
             FlipLoadState.NotLoading -> updateState { TempFlipBoxContract.UiState.TempPostSuccess }
         }
     }
@@ -65,9 +65,7 @@ class TempFlipBoxViewModel @Inject constructor(
         sendEffect { TempFlipBoxContract.UiEffect.ShowDialogModal }
     }
 
-    /**
-     * 임시저장플립 삭제
-     */
+    /** 임시저장플립 삭제 */
     //TODO: 로딩처리는 어떻게?
     private fun deleteTempPosts(tempPostIds: List<Long>) {
         var results = emptyList<Pair<Boolean, UiText>>()
@@ -87,7 +85,6 @@ class TempFlipBoxViewModel @Inject constructor(
                             is Result.Success -> {
                                 results = results.toMutableList()
                                     .apply { add(Pair(true, UiText.DynamicString(""))) }
-
                             }
                         }
                     }.launchIn(this)
@@ -95,6 +92,7 @@ class TempFlipBoxViewModel @Inject constructor(
             }.awaitAll()
 
             val filteredResult: List<Pair<Boolean, UiText>> = results.filter { !it.first }
+
             showSnackbar(
                 message = if (filteredResult.isNotEmpty()) {
                     filteredResult.last().second
@@ -106,14 +104,6 @@ class TempFlipBoxViewModel @Inject constructor(
     }
 }
 
-private suspend fun showSnackbar(
-    message: UiText
-) {
-    SnackbarController.sendEvent(
-        event = SnackbarEvent(
-            message = message
-        )
-    )
+private suspend fun showSnackbar(message: UiText) {
+    SnackbarController.sendEvent(event = SnackbarEvent(message = message))
 }
-
-private const val TEMP_POST_PAGE_SIZE = 5
