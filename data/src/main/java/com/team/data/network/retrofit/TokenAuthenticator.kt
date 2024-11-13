@@ -5,6 +5,7 @@ import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -12,10 +13,11 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import javax.inject.Inject
 
-/** Only Called Once When Receive HTTP Status Code 401. **/
-class TokenAuthenticator @Inject constructor(
+/** Only Called Once When Receive HTTP Status Code 401. * */
+class TokenAuthenticator
+@Inject
+constructor(
     private val dataStoreManager: DataStoreManager,
     private val authNetworkApi: AccountNetworkApi,
 ) : Authenticator {
@@ -28,7 +30,8 @@ class TokenAuthenticator @Inject constructor(
 
         // get originalRefreshToken
         val originalRefreshToken = runBlocking {
-            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN)
+            dataStoreManager
+                .getStringData(DataStoreType.TokenType.REFRESH_TOKEN)
                 .catch { emit("") }
                 .first()
         }
@@ -49,15 +52,18 @@ class TokenAuthenticator @Inject constructor(
             newTokens.body()?.let { res ->
                 dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, res.accessToken)
                 dataStoreManager.saveData(DataStoreType.TokenType.REFRESH_TOKEN, res.refreshToken)
-                response.request.newBuilder()
+                response.request
+                    .newBuilder()
                     .header("Authorization", "Bearer ${res.accessToken}")
                     .build()
             }
         }
     }
 
-    private suspend fun refreshToken(originalRefreshToken: String?): retrofit2.Response<TokenResponse> =
+    private suspend fun refreshToken(
+        originalRefreshToken: String?
+    ): retrofit2.Response<TokenResponse> =
         authNetworkApi.tokenRefresh("Bearer $originalRefreshToken")
-        // token must start with 'Bearer'
-        // refresh token from refresh api service
+    // token must start with 'Bearer'
+    // refresh token from refresh api service
 }

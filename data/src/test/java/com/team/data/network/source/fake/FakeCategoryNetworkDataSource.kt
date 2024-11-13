@@ -6,9 +6,8 @@ import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakeCategoryNetworkDataSource(
-    private val categoryNetworkApi: CategoryNetworkApi,
-) : CategoryNetworkDataSource {
+class FakeCategoryNetworkDataSource(private val categoryNetworkApi: CategoryNetworkApi) :
+    CategoryNetworkDataSource {
 
     override suspend fun getCategories(): Result<List<CategoryResponse>, ErrorType> {
         val result = categoryNetworkApi.getCategories()

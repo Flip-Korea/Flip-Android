@@ -31,45 +31,46 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
-//TODO 네트워크 캐싱 필요
+// TODO 네트워크 캐싱 필요
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     // TODO OkHttpClient 에 Timeout 추가 하기
 
-    /** Interceptor Module **/
+    /** Interceptor Module * */
     @Singleton
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
-            //TODO AGP 8.0부터는 BuildConfig 기본 비활성화, 9.0부터는 삭제 예정
-                if (BuildConfig.DEBUG) {
-                    setLevel(HttpLoggingInterceptor.Level.BODY)
-                } else {
-                    setLevel(HttpLoggingInterceptor.Level.NONE)
-                }
+            // TODO AGP 8.0부터는 BuildConfig 기본 비활성화, 9.0부터는 삭제 예정
+            if (BuildConfig.DEBUG) {
+                setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
         }
     }
 
-    /** OkHttpClient Module **/
+    /** OkHttpClient Module * */
     @LoggingOkHttpClient
     @Singleton
     @Provides
-    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(httpLoggingInterceptor)
-//        .callTimeout(1, TimeUnit.MINUTES)
-        .readTimeout(3, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+    fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            //        .callTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(3, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
 
     @TokenOkHttpClient
     @Singleton
@@ -77,7 +78,7 @@ object NetworkModule {
     fun provideTokenOkHttpClient(
         tokenAuthenticator: TokenAuthenticator,
         tokenInterceptor: TokenInterceptor,
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .authenticator(tokenAuthenticator)
@@ -86,7 +87,7 @@ object NetworkModule {
             .build()
     }
 
-    /** TokenInterceptor & TokenAuthentication **/
+    /** TokenInterceptor & TokenAuthentication * */
     @Singleton
     @Provides
     fun provideTokenAuthentication(
@@ -96,44 +97,37 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTokenInterceptor(
-        dataStoreManager: DataStoreManager,
-    ): TokenInterceptor = TokenInterceptor(dataStoreManager)
+    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
+        TokenInterceptor(dataStoreManager)
 
-    /** Retrofit Instance **/
+    /** Retrofit Instance * */
     @DefaultRetrofitBuilder
     @Singleton
     @Provides
     fun provideRetrofitBuilder(): Retrofit.Builder {
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(BuildConfig.FLIP_MOCK_SERVER_URL)
     }
 
-    /** ApiService **/
+    /** ApiService * */
     @Singleton
     @Provides
     fun provideAuthApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): AccountNetworkApi = retrofit
-        .client(loggingOkHttpClient)
-        .build()
-        .create(AccountNetworkApi::class.java)
+    ): AccountNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(AccountNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideUserApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): UserNetworkApi = retrofit
-        .client(tokenOkHttpClient)
-        .build()
-        .create(UserNetworkApi::class.java)
+    ): UserNetworkApi =
+        retrofit.client(tokenOkHttpClient).build().create(UserNetworkApi::class.java)
 
     @Singleton
     @Provides
@@ -145,59 +139,54 @@ object NetworkModule {
         httpLoggingInterceptor: HttpLoggingInterceptor,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
     ): PostNetworkApi {
-//        val cache = CacheInterceptorManager().getCache(context, 10)
-//        val cacheInterceptor = CacheInterceptorManager().createCacheInterceptor(5)
-//        val forceCacheInterceptor = CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
+        //        val cache = CacheInterceptorManager().getCache(context, 10)
+        //        val cacheInterceptor = CacheInterceptorManager().createCacheInterceptor(5)
+        //        val forceCacheInterceptor =
+        // CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
 
-        val client = OkHttpClient.Builder()
-            .authenticator(tokenAuthenticator)
-//            .cache(cache)
-            .addInterceptor(tokenInterceptor)
-//            .addNetworkInterceptor(cacheInterceptor)
-//            .addInterceptor(forceCacheInterceptor)
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
+        val client =
+            OkHttpClient.Builder()
+                .authenticator(tokenAuthenticator)
+                //            .cache(cache)
+                .addInterceptor(tokenInterceptor)
+                //            .addNetworkInterceptor(cacheInterceptor)
+                //            .addInterceptor(forceCacheInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
 
-        return retrofit
-            .client(client)
-            .build()
-            .create(PostNetworkApi::class.java)
+        return retrofit.client(client).build().create(PostNetworkApi::class.java)
     }
 
     @Singleton
     @Provides
     fun provideSearchApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
-        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
-    ): SearchNetworkApi = retrofit
-        .client(loggingOkHttpClient)
-        .build()
-        .create(SearchNetworkApi::class.java)
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
+    ): SearchNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(SearchNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideCategoryApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
-        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
-    ): CategoryNetworkApi = retrofit
-        .client(loggingOkHttpClient)
-        .build()
-        .create(CategoryNetworkApi::class.java)
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
+    ): CategoryNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(CategoryNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideInterestCategoryApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
-        @DefaultRetrofitBuilder retrofit: Retrofit.Builder
-    ): InterestCategoryNetworkApi = retrofit
-        .client(tokenOkHttpClient)
-        .build()
-        .create(InterestCategoryNetworkApi::class.java)
+        @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
+    ): InterestCategoryNetworkApi =
+        retrofit.client(tokenOkHttpClient).build().create(InterestCategoryNetworkApi::class.java)
 
-    /** DataSource **/
+    /** DataSource * */
     @Singleton
     @Provides
-    fun provideAccountNetworkDataSource(accountNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
+    fun provideAccountNetworkDataSource(
+        accountNetworkApi: AccountNetworkApi
+    ): AccountNetworkDataSource {
         return AccountNetworkDataSourceImpl(accountNetworkApi)
     }
 
@@ -209,13 +198,17 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideCategoryNetworkDataSource(categoryNetworkApi: CategoryNetworkApi): CategoryNetworkDataSource {
+    fun provideCategoryNetworkDataSource(
+        categoryNetworkApi: CategoryNetworkApi
+    ): CategoryNetworkDataSource {
         return CategoryNetworkDataSourceImpl(categoryNetworkApi)
     }
 
     @Singleton
     @Provides
-    fun provideInterestCategoryNetworkDataSource(interestCategoryNetworkApi: InterestCategoryNetworkApi): InterestCategoryNetworkDataSource {
+    fun provideInterestCategoryNetworkDataSource(
+        interestCategoryNetworkApi: InterestCategoryNetworkApi
+    ): InterestCategoryNetworkDataSource {
         return InterestCategoryNetworkDataSourceImpl(interestCategoryNetworkApi)
     }
 
@@ -227,20 +220,16 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideSearchNetworkDataSource(searchNetworkApi: SearchNetworkApi): SearchNetworkDataSource {
+    fun provideSearchNetworkDataSource(
+        searchNetworkApi: SearchNetworkApi
+    ): SearchNetworkDataSource {
         return SearchNetworkDataSourceImpl(searchNetworkApi)
     }
 }
 
-/** Qualifier **/
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class LoggingOkHttpClient
+/** Qualifier * */
+@Qualifier @Retention(AnnotationRetention.BINARY) annotation class LoggingOkHttpClient
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class DefaultRetrofitBuilder
+@Qualifier @Retention(AnnotationRetention.BINARY) annotation class DefaultRetrofitBuilder
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class TokenOkHttpClient
+@Qualifier @Retention(AnnotationRetention.BINARY) annotation class TokenOkHttpClient

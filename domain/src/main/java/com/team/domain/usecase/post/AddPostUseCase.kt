@@ -7,32 +7,29 @@ import com.team.domain.type.FlipContentSeparator
 import com.team.domain.type.FontStyleType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class AddPostUseCase @Inject constructor(
-    private val postRepository: PostRepository
-) {
+class AddPostUseCase @Inject constructor(private val postRepository: PostRepository) {
 
-    /**
-     * Flip(Post)를 추가(게시) 한다.
-     */
+    /** Flip(Post)를 추가(게시) 한다. */
     operator fun invoke(
         title: String,
         content: List<String>,
         bgColorType: BackgroundColorType,
         fontStyleType: FontStyleType = FontStyleType.NORMAL,
         tags: List<String>,
-        categoryId: Int
+        categoryId: Int,
     ): Flow<Result<Boolean, ErrorType>> {
-        val newPost = NewPost(
-            title = title,
-            content = content.joinToString(FlipContentSeparator.SEPARATOR),
-            bgColorType = bgColorType,
-            fontStyleType = fontStyleType,
-            tags = tags,
-            categoryId = categoryId
-        )
+        val newPost =
+            NewPost(
+                title = title,
+                content = content.joinToString(FlipContentSeparator.SEPARATOR),
+                bgColorType = bgColorType,
+                fontStyleType = fontStyleType,
+                tags = tags,
+                categoryId = categoryId,
+            )
         return postRepository.addPost(newPost)
     }
 }

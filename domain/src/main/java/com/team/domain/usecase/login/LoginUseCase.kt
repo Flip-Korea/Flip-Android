@@ -4,15 +4,11 @@ import com.team.domain.repository.AccountRepository
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-/**
- * 소셜로그인 Usecase
- */
-class LoginUseCase @Inject constructor(
-    private val accountRepository: AccountRepository
-) {
+/** 소셜로그인 Usecase */
+class LoginUseCase @Inject constructor(private val accountRepository: AccountRepository) {
 
     /**
      * @param socialLoginPlatform 소셜로그인 플랫폼 구분
@@ -20,7 +16,6 @@ class LoginUseCase @Inject constructor(
      */
     operator fun invoke(
         socialLoginPlatform: SocialLoginPlatform,
-        accountId: String
-    ): Flow<Result<Boolean, ErrorType>> =
-        accountRepository.login(socialLoginPlatform, accountId)
+        accountId: String,
+    ): Flow<Result<Boolean, ErrorType>> = accountRepository.login(socialLoginPlatform, accountId)
 }

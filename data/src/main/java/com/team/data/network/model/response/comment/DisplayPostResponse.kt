@@ -16,5 +16,4 @@ data class DisplayPostResponse(
 fun DisplayPostResponse.toDomainModel(): DisplayPost =
     DisplayPost(postId, title, nickname, myComment, createdAt)
 
-fun List<DisplayPostResponse>.toDomainModel(): List<DisplayPost> =
-    this.map { it.toDomainModel() }
+fun List<DisplayPostResponse>.toDomainModel(): List<DisplayPost> = this.map { it.toDomainModel() }

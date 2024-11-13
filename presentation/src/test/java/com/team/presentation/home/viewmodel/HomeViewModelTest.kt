@@ -5,9 +5,8 @@ import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
 import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.interestcategory.GetFilteredMyCategoriesUseCase
-import com.team.domain.usecase.post.GetPostsUseCase
 import com.team.domain.usecase.post.GetPostUseCases
-import com.team.presentation.home.testdoubles.getPostListTestData
+import com.team.domain.usecase.post.GetPostsUseCase
 import com.team.domain.usecase.profile.GetCurrentProfileIdUseCase
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
@@ -16,11 +15,13 @@ import com.team.presentation.TestDispatcherRule
 import com.team.presentation.fake.FakeDataStoreManager
 import com.team.presentation.home.state.PostState
 import com.team.presentation.home.testdoubles.categoriesTestData
+import com.team.presentation.home.testdoubles.getPostListTestData
 import com.team.presentation.home.testdoubles.myCategoriesTestData
 import com.team.presentation.util.uitext.UiText
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -34,17 +35,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
-    @get:Rule
-    val testDispatcher = TestDispatcherRule()
+    @get:Rule val testDispatcher = TestDispatcherRule()
 
     /** 백그라운드 작업을 동기적으로 실행 */
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var homeViewModel: HomeViewModel
     private val getPostUseCases: GetPostUseCases = mockk()
@@ -64,7 +62,6 @@ class HomeViewModelTest {
         every { getCurrentProfileIdUseCase() } returns flowOf("currentProfileId")
     }
 
-
     @Test
     fun `카테고리 가져와서 정렬하기(고정 + 관심 카테고리)`() = runTest {
         // Given
@@ -73,12 +70,13 @@ class HomeViewModelTest {
 
         val expected = myCategoriesTestData
 
-        homeViewModel = HomeViewModel(
-            UnconfinedTestDispatcher(),
-            getPostUseCases,
-            getCurrentProfileIdUseCase,
-            getFilteredMyCategoriesUseCase
-        )
+        homeViewModel =
+            HomeViewModel(
+                UnconfinedTestDispatcher(),
+                getPostUseCases,
+                getCurrentProfileIdUseCase,
+                getFilteredMyCategoriesUseCase,
+            )
 
         /** 코루틴(비동기 작업) 다 기다림 */
         advanceUntilIdle()
@@ -100,19 +98,16 @@ class HomeViewModelTest {
         val expectedPostList = getPostListTestData(15)
         every { getPostsUseCase(null) } returns flowOf(Result.Success(expectedPostList))
 
-        homeViewModel = HomeViewModel(
-            UnconfinedTestDispatcher(),
-            getPostUseCases,
-            getCurrentProfileIdUseCase,
-            getFilteredMyCategoriesUseCase
-        )
+        homeViewModel =
+            HomeViewModel(
+                UnconfinedTestDispatcher(),
+                getPostUseCases,
+                getCurrentProfileIdUseCase,
+                getFilteredMyCategoriesUseCase,
+            )
 
         var postState: PostState? = null
-        val job  = launch {
-            homeViewModel.postState.collectLatest {
-                postState = it
-            }
-        }
+        val job = launch { homeViewModel.postState.collectLatest { postState = it } }
 
         // When (100 -> '전체' 카테고리)
         homeViewModel.getPostsByCategory(100)
@@ -130,21 +125,19 @@ class HomeViewModelTest {
     fun `홈 화면 Post(FlipCard) 가져오기 - 실패 시`() = runTest {
         // Given
         val expectedErrorBody = ErrorBody(code = "", errors = null, message = "error")
-        every { getPostsUseCase(null) } returns flowOf(Result.Error(error = ErrorType.Network.NOT_FOUND, errorBody = expectedErrorBody))
+        every { getPostsUseCase(null) } returns
+            flowOf(Result.Error(error = ErrorType.Network.NOT_FOUND, errorBody = expectedErrorBody))
 
-        homeViewModel = HomeViewModel(
-            UnconfinedTestDispatcher(),
-            getPostUseCases,
-            getCurrentProfileIdUseCase,
-            getFilteredMyCategoriesUseCase
-        )
+        homeViewModel =
+            HomeViewModel(
+                UnconfinedTestDispatcher(),
+                getPostUseCases,
+                getCurrentProfileIdUseCase,
+                getFilteredMyCategoriesUseCase,
+            )
 
         var postState: PostState? = null
-        val job  = launch {
-            homeViewModel.postState.collectLatest {
-                postState = it
-            }
-        }
+        val job = launch { homeViewModel.postState.collectLatest { postState = it } }
 
         // When (100 -> '전체' 카테고리)
         homeViewModel.getPostsByCategory(100)

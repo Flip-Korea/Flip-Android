@@ -11,5 +11,4 @@ data class ScrapRequest(
     @Json(name = "message") val message: String?,
 )
 
-fun NewScrap.toNetwork(): ScrapRequest =
-    ScrapRequest(profileId, postId, message)
+fun NewScrap.toNetwork(): ScrapRequest = ScrapRequest(profileId, postId, message)

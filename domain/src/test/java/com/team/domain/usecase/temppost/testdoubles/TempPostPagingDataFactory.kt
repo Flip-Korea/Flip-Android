@@ -8,9 +8,7 @@ class TempPostPagingDataFactory {
     private val tempPostFactory = TempPostFactory()
 
     fun create(pageSize: Int): PagingData<TempPost> {
-        val list = List(pageSize) {
-            tempPostFactory.create()
-        }
+        val list = List(pageSize) { tempPostFactory.create() }
         return PagingData.from(list)
     }
 

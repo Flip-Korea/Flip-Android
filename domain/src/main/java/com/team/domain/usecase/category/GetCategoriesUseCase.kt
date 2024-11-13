@@ -2,6 +2,7 @@ package com.team.domain.usecase.category
 
 import com.team.domain.model.category.Category
 import com.team.domain.repository.CategoryRepository
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -9,11 +10,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
-class GetCategoriesUseCase @Inject constructor(
-    private val categoryRepository: CategoryRepository,
-) {
+class GetCategoriesUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
     /**
      * Local DB 에서 모든 카테고리를 가져온다.
@@ -27,13 +25,12 @@ class GetCategoriesUseCase @Inject constructor(
                 flowOf(categories)
             } else {
                 flow {
-                    categoryRepository.refreshCategories()
-                    val result = categoryRepository.getCategoriesFromLocal()
-                    emitAll(result)
-                }
+                        categoryRepository.refreshCategories()
+                        val result = categoryRepository.getCategoriesFromLocal()
+                        emitAll(result)
+                    }
                     .catch { emit(emptyList()) }
             }
         }
     }
 }
-

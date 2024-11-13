@@ -11,8 +11,6 @@ data class CategoryResponse(
     @Json(name = "categoryName") val categoryName: String,
 )
 
-fun CategoryResponse.toDomainModel(): Category =
-    Category(categoryId, categoryName)
+fun CategoryResponse.toDomainModel(): Category = Category(categoryId, categoryName)
 
-fun CategoryResponse.toEntity(): CategoryEntity =
-    CategoryEntity(categoryId, categoryName)
+fun CategoryResponse.toEntity(): CategoryEntity = CategoryEntity(categoryId, categoryName)

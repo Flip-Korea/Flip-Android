@@ -32,15 +32,14 @@ class InterestCategoryNetworkApiTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        interestCategoryNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(InterestCategoryNetworkApi::class.java)
+        interestCategoryNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(InterestCategoryNetworkApi::class.java)
     }
 
     @After
@@ -50,7 +49,8 @@ class InterestCategoryNetworkApiTest {
 
     @Test
     fun `getMyCategories Call Test`() = runTest {
-        val myCategories = """
+        val myCategories =
+            """
                 [ {
                   "categoryId" : 1,
                   "categoryName" : "일상"
@@ -58,15 +58,18 @@ class InterestCategoryNetworkApiTest {
                   "categoryId" : 2,
                   "categoryName" : "IT과학"
                 } ]
-            """.trimIndent()
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(myCategories)
-        })
+            """
+                .trimIndent()
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(myCategories)
+            }
+        )
 
         val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val expectedResponse = moshi.adapter<List<CategoryResponse>?>(adapter)
-            .fromJson(myCategories)
+        val expectedResponse =
+            moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
 
         val actualResponse = interestCategoryNetworkApi.getMyCategories()
 
@@ -77,17 +80,11 @@ class InterestCategoryNetworkApiTest {
 
     @Test
     fun `updateMyCategories Call Test`() = runTest {
-
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(201) })
 
         val categoryRequest = CategoryRequest(listOf(1, 2, 3))
 
-        val response =
-            interestCategoryNetworkApi.updateMyCategories(
-                categoryIds = categoryRequest
-            )
+        val response = interestCategoryNetworkApi.updateMyCategories(categoryIds = categoryRequest)
 
         val recordedRequest = server.takeRequest()
 
@@ -96,9 +93,6 @@ class InterestCategoryNetworkApiTest {
 
         assertEquals(201, response.code())
         assertNotNull(actualRequestBody)
-        assertEquals(
-            categoryRequest.categoryIds,
-            actualRequestBody!!.categoryIds
-        )
+        assertEquals(categoryRequest.categoryIds, actualRequestBody!!.categoryIds)
     }
 }

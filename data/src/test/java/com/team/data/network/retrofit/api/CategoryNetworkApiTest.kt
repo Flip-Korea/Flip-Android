@@ -33,15 +33,14 @@ class CategoryNetworkApiTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        categoryNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(com.team.data.network.retrofit.api.CategoryNetworkApi::class.java)
+        categoryNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(com.team.data.network.retrofit.api.CategoryNetworkApi::class.java)
     }
 
     @After
@@ -51,10 +50,12 @@ class CategoryNetworkApiTest {
 
     @Test
     fun `getCategories Call Test`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(networkCategoriesTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(networkCategoriesTestData)
+            }
+        )
 
         val actualResponse = categoryNetworkApi.getCategories()
 

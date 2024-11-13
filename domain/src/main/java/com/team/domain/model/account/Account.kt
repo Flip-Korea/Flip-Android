@@ -6,5 +6,5 @@ data class Account(
     val email: String?,
     val name: String?,
     val phoneNum: String?,
-    val profiles: List<MyProfile>
+    val profiles: List<MyProfile>,
 )

@@ -13,7 +13,7 @@ import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.model.response.profile.DisplayProfileResponse
 import kotlin.random.Random
 
-/** 총 3페이지만 반환 **/
+/** 총 3페이지만 반환 * */
 fun makeScrapListResponseTestData(
     profileId: String,
     cursor: String,
@@ -21,28 +21,27 @@ fun makeScrapListResponseTestData(
 ): PostListResponse {
 
     val postIds = mutableListOf<Long>()
-    repeat(pageSize) {
-        postIds.add(Random.nextLong(1, 50000))
-    }
+    repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<PostResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt()+1).toString()
+    val nextCursor = (cursor.toInt() + 1).toString()
 
-    postIds.forEachIndexed{ index, postId ->
+    postIds.forEachIndexed { index, postId ->
         list.add(
             PostResponse(
                 postId = postId,
-                profile = DisplayProfileResponse(
-                    profileId = profileId,
-                    nickname = "nickname",
-                    photoUrl = "https://test.com/123",
-                    isFollower = false,
-                    isFollowing = false,
-                    introduce = null,
-                    followerCnt = 30,
-                    rating = null
-                ),
+                profile =
+                    DisplayProfileResponse(
+                        profileId = profileId,
+                        nickname = "nickname",
+                        photoUrl = "https://test.com/123",
+                        isFollower = false,
+                        isFollowing = false,
+                        introduce = null,
+                        followerCnt = 30,
+                        rating = null,
+                    ),
                 title = "TestTitle($index)",
                 content = "TestContent($index)",
                 liked = false,
@@ -54,8 +53,8 @@ fun makeScrapListResponseTestData(
                 categoryId = 1,
                 bgColorType = BackgroundColorTypeResponse.BLUE,
                 fontStyleType = FontStyleTypeResponse.NORMAL,
-                tags = listOf("1","2"),
-                postAt = cursor
+                tags = listOf("1", "2"),
+                postAt = cursor,
             )
         )
     }
@@ -64,11 +63,11 @@ fun makeScrapListResponseTestData(
         hasNext = hasNext,
         nextCursor = nextCursor,
         postCnt = pageSize.toLong(),
-        posts = list
+        posts = list,
     )
 }
 
-/** 총 3페이지만 반환 **/
+/** 총 3페이지만 반환 * */
 fun makeFollowerListResponseTestData(
     profileId: String,
     cursor: String,
@@ -76,15 +75,13 @@ fun makeFollowerListResponseTestData(
 ): FollowerListResponse {
 
     val profileIds = mutableListOf<Long>()
-    repeat(pageSize) {
-        profileIds.add(Random.nextLong(1, 50000))
-    }
+    repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayProfileResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt()+1).toString()
+    val nextCursor = (cursor.toInt() + 1).toString()
 
-    profileIds.forEachIndexed{ index, profildId ->
+    profileIds.forEachIndexed { index, profildId ->
         list.add(
             DisplayProfileResponse(
                 profileId = profildId.toString(),
@@ -94,19 +91,15 @@ fun makeFollowerListResponseTestData(
                 isFollowing = false,
                 introduce = null,
                 followerCnt = 30,
-                rating = null
+                rating = null,
             )
         )
     }
 
-    return FollowerListResponse(
-        hasNext = hasNext,
-        nextCursor = nextCursor,
-        followers = list
-    )
+    return FollowerListResponse(hasNext = hasNext, nextCursor = nextCursor, followers = list)
 }
 
-/** 총 3페이지만 반환 **/
+/** 총 3페이지만 반환 * */
 fun makeFollowingListResponseTestData(
     profileId: String,
     cursor: String,
@@ -114,15 +107,13 @@ fun makeFollowingListResponseTestData(
 ): FollowingListResponse {
 
     val profileIds = mutableListOf<Long>()
-    repeat(pageSize) {
-        profileIds.add(Random.nextLong(1, 50000))
-    }
+    repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayProfileResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt()+1).toString()
+    val nextCursor = (cursor.toInt() + 1).toString()
 
-    profileIds.forEachIndexed{ index, profildId ->
+    profileIds.forEachIndexed { index, profildId ->
         list.add(
             DisplayProfileResponse(
                 profileId = profildId.toString(),
@@ -132,19 +123,15 @@ fun makeFollowingListResponseTestData(
                 isFollowing = false,
                 introduce = null,
                 followerCnt = 30,
-                rating = null
+                rating = null,
             )
         )
     }
 
-    return FollowingListResponse(
-        hasNext = hasNext,
-        nextCursor = nextCursor,
-        followings = list
-    )
+    return FollowingListResponse(hasNext = hasNext, nextCursor = nextCursor, followings = list)
 }
 
-/** 총 3페이지만 반환 **/
+/** 총 3페이지만 반환 * */
 fun makeBlockListResponseTestData(
     profileId: String,
     cursor: String,
@@ -152,15 +139,13 @@ fun makeBlockListResponseTestData(
 ): BlockListResponse {
 
     val profileIds = mutableListOf<Long>()
-    repeat(pageSize) {
-        profileIds.add(Random.nextLong(1, 50000))
-    }
+    repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<BlockProfileResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt()+1).toString()
+    val nextCursor = (cursor.toInt() + 1).toString()
 
-    profileIds.forEachIndexed{ index, profildId ->
+    profileIds.forEachIndexed { index, profildId ->
         list.add(
             BlockProfileResponse(
                 blockId = 322L,
@@ -171,14 +156,10 @@ fun makeBlockListResponseTestData(
         )
     }
 
-    return BlockListResponse(
-        hasNext = hasNext,
-        nextCursor = nextCursor,
-        blockList = list
-    )
+    return BlockListResponse(hasNext = hasNext, nextCursor = nextCursor, blockList = list)
 }
 
-/** 총 3페이지만 반환 **/
+/** 총 3페이지만 반환 * */
 fun makeMyCommentListResponseTestData(
     profileId: String,
     cursor: String,
@@ -186,29 +167,23 @@ fun makeMyCommentListResponseTestData(
 ): MyCommentListResponse {
 
     val postIds = mutableListOf<Long>()
-    repeat(pageSize) {
-        postIds.add(Random.nextLong(1, 50000))
-    }
+    repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayPostResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt()+1).toString()
+    val nextCursor = (cursor.toInt() + 1).toString()
 
-    postIds.forEachIndexed{ index, postId ->
+    postIds.forEachIndexed { index, postId ->
         list.add(
             DisplayPostResponse(
                 postId = postId,
                 title = "title",
                 nickname = "nickname",
                 myComment = "asdasdasda",
-                createdAt = "2024-04-25"
+                createdAt = "2024-04-25",
             )
         )
     }
 
-    return MyCommentListResponse(
-        hasNext = hasNext,
-        nextCursor = nextCursor,
-        posts = list
-    )
+    return MyCommentListResponse(hasNext = hasNext, nextCursor = nextCursor, posts = list)
 }
