@@ -16,7 +16,9 @@ import com.team.presentation.flip.FlipRoute
 import com.team.presentation.home.HomeRoute
 import com.team.presentation.profile.view.ProfileScreen
 
-/** Flip 의 하단 탐색 바 네비게이션 */
+/**
+ * Flip 의 하단 탐색 바 네비게이션
+ */
 @Composable
 fun BottomNavigation(
     modifier: Modifier = Modifier,
@@ -26,8 +28,7 @@ fun BottomNavigation(
     deleteToken: () -> Unit,
 ) {
 
-    val currentRoute =
-        bottomNavController.currentBackStackEntryAsState().value?.destination?.route ?: ""
+    val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route ?: ""
 
     NavHost(
         modifier = modifier.fillMaxSize(),
@@ -36,23 +37,30 @@ fun BottomNavigation(
         enterTransition = { EnterTransition.None },
         popEnterTransition = { popEnterTransition(currentRoute) },
         exitTransition = { exitTransition(currentRoute) },
-        popExitTransition = { ExitTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
         composable(route = ScreenItem.HOME.name) {
-            HomeRoute(innerPadding = innerPadding, onSettingClick = onSettingClick)
+            HomeRoute(
+                innerPadding = innerPadding,
+                onSettingClick = onSettingClick
+            )
         }
 
-        composable(route = ScreenItem.FLIP.name) { FlipRoute() }
+        composable(route = ScreenItem.FLIP.name) {
+            FlipRoute()
+        }
 
         addFlipNavigation(
             currentRoute = currentRoute,
             popBackStack = { bottomNavController.popBackStack() },
-            onNavigateToTempFlipBox = {
-                bottomNavController.navigate(ScreenItem.TEMP_FLIP_BOX.name)
-            },
+            onNavigateToTempFlipBox = { bottomNavController.navigate(ScreenItem.TEMP_FLIP_BOX.name) },
         )
 
-        composable(route = ScreenItem.PROFILE.name) { ProfileScreen(deleteToken = deleteToken) }
+        composable(route = ScreenItem.PROFILE.name) {
+            ProfileScreen(
+                deleteToken = deleteToken
+            )
+        }
     }
 }
 

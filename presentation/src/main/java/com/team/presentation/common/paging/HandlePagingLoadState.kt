@@ -8,7 +8,6 @@ import androidx.paging.compose.LazyPagingItems
 
 /**
  * Paging의 LoadState 를 통합적으로 관리하기 위해 사용
- *
  * @param lazyPagingItems 페이징 아이템
  * @param updateState [FlipLoadState] 통합 상태를 전달
  */
@@ -17,14 +16,13 @@ fun <T : Any> HandleLoadState(
     lazyPagingItems: LazyPagingItems<T>,
     updateState: (FlipLoadState) -> Unit,
 ) {
-    val loadStates =
-        remember(lazyPagingItems.loadState) {
-            listOf(
-                lazyPagingItems.loadState.refresh,
-                lazyPagingItems.loadState.prepend,
-                lazyPagingItems.loadState.append,
-            )
-        }
+    val loadStates = remember(lazyPagingItems.loadState) {
+        listOf(
+            lazyPagingItems.loadState.refresh,
+            lazyPagingItems.loadState.prepend,
+            lazyPagingItems.loadState.append,
+        )
+    }
 
     LaunchedEffect(loadStates) {
         when {

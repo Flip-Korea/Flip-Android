@@ -60,44 +60,41 @@ import com.team.presentation.util.asColor
  * @param post 플립(Post)
  */
 @Composable
-fun FlipScreen(modifier: Modifier = Modifier, post: Post) {
+fun FlipScreen(
+    modifier: Modifier = Modifier,
+    post: Post,
+) {
 
     var screenWidth by remember { mutableIntStateOf(0) }
 
     var isFabExpanded by remember { mutableStateOf(false) }
 
     /** 컨텐츠(본문) 값들 */
-    // TODO: split 연산을 여기서 하지말고 애초에 Post 모델 대신 ComposePost 같은 프레젠테이션 용 모델 생성해서 사용하기
-    val contents by rememberSaveable {
-        mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR))
-    }
+    //TODO: split 연산을 여기서 하지말고 애초에 Post 모델 대신 ComposePost 같은 프레젠테이션 용 모델 생성해서 사용하기
+    val contents by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR)) }
     var currentPage by remember { mutableIntStateOf(0) }
-    var content by rememberSaveable {
-        mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR)[0])
-    }
+    var content by rememberSaveable { mutableStateOf(post.content.split(FlipContentSeparator.SEPARATOR)[0]) }
     LaunchedEffect(currentPage) { content = contents[currentPage] }
 
     Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .onSizeChanged { screenWidth = it.width }
-                .drawWithContent {
-                    drawFlipGradient(post.bgColorType.asColor())
-                    drawContent()
-                }
+        modifier = modifier
+            .fillMaxSize()
+            .onSizeChanged { screenWidth = it.width }
+            .drawWithContent {
+                drawFlipGradient(post.bgColorType.asColor())
+                drawContent()
+            }
     ) {
         Column(
-            modifier =
-                modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 24.dp + CommonPaddingValues.TopBarVertical,
-                    ),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 24.dp + CommonPaddingValues.TopBarVertical
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             /** 타이틀 등이 포함된 상단 영역 */
             TopSection(
@@ -106,7 +103,7 @@ fun FlipScreen(modifier: Modifier = Modifier, post: Post) {
                 createdAt = post.createdAt,
                 liked = post.liked,
                 likeCnt = post.likeCnt,
-                commentCnt = post.commentCnt,
+                commentCnt = post.commentCnt
             )
             /** 컨텐츠(본문) 영역 */
             ContentSection(
@@ -114,13 +111,12 @@ fun FlipScreen(modifier: Modifier = Modifier, post: Post) {
                 content = content,
                 onTap = { offset ->
                     /** 화면 가로 길이 중간을 기준으로 탭할 때 페이지 넘김 수행 */
-                    currentPage =
-                        if (offset.x < screenWidth / 2) {
-                            (currentPage - 1).coerceIn(contents.indices)
-                        } else {
-                            (currentPage + 1).coerceIn(contents.indices)
-                        }
-                },
+                    currentPage = if (offset.x < screenWidth / 2) {
+                        (currentPage - 1).coerceIn(contents.indices)
+                    } else {
+                        (currentPage + 1).coerceIn(contents.indices)
+                    }
+                }
             )
             /** 작성자의 정보 및 드롭다운 등이 포함된 하단 영역 (+ 현재 페이지 위치) */
             BottomSection(
@@ -131,26 +127,28 @@ fun FlipScreen(modifier: Modifier = Modifier, post: Post) {
                 isFollowing = post.profile.isFollowing,
                 isFollower = post.profile.isFollower,
                 currentPage = currentPage,
-                onFollowButtonClick = {},
+                onFollowButtonClick = { },
             )
         }
 
         /** Fab Button (간격 수동 기입) */
         FlipFab(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 24.dp, end = 16.dp),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 24.dp, end = 16.dp),
             isExpanded = isFabExpanded,
             liked = post.liked,
             scraped = post.scraped,
             changeExpanded = { isFabExpanded = !isFabExpanded },
             onDismissRequest = { isFabExpanded = false },
             fabEvent = { event ->
-                // TODO: 각 이벤트에 맞는 네트워크 요청 로직 수행
+                //TODO: 각 이벤트에 맞는 네트워크 요청 로직 수행
                 when (event) {
-                    FabEvent.OnLikeClick -> {}
-                    FabEvent.OnScrapClick -> {}
+                    FabEvent.OnLikeClick -> { }
+                    FabEvent.OnScrapClick -> { }
                     else -> {}
                 }
-            },
+            }
         )
     }
 }
@@ -174,19 +172,16 @@ private fun TopSection(
     commentCnt: Long,
 ) {
     Column(modifier = modifier) {
+
         Text(text = title, style = FlipTheme.typography.headline3)
         Spacer(modifier = Modifier.size(8.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = createdAt,
-                style = FlipTheme.typography.body3,
-                color = FlipTheme.colors.gray5,
-            )
+            Text(text = createdAt, style = FlipTheme.typography.body3, color = FlipTheme.colors.gray5)
 
             Row {
 
@@ -194,13 +189,11 @@ private fun TopSection(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        imageVector =
-                            ImageVector.vectorResource(
-                                if (!liked) R.drawable.ic_outlined_post_like
-                                else R.drawable.ic_filled_post_like
-                            ),
+                        imageVector = ImageVector.vectorResource(
+                            if (!liked) R.drawable.ic_outlined_post_like else R.drawable.ic_filled_post_like
+                        ),
                         contentDescription = null,
-                        tint = likeIconColor,
+                        tint = likeIconColor
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     Text(text = "$likeCnt", style = FlipTheme.typography.body3)
@@ -211,9 +204,8 @@ private fun TopSection(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        imageVector =
-                            ImageVector.vectorResource(R.drawable.ic_outlined_post_comment),
-                        contentDescription = null,
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_post_comment),
+                        contentDescription = null
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     Text(text = "$commentCnt", style = FlipTheme.typography.body3)
@@ -233,16 +225,23 @@ private fun TopSection(
 private fun ContentSection(
     modifier: Modifier = Modifier,
     content: String,
-    onTap: (Offset) -> Unit,
+    onTap: (Offset) -> Unit
 ) {
     Box(
-        modifier =
-            modifier.fillMaxSize().pointerInput(Unit) {
-                detectTapGestures(onTap = { offset -> onTap(offset) })
+        modifier = modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset -> onTap(offset) }
+                )
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
-        Text(text = content, style = FlipTheme.typography.body7, textAlign = TextAlign.Start)
+        Text(
+            text = content,
+            style = FlipTheme.typography.body7,
+            textAlign = TextAlign.Start
+        )
     }
 }
 
@@ -272,12 +271,12 @@ private fun BottomSection(
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom,
+            verticalAlignment = Alignment.Bottom
         ) {
             ProfileSection(
                 imageUrl = imageUrl,
@@ -285,7 +284,7 @@ private fun BottomSection(
                 profileId = profileId,
                 isFollowing = isFollowing,
                 isFollower = isFollower,
-                onFollowButtonClick = onFollowButtonClick,
+                onFollowButtonClick = onFollowButtonClick
             )
         }
 
@@ -312,7 +311,7 @@ private fun ProfileSection(
     profileId: String,
     isFollowing: Boolean,
     isFollower: Boolean,
-    onFollowButtonClick: () -> Unit,
+    onFollowButtonClick: () -> Unit
 ) {
     val context = LocalContext.current
     val imageRequest = remember {
@@ -322,33 +321,33 @@ private fun ProfileSection(
             .error(R.drawable.ic_logo_dark)
             .build()
     }
-    LaunchedEffect(Unit) { context.imageLoader.enqueue(imageRequest) }
+    LaunchedEffect(Unit) {
+        context.imageLoader.enqueue(imageRequest)
+    }
 
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            modifier = Modifier.clip(CircleShape).size(40.dp),
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(40.dp),
             model = imageRequest,
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
         Column {
             Text(text = nickname, style = FlipTheme.typography.body5)
-            Text(
-                text = profileId,
-                style = FlipTheme.typography.body1,
-                color = FlipTheme.colors.gray6,
-            )
+            Text(text = profileId, style = FlipTheme.typography.body1, color = FlipTheme.colors.gray6)
         }
         FlipFollowButton(
             modifier = Modifier.padding(start = 4.dp),
             size = FlipFollowButtonSize.Small2,
             isFollowing = isFollowing,
             isFollower = isFollower,
-            onClick = onFollowButtonClick,
+            onClick = onFollowButtonClick
         )
     }
 }
@@ -381,7 +380,7 @@ private fun ProfileSectionPreview() {
             profileId = "@90WXYZ6789A1B2C3",
             isFollowing = false,
             isFollower = false,
-            onFollowButtonClick = {},
+            onFollowButtonClick = { }
         )
     }
 }
@@ -390,7 +389,9 @@ private fun ProfileSectionPreview() {
 @Composable
 private fun BottomSectionPreview() {
 
-    var isFabExpanded by remember { mutableStateOf(false) }
+    var isFabExpanded by remember {
+        mutableStateOf(false)
+    }
 
     FlipAppTheme {
         BottomSection(
@@ -400,7 +401,7 @@ private fun BottomSectionPreview() {
             isFollowing = false,
             isFollower = false,
             currentPage = 1,
-            onFollowButtonClick = {},
+            onFollowButtonClick = { },
         )
     }
 }
@@ -409,30 +410,29 @@ private fun BottomSectionPreview() {
 @Composable
 private fun FlipScreenPreview() {
 
-    FlipAppTheme { FlipScreen(post = PostTestData) }
+    FlipAppTheme {
+        FlipScreen(post = PostTestData)
+    }
 }
 
-private val PostTestData =
-    Post(
-        postId = 1,
-        profile = DisplayProfile(profileId = "profileId", nickname = "홍길동", photoUrl = ""),
-        title = "행정권은 대통령을 수반으로 하는 정부에 속한다.",
-        content =
-            "가부동수인 때에는 부결된 것으로 본다.\n" +
-                "행정권은 대통령을 수반으로 하는 정부에\n" +
-                "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                "의하여 법률에 의한 재판을 받을 권리를 가진다.\n" +
-                " 가부동수인 때에는 부결된 것으로 본다.\n" +
-                "행정권은 대통령을 수반으로 하는 정부에\n" +
-                "속한다." +
-                FlipContentSeparator.SEPARATOR +
-                "손금의 정확도는 50%~60%정도 입니다. 얼마전 손금에 대하여 방영이 되고난후 손금에 대한 관심이 부쩍 높아진게 사실입니다. 그러나 손금은 어느일부분의 선만 가지고 이야기 하면 정확히 볼 수 없습니다." +
-                FlipContentSeparator.SEPARATOR +
-                "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 모든 국민의 재산권은 보장된다.",
-        liked = false,
-        likeCnt = 302,
-        commentCnt = 28,
-        scraped = false,
-        bgColorType = BackgroundColorType.BLUE,
-        createdAt = "2023.12.26",
-    )
+private val PostTestData = Post(
+    postId = 1,
+    profile = DisplayProfile(profileId = "profileId", nickname = "홍길동", photoUrl = ""),
+    title = "행정권은 대통령을 수반으로 하는 정부에 속한다.",
+    content = "가부동수인 때에는 부결된 것으로 본다.\n" +
+            "행정권은 대통령을 수반으로 하는 정부에\n" +
+            "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
+            "의하여 법률에 의한 재판을 받을 권리를 가진다.\n" +
+            " 가부동수인 때에는 부결된 것으로 본다.\n" +
+            "행정권은 대통령을 수반으로 하는 정부에\n" +
+            "속한다." + FlipContentSeparator.SEPARATOR +
+            "손금의 정확도는 50%~60%정도 입니다. 얼마전 손금에 대하여 방영이 되고난후 손금에 대한 관심이 부쩍 높아진게 사실입니다. 그러나 손금은 어느일부분의 선만 가지고 이야기 하면 정확히 볼 수 없습니다."
+            + FlipContentSeparator.SEPARATOR +
+            "행정권은 대통령을 수반으로 하는 정부에 속한다. 모든 국민은 헌법과 법률이 정한 법관에 의하여 법률에 의한 재판을 받을 권리를 가진다. 모든 국민의 재산권은 보장된다.",
+    liked = false,
+    likeCnt = 302,
+    commentCnt = 28,
+    scraped = false,
+    bgColorType = BackgroundColorType.BLUE,
+    createdAt = "2023.12.26"
+)

@@ -9,7 +9,7 @@ data class PostListResponse(
     @Json(name = "has_next") val hasNext: Boolean,
     @Json(name = "next_cursor") val nextCursor: String,
     @Json(name = "post_cnt") val postCnt: Long,
-    @Json(name = "posts") val posts: List<PostResponse>,
+    @Json(name = "posts") val posts: List<PostResponse>
 )
 
 fun PostListResponse.toDomainModel(): PostList =

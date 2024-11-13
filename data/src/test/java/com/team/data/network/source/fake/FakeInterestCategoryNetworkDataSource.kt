@@ -9,7 +9,7 @@ import com.team.domain.util.Result
 
 class FakeInterestCategoryNetworkDataSource(
     private val interestCategoryNetworkApi: InterestCategoryNetworkApi
-) : InterestCategoryNetworkDataSource {
+): InterestCategoryNetworkDataSource {
 
     override suspend fun getMyCategories(): Result<List<CategoryResponse>, ErrorType> {
         val result = interestCategoryNetworkApi.getMyCategories()
@@ -20,9 +20,7 @@ class FakeInterestCategoryNetworkDataSource(
         }
     }
 
-    override suspend fun updateMyCategories(
-        categoryIds: CategoryRequest
-    ): Result<Boolean, ErrorType> {
+    override suspend fun updateMyCategories(categoryIds: CategoryRequest): Result<Boolean, ErrorType> {
         val result = interestCategoryNetworkApi.updateMyCategories(categoryIds)
         return if (result.isSuccessful) {
             Result.Success(true)

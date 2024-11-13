@@ -23,20 +23,19 @@ class AddTempPostUseCaseTest {
     @Test
     fun `임시저장 성공`() = runTest {
         // Given
-        every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
-            flowOf(Result.Success(true))
+        every {
+            tempPostRepository.addTemporaryPost(newPostTestData)
+        } returns flowOf(Result.Success(true))
 
         // When
-        val result =
-            addTempPostUseCase(
-                    newPostTestData.title,
-                    newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
-                    newPostTestData.bgColorType,
-                    newPostTestData.fontStyleType,
-                    newPostTestData.tags,
-                    newPostTestData.categoryId,
-                )
-                .first()
+        val result = addTempPostUseCase(
+            newPostTestData.title,
+            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
+            newPostTestData.bgColorType,
+            newPostTestData.fontStyleType,
+            newPostTestData.tags,
+            newPostTestData.categoryId
+        ).first()
 
         // Then
         assert((result as Result.Success).data)
@@ -46,22 +45,24 @@ class AddTempPostUseCaseTest {
     fun `임시저장 실패`() = runTest {
         // Given
         val error = ErrorType.Network.BAD_REQUEST
-        every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
-            flowOf(Result.Error(error = error))
+        every {
+            tempPostRepository.addTemporaryPost(newPostTestData)
+        } returns flowOf(Result.Error(error = error))
 
         // When
-        val result =
-            addTempPostUseCase(
-                    newPostTestData.title,
-                    newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
-                    newPostTestData.bgColorType,
-                    newPostTestData.fontStyleType,
-                    newPostTestData.tags,
-                    newPostTestData.categoryId,
-                )
-                .first()
+        val result = addTempPostUseCase(
+            newPostTestData.title,
+            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
+            newPostTestData.bgColorType,
+            newPostTestData.fontStyleType,
+            newPostTestData.tags,
+            newPostTestData.categoryId
+        ).first()
 
         // Then
-        assertEquals((result as Result.Error).error, error)
+        assertEquals(
+            (result as Result.Error).error,
+            error
+        )
     }
 }

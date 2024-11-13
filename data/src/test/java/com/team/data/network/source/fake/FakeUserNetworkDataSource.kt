@@ -21,8 +21,9 @@ import com.team.data.network.source.UserNetworkDataSource
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
-    UserNetworkDataSource {
+class FakeUserNetworkDataSource(
+    private val userNetworkApi: UserNetworkApi,
+) : UserNetworkDataSource {
 
     override suspend fun getMyProfile(profileId: String): Result<MyProfileResponse, ErrorType> {
         val result = userNetworkApi.getMyProfile(profileId)
@@ -34,7 +35,7 @@ class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
     }
 
     override suspend fun getProfile(profileId: String): Result<ProfileResponse, ErrorType> {
-        //            emit(NetworkResult.Loading) // -> 테스트 시 오류 발생 (코루틴이 제대로 수집 되지 않아서 인듯)
+//            emit(NetworkResult.Loading) // -> 테스트 시 오류 발생 (코루틴이 제대로 수집 되지 않아서 인듯)
         val result = userNetworkApi.getProfile(profileId)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)
@@ -131,7 +132,7 @@ class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
 
     override suspend fun editMyProfile(
         profileId: String,
-        editProfileRequest: EditProfileRequest,
+        editProfileRequest: EditProfileRequest
     ): Result<Boolean, ErrorType> {
         val result = userNetworkApi.editMyProfile(profileId, editProfileRequest)
         return if (result.isSuccessful) {
@@ -211,9 +212,7 @@ class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
         }
     }
 
-    override suspend fun getMyCategories(
-        profileId: String
-    ): Result<List<CategoryResponse>, ErrorType> {
+    override suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType> {
         val result = userNetworkApi.getMyCategories(profileId)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

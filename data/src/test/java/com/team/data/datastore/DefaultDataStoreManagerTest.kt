@@ -7,7 +7,6 @@ import com.team.domain.type.DataStoreType
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -20,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -31,11 +31,14 @@ import org.robolectric.annotation.Config
 )
 class DefaultDataStoreManagerTest {
 
-    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Inject lateinit var defaultDataStore: DataStoreManager
+    @Inject
+    lateinit var defaultDataStore: DataStoreManager
 
     @Before
     fun setUp() {
@@ -48,13 +51,17 @@ class DefaultDataStoreManagerTest {
         var isError: Boolean? = null
 
         try {
-            defaultDataStore.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, expected)
+            defaultDataStore.saveData(
+                DataStoreType.AccountType.CURRENT_PROFILE_ID,
+                expected
+            )
         } catch (e: ClassCastException) {
             isError = true
         }
 
-        val actual =
-            defaultDataStore.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
+        val actual = defaultDataStore.getStringData(
+            DataStoreType.AccountType.CURRENT_PROFILE_ID
+        ).first()
 
         assertNull(isError)
         assertNotNull(actual)
@@ -69,16 +76,15 @@ class DefaultDataStoreManagerTest {
         try {
             defaultDataStore.saveData(
                 DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE,
-                expected,
+                expected
             )
         } catch (e: ClassCastException) {
             isError = true
         }
 
-        val actual =
-            defaultDataStore
-                .getIntData(DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE)
-                .first()
+        val actual = defaultDataStore.getIntData(
+            DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE
+        ).first()
 
         assertNull(isError)
         assertNotNull(actual)
@@ -91,15 +97,19 @@ class DefaultDataStoreManagerTest {
         var isError: Boolean? = null
 
         try {
-            defaultDataStore.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, expected)
+            defaultDataStore.saveData(
+                DataStoreType.AccountType.CURRENT_PROFILE_ID,
+                expected
+            )
         } catch (e: ClassCastException) {
             isError = true
         }
 
         defaultDataStore.deleteData(DataStoreType.AccountType.CURRENT_PROFILE_ID)
 
-        val actual =
-            defaultDataStore.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
+        val actual = defaultDataStore.getStringData(
+            DataStoreType.AccountType.CURRENT_PROFILE_ID
+        ).first()
 
         assertNull(actual)
     }
@@ -111,10 +121,13 @@ class DefaultDataStoreManagerTest {
         var isError: Boolean? = null
 
         try {
-            defaultDataStore.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, expected)
+            defaultDataStore.saveData(
+                DataStoreType.AccountType.CURRENT_PROFILE_ID,
+                expected
+            )
             defaultDataStore.saveData(
                 DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE,
-                expected2,
+                expected2
             )
         } catch (e: ClassCastException) {
             isError = true
@@ -122,12 +135,12 @@ class DefaultDataStoreManagerTest {
 
         defaultDataStore.clearAll()
 
-        val actual =
-            defaultDataStore.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
-        val actual2 =
-            defaultDataStore
-                .getIntData(DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE)
-                .first()
+        val actual = defaultDataStore.getStringData(
+            DataStoreType.AccountType.CURRENT_PROFILE_ID
+        ).first()
+        val actual2 = defaultDataStore.getIntData(
+            DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE
+        ).first()
 
         assertNull(actual)
         assertNull(actual2)

@@ -13,11 +13,11 @@ import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.fake.FakeAccountNetworkDataSource
+import com.team.data.repository.fake.FakeAccountRepository
 import com.team.data.network.testdoubles.networkAccountJsonTestData
 import com.team.data.network.testdoubles.networkRegisterTestData
 import com.team.data.network.testdoubles.networkTokenTestData
 import com.team.data.network.testdoubles.toExternal
-import com.team.data.repository.fake.FakeAccountRepository
 import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
@@ -25,8 +25,6 @@ import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
@@ -43,6 +41,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -54,9 +54,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 )
 class DefaultAccountRepositoryTest {
 
-    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var accountNetworkApi: AccountNetworkApi
     private lateinit var server: MockWebServer
@@ -66,7 +68,9 @@ class DefaultAccountRepositoryTest {
     private lateinit var accountRepository: FakeAccountRepository
     private val dataStoreManager = FakeDataStoreManager()
 
-    @Inject @Named("test_db") lateinit var database: FlipDatabase
+    @Inject
+    @Named("test_db")
+    lateinit var database: FlipDatabase
     private lateinit var myProfileDao: MyProfileDao
 
     @Before
@@ -76,20 +80,20 @@ class DefaultAccountRepositoryTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
-        accountNetworkApi =
-            Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(server.url("/"))
-                .build()
-                .create(AccountNetworkApi::class.java)
+        accountNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(AccountNetworkApi::class.java)
 
         myProfileDao = database.myProfileDao()
 
         accountNetworkDataSource = FakeAccountNetworkDataSource(accountNetworkApi)
-        accountRepository =
-            FakeAccountRepository(accountNetworkDataSource, myProfileDao, dataStoreManager)
+        accountRepository = FakeAccountRepository(accountNetworkDataSource, myProfileDao, dataStoreManager)
     }
 
     @After
@@ -107,19 +111,16 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `사용자 계정 불러오기(accessToken 있는 경우) (getUserAccount())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkAccountJsonTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkAccountJsonTestData)
+        })
 
         dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
         val result = accountRepository.getUserAccount().last()
 
         val actualData =
-            moshi
-                .adapter(AccountResponse::class.java)
+            moshi.adapter(AccountResponse::class.java)
                 .fromJson(networkAccountJsonTestData)!!
                 .toDomainModel((result as Result.Success).data.profiles)
 
@@ -132,7 +133,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `이름 중복 체크 실패 (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val result = accountRepository.checkDuplicateName("honggd").last()
 
@@ -141,7 +144,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `이름 중복 체크 실패(409, Conflict) (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val result = accountRepository.checkDuplicateName("honggd").last()
 
@@ -150,7 +155,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `이름 중복 체크 성공 (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
 
         val result = accountRepository.checkDuplicateName("honggd").last()
 
@@ -159,7 +166,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `ProfileId 중복 체크 실패 (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
 
@@ -168,7 +177,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `ProfileId 중복 체크 실패(409, Conflict) (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
 
@@ -177,7 +188,9 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `ProfileId 중복 체크 성공(200, OK) (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
 
         val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
 
@@ -186,25 +199,23 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `로그인 (login())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkTokenTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(networkTokenTestData)
+        })
 
         dataStoreManager.clearAll()
         val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
 
-        val expectedAccessToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
-        val expectedRefreshToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+        val expectedAccessToken = moshi.adapter(TokenResponse::class.java)
+            .fromJson(networkTokenTestData)!!
+            .accessToken
+        val expectedRefreshToken = moshi.adapter(TokenResponse::class.java)
+            .fromJson(networkTokenTestData)!!
+            .refreshToken
 
-        val actualAccessToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
+        val actualAccessToken = dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+        val actualRefreshToken = dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
 
         assertEquals((result as Result.Success).data, true)
         assertEquals(expectedAccessToken, actualAccessToken)
@@ -213,25 +224,23 @@ class DefaultAccountRepositoryTest {
 
     @Test
     fun `회원가입 (register())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(networkTokenTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+            setBody(networkTokenTestData)
+        })
 
         dataStoreManager.clearAll()
         val result = accountRepository.register(networkRegisterTestData.toExternal()).last()
 
-        val expectedAccessToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
-        val expectedRefreshToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+        val expectedAccessToken = moshi.adapter(TokenResponse::class.java)
+            .fromJson(networkTokenTestData)!!
+            .accessToken
+        val expectedRefreshToken = moshi.adapter(TokenResponse::class.java)
+            .fromJson(networkTokenTestData)!!
+            .refreshToken
 
-        val actualAccessToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
+        val actualAccessToken = dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+        val actualRefreshToken = dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
 
         assertEquals((result as Result.Success).data, true)
         assertEquals(expectedAccessToken, actualAccessToken)

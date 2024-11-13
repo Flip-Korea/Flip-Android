@@ -25,20 +25,26 @@ class GetPostsByTypeUseCaseTest {
         // Given
         val expected = getPostListTestData()
         every {
-            postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
+            postRepository.getPostsByTypePagination(
+                PathParameterType.Post.CATEGORY,
+                "3",
+                null,
+                15
+            )
         } returns flowOf(Result.Success(expected))
 
         // When
-        val actual =
-            getPostsByTypeUseCase(
-                    type = PathParameterType.Post.CATEGORY,
-                    typeId = "3",
-                    cursor = null,
-                )
-                .last()
+        val actual = getPostsByTypeUseCase(
+            type = PathParameterType.Post.CATEGORY,
+            typeId = "3",
+            cursor = null
+        ).last()
 
         // Then
-        assertEquals(expected, (actual as Result.Success).data)
+        assertEquals(
+            expected,
+            (actual as Result.Success).data
+        )
     }
 
     @Test
@@ -46,19 +52,25 @@ class GetPostsByTypeUseCaseTest {
         // Given
         val expected = ErrorType.Network.NOT_FOUND
         every {
-            postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
+            postRepository.getPostsByTypePagination(
+                PathParameterType.Post.CATEGORY,
+                "3",
+                null,
+                15
+            )
         } returns flowOf(Result.Error(expected))
 
         // When
-        val actual =
-            getPostsByTypeUseCase(
-                    type = PathParameterType.Post.CATEGORY,
-                    typeId = "3",
-                    cursor = null,
-                )
-                .last()
+        val actual = getPostsByTypeUseCase(
+            type = PathParameterType.Post.CATEGORY,
+            typeId = "3",
+            cursor = null
+        ).last()
 
         // Then
-        assertEquals(expected, (actual as Result.Error).error)
+        assertEquals(
+            expected,
+            (actual as Result.Error).error
+        )
     }
 }

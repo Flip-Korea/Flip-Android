@@ -12,5 +12,5 @@ fun makeMyProfileEntityTestData(profileId: String): MyProfileEntity =
         followerCnt = 11,
         rating = "default",
         photoUrl = "https://test.com/123",
-        categories = listOf(1, 2, 3),
+        categories = listOf(1, 2, 3)
     )

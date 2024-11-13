@@ -25,7 +25,7 @@ class ValidatePostUseCaseTest {
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.TITLE_IS_EMPTY,
+            ValidationErrorType.Post.TITLE_IS_EMPTY
         )
     }
 
@@ -44,7 +44,7 @@ class ValidatePostUseCaseTest {
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.CONTENT_IS_EMPTY,
+            ValidationErrorType.Post.CONTENT_IS_EMPTY
         )
     }
 
@@ -64,7 +64,7 @@ class ValidatePostUseCaseTest {
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.CONTENT_TOO_LONG,
+            ValidationErrorType.Post.CONTENT_TOO_LONG
         )
     }
 
@@ -83,7 +83,7 @@ class ValidatePostUseCaseTest {
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.TAGS_10_LIMIT,
+            ValidationErrorType.Post.TAGS_10_LIMIT
         )
     }
 
@@ -102,7 +102,7 @@ class ValidatePostUseCaseTest {
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.TAGS_EMPTY_ITEM,
+            ValidationErrorType.Post.TAGS_EMPTY_ITEM
         )
     }
 
@@ -119,6 +119,9 @@ class ValidatePostUseCaseTest {
         val validationResult = validatePostUseCase(title, content, tags)
 
         // Then
-        assertEquals(validationResult.first(), ValidationResult.Success)
+        assertEquals(
+            validationResult.first(),
+            ValidationResult.Success
+        )
     }
 }

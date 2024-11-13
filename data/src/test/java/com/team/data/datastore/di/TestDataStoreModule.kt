@@ -14,10 +14,12 @@ private val TEST_DATASTORE_NAME = "test_datastore"
 private val testCoroutineDispatcher = UnconfinedTestDispatcher()
 @OptIn(ExperimentalCoroutinesApi::class)
 private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher + Job())
-private val Context.testDataStore: DataStore<Preferences> by
-    preferencesDataStore(TEST_DATASTORE_NAME)
+private val Context.testDataStore: DataStore<Preferences> by preferencesDataStore(
+    TEST_DATASTORE_NAME
+)
 //    PreferenceDataStoreFactory.create(
 //        scope = testCoroutineScope,
 //        produceFile =
 //        { testContext.preferencesDataStoreFile(TEST_DATASTORE_NAME) }
 //    )
+

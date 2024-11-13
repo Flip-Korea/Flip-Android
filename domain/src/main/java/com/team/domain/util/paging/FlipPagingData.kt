@@ -14,7 +14,7 @@ package com.team.domain.util.paging
  * ) : FlipPagingData<TempPostResponse>
  * ```
  */
-interface FlipPagingData<T> {
+interface FlipPagingData <T> {
     /** 페이징 리스트 */
     val list: List<T>
     val firstKey: Long?

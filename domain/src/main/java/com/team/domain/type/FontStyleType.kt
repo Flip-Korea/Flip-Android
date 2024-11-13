@@ -1,6 +1,5 @@
 package com.team.domain.type
 
 enum class FontStyleType {
-    NORMAL,
-    BOLD,
+    NORMAL, BOLD
 }

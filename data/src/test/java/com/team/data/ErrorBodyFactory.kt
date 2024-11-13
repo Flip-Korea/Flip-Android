@@ -5,8 +5,11 @@ import com.team.domain.util.ErrorBody
 
 class ErrorBodyFactory(private val moshi: Moshi) {
 
-    private val errorBody =
-        ErrorBody(code = "404", message = "ErrorBody Test", errors = emptyList())
+    private val errorBody = ErrorBody(
+        code = "404",
+        message = "ErrorBody Test",
+        errors = emptyList(),
+    )
 
     fun createObject(): ErrorBody = errorBody
 

@@ -15,101 +15,82 @@ import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class PostNetworkDataSourceImpl(private val postNetworkApi: PostNetworkApi) :
-    PostNetworkDataSource {
+class PostNetworkDataSourceImpl(
+    private val postNetworkApi: PostNetworkApi
+): PostNetworkDataSource {
 
     override suspend fun getPosts(
         cursor: String?,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall { postNetworkApi.getPosts(cursor, limit) }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall { postNetworkApi.getPosts(cursor, limit) }
 
-    override suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostById(postId)
-    }
+    override suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType> =
+        networkCall { postNetworkApi.getPostById(postId) }
 
     override suspend fun addPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.addPost(postRequest)
-        }
+        networkCallWithoutResponse { postNetworkApi.addPost(postRequest) }
 
     override suspend fun editPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.editPost(postRequest)
-        }
+        networkCallWithoutResponse { postNetworkApi.editPost(postRequest) }
 
     override suspend fun getPostsByType(
         type: PathParameterType,
         typeId: String,
         cursor: String?,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostsByType(type.asString(), typeId, cursor, limit)
-    }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getPostsByType(type.asString(), typeId, cursor, limit)
+        }
 
     override suspend fun deletePost(postId: Long): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.deletePost(postId)
-        }
+        networkCallWithoutResponse { postNetworkApi.deletePost(postId) }
 
     override suspend fun getPostsByPopularUser(
         categoryId: Int,
         cursor: String?,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit)
-    }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall { postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit) }
 
     override suspend fun getComments(
         postId: Long,
         cursor: String?,
         limit: Int,
-    ): Result<CommentListResponse, ErrorType> = networkCall {
-        postNetworkApi.getComments(postId, cursor, limit)
-    }
+    ): Result<CommentListResponse, ErrorType> =
+        networkCall { postNetworkApi.getComments(postId, cursor, limit) }
 
     override suspend fun addComment(
         postId: Long,
         commentRequest: CommentRequest,
-    ): Result<ResultIdResponse, ErrorType> = networkCall {
-        postNetworkApi.addComment(postId, commentRequest)
-    }
+    ): Result<ResultIdResponse, ErrorType> =
+        networkCall { postNetworkApi.addComment(postId, commentRequest) }
 
     override suspend fun deleteComment(commentId: Long): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.deleteComment(commentId)
-        }
+        networkCallWithoutResponse { postNetworkApi.deleteComment(commentId) }
 
     override suspend fun likePost(likeRequest: LikeRequest): Result<ResultIdResponse, ErrorType> =
-        networkCall {
-            postNetworkApi.likePost(likeRequest)
-        }
+        networkCall { postNetworkApi.likePost(likeRequest) }
 
     override suspend fun unLikePost(likeRequest: LikeRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.unLikePost(likeRequest)
-        }
+        networkCallWithoutResponse { postNetworkApi.unLikePost(likeRequest) }
 
     override suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.addTemporaryPost(postRequest)
-        }
+        networkCallWithoutResponse { postNetworkApi.addTemporaryPost(postRequest) }
 
     override suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse {
-            postNetworkApi.deleteTemporaryPost(tempPostId)
-        }
+        networkCallWithoutResponse { postNetworkApi.deleteTemporaryPost(tempPostId) }
 
     override suspend fun getTemporaryPosts(
         cursor: String?,
         limit: Int,
-    ): Result<TempPostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getTemporaryPosts(cursor, limit)
-    }
+    ): Result<TempPostListResponse, ErrorType> =
+        networkCall { postNetworkApi.getTemporaryPosts(cursor, limit) }
 
     override suspend fun editTemporaryPost(
         tempPostId: Long,
         postRequest: PostRequest,
-    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
-        postNetworkApi.editTemporaryPost(tempPostId, postRequest)
-    }
+    ): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse { postNetworkApi.editTemporaryPost(tempPostId, postRequest) }
 }

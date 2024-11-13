@@ -11,33 +11,39 @@ import com.team.data.network.model.response.post.TempPostResponse
 import com.team.data.network.model.response.profile.DisplayProfileResponse
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
+import com.team.domain.type.PathParameterType
 import kotlin.random.Random
 
-/** 총 3페이지만 반환 * */
-fun makePostListResponseTestData(cursor: String, pageSize: Int, typeId: String = "1"): String {
+/** 총 3페이지만 반환 **/
+fun makePostListResponseTestData(
+    cursor: String,
+    pageSize: Int,
+    typeId: String = "1"
+): String {
 
     val postIds = mutableListOf<Long>()
-    repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
+    repeat(pageSize) {
+        postIds.add(Random.nextLong(1, 50000))
+    }
     val list = mutableListOf<PostResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt() + 1).toString()
+    val nextCursor = (cursor.toInt()+1).toString()
 
-    postIds.forEachIndexed { index, postId ->
+    postIds.forEachIndexed{ index, postId ->
         list.add(
             PostResponse(
                 postId = postId,
-                profile =
-                    DisplayProfileResponse(
-                        profileId = "tp",
-                        nickname = "nickname",
-                        photoUrl = "https://test.com/123",
-                        isFollower = false,
-                        isFollowing = false,
-                        introduce = null,
-                        followerCnt = 30,
-                        rating = null,
-                    ),
+                profile = DisplayProfileResponse(
+                    profileId = "tp",
+                    nickname = "nickname",
+                    photoUrl = "https://test.com/123",
+                    isFollower = false,
+                    isFollowing = false,
+                    introduce = null,
+                    followerCnt = 30,
+                    rating = null
+                ),
                 title = "TestTitle($index)",
                 content = "TestContent($index)",
                 liked = false,
@@ -49,41 +55,43 @@ fun makePostListResponseTestData(cursor: String, pageSize: Int, typeId: String =
                 categoryId = typeId.toInt(),
                 bgColorType = BackgroundColorTypeResponse.BLUE,
                 fontStyleType = FontStyleTypeResponse.NORMAL,
-                tags = listOf("1", "2"),
-                postAt = cursor,
+                tags = listOf("1","2"),
+                postAt = cursor
             )
         )
     }
 
-    val postListResponse =
-        PostListResponse(
-            hasNext = hasNext,
-            nextCursor = nextCursor,
-            postCnt = pageSize.toLong(),
-            posts = list,
-        )
+    val postListResponse = PostListResponse(
+        hasNext = hasNext,
+        nextCursor = nextCursor,
+        postCnt = pageSize.toLong(),
+        posts = list
+    )
 
-    val json =
-        Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-            .adapter(PostListResponse::class.java)
-            .toJson(postListResponse)
+    val json = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        .adapter(PostListResponse::class.java)
+        .toJson(postListResponse)
 
     return json
 }
 
-/** 총 3페이지만 반환 * */
-fun makeCommentListResponseTestData(postId: Long, cursor: String, pageSize: Int): String {
+/** 총 3페이지만 반환 **/
+fun makeCommentListResponseTestData(
+    postId: Long,
+    cursor: String,
+    pageSize: Int,
+): String {
 
     val commentIds = mutableListOf<Long>()
-    repeat(pageSize) { commentIds.add(Random.nextLong(1, 50000)) }
+    repeat(pageSize) {
+        commentIds.add(Random.nextLong(1, 50000))
+    }
     val list = mutableListOf<CommentResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt() + 1).toString()
+    val nextCursor = (cursor.toInt()+1).toString()
 
-    commentIds.forEachIndexed { index, commentId ->
+    commentIds.forEachIndexed{ index, commentId ->
         list.add(
             CommentResponse(
                 commentId = commentId,
@@ -91,36 +99,35 @@ fun makeCommentListResponseTestData(postId: Long, cursor: String, pageSize: Int)
                 nickname = "TestNickname",
                 photoUrl = "https://test.com/123",
                 content = "테스트 댓글",
-                commentDate = "2024-04-23",
+                commentDate = "2024-04-23"
             )
         )
     }
 
-    val commentListResponse =
-        CommentListResponse(
-            hasNext = hasNext,
-            nextCursor = nextCursor,
-            commentCnt = pageSize,
-            comments = list,
-        )
+    val commentListResponse = CommentListResponse(
+        hasNext = hasNext,
+        nextCursor = nextCursor,
+        commentCnt = pageSize,
+        comments = list
+    )
 
-    val json =
-        Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-            .adapter(CommentListResponse::class.java)
-            .toJson(commentListResponse)
+    val json = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        .adapter(CommentListResponse::class.java)
+        .toJson(commentListResponse)
 
     return json
 }
 
-/** 총 3페이지만 반환 * */
-fun makeTempPostListResponseTestData(cursor: String, pageSize: Int): String {
+/** 총 3페이지만 반환 **/
+fun makeTempPostListResponseTestData(
+    cursor: String,
+    pageSize: Int,
+): String {
 
     val list = mutableListOf<TempPostResponse>()
 
     val hasNext = cursor != "4"
-    val nextCursor = (cursor.toInt() + 1).toString()
+    val nextCursor = (cursor.toInt()+1).toString()
 
     repeat(pageSize) { index ->
         list.add(
@@ -130,22 +137,22 @@ fun makeTempPostListResponseTestData(cursor: String, pageSize: Int): String {
                 categoryId = 1,
                 bgColorType = BackgroundColorType.DEFAULT,
                 fontStyleType = FontStyleType.NORMAL,
-                tags = listOf("1", "2"),
+                tags = listOf("1","2"),
                 postAt = "2024-09-08",
                 categoryName = "일상",
-                tempPostId = index.toLong(),
+                tempPostId = index.toLong()
             )
         )
     }
 
-    val tempPostListResponse = TempPostListResponse(tempPosts = list, totalCount = pageSize)
+    val tempPostListResponse = TempPostListResponse(
+        tempPosts = list,
+        totalCount = pageSize
+    )
 
-    val json =
-        Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-            .adapter(TempPostListResponse::class.java)
-            .toJson(tempPostListResponse)
+    val json = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        .adapter(TempPostListResponse::class.java)
+        .toJson(tempPostListResponse)
 
     return json
 }

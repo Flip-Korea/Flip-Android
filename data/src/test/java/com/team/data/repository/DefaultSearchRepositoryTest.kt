@@ -16,20 +16,18 @@ import com.team.data.network.model.response.tag.toDomainModel
 import com.team.data.network.retrofit.api.SearchNetworkApi
 import com.team.data.network.source.SearchNetworkDataSource
 import com.team.data.network.source.fake.FakeSearchNetworkDataSource
+import com.team.data.repository.fake.FakeSearchRepository
 import com.team.data.network.testdoubles.displayProfileListResponseTestData
 import com.team.data.network.testdoubles.displayProfileListResponseTestDataEndOfPage
 import com.team.data.network.testdoubles.postsResponseTestData
 import com.team.data.network.testdoubles.postsResponseTestDataEndOfPage
 import com.team.data.network.testdoubles.tagListResponseTestData
 import com.team.data.network.testdoubles.tagListResponseTestDataEndOfPage
-import com.team.data.repository.fake.FakeSearchRepository
 import com.team.domain.repository.SearchRepository
 import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
@@ -46,6 +44,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -57,9 +57,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 )
 class DefaultSearchRepositoryTest {
 
-    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var searchNetworkDataSource: SearchNetworkDataSource
     private lateinit var searchRepository: SearchRepository
@@ -68,7 +70,9 @@ class DefaultSearchRepositoryTest {
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
-    @Inject @Named("test_db") lateinit var database: FlipDatabase
+    @Inject
+    @Named("test_db")
+    lateinit var database: FlipDatabase
     private lateinit var recentSearchDao: RecentSearchDao
 
     @Before
@@ -78,14 +82,15 @@ class DefaultSearchRepositoryTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
-        searchNetworkApi =
-            Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(server.url("/"))
-                .build()
-                .create(SearchNetworkApi::class.java)
+        searchNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(SearchNetworkApi::class.java)
 
         recentSearchDao = database.recentSearchDao()
         searchNetworkDataSource = FakeSearchNetworkDataSource(searchNetworkApi)
@@ -100,14 +105,15 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `최근 검색어 리스트 조회(Local) (getRecentSearchList())`() = runTest {
-        val recentSearchEntities =
-            listOf(
-                RecentSearchEntity(word = "1"),
-                RecentSearchEntity(word = "2"),
-                RecentSearchEntity(word = "3"),
-            )
+        val recentSearchEntities = listOf(
+            RecentSearchEntity(word = "1"),
+            RecentSearchEntity(word = "2"),
+            RecentSearchEntity(word = "3"),
+        )
 
-        recentSearchEntities.forEach { recentSearchDao.upsertRecentSearch(it) }
+        recentSearchEntities.forEach {
+            recentSearchDao.upsertRecentSearch(it)
+        }
 
         val results = recentSearchDao.getRecentSearchList().first()
 
@@ -134,14 +140,15 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `최근 검색어 모두 삭제 (deleteAllRecentSearch())`() = runTest {
-        val recentSearchEntities =
-            listOf(
-                RecentSearchEntity(word = "1"),
-                RecentSearchEntity(word = "2"),
-                RecentSearchEntity(word = "3"),
-            )
+        val recentSearchEntities = listOf(
+            RecentSearchEntity(word = "1"),
+            RecentSearchEntity(word = "2"),
+            RecentSearchEntity(word = "3"),
+        )
 
-        recentSearchEntities.forEach { recentSearchDao.upsertRecentSearch(it) }
+        recentSearchEntities.forEach {
+            recentSearchDao.upsertRecentSearch(it)
+        }
 
         recentSearchDao.clearAll()
 
@@ -152,19 +159,14 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `게시글 검색 조회 페이지네이션 (searchByPostPagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(postsResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi
-                .adapter(PostListResponse::class.java)
-                .fromJson(postsResponseTestData)!!
-                .posts
-                .toDomainModel()
+        val expectedResponse = moshi.adapter(PostListResponse::class.java)
+            .fromJson(postsResponseTestData)!!
+            .posts.toDomainModel()
 
         val actualResponse = searchRepository.searchByPostPagination("123", "aaa", 15).last()
 
@@ -173,12 +175,10 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `게시글 검색 조회 페이지네이션(hasNext X) (searchByPostPagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestDataEndOfPage)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(postsResponseTestDataEndOfPage)
+        })
 
         val actualResponse = searchRepository.searchByPostPagination("123", "aaa", 15).last()
 
@@ -187,19 +187,14 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `프로필 검색 조회 페이지네이션 (searchByNicknamePagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(displayProfileListResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(displayProfileListResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi
-                .adapter(DisplayProfileListResponse::class.java)
-                .fromJson(displayProfileListResponseTestData)!!
-                .profiles
-                .toDomainModel()
+        val expectedResponse = moshi.adapter(DisplayProfileListResponse::class.java)
+            .fromJson(displayProfileListResponseTestData)!!
+            .profiles.toDomainModel()
 
         val actualResponse = searchRepository.searchByNicknamePagination("123", "aaa", 15).last()
 
@@ -208,12 +203,10 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `프로필 검색 조회 페이지네이션(hasNext X) (searchByNicknamePagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(displayProfileListResponseTestDataEndOfPage)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(displayProfileListResponseTestDataEndOfPage)
+        })
 
         val actualResponse = searchRepository.searchByNicknamePagination("123", "aaa", 15).last()
 
@@ -222,19 +215,14 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `태그 검색 조회 페이지네이션 (searchByTagPagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(tagListResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(tagListResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi
-                .adapter(TagListResponse::class.java)
-                .fromJson(tagListResponseTestData)!!
-                .tags
-                .toDomainModel()
+        val expectedResponse = moshi.adapter(TagListResponse::class.java)
+            .fromJson(tagListResponseTestData)!!
+            .tags.toDomainModel()
 
         val actualResponse = searchRepository.searchByTagPagination("123", "aaa", 15).last()
 
@@ -243,12 +231,10 @@ class DefaultSearchRepositoryTest {
 
     @Test
     fun `태그 검색 조회 페이지네이션(hasNext X) (searchByTagPagination())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(tagListResponseTestDataEndOfPage)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(tagListResponseTestDataEndOfPage)
+        })
 
         val actualResponse = searchRepository.searchByTagPagination("123", "aaa", 15).last()
 

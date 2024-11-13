@@ -40,7 +40,7 @@ fun TempFlipBoxRoute(onBackPress: () -> Unit) {
 
     HandleLoadState(
         lazyPagingItems = tempPostPaging,
-        updateState = tempFlipBoxViewModel::updateUiStateWithLoadState,
+        updateState = tempFlipBoxViewModel::updateUiStateWithLoadState
     )
 
     TempFlipBoxScreen(
@@ -49,6 +49,6 @@ fun TempFlipBoxRoute(onBackPress: () -> Unit) {
         uiState = uiState,
         uiEvent = tempFlipBoxViewModel::processEvent,
         isModalVisible = isModalVisible,
-        onBackPress = onBackPress,
+        onBackPress = onBackPress
     )
 }

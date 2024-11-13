@@ -21,7 +21,9 @@ object TestModule {
     @Named("test_db")
     fun provideInMemoryDatabase(@ApplicationContext context: Context): FlipDatabase {
 
-        val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
         val listTypeConverter = ListTypeConverter(moshi)
 

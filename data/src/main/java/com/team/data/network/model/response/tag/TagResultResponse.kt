@@ -7,7 +7,7 @@ import com.team.domain.model.tag.TagResult
 @JsonClass(generateAdapter = true)
 data class TagResultResponse(
     @Json(name = "post_cnt") val postCnt: Int,
-    @Json(name = "tag_name") val tagName: String,
+    @Json(name = "tag_name") val tagName: String
 )
 
 fun TagResultResponse.toDomainModel(): TagResult = TagResult(postCnt, tagName)

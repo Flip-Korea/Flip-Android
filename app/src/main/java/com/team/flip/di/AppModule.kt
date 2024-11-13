@@ -16,7 +16,9 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideNetworkCheckUtil(@ApplicationContext context: Context): NetworkCheckUtil {
+    fun provideNetworkCheckUtil(
+        @ApplicationContext context: Context
+    ): NetworkCheckUtil {
         return NetworkCheckUtilImpl(context)
     }
 }

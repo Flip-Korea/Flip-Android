@@ -24,15 +24,18 @@ class PagerModule {
         val pageSize = FlipPagingTokens.TEMP_POST_PAGE_SIZE
         val prefetchDistance = FlipPagingTokens.TEMP_POST_PREFETCH_DISTANCE
         return Pager(
-            config = PagingConfig(pageSize = pageSize, prefetchDistance = prefetchDistance),
+            config = PagingConfig(
+                pageSize = pageSize,
+                prefetchDistance = prefetchDistance
+            ),
             pagingSourceFactory = {
                 FlipPagingSource(
                     pageSize = pageSize,
                     apiCall = { loadKey: Long? ->
                         tempPostNetworkDataSource.getTemporaryPosts("$loadKey", pageSize)
-                    },
+                    }
                 )
-            },
+            }
         )
     }
 }

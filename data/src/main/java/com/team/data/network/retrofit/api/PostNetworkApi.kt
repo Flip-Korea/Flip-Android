@@ -20,30 +20,36 @@ import retrofit2.http.Query
 
 /**
  * 1. Post == Flip
- * 2. applied Interceptor & Authentication*
- */
+ * 2. applied Interceptor & Authentication**/
 interface PostNetworkApi {
 
-    /** API-013 (모든 게시글 조회) * */
+    /** API-013 (모든 게시글 조회) **/
     @GET("/api/v1/post/list")
     suspend fun getPosts(
         @Query("cursor") cursor: String?,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int
     ): Response<PostListResponse>
 
-    /** API-051 (단일 게시글 조회) * */
+    /** API-051 (단일 게시글 조회) **/
     @GET("/api/v1/posts/{post_id}")
-    suspend fun getPostById(@Path("post_id") postId: Long): Response<PostResponse>
+    suspend fun getPostById(
+        @Path("post_id") postId: Long
+    ): Response<PostResponse>
 
-    /** API-014 (게시글 작성) * */
-    @POST("/api/v1/posts") suspend fun addPost(@Body postRequest: PostRequest): Response<Unit>
+    /** API-014 (게시글 작성) **/
+    @POST("/api/v1/posts")
+    suspend fun addPost(
+        @Body postRequest: PostRequest
+    ): Response<Unit>
 
-    /** API-052 (게시글 편집) * */
+    /** API-052 (게시글 편집) **/
     @PATCH("/api/v1/posts/{post_id}")
-    suspend fun editPost(@Body postRequest: PostRequest): Response<Unit>
+    suspend fun editPost(
+        @Body postRequest: PostRequest
+    ): Response<Unit>
 
-    /** API-015 (카테고리, 회원, 태그 별 게시글 조회) * */
-    // TODO type_id 타입이 각기 다른 문제
+    /** API-015 (카테고리, 회원, 태그 별 게시글 조회) **/
+    //TODO type_id 타입이 각기 다른 문제
     // 카테고리(Int), 회원(String), 태그(String)
     // 1. 제일 쉬운 방법은 API 분리
     @GET("/api/v1/post/list/{type}/{type_id}")
@@ -51,72 +57,80 @@ interface PostNetworkApi {
         @Path("type") type: String,
         @Path("type_id") typeId: String,
         @Query("cursor") cursor: String?,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int
     ): Response<PostListResponse>
 
-    /** API-017 (게시글 삭제) * */
+    /** API-017 (게시글 삭제) **/
     @DELETE("/api/v1/post/{post_id}")
-    suspend fun deletePost(@Path("post_id") postId: Long): Response<Unit>
+    suspend fun deletePost(
+        @Path("post_id") postId: Long
+    ): Response<Unit>
 
-    /**
-     * API-021 (특정 분야(카테고리)에서 인기 플리퍼 게시글 조회)
+    /** API-021 (특정 분야(카테고리)에서 인기 플리퍼 게시글 조회)
      *
-     * 처음 호출 시 limit = 2*
-     */
+     * 처음 호출 시 limit = 2**/
     @GET("/api/v1/post/list/{category_id}/popular")
     suspend fun getPostsByPopularUser(
         @Path("category_id") categoryId: Int,
         @Query("cursor") cursor: String?,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int
     ): Response<PostListResponse>
 
-    /** API-023 (댓글 조회) * */
+    /** API-023 (댓글 조회) **/
     @GET("/api/v1/post/{post_id}/comment")
     suspend fun getComments(
         @Path("post_id") postId: Long,
         @Query("cursor") cursor: String?,
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int
     ): Response<CommentListResponse>
 
-    /** API-024 (댓글 작성) * */
+    /** API-024 (댓글 작성) **/
     @POST("/api/v1/post/{post_id}/comment")
     suspend fun addComment(
         @Path("post_id") postId: Long,
-        @Body commentRequest: CommentRequest,
+        @Body commentRequest: CommentRequest
     ): Response<ResultIdResponse>
 
-    /**
-     * API-029 (댓글 삭제(본인만))
+    /** API-029 (댓글 삭제(본인만))
      *
-     * TODO 본인 댓글인 지 판단 필요 *
-     */
+     * TODO 본인 댓글인 지 판단 필요 **/
     @DELETE("/api/v1/post/comment/{comment_id}")
-    suspend fun deleteComment(@Path("comment_id") commentId: Long): Response<Unit>
+    suspend fun deleteComment(
+        @Path("comment_id") commentId: Long
+    ): Response<Unit>
 
-    /** API-027 (게시글 좋아요) * */
+    /** API-027 (게시글 좋아요) **/
     @POST("/api/v1/post/like")
-    suspend fun likePost(@Body likeRequest: LikeRequest): Response<ResultIdResponse>
+    suspend fun likePost(
+        @Body likeRequest: LikeRequest
+    ): Response<ResultIdResponse>
 
-    /** API-028 (게시글 좋아요 취소) * */
+    /** API-028 (게시글 좋아요 취소) **/
     @POST("/api/v1/post/unlike")
-    suspend fun unLikePost(@Body likeRequest: LikeRequest): Response<Unit>
+    suspend fun unLikePost(
+        @Body likeRequest: LikeRequest
+    ): Response<Unit>
 
-    /** API-032 (임시저장 게시글 추가) * */
+    /** API-032 (임시저장 게시글 추가) **/
     @POST("/api/v1/temp-posts")
-    suspend fun addTemporaryPost(@Body postRequest: PostRequest): Response<Unit>
+    suspend fun addTemporaryPost(
+        @Body postRequest: PostRequest
+    ): Response<Unit>
 
-    /** API-033 (임시저장 게시글 삭제) * */
+    /** API-033 (임시저장 게시글 삭제) **/
     @DELETE("/api/v1/temp-posts/{tempPostId}")
-    suspend fun deleteTemporaryPost(@Path("tempPostId") tempPostId: Long): Response<Unit>
+    suspend fun deleteTemporaryPost(
+        @Path("tempPostId") tempPostId: Long
+    ): Response<Unit>
 
-    /** API-034 (임시저장 게시글 조회) * */
+    /** API-034 (임시저장 게시글 조회) **/
     @GET("/api/v1/temp-posts")
     suspend fun getTemporaryPosts(
         @Query("cursor") cursor: String?,
         @Query("limit") limit: Int,
     ): Response<TempPostListResponse>
 
-    /** API-035 (임시저장 게시글 편집) * */
+    /** API-035 (임시저장 게시글 편집) **/
     @PUT("/api/v1/temp-posts/{tempPostId}")
     suspend fun editTemporaryPost(
         @Path("tempPostId") tempPostId: Long,

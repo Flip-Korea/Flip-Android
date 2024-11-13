@@ -9,7 +9,7 @@ data class TagListResponse(
     @Json(name = "search_tag") val searchTag: String,
     @Json(name = "has_next") val hasNext: Boolean,
     @Json(name = "next_cursor") val nextCursor: String,
-    @Json(name = "tags") val tags: List<TagResultResponse>,
+    @Json(name = "tags") val tags: List<TagResultResponse>
 )
 
 fun TagListResponse.toDomainModel(): TagResultList =

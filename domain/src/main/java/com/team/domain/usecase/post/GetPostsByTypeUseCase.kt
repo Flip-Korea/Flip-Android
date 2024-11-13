@@ -4,12 +4,14 @@ import com.team.domain.model.post.PostList
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
-import com.team.domain.util.Result
 import com.team.domain.util.paging.FlipPagingTokens
-import javax.inject.Inject
+import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetPostsByTypeUseCase @Inject constructor(private val postRepository: PostRepository) {
+class GetPostsByTypeUseCase @Inject constructor(
+    private val postRepository: PostRepository
+) {
 
     /**
      * 타입 별로 Flip(post)을 가져오는 UseCase
@@ -27,6 +29,6 @@ class GetPostsByTypeUseCase @Inject constructor(private val postRepository: Post
             type,
             typeId,
             cursor,
-            FlipPagingTokens.POST_PAGE_SIZE,
+            FlipPagingTokens.POST_PAGE_SIZE
         )
 }

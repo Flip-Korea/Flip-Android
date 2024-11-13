@@ -11,7 +11,7 @@ interface CommentRepository {
     fun getCommentsPagination(
         postId: Long,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<CommentList, ErrorType>>
 
     fun addComment(postId: Long, newComment: NewComment): Flow<Result<Boolean, ErrorType>>

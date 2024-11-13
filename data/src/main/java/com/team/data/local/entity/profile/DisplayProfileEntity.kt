@@ -14,25 +14,7 @@ data class DisplayProfileEntity(
 )
 
 fun DisplayProfileEntity.toDomainModel(): DisplayProfile =
-    DisplayProfile(
-        profileId,
-        nickname,
-        photoUrl,
-        isFollower,
-        isFollowing,
-        introduce,
-        followerCnt,
-        rating,
-    )
+    DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
 
 fun DisplayProfile.toEntity(): DisplayProfileEntity =
-    DisplayProfileEntity(
-        profileId,
-        nickname,
-        photoUrl,
-        isFollower,
-        isFollowing,
-        introduce,
-        followerCnt,
-        rating,
-    )
+    DisplayProfileEntity(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)

@@ -16,6 +16,7 @@ interface UserRepository {
 
     /**
      * 나의 프로필을 Local DB 에서 가져온다.
+     *
      * 1. Data is retrieved only from local DB
      *
      * @param profileId 나의 프로필 ID
@@ -46,7 +47,9 @@ interface UserRepository {
      *
      * @param categoryIds 수정한 카테고리 리스트
      */
-    fun updateMyCategories(categoryIds: List<Int>): Flow<Result<Boolean, ErrorType>>
+    fun updateMyCategories(
+        categoryIds: List<Int>
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 계정 신고
@@ -68,7 +71,10 @@ interface UserRepository {
      * @param profileId 나의 프로필 ID
      * @param blockedId 차단 해제할 프로필 ID
      */
-    fun unblockAccount(profileId: String, blockedId: String): Flow<Result<Boolean, ErrorType>>
+    fun unblockAccount(
+        profileId: String,
+        blockedId: String
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 나의 프로필 수정
@@ -78,7 +84,10 @@ interface UserRepository {
      * @param profileId 나의 프로필 ID
      * @param editProfile 수정된 프로필 데이터
      */
-    fun editMyProfile(profileId: String, editProfile: EditProfile): Flow<Result<Boolean, ErrorType>>
+    fun editMyProfile(
+        profileId: String,
+        editProfile: EditProfile
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 팔로우
@@ -86,7 +95,10 @@ interface UserRepository {
      * @param followingId: 나의 profile ID
      * @param followerId: 팔로우 당한 profile ID
      */
-    fun follow(followingId: String, followerId: String): Flow<Result<Boolean, ErrorType>>
+    fun follow(
+        followingId: String,
+        followerId: String
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 언팔로우
@@ -94,7 +106,10 @@ interface UserRepository {
      * @param followingId: 나의 profile ID
      * @param followerId: 팔로우 당한 profile ID
      */
-    fun unfollow(followingId: String, followerId: String): Flow<Result<Boolean, ErrorType>>
+    fun unfollow(
+        followingId: String,
+        followerId: String
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 팔로워 리스트 페이지네이션
@@ -106,7 +121,7 @@ interface UserRepository {
     fun getFollowerListPagination(
         profileId: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<DisplayProfileList, ErrorType>>
 
     /**
@@ -119,7 +134,7 @@ interface UserRepository {
     fun getFollowingListPagination(
         profileId: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<DisplayProfileList, ErrorType>>
 
     /**
@@ -132,7 +147,7 @@ interface UserRepository {
     fun getBlockListPagination(
         profileId: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<BlockProfileList, ErrorType>>
 
     /**
@@ -145,6 +160,6 @@ interface UserRepository {
     fun getMyCommentListPagination(
         profileId: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<DisplayPostList, ErrorType>>
 }

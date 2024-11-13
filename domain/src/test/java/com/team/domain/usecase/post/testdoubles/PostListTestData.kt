@@ -19,12 +19,17 @@ fun getPostListTestData(count: Int = 15): PostList {
                 likeCnt = 10,
                 commentCnt = 10,
                 scraped = false,
-                bgColorType = BackgroundColorType.RED,
+                bgColorType = BackgroundColorType.RED
             )
         )
     }
 
-    return PostList(hasNext = true, nextCursor = "20240618", postCnt = 15, posts = posts)
+    return PostList(
+        hasNext = true,
+        nextCursor = "20240618",
+        postCnt = 15,
+        posts = posts,
+    )
 }
 
 fun getPostsTestData(count: Int = 15): List<Post> {
@@ -41,10 +46,11 @@ fun getPostsTestData(count: Int = 15): List<Post> {
                 likeCnt = 10,
                 commentCnt = 10,
                 scraped = false,
-                bgColorType = BackgroundColorType.RED,
+                bgColorType = BackgroundColorType.RED
             )
         )
     }
 
     return posts
 }
+

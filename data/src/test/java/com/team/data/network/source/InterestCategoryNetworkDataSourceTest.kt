@@ -35,23 +35,22 @@ class InterestCategoryNetworkDataSourceTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
-        interestCategoryNetworkApi =
-            Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(server.url("/"))
-                .build()
-                .create(InterestCategoryNetworkApi::class.java)
+        interestCategoryNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(InterestCategoryNetworkApi::class.java)
 
-        interestCategoryNetworkDataSource =
-            FakeInterestCategoryNetworkDataSource(interestCategoryNetworkApi)
+        interestCategoryNetworkDataSource = FakeInterestCategoryNetworkDataSource(interestCategoryNetworkApi)
     }
 
     @Test
     fun `나의 관심 카테고리 가져오기(getMyCategories())`() = runTest {
-        val myCategories =
-            """
+        val myCategories = """
                 [ {
                   "categoryId" : 1,
                   "categoryName" : "일상"
@@ -59,18 +58,15 @@ class InterestCategoryNetworkDataSourceTest {
                   "categoryId" : 2,
                   "categoryName" : "IT과학"
                 } ]
-            """
-                .trimIndent()
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(myCategories)
-            }
-        )
+            """.trimIndent()
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(myCategories)
+        })
 
         val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val expectedResponse =
-            moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
+        val expectedResponse = moshi.adapter<List<CategoryResponse>?>(adapter)
+            .fromJson(myCategories)
 
         val actualResponse = interestCategoryNetworkDataSource.getMyCategories()
 
@@ -80,30 +76,28 @@ class InterestCategoryNetworkDataSourceTest {
 
     @Test
     fun `나의 관심 카테고리 업데이트(updateMyCategories())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
+
+        server.enqueue(MockResponse().apply {
+            setResponseCode(201)
+        })
 
         val response =
             interestCategoryNetworkDataSource.updateMyCategories(
-                categoryIds = CategoryRequest(listOf(1, 2, 3))
+                categoryIds = CategoryRequest(listOf(1, 2, 3)),
             )
 
         val recordedRequest = server.takeRequest()
 
         val adapter = moshi.adapter(CategoryRequest::class.java)
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
-        val requestBody =
-            """
+        val requestBody = """
             {
                 "categoryIds": [1,2,3]
             }
-        """
-                .trimIndent()
+        """.trimIndent()
         val expectedRequestBody = adapter.fromJson(requestBody)
 
         Assert.assertNotNull(response)
-        org.junit.Assert.assertEquals(
-            expectedRequestBody!!.categoryIds,
-            realRequestBody!!.categoryIds,
-        )
+        org.junit.Assert.assertEquals(expectedRequestBody!!.categoryIds, realRequestBody!!.categoryIds)
     }
 }

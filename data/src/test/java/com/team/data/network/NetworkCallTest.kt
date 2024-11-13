@@ -25,10 +25,13 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
 @JsonClass(generateAdapter = true)
-private data class TestModel(@Json(name = "message") val message: String)
+private data class TestModel(
+    @Json(name = "message") val message: String,
+)
 
 private interface ApiService {
-    @GET("/test") suspend fun testCall(): Response<TestModel>
+    @GET("/test")
+    suspend fun testCall(): Response<TestModel>
 }
 
 @ExperimentalCoroutinesApi
@@ -39,21 +42,23 @@ class NetworkCallTest {
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
-    @Mock private lateinit var context: Context
+    @Mock
+    private lateinit var context: Context
 
     @Before
     fun setUp() {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
-        apiService =
-            Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(server.url("/"))
-                .build()
-                .create(ApiService::class.java)
+        apiService = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(ApiService::class.java)
     }
 
     @After
@@ -63,22 +68,19 @@ class NetworkCallTest {
 
     @Test
     fun `networkCall Success`() = runTest {
-        val jsonTestData =
-            """
+
+        val jsonTestData = """
             {
                 "message": "테스트"
             }
-        """
-                .trimIndent()
+        """.trimIndent()
         val adapter = moshi.adapter(TestModel::class.java)
         val expectedResponse = adapter.fromJson(jsonTestData)
 
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(jsonTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(jsonTestData)
+        })
 
         val networkCallResult = networkCall { apiService.testCall() }
 
@@ -90,7 +92,10 @@ class NetworkCallTest {
 
     @Test
     fun `networkCall Failure`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val expectedResponse = ErrorType.Exception.EXCEPTION
 
@@ -105,18 +110,25 @@ class NetworkCallTest {
 
     @Test
     fun `networkCallWithoutResponse Success`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+        })
 
         val networkCallResult = networkCallWithoutResponse { apiService.testCall() }
 
         networkCallResult.also { actualResponse ->
-            if (actualResponse is Result.Success) Assert.assertEquals(true, actualResponse.data)
+            if (actualResponse is Result.Success)
+                Assert.assertEquals(true, actualResponse.data)
         }
     }
 
     @Test
     fun `networkCallWithoutResponse Failure`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+        })
 
         val networkCallResult = networkCall { apiService.testCall() }
 
@@ -130,28 +142,30 @@ class NetworkCallTest {
 
     @Test
     fun `networkCall ErrorBody`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(404)
-                setBody(errorBodyString)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(404)
+            setBody(errorBodyString)
+        })
 
-        val expectedResponse = moshi.adapter(ErrorBody::class.java).fromJson(errorBodyString)
+        val expectedResponse = moshi.adapter(ErrorBody::class.java)
+            .fromJson(errorBodyString)
 
-        /** MockWebServer 문제로 networkCall { ... } 처리가 잘 되지 않아 임시로 API 직접 호출로 테스팅 */
+        /**
+         * MockWebServer 문제로 networkCall { ... } 처리가 잘 되지 않아
+         * 임시로 API 직접 호출로 테스팅
+         */
         val response = apiService.testCall()
 
         val adapter = moshi.adapter(ErrorBody::class.java)
-        val actualResponse =
-            response.errorBody()?.source()?.let { source -> adapter.fromJson(source) }
+        val actualResponse = response.errorBody()?.source()?.let { source ->
+            adapter.fromJson(source)
+        }
 
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 }
 
-val errorBodyString =
-    """
+val errorBodyString = """
                     {
                       "code" : "C001",
                       "message" : "올바르지 않은 입력 값입니다.",
@@ -165,5 +179,4 @@ val errorBodyString =
                         "reason" : "must not be blank"
                       } ]
                     }
-                """
-        .trimIndent()
+                """.trimIndent()

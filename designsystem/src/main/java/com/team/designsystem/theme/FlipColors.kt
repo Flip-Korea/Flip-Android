@@ -37,20 +37,19 @@ data class FlipColors(
     val white: Color,
 )
 
-val FlipLightColors =
-    FlipColors(
-        main = Color(0xFF212121),
-        gray7 = Color(0xFF616161),
-        gray6 = Color(0xFF757575),
-        gray5 = Color(0xFF9E9E9E),
-        gray4 = Color(0xFFBDBDBD),
-        gray3 = Color(0xFFE0E0E0),
-        gray2 = Color(0xFFEEEEEE),
-        gray1 = Color(0xFFF6F6F6),
-        point = Color(0xFF00AB85),
-        point2 = Color(0xFF15E1B3),
-        point3 = Color(0xFF9FFAE6),
-        statusRed = Color(0xFFFF1F4B),
-        statusBlue = Color(0xFF4990FF),
-        white = Color(0xFFFFFFFF),
-    )
+val FlipLightColors = FlipColors(
+    main = Color(0xFF212121),
+    gray7 = Color(0xFF616161),
+    gray6 = Color(0xFF757575),
+    gray5 = Color(0xFF9E9E9E),
+    gray4 = Color(0xFFBDBDBD),
+    gray3 = Color(0xFFE0E0E0),
+    gray2 = Color(0xFFEEEEEE),
+    gray1 = Color(0xFFF6F6F6),
+    point = Color(0xFF00AB85),
+    point2 = Color(0xFF15E1B3),
+    point3 = Color(0xFF9FFAE6),
+    statusRed = Color(0xFFFF1F4B),
+    statusBlue = Color(0xFF4990FF),
+    white = Color(0xFFFFFFFF)
+)

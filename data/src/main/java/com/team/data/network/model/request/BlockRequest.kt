@@ -11,4 +11,5 @@ data class BlockRequest(
     @Json(name = "blocked_id") val blockedId: String,
 )
 
-fun BlockReq.toNetwork(): BlockRequest = BlockRequest(profileId, postId, blockedId)
+fun BlockReq.toNetwork(): BlockRequest =
+    BlockRequest(profileId, postId, blockedId)
