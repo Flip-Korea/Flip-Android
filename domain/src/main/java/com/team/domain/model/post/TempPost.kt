@@ -21,8 +21,8 @@ data class TempPost(
         bgColorType: BackgroundColorType,
         categoryId: Int,
         categoryName: String,
-        postAt: String
-    ): this(
+        postAt: String,
+    ) : this(
         tempPostId,
         title,
         content,
@@ -31,6 +31,6 @@ data class TempPost(
         categoryId,
         categoryName,
         emptyList(),
-        postAt
+        postAt,
     )
 }

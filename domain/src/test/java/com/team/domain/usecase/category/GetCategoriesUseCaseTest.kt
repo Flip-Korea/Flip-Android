@@ -12,12 +12,9 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class GetCategoriesUseCaseTest {
 
-//    private val categoryRepository: CategoryRepository = mockk()
+    //    private val categoryRepository: CategoryRepository = mockk()
 
-    /**
-     * 테스트 데이터는 categoriesTestData,
-     * 이하 생략
-     */
+    /** 테스트 데이터는 categoriesTestData, 이하 생략 */
     @Test
     fun `Local DB 데이터 O`() = runTest {
         // Given

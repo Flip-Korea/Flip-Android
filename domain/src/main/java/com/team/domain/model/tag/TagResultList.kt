@@ -4,5 +4,5 @@ data class TagResultList(
     val searchTag: String,
     val hasNext: Boolean,
     val nextCursor: String,
-    val tags: List<TagResult>
+    val tags: List<TagResult>,
 )

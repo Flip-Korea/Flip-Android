@@ -3,8 +3,7 @@ package com.team.domain.type
 /**
  * Flip(Post) 글의 배경 컬러 타입
  *
- * 주의 사항: 네트워크 통신 시 Value의 name으로 전달해야 한다.
- * [BackgroundColorType.DEFAULT.name]
+ * 주의 사항: 네트워크 통신 시 Value의 name으로 전달해야 한다. [BackgroundColorType.DEFAULT.name]
  *
  * @see BackgroundColorType.asString
  * @see String.asBackgroundColorType
@@ -15,12 +14,12 @@ enum class BackgroundColorType {
     YELLOW,
     GREEN,
     BLUE,
-    PURPLE
+    PURPLE,
 }
 
 /**
- * [BackgroundColorType]을 View 용 텍스트로 변환
- * //TODO 임시 하드코딩
+ * [BackgroundColorType]을 View 용 텍스트로 변환 //TODO 임시 하드코딩
+ *
  * @see BackgroundColorType
  */
 fun BackgroundColorType.asString(): String =
@@ -35,6 +34,7 @@ fun BackgroundColorType.asString(): String =
 
 /**
  * 문자열을 [BackgroundColorType] 으로 변환
+ *
  * @see BackgroundColorType
  */
 fun String.asBackgroundColorType(): BackgroundColorType =

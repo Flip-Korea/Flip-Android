@@ -3,15 +3,15 @@ package com.team.data.repository
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.team.domain.util.paging.FlipPagingTokens
 import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.data.network.source.UserNetworkDataSource
 import com.team.data.network.source.fake.FakeUserNetworkDataSource
-import com.team.data.repository.fake.FakeScrapRepository
 import com.team.data.network.testdoubles.resultIdResponseTestData
+import com.team.data.repository.fake.FakeScrapRepository
 import com.team.domain.model.scrap.NewScrap
 import com.team.domain.repository.ScrapRepository
 import com.team.domain.util.Result
+import com.team.domain.util.paging.FlipPagingTokens
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.runTest
@@ -32,8 +32,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @RunWith(JUnit4::class)
 class DefaultScrapRepositoryTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var userNetworkDataSource: UserNetworkDataSource
     private lateinit var scrapRepository: ScrapRepository
@@ -49,11 +48,12 @@ class DefaultScrapRepositoryTest {
 
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        userNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(UserNetworkApi::class.java)
+        userNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(UserNetworkApi::class.java)
 
         userNetworkDataSource = FakeUserNetworkDataSource(userNetworkApi)
         scrapRepository = FakeScrapRepository(userNetworkDataSource)
@@ -66,50 +66,44 @@ class DefaultScrapRepositoryTest {
 
     @Test
     fun `스크랩 목록 페이지네이션 (getScrapListPagination())`() = runTest {
-
         val pageSize = 15
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(makePostListResponseTestData("1", pageSize))
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(makePostListResponseTestData("1", pageSize))
+            }
+        )
 
         val result =
-            scrapRepository.getScrapListPagination(
-                "TestProfileId",
-                "1",
-                FlipPagingTokens.POST_PAGE_SIZE
-            ).last()
+            scrapRepository
+                .getScrapListPagination("TestProfileId", "1", FlipPagingTokens.POST_PAGE_SIZE)
+                .last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)
     }
 
     @Test
     fun `스크랩 코멘트 수정 (editScrapComment())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(200) })
 
         val newComment = "수정된 코멘트"
 
-        val result =
-            scrapRepository.editScrapComment("TestProfileId", 1, newComment).last()
+        val result = scrapRepository.editScrapComment("TestProfileId", 1, newComment).last()
 
         assert((result as Result.Success).data)
     }
 
     @Test
     fun `스크랩 추가 (addScrap())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(resultIdResponseTestData)
-        })
-
-        val newScrap = NewScrap(
-            "TestProfileId",
-            1,
-            "코멘트!"
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(resultIdResponseTestData)
+            }
         )
+
+        val newScrap = NewScrap("TestProfileId", 1, "코멘트!")
 
         val result = scrapRepository.addScrap(newScrap).last()
 
@@ -118,9 +112,7 @@ class DefaultScrapRepositoryTest {
 
     @Test
     fun `스크랩 삭제 (deleteScrap())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(200) })
 
         val result = scrapRepository.deleteScrap(1).last()
 

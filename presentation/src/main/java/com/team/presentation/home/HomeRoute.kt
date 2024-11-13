@@ -39,7 +39,8 @@ fun HomeRoute(
     val postState by homeViewModel.postState.collectAsStateWithLifecycle()
     val reportState by homeViewModel.reportState.collectAsStateWithLifecycle()
     val blockState by homeViewModel.blockState.collectAsStateWithLifecycle()
-    val filteredMyCategoriesState by homeViewModel.filteredMyCategoriesState.collectAsStateWithLifecycle()
+    val filteredMyCategoriesState by
+        homeViewModel.filteredMyCategoriesState.collectAsStateWithLifecycle()
     val refreshState by homeViewModel.refreshState.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -49,12 +50,12 @@ fun HomeRoute(
 
     val coroutineScope = rememberCoroutineScope()
 
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//    LaunchedEffect(lifecycleOwner) {
-//        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
-//            homeViewModel.fetchCategories()
-//        }
-//    }
+    //    val lifecycleOwner = LocalLifecycleOwner.current
+    //    LaunchedEffect(lifecycleOwner) {
+    //        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+    //            homeViewModel.fetchCategories()
+    //        }
+    //    }
 
     ReportAndBlockBottomSheet(
         startFromReportView = startFromReportView,
@@ -64,20 +65,20 @@ fun HomeRoute(
         profileId = reportAndBlockProfileId,
         photoUrl = reportAndBlockPhotoUrl,
         onDismissRequest = {
-            coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
-                if (!sheetState.isVisible) {
-                    startFromReportView = null
+            coroutineScope
+                .launch { sheetState.hide() }
+                .invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        startFromReportView = null
+                    }
                 }
-            }
         },
         onReport = { reportType -> homeViewModel.onReport() },
         onBlockClick = homeViewModel::onBlock,
     )
 
     HomeScreen(
-        modifier = modifier
-            .fillMaxSize()
-            .background(FlipTheme.colors.white),
+        modifier = modifier.fillMaxSize().background(FlipTheme.colors.white),
         refreshState = refreshState,
         myCategories = filteredMyCategoriesState,
         postState = postState,

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,19 +28,15 @@ fun FlipThemeTestScreen() {
 
     FlipAppTheme {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(FlipTheme.colors.white),
+            modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(
-                15.dp,
-                alignment = Alignment.CenterVertically
-            )
+            verticalArrangement =
+                Arrangement.spacedBy(15.dp, alignment = Alignment.CenterVertically),
         ) {
-//            CompositionLocalProvider(LocalRippleTheme provides FlipNoRipple()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
+            //            CompositionLocalProvider(LocalRippleTheme provides FlipNoRipple()) {
+            Box(
+                modifier =
+                    Modifier.fillMaxWidth()
                         .height(48.dp)
                         .padding(horizontal = 16.dp)
                         .clip(FlipTheme.shapes.roundedCornerSmall)
@@ -49,36 +44,34 @@ fun FlipThemeTestScreen() {
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(),
-                            onClick = { }
-                        ),
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "Flip 디자인 시스템 테스트(Box)",
-                        style = FlipTheme.typography.headline2,
-                        color = FlipTheme.colors.white
-                    )
-                }
+                            onClick = {},
+                        )
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "Flip 디자인 시스템 테스트(Box)",
+                    style = FlipTheme.typography.headline2,
+                    color = FlipTheme.colors.white,
+                )
+            }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 16.dp),
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(
+            Button(
+                modifier = Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 16.dp),
+                onClick = {},
+                colors =
+                    ButtonDefaults.buttonColors(
                         containerColor = FlipTheme.colors.main,
-                        contentColor = FlipTheme.colors.white
+                        contentColor = FlipTheme.colors.white,
                     ),
-                    shape = FlipTheme.shapes.roundedCornerSmall
-                ) {
-                    Text(
-                        text = "Flip 디자인 시스템 테스트(Button)",
-                        style = FlipTheme.typography.headline2,
-                        color = FlipTheme.colors.white
-                    )
-                }
-//            }
+                shape = FlipTheme.shapes.roundedCornerSmall,
+            ) {
+                Text(
+                    text = "Flip 디자인 시스템 테스트(Button)",
+                    style = FlipTheme.typography.headline2,
+                    color = FlipTheme.colors.white,
+                )
+            }
+            //            }
         }
     }
 }

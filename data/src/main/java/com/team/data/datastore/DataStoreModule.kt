@@ -20,7 +20,6 @@ class DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideDataStoreManager(
-        @ApplicationContext context: Context
-    ): DataStoreManager = DefaultDataStoreManager(context.dataStore)
+    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager =
+        DefaultDataStoreManager(context.dataStore)
 }

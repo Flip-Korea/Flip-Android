@@ -23,35 +23,26 @@ class GetPostsUseCaseTest {
     fun `Successful`() = runTest {
         // Given
         val expected = getPostListTestData()
-        every {
-            postRepository.getPostsPagination(null, 15)
-        } returns flowOf(Result.Success(expected))
+        every { postRepository.getPostsPagination(null, 15) } returns
+            flowOf(Result.Success(expected))
 
         // When
         val actual = getPostsUseCase(null).last()
 
         // Then
-        assertEquals(
-            expected,
-            (actual as Result.Success).data
-        )
+        assertEquals(expected, (actual as Result.Success).data)
     }
 
     @Test
     fun `Failure`() = runTest {
         // Given
         val expected = ErrorType.Network.NOT_FOUND
-        every {
-            postRepository.getPostsPagination(null, 15)
-        } returns flowOf(Result.Error(expected))
+        every { postRepository.getPostsPagination(null, 15) } returns flowOf(Result.Error(expected))
 
         // When
         val actual = getPostsUseCase(null).last()
 
         // Then
-        assertEquals(
-            expected,
-            (actual as Result.Error).error
-        )
+        assertEquals(expected, (actual as Result.Error).error)
     }
 }

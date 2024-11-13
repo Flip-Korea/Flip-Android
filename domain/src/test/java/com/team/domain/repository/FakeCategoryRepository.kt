@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 class FakeCategoryRepository(
     private val hasLocalData: Boolean,
     private val isNetworkError: Boolean,
-): CategoryRepository {
+) : CategoryRepository {
 
     private val categories = MutableStateFlow(emptyList<Category>())
 
@@ -19,11 +19,13 @@ class FakeCategoryRepository(
 
     override suspend fun refreshCategories(): Result<Boolean, ErrorType> {
         if (isNetworkError) {
-            val networkError: Result<List<Category>, ErrorType> = Result.Error(ErrorType.Network.FORBIDDEN)
+            val networkError: Result<List<Category>, ErrorType> =
+                Result.Error(ErrorType.Network.FORBIDDEN)
             categories.update { emptyList() }
             return Result.Error(ErrorType.Network.UNEXPECTED)
         } else {
-            val networkCategories: Result<List<Category>, ErrorType> = Result.Success(categoriesTestData)
+            val networkCategories: Result<List<Category>, ErrorType> =
+                Result.Success(categoriesTestData)
             categories.update { (networkCategories as Result.Success).data }
             return Result.Success(true)
         }

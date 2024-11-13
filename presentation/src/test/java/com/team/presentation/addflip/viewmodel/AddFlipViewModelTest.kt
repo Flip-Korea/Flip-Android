@@ -23,6 +23,7 @@ import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.util.uitext.UiText
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -36,17 +37,14 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class AddFlipViewModelTest {
 
-    @get:Rule
-    val testDispatcher = TestDispatcherRule()
+    @get:Rule val testDispatcher = TestDispatcherRule()
 
     /** 백그라운드 작업을 동기적으로 실행 */
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var addFlipViewModel: AddFlipViewModel
     private val getCategoriesUseCase: GetCategoriesUseCase = mockk()
@@ -69,19 +67,20 @@ class AddFlipViewModelTest {
 
     @Test
     fun `카테고리 가져오기`() = runTest {
-        addFlipViewModel = AddFlipViewModel(
-            getCurrentProfileIdUseCase = getCurrentProfileIdUseCase,
-            getCategoriesUseCase = getCategoriesUseCase,
-            addPostUseCases = addPostUseCase,
-            addTempPostUseCase = addTempPostUseCase,
-            validatePostUseCase = validatePostUseCase,
-            validateTempPostUseCase = validateTempPostUseCase,
-            ioDispatcher = UnconfinedTestDispatcher()
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                getCurrentProfileIdUseCase = getCurrentProfileIdUseCase,
+                getCategoriesUseCase = getCategoriesUseCase,
+                addPostUseCases = addPostUseCase,
+                addTempPostUseCase = addTempPostUseCase,
+                validatePostUseCase = validatePostUseCase,
+                validateTempPostUseCase = validateTempPostUseCase,
+                ioDispatcher = UnconfinedTestDispatcher(),
+            )
         val categoriesState = addFlipViewModel.categoriesState.first()
         advanceTimeBy(2.seconds)
 
-        assertEquals(categoriesState.categories,  categoriesTestData)
+        assertEquals(categoriesState.categories, categoriesTestData)
     }
 
     @Test
@@ -89,9 +88,7 @@ class AddFlipViewModelTest {
         // Given
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
-        every {
-            validatePostUseCase(title, content, tags)
-        } returns listOf(ValidationResult.Success)
+        every { validatePostUseCase(title, content, tags) } returns listOf(ValidationResult.Success)
 
         every {
             addPostUseCase(
@@ -99,30 +96,28 @@ class AddFlipViewModelTest {
                 content = content,
                 bgColorType = selectedColor,
                 tags = tags,
-                categoryId = selectedCategory.id
+                categoryId = selectedCategory.id,
             )
         } returns flowOf(Result.Success(true))
 
-        addFlipViewModel = AddFlipViewModel(
-            UnconfinedTestDispatcher(),
-            getCurrentProfileIdUseCase,
-            getCategoriesUseCase,
-            addPostUseCase,
-            addTempPostUseCase,
-            validatePostUseCase, validateTempPostUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                UnconfinedTestDispatcher(),
+                getCurrentProfileIdUseCase,
+                getCategoriesUseCase,
+                addPostUseCase,
+                addTempPostUseCase,
+                validatePostUseCase,
+                validateTempPostUseCase,
+            )
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
         var addPostState: AddPostState? = null
-        val job = launch {
-            addFlipViewModel.addPostState.collectLatest {
-                addPostState = it
-            }
-        }
+        val job = launch { addFlipViewModel.addPostState.collectLatest { addPostState = it } }
 
         // When
-        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title,content, selectedColor, tags))
+        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title, content, selectedColor, tags))
 
         advanceTimeBy(1.seconds)
         job.cancel()
@@ -140,9 +135,7 @@ class AddFlipViewModelTest {
         val actualErrorBody = ErrorBody("", emptyList(), "error")
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
-        every {
-            validatePostUseCase(title, content, tags)
-        } returns listOf(ValidationResult.Success)
+        every { validatePostUseCase(title, content, tags) } returns listOf(ValidationResult.Success)
 
         every {
             addPostUseCase(
@@ -150,40 +143,36 @@ class AddFlipViewModelTest {
                 content = content,
                 bgColorType = selectedColor,
                 tags = tags,
-                categoryId = selectedCategory.id
+                categoryId = selectedCategory.id,
             )
-        } returns flowOf(Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = actualErrorBody))
+        } returns
+            flowOf(Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = actualErrorBody))
 
-        addFlipViewModel = AddFlipViewModel(
-            UnconfinedTestDispatcher(),
-            getCurrentProfileIdUseCase,
-            getCategoriesUseCase,
-            addPostUseCase,
-            addTempPostUseCase,
-            validatePostUseCase, validateTempPostUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                UnconfinedTestDispatcher(),
+                getCurrentProfileIdUseCase,
+                getCategoriesUseCase,
+                addPostUseCase,
+                addTempPostUseCase,
+                validatePostUseCase,
+                validateTempPostUseCase,
+            )
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
         var snackbarEvent: SnackbarEvent? = null
-        val job = launch {
-            SnackbarController.events.collectLatest {
-                snackbarEvent = it
-            }
-        }
+        val job = launch { SnackbarController.events.collectLatest { snackbarEvent = it } }
 
         // When
-        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title,content, selectedColor, tags))
+        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title, content, selectedColor, tags))
         advanceTimeBy(1.seconds)
         job.cancel()
 
         // Then
         val actualError = snackbarEvent?.message
 
-        assertEquals(
-            actualError,
-            UiText.DynamicString(actualErrorBody.message)
-        )
+        assertEquals(actualError, UiText.DynamicString(actualErrorBody.message))
     }
 
     @Test
@@ -191,9 +180,7 @@ class AddFlipViewModelTest {
         // Given
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
-        every {
-            validatePostUseCase(title, content, tags)
-        } returns listOf(ValidationResult.Success)
+        every { validatePostUseCase(title, content, tags) } returns listOf(ValidationResult.Success)
 
         every {
             addPostUseCase(
@@ -201,30 +188,28 @@ class AddFlipViewModelTest {
                 content = content,
                 bgColorType = selectedColor,
                 tags = tags,
-                categoryId = selectedCategory.id
+                categoryId = selectedCategory.id,
             )
         } returns flowOf(Result.Success(true))
 
-        addFlipViewModel = AddFlipViewModel(
-            UnconfinedTestDispatcher(),
-            getCurrentProfileIdUseCase,
-            getCategoriesUseCase,
-            addPostUseCase,
-            addTempPostUseCase,
-            validatePostUseCase, validateTempPostUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                UnconfinedTestDispatcher(),
+                getCurrentProfileIdUseCase,
+                getCategoriesUseCase,
+                addPostUseCase,
+                addTempPostUseCase,
+                validatePostUseCase,
+                validateTempPostUseCase,
+            )
 
         var addPostState: AddPostState? = null
-        val job = launch {
-            addFlipViewModel.addPostState.collectLatest {
-                addPostState = it
-            }
-        }
+        val job = launch { addFlipViewModel.addPostState.collectLatest { addPostState = it } }
 
         val expectedError = UiText.DynamicString("카테고리를 입력해주세요.")
 
         // When
-        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title,content, selectedColor, tags))
+        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSavePost(title, content, selectedColor, tags))
 
         advanceTimeBy(1.seconds)
         job.cancel()
@@ -235,10 +220,7 @@ class AddFlipViewModelTest {
 
         assertNotNull(result)
         assert(!result!!)
-        assertEquals(
-            expectedError,
-            actualError
-        )
+        assertEquals(expectedError, actualError)
     }
 
     @Test
@@ -246,9 +228,7 @@ class AddFlipViewModelTest {
         // Given
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
-        every {
-            validateTempPostUseCase(title, content)
-        } returns ValidationResult.Success
+        every { validateTempPostUseCase(title, content) } returns ValidationResult.Success
 
         every {
             addTempPostUseCase(
@@ -256,30 +236,32 @@ class AddFlipViewModelTest {
                 content = content,
                 bgColorType = selectedColor,
                 tags = tags,
-                categoryId = selectedCategory.id
+                categoryId = selectedCategory.id,
             )
         } returns flowOf(Result.Success(true))
 
-        addFlipViewModel = AddFlipViewModel(
-            UnconfinedTestDispatcher(),
-            getCurrentProfileIdUseCase,
-            getCategoriesUseCase,
-            addPostUseCase,
-            addTempPostUseCase,
-            validatePostUseCase, validateTempPostUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                UnconfinedTestDispatcher(),
+                getCurrentProfileIdUseCase,
+                getCategoriesUseCase,
+                addPostUseCase,
+                addTempPostUseCase,
+                validatePostUseCase,
+                validateTempPostUseCase,
+            )
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
         var addTempPostState: AddTempPostState? = null
         val job = launch {
-            addFlipViewModel.addTempPostState.collectLatest {
-                addTempPostState = it
-            }
+            addFlipViewModel.addTempPostState.collectLatest { addTempPostState = it }
         }
 
         // When
-        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSaveTempPost(title,content, selectedColor, tags))
+        addFlipViewModel.onUiEvent(
+            AddFlipUiEvent.OnSaveTempPost(title, content, selectedColor, tags)
+        )
 
         advanceTimeBy(1.seconds)
         job.cancel()
@@ -297,9 +279,7 @@ class AddFlipViewModelTest {
         val expectedErrorBody = ErrorBody("", emptyList(), "error")
         val selectedColor = BackgroundColorType.DEFAULT
         val selectedCategory = Category(2, "2")
-        every {
-            validateTempPostUseCase(title, content)
-        } returns ValidationResult.Success
+        every { validateTempPostUseCase(title, content) } returns ValidationResult.Success
 
         every {
             addTempPostUseCase(
@@ -307,30 +287,35 @@ class AddFlipViewModelTest {
                 content = content,
                 bgColorType = selectedColor,
                 tags = tags,
-                categoryId = selectedCategory.id
+                categoryId = selectedCategory.id,
             )
-        } returns flowOf(Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = expectedErrorBody))
+        } returns
+            flowOf(
+                Result.Error(error = ErrorType.Network.BAD_REQUEST, errorBody = expectedErrorBody)
+            )
 
-        addFlipViewModel = AddFlipViewModel(
-            UnconfinedTestDispatcher(),
-            getCurrentProfileIdUseCase,
-            getCategoriesUseCase,
-            addPostUseCase,
-            addTempPostUseCase,
-            validatePostUseCase, validateTempPostUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                UnconfinedTestDispatcher(),
+                getCurrentProfileIdUseCase,
+                getCategoriesUseCase,
+                addPostUseCase,
+                addTempPostUseCase,
+                validatePostUseCase,
+                validateTempPostUseCase,
+            )
 
         addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(selectedCategory))
 
         var addTempPostState: AddTempPostState? = null
         val job = launch {
-            addFlipViewModel.addTempPostState.collectLatest {
-                addTempPostState = it
-            }
+            addFlipViewModel.addTempPostState.collectLatest { addTempPostState = it }
         }
 
         // When
-        addFlipViewModel.onUiEvent(AddFlipUiEvent.OnSaveTempPost(title,content, selectedColor, tags))
+        addFlipViewModel.onUiEvent(
+            AddFlipUiEvent.OnSaveTempPost(title, content, selectedColor, tags)
+        )
 
         advanceTimeBy(1.seconds)
         job.cancel()
@@ -341,9 +326,6 @@ class AddFlipViewModelTest {
 
         assertNotNull(result)
         assert(!result!!)
-        assertEquals(
-            UiText.DynamicString(expectedErrorBody.message),
-            actualErrorBody
-        )
+        assertEquals(UiText.DynamicString(expectedErrorBody.message), actualErrorBody)
     }
 }

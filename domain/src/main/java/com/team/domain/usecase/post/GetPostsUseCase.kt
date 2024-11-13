@@ -3,25 +3,18 @@ package com.team.domain.usecase.post
 import com.team.domain.model.post.PostList
 import com.team.domain.repository.PostRepository
 import com.team.domain.util.ErrorType
-import com.team.domain.util.paging.FlipPagingTokens
 import com.team.domain.util.Result
-import kotlinx.coroutines.flow.Flow
+import com.team.domain.util.paging.FlipPagingTokens
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class GetPostsUseCase @Inject constructor(
-    private val postRepository: PostRepository
-) {
+class GetPostsUseCase @Inject constructor(private val postRepository: PostRepository) {
 
     /**
      * 모든 Flip(post)을 네트워크를 통해서 가져오는 UseCase
      *
      * @param cursor 페이지네이션을 위한 커서
      */
-    operator fun invoke(
-        cursor: String?
-    ): Flow<Result<PostList, ErrorType>> =
-        postRepository.getPostsPagination(
-            cursor,
-            FlipPagingTokens.POST_PAGE_SIZE
-        )
+    operator fun invoke(cursor: String?): Flow<Result<PostList, ErrorType>> =
+        postRepository.getPostsPagination(cursor, FlipPagingTokens.POST_PAGE_SIZE)
 }

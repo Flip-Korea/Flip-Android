@@ -8,15 +8,17 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 
 private sealed class PreferenceKeyType {
-    data class StringType(val key: Preferences.Key<String>): PreferenceKeyType()
-    data class IntType(val key: Preferences.Key<Int>): PreferenceKeyType()
-    data class BooleanType(val key: Preferences.Key<Boolean>): PreferenceKeyType()
+    data class StringType(val key: Preferences.Key<String>) : PreferenceKeyType()
+
+    data class IntType(val key: Preferences.Key<Int>) : PreferenceKeyType()
+
+    data class BooleanType(val key: Preferences.Key<Boolean>) : PreferenceKeyType()
 }
 
 class DefaultDataStoreManager(private val dataStore: DataStore<Preferences>) : DataStoreManager {
@@ -24,64 +26,55 @@ class DefaultDataStoreManager(private val dataStore: DataStore<Preferences>) : D
         val key = (getKey(type) as PreferenceKeyType.StringType).key
         return dataStore.data
             .catch { exception ->
-                // dataStore.data throws an IOException when an error is encountered when reading data
+                // dataStore.data throws an IOException when an error is encountered when reading
+                // data
                 if (exception is IOException) {
                     emit(emptyPreferences())
                 } else {
                     throw exception
                 }
             }
-            .map { preferences ->
-                preferences[key]
-            }
+            .map { preferences -> preferences[key] }
     }
 
     override fun getIntData(type: DataStoreType): Flow<Int?> {
         val key = (getKey(type) as PreferenceKeyType.IntType).key
         return dataStore.data
             .catch { exception ->
-                // dataStore.data throws an IOException when an error is encountered when reading data
+                // dataStore.data throws an IOException when an error is encountered when reading
+                // data
                 if (exception is IOException) {
                     emit(emptyPreferences())
                 } else {
                     throw exception
                 }
             }
-            .map { preferences ->
-                preferences[key]
-            }
+            .map { preferences -> preferences[key] }
     }
 
     override suspend fun <T : DataStoreType.TokenType> saveData(type: T, data: String) {
         val key = (getKey(type) as PreferenceKeyType.StringType).key
-        dataStore.edit { preferences ->
-            preferences[key] = data
-        }
+        dataStore.edit { preferences -> preferences[key] = data }
     }
 
     override suspend fun <T : DataStoreType.AccountType> saveData(type: T, data: String) {
         val key = (getKey(type) as PreferenceKeyType.StringType).key
-        dataStore.edit { preferences ->
-            preferences[key] = data
-        }
+        dataStore.edit { preferences -> preferences[key] = data }
     }
 
     override suspend fun <T : DataStoreType.CheckType> saveData(type: T, data: Int) {
         val key = (getKey(type) as PreferenceKeyType.IntType).key
-        dataStore.edit { preferences ->
-            preferences[key] = data
-        }
+        dataStore.edit { preferences -> preferences[key] = data }
     }
 
     override suspend fun deleteData(type: DataStoreType) {
-        val key = when(val k = getKey(type)) {
-            is PreferenceKeyType.IntType -> k.key
-            is PreferenceKeyType.StringType -> k.key
-            is PreferenceKeyType.BooleanType -> k.key
-        }
-        dataStore.edit { preferences ->
-            preferences.remove(key)
-        }
+        val key =
+            when (val k = getKey(type)) {
+                is PreferenceKeyType.IntType -> k.key
+                is PreferenceKeyType.StringType -> k.key
+                is PreferenceKeyType.BooleanType -> k.key
+            }
+        dataStore.edit { preferences -> preferences.remove(key) }
     }
 
     override suspend fun clearAll() {

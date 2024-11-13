@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeDataStoreManager: DataStoreManager {
+class FakeDataStoreManager : DataStoreManager {
     private val maps = mutableMapOf<String, String?>()
     private val intMaps = mutableMapOf<String, Int?>()
     private val booleanMaps = mutableMapOf<String, Boolean?>()
@@ -69,6 +69,7 @@ class FakeDataStoreManager: DataStoreManager {
             DataStoreType.AccountType.CURRENT_PROFILE_ID -> "current_profile_id"
             DataStoreType.TokenType.ACCESS_TOKEN -> "access_token"
             DataStoreType.TokenType.REFRESH_TOKEN -> "refresh_token"
-            DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE -> "edit_my_categories_speech_bubble"
+            DataStoreType.CheckType.EDIT_MY_CATEGORIES_SPEECH_BUBBLE ->
+                "edit_my_categories_speech_bubble"
         }
 }

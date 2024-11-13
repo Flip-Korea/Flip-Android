@@ -9,19 +9,21 @@ import com.team.data.network.model.response.post.PostResponse
 import com.team.data.network.retrofit.api.PostNetworkApi
 import com.team.data.network.source.PostNetworkDataSource
 import com.team.data.network.source.fake.FakePostNetworkDataSource
-import com.team.data.repository.fake.FakePostRepository
 import com.team.data.network.testdoubles.postResponseTestData
 import com.team.data.network.testdoubles.resultIdResponseTestData
+import com.team.data.repository.fake.FakePostRepository
 import com.team.domain.model.post.NewPost
 import com.team.domain.repository.PostRepository
 import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.domain.type.PathParameterType
-import com.team.domain.util.paging.FlipPagingTokens
 import com.team.domain.util.Result
+import com.team.domain.util.paging.FlipPagingTokens
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -39,8 +41,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Inject
-import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -52,11 +52,9 @@ import javax.inject.Named
 )
 class DefaultPostRepositoryTest {
 
-    @get:Rule(order = 1)
-    var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var postNetworkDataSource: PostNetworkDataSource
     private lateinit var postRepository: PostRepository
@@ -65,9 +63,7 @@ class DefaultPostRepositoryTest {
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
-    @Inject
-    @Named("test_db")
-    lateinit var database: FlipDatabase
+    @Inject @Named("test_db") lateinit var database: FlipDatabase
 
     @Before
     fun setUp() {
@@ -76,16 +72,14 @@ class DefaultPostRepositoryTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        postNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(PostNetworkApi::class.java)
-
+        postNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(PostNetworkApi::class.java)
 
         postNetworkDataSource = FakePostNetworkDataSource(postNetworkApi)
         postRepository = FakePostRepository(postNetworkDataSource)
@@ -98,34 +92,33 @@ class DefaultPostRepositoryTest {
     }
 
     @Test
-    fun `플립 글 목록 페이지네이션 (getPostsPagination())`() = runTest(UnconfinedTestDispatcher()) {
+    fun `플립 글 목록 페이지네이션 (getPostsPagination())`() =
+        runTest(UnconfinedTestDispatcher()) {
+            val pageSize = 15
+            val expected = makePostListResponseTestData("1", pageSize)
 
-        val pageSize = 15
-        val expected = makePostListResponseTestData("1", pageSize)
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(expected)
+                }
+            )
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(expected)
-        })
+            val actual = postRepository.getPostsPagination("1", pageSize).last()
 
-        val actual = postRepository.getPostsPagination("1", pageSize).last()
-
-        assertEquals(pageSize, (actual as Result.Success).data.posts.size)
-    }
+            assertEquals(pageSize, (actual as Result.Success).data.posts.size)
+        }
 
     @Test
     fun `ID로 플립 글 불러오기 (getPostById())`() = runTest {
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(postResponseTestData)
+            }
+        )
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(postResponseTestData)
-        })
-
-        val postId =
-            moshi
-                .adapter(PostResponse::class.java)
-                .fromJson(postResponseTestData)!!
-                .postId
+        val postId = moshi.adapter(PostResponse::class.java).fromJson(postResponseTestData)!!.postId
 
         val post = postRepository.getPostById(postId).last()
 
@@ -135,19 +128,22 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `플립 글 작성 (addPost())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-            setBody(resultIdResponseTestData)
-        })
-
-        val newPost = NewPost(
-            title = "testTitle",
-            content = "testContent",
-            categoryId = 1,
-            bgColorType = BackgroundColorType.RED,
-            fontStyleType = FontStyleType.NORMAL,
-            tags = listOf("a", "b", "c")
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(201)
+                setBody(resultIdResponseTestData)
+            }
         )
+
+        val newPost =
+            NewPost(
+                title = "testTitle",
+                content = "testContent",
+                categoryId = 1,
+                bgColorType = BackgroundColorType.RED,
+                fontStyleType = FontStyleType.NORMAL,
+                tags = listOf("a", "b", "c"),
+            )
 
         val result = postRepository.addPost(newPost).last()
 
@@ -156,18 +152,17 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `플립 글 수정 (editPost())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(204)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(204) })
 
-        val newPost = NewPost(
-            title = "testTitle",
-            content = "testContent",
-            categoryId = 1,
-            bgColorType = BackgroundColorType.RED,
-            fontStyleType = FontStyleType.NORMAL,
-            tags = listOf("a", "b", "c")
-        )
+        val newPost =
+            NewPost(
+                title = "testTitle",
+                content = "testContent",
+                categoryId = 1,
+                bgColorType = BackgroundColorType.RED,
+                fontStyleType = FontStyleType.NORMAL,
+                tags = listOf("a", "b", "c"),
+            )
 
         val result = postRepository.editPost(newPost).last()
 
@@ -176,35 +171,31 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `타입 별로 플립 글 목록 페이지네이션 (getPostsByType())`() = runTest {
-
         val pageSize = 15
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(makePostListResponseTestData(
-                "1",
-                pageSize,
-                "1"
-                )
-            )
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(makePostListResponseTestData("1", pageSize, "1"))
+            }
+        )
 
         val result =
-            postRepository.getPostsByTypePagination(
-                type = PathParameterType.Post.CATEGORY,
-                typeId = "2",
-                cursor = "1",
-                pageSize
-            ).last()
+            postRepository
+                .getPostsByTypePagination(
+                    type = PathParameterType.Post.CATEGORY,
+                    typeId = "2",
+                    cursor = "1",
+                    pageSize,
+                )
+                .last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)
     }
 
     @Test
     fun `플립 글 삭제 (deletePost())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(200) })
 
         val result = postRepository.deletePost(1).last()
 
@@ -213,45 +204,42 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `특정 분야에서 인기 플리퍼의 플립 글 목록 페이지네이션 (getPostsByPopularUserPagination())`() = runTest {
-
         val pageSize = 15
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(makePostListResponseTestData("1", pageSize))
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(makePostListResponseTestData("1", pageSize))
+            }
+        )
 
         val result =
-            postRepository.getPostsByPopularUserPagination(
-                2,
-                "1",
-                FlipPagingTokens.POST_PAGE_SIZE
-            ).last()
+            postRepository
+                .getPostsByPopularUserPagination(2, "1", FlipPagingTokens.POST_PAGE_SIZE)
+                .last()
 
         assertEquals(pageSize, (result as Result.Success).data.posts.size)
     }
 
     @Test
     fun `플립 글 좋아요 (likePost())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-            setBody(resultIdResponseTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(201)
+                setBody(resultIdResponseTestData)
+            }
+        )
 
-        val result =
-            postRepository.likePost("testProfileId", 1).last()
+        val result = postRepository.likePost("testProfileId", 1).last()
 
         assert((result as Result.Success).data)
     }
 
     @Test
     fun `플립 글 좋아요 취소 (unLikePost())`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(201) })
 
-        val result =
-            postRepository.unLikePost("testProfileId", 1).last()
+        val result = postRepository.unLikePost("testProfileId", 1).last()
 
         assert((result as Result.Success).data)
     }

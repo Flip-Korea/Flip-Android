@@ -15,6 +15,7 @@ import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,20 +23,24 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class TempFlipBoxViewModel @Inject constructor(
-    private val tempPostUseCases: TempPostUseCases,
-) : FlipBaseViewModel<TempFlipBoxContract.UiState, TempFlipBoxContract.UiEvent, TempFlipBoxContract.UiEffect>() {
+class TempFlipBoxViewModel @Inject constructor(private val tempPostUseCases: TempPostUseCases) :
+    FlipBaseViewModel<
+        TempFlipBoxContract.UiState,
+        TempFlipBoxContract.UiEvent,
+        TempFlipBoxContract.UiEffect,
+    >() {
 
-    val tempPostPaging = tempPostUseCases.getTempPostsPaginationUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(3_000),
-            initialValue = PagingData.empty()
-        )
-        .cachedIn(viewModelScope)
+    val tempPostPaging =
+        tempPostUseCases
+            .getTempPostsPaginationUseCase()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(3_000),
+                initialValue = PagingData.empty(),
+            )
+            .cachedIn(viewModelScope)
 
     override fun createInitialState(): TempFlipBoxContract.UiState =
         TempFlipBoxContract.UiState.Idle
@@ -45,9 +50,8 @@ class TempFlipBoxViewModel @Inject constructor(
             TempFlipBoxContract.UiEvent.NavigateToBack -> TODO()
             TempFlipBoxContract.UiEvent.NavigateToPostDetail -> TODO()
             is TempFlipBoxContract.UiEvent.OnTempPostsDelete -> {
-                event.tempPostIds?.let { tempPostIds ->
-                    deleteTempPosts(tempPostIds)
-                } ?: showDialogModal()
+                event.tempPostIds?.let { tempPostIds -> deleteTempPosts(tempPostIds) }
+                    ?: showDialogModal()
             }
         }
     }
@@ -66,39 +70,56 @@ class TempFlipBoxViewModel @Inject constructor(
     }
 
     /** 임시저장플립 삭제 */
-    //TODO: 로딩처리는 어떻게?
+    // TODO: 로딩처리는 어떻게?
     private fun deleteTempPosts(tempPostIds: List<Long>) {
         var results = emptyList<Pair<Boolean, UiText>>()
 
         viewModelScope.launch {
-            tempPostIds.map { tempPostId ->
-                async {
-                    tempPostUseCases.deleteTempPostUseCase(tempPostId).onEach { result ->
-                        when (result) {
-                            Result.Loading -> {}
-                            is Result.Error -> {
-                                results = results.toMutableList().apply {
-                                    add(Pair(false, errorBodyFirst(result.errorBody, result.error)))
+            tempPostIds
+                .map { tempPostId ->
+                    async {
+                        tempPostUseCases
+                            .deleteTempPostUseCase(tempPostId)
+                            .onEach { result ->
+                                when (result) {
+                                    Result.Loading -> {}
+                                    is Result.Error -> {
+                                        results =
+                                            results.toMutableList().apply {
+                                                add(
+                                                    Pair(
+                                                        false,
+                                                        errorBodyFirst(
+                                                            result.errorBody,
+                                                            result.error,
+                                                        ),
+                                                    )
+                                                )
+                                            }
+                                    }
+
+                                    is Result.Success -> {
+                                        results =
+                                            results.toMutableList().apply {
+                                                add(Pair(true, UiText.DynamicString("")))
+                                            }
+                                    }
                                 }
                             }
-
-                            is Result.Success -> {
-                                results = results.toMutableList()
-                                    .apply { add(Pair(true, UiText.DynamicString(""))) }
-                            }
-                        }
-                    }.launchIn(this)
+                            .launchIn(this)
+                    }
                 }
-            }.awaitAll()
+                .awaitAll()
 
             val filteredResult: List<Pair<Boolean, UiText>> = results.filter { !it.first }
 
             showSnackbar(
-                message = if (filteredResult.isNotEmpty()) {
-                    filteredResult.last().second
-                } else {
-                    SuccessType.TempPost.DELETE.asUiText()
-                }
+                message =
+                    if (filteredResult.isNotEmpty()) {
+                        filteredResult.last().second
+                    } else {
+                        SuccessType.TempPost.DELETE.asUiText()
+                    }
             )
         }
     }

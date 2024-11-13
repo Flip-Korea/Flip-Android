@@ -1,6 +1,6 @@
 package com.team.domain.model.profile
 
-/** 내 프로필 **/
+/** 내 프로필 * */
 data class MyProfile(
     // 플립 ID
     val profileId: String,

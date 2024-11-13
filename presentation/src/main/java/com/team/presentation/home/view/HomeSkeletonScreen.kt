@@ -31,15 +31,12 @@ import com.team.designsystem.theme.FlipTheme
  * @param itemCount CardSection(스켈레톤 컨텐츠) 의 개수
  */
 @Composable
-fun HomeSkeletonScreen(
-    modifier: Modifier = Modifier,
-    itemCount: Int = 5
-) {
+fun HomeSkeletonScreen(modifier: Modifier = Modifier, itemCount: Int = 5) {
 
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top)
+        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top),
     ) {
         for (i in 1..itemCount) {
             CardSection(Modifier.fillMaxWidth())
@@ -52,14 +49,15 @@ private fun CardSection(modifier: Modifier = Modifier) {
 
     CompositionLocalProvider(LocalContentColor provides FlipTheme.colors.gray3) {
         Box(
-            modifier = modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(FlipTheme.colors.gray1)
-                .shimmerEffect()
+            modifier =
+                modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(FlipTheme.colors.gray1)
+                    .shimmerEffect()
         ) {
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 CardSectionTop()
                 CardSectionMiddle(Modifier.padding(bottom = 16.dp))
@@ -74,31 +72,26 @@ private fun CardSectionTop(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(40.dp)
-                .background(LocalContentColor.current)
-        )
+        Box(modifier = Modifier.clip(CircleShape).size(40.dp).background(LocalContentColor.current))
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(11.dp))
-                    .width(64.dp)
-                    .height(16.dp)
-                    .background(LocalContentColor.current)
+                modifier =
+                    Modifier.clip(RoundedCornerShape(11.dp))
+                        .width(64.dp)
+                        .height(16.dp)
+                        .background(LocalContentColor.current)
             )
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(11.dp))
-                    .width(94.dp)
-                    .height(16.dp)
-                    .background(LocalContentColor.current)
+                modifier =
+                    Modifier.clip(RoundedCornerShape(11.dp))
+                        .width(94.dp)
+                        .height(16.dp)
+                        .background(LocalContentColor.current)
             )
         }
     }
@@ -109,60 +102,53 @@ private fun CardSectionMiddle(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(5.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp),
     ) {
         for (i in 1..3) {
 
-            val mod = if (i == 1) {
-                Modifier
-                    .width(194.dp)
-                    .height(21.dp)
-                    .padding(bottom = 1.dp)
-            } else Modifier
-                .fillMaxWidth()
-                .height(16.dp)
+            val mod =
+                if (i == 1) {
+                    Modifier.width(194.dp).height(21.dp).padding(bottom = 1.dp)
+                } else Modifier.fillMaxWidth().height(16.dp)
 
-            Box(modifier = Modifier
-                .clip(RoundedCornerShape(11.dp))
-                .then(mod)
-                .background(LocalContentColor.current))
+            Box(
+                modifier =
+                    Modifier.clip(RoundedCornerShape(11.dp))
+                        .then(mod)
+                        .background(LocalContentColor.current)
+            )
         }
     }
 }
 
 @Composable
 private fun CardSectionBottom(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(11.dp))
-                .width(60.dp)
-                .height(16.dp)
-                .background(LocalContentColor.current)
+            modifier =
+                Modifier.clip(RoundedCornerShape(11.dp))
+                    .width(60.dp)
+                    .height(16.dp)
+                    .background(LocalContentColor.current)
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(11.dp))
-                    .width(45.dp)
-                    .height(16.dp)
-                    .background(LocalContentColor.current)
+                modifier =
+                    Modifier.clip(RoundedCornerShape(11.dp))
+                        .width(45.dp)
+                        .height(16.dp)
+                        .background(LocalContentColor.current)
             )
             Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(11.dp))
-                    .width(45.dp)
-                    .height(16.dp)
-                    .background(LocalContentColor.current)
+                modifier =
+                    Modifier.clip(RoundedCornerShape(11.dp))
+                        .width(45.dp)
+                        .height(16.dp)
+                        .background(LocalContentColor.current)
             )
             Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(16.dp)
-                    .background(LocalContentColor.current)
+                modifier =
+                    Modifier.clip(CircleShape).size(16.dp).background(LocalContentColor.current)
             )
         }
     }
@@ -171,17 +157,11 @@ private fun CardSectionBottom(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun CardSectionPreview() {
-    FlipAppTheme {
-        CardSection()
-    }
+    FlipAppTheme { CardSection() }
 }
 
 @Preview
 @Composable
 private fun HomeSkeletonScreenPreview() {
-    FlipAppTheme {
-        Box(modifier = Modifier.background(Color.White)) {
-            HomeSkeletonScreen()
-        }
-    }
+    FlipAppTheme { Box(modifier = Modifier.background(Color.White)) { HomeSkeletonScreen() } }
 }

@@ -36,7 +36,7 @@ fun ReportPagerView(
     reportedProfileId: String,
     onReport: (ReportType) -> Unit,
     onOkClick: () -> Unit,
-    onBlockClick: () -> Unit
+    onBlockClick: () -> Unit,
 ) {
 
     var checkedReportReason: ReportType? by remember { mutableStateOf(null) }
@@ -53,28 +53,26 @@ fun ReportPagerView(
     HorizontalPager(
         modifier = modifier.fillMaxWidth(),
         state = pagerState,
-        userScrollEnabled = false
+        userScrollEnabled = false,
     ) { page ->
         when (page) {
             0 -> {
                 ReportCheckView(
                     reportState = reportState,
                     checkedReportReason = checkedReportReason,
-                    onCheck = { reportType ->  checkedReportReason = reportType },
+                    onCheck = { reportType -> checkedReportReason = reportType },
                     onReport = { reportType ->
                         onReport(reportType)
-                        //TODO 임시코드, 나중에 reportState 값 결과에 맞게 해줘야 함
-                        scope.launch {
-                            pagerState.animateScrollToPage(1)
-                        }
-                    }
+                        // TODO 임시코드, 나중에 reportState 값 결과에 맞게 해줘야 함
+                        scope.launch { pagerState.animateScrollToPage(1) }
+                    },
                 )
             }
             1 -> {
                 ReportCompleteView(
                     reportedProfileId = reportedProfileId,
                     onOkClick = onOkClick,
-                    onBlockClick = onBlockClick
+                    onBlockClick = onBlockClick,
                 )
             }
         }
@@ -88,9 +86,9 @@ private fun ReportPagerViewPreview() {
         ReportPagerView(
             reportState = ReportState(),
             reportedProfileId = "profileId",
-            onReport = { },
-            onOkClick = { },
-            onBlockClick = { }
+            onReport = {},
+            onOkClick = {},
+            onBlockClick = {},
         )
     }
 }
