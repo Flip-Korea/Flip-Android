@@ -4,5 +4,5 @@ data class BlockProfile(
     val blockId: Long,
     val blockedId: String,
     val nickname: String,
-    val photoUrl: String
+    val photoUrl: String,
 )

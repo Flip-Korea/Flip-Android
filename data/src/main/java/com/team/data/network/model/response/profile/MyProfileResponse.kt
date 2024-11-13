@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.team.data.local.entity.profile.MyProfileEntity
 
-/** 본인 프로필 (Res-2) **/
+/** 본인 프로필 (Res-2) * */
 @JsonClass(generateAdapter = true)
 data class MyProfileResponse(
     @Json(name = "profile_id") val profileId: String,

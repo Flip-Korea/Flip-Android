@@ -11,21 +11,17 @@ import com.team.data.local.entity.RecentSearchEntity
 import com.team.data.local.entity.profile.MyProfileEntity
 import com.team.data.local.typeconverter.ListTypeConverter
 
-@TypeConverters(
-    ListTypeConverter::class
-)
+@TypeConverters(ListTypeConverter::class)
 @Database(
     version = 1,
-    entities = [
-        MyProfileEntity::class,
-        CategoryEntity::class,
-        RecentSearchEntity::class
-    ],
-//    exportSchema = false
+    entities = [MyProfileEntity::class, CategoryEntity::class, RecentSearchEntity::class],
+    //    exportSchema = false
 )
-abstract class FlipDatabase: RoomDatabase() {
+abstract class FlipDatabase : RoomDatabase() {
 
     abstract fun myProfileDao(): MyProfileDao
+
     abstract fun categoryDao(): CategoryDao
+
     abstract fun recentSearchDao(): RecentSearchDao
 }

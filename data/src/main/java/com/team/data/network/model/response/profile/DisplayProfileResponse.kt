@@ -18,10 +18,28 @@ data class DisplayProfileResponse(
 )
 
 fun DisplayProfileResponse.toEntity(): DisplayProfileEntity =
-    DisplayProfileEntity(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
+    DisplayProfileEntity(
+        profileId,
+        nickname,
+        photoUrl,
+        isFollower,
+        isFollowing,
+        introduce,
+        followerCnt,
+        rating,
+    )
 
 fun DisplayProfileResponse.toDomainModel(): DisplayProfile =
-    DisplayProfile(profileId, nickname, photoUrl, isFollower, isFollowing, introduce, followerCnt, rating)
+    DisplayProfile(
+        profileId,
+        nickname,
+        photoUrl,
+        isFollower,
+        isFollowing,
+        introduce,
+        followerCnt,
+        rating,
+    )
 
 fun List<DisplayProfileResponse>.toDomainModel(): List<DisplayProfile> =
     this.map { it.toDomainModel() }

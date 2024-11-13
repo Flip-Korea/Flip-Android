@@ -12,7 +12,6 @@ interface PostRepository {
 
     /**
      * Post(Flip) 리스트를 네트워크에서 페이지네이션을 통해 가져온다.
-     *
      * 1. 카테고리(전체) 및 플립(숏폼부분) 에 해당
      *
      * @param cursor nextCursor 즉, 다음 커서로 요청하여 다음 페이지를 불러온다.
@@ -22,7 +21,6 @@ interface PostRepository {
 
     /**
      * ID 로 Post(Flip)를 가져온다.
-     *
      * 1. 예외 / 오류 / 존재하지 않은 데이터 읽기 상황에서 Null 반환
      *
      * @param postId Post ID
@@ -56,7 +54,7 @@ interface PostRepository {
         type: PathParameterType,
         typeId: String,
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Flow<Result<PostList, ErrorType>>
 
     /**
@@ -76,7 +74,7 @@ interface PostRepository {
     fun getPostsByPopularUserPagination(
         categoryId: Int,
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Flow<Result<PostList, ErrorType>>
 
     /**

@@ -9,11 +9,10 @@ data class BlockProfileResponse(
     @Json(name = "block_id") val blockId: Long,
     @Json(name = "blocked_id") val blockedId: String,
     @Json(name = "nickname") val nickname: String,
-    @Json(name = "photo_url") val photoUrl: String
+    @Json(name = "photo_url") val photoUrl: String,
 )
 
 fun BlockProfileResponse.toDomainModel(): BlockProfile =
     BlockProfile(blockId, blockedId, nickname, photoUrl)
 
-fun List<BlockProfileResponse>.toDomainModel(): List<BlockProfile> =
-    this.map { it.toDomainModel() }
+fun List<BlockProfileResponse>.toDomainModel(): List<BlockProfile> = this.map { it.toDomainModel() }

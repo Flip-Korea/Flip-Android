@@ -3,12 +3,12 @@ package com.team.domain.usecase.temppost
 import com.team.domain.repository.TempPostRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class DeleteTempPostUseCase @Inject constructor(
-    private val tempPostRepository: TempPostRepository
-) {
+class DeleteTempPostUseCase
+@Inject
+constructor(private val tempPostRepository: TempPostRepository) {
 
     /**
      * 임시 저장 Flip(Post)를 삭제한다.

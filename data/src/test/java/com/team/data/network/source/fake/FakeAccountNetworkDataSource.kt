@@ -8,9 +8,8 @@ import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakeAccountNetworkDataSource(
-    private val accountNetworkApi: AccountNetworkApi
-): AccountNetworkDataSource {
+class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetworkApi) :
+    AccountNetworkDataSource {
 
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> {
         val result = accountNetworkApi.getUserAccount(accessToken)
@@ -25,14 +24,24 @@ class FakeAccountNetworkDataSource(
         val result = accountNetworkApi.checkDuplicateName(nickname)
         return if (result.isSuccessful) {
             when (result.code()) {
-                200 -> { Result.Success(true) }
-                else -> { Result.Success(true) }
+                200 -> {
+                    Result.Success(true)
+                }
+                else -> {
+                    Result.Success(true)
+                }
             }
         } else {
             when (result.code()) {
-                400 -> { Result.Error(ErrorType.Network.BAD_REQUEST) }
-                404 -> { Result.Error(ErrorType.Network.NOT_FOUND) }
-                else -> { Result.Error(ErrorType.Network.UNEXPECTED) }
+                400 -> {
+                    Result.Error(ErrorType.Network.BAD_REQUEST)
+                }
+                404 -> {
+                    Result.Error(ErrorType.Network.NOT_FOUND)
+                }
+                else -> {
+                    Result.Error(ErrorType.Network.UNEXPECTED)
+                }
             }
         }
     }
@@ -41,14 +50,24 @@ class FakeAccountNetworkDataSource(
         val result = accountNetworkApi.checkDuplicateProfileId(profileId)
         return if (result.isSuccessful) {
             when (result.code()) {
-                200 -> { Result.Success(true) }
-                else -> { Result.Success(true) }
+                200 -> {
+                    Result.Success(true)
+                }
+                else -> {
+                    Result.Success(true)
+                }
             }
         } else {
             when (result.code()) {
-                400 -> { Result.Error(ErrorType.Network.BAD_REQUEST) }
-                404 -> { Result.Error(ErrorType.Network.NOT_FOUND) }
-                else -> { Result.Error(ErrorType.Network.UNEXPECTED) }
+                400 -> {
+                    Result.Error(ErrorType.Network.BAD_REQUEST)
+                }
+                404 -> {
+                    Result.Error(ErrorType.Network.NOT_FOUND)
+                }
+                else -> {
+                    Result.Error(ErrorType.Network.UNEXPECTED)
+                }
             }
         }
     }
@@ -62,7 +81,9 @@ class FakeAccountNetworkDataSource(
         }
     }
 
-    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> {
+    override suspend fun register(
+        networkRegister: RegisterRequest
+    ): Result<TokenResponse, ErrorType> {
         val result = accountNetworkApi.register(networkRegister)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

@@ -47,15 +47,14 @@ class FlipPagingSourceTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        apiService = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(FakePagingApiService::class.java)
+        apiService =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(FakePagingApiService::class.java)
 
         pagingSourceParser = PagingSourceParser(moshi)
         errorBodyFactory = ErrorBodyFactory(moshi)
@@ -71,33 +70,34 @@ class FlipPagingSourceTest {
         val pageSize = 5
         val fakePagingListResponse = pagingResponseFactory.createPagingListResponse(pageSize)
         val mockResponse = pagingSourceParser.toJson(fakePagingListResponse)
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(mockResponse)
-        })
-
-        val flipPagingSource = FlipPagingSource(
-            pageSize = pageSize,
-            apiCall = { loadKey ->
-                networkCall {
-                    apiService.getPosts(loadKey?.toString(), pageSize)
-                }
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(mockResponse)
             }
         )
+
+        val flipPagingSource =
+            FlipPagingSource(
+                pageSize = pageSize,
+                apiCall = { loadKey ->
+                    networkCall { apiService.getPosts(loadKey?.toString(), pageSize) }
+                },
+            )
 
         assertEquals(
             PagingSource.LoadResult.Page(
                 data = fakePagingListResponse.list,
                 prevKey = null,
-                nextKey = fakePagingListResponse.lastKey
+                nextKey = fakePagingListResponse.lastKey,
             ),
             flipPagingSource.load(
                 PagingSource.LoadParams.Refresh(
                     key = null,
                     loadSize = pageSize,
-                    placeholdersEnabled = false
+                    placeholdersEnabled = false,
                 )
-            )
+            ),
         )
     }
 
@@ -105,31 +105,31 @@ class FlipPagingSourceTest {
     fun `페이지네이션 호출 실패`() = runTest {
         val pageSize = 5
         val errorBody = errorBodyFactory.createObject()
-        val expectedException = FlipPagingException(
-            errorType = ErrorType.Network.NOT_FOUND,
-            errorBody = errorBody
-        )
-        server.enqueue(MockResponse().apply {
-            setResponseCode(404)
-            setBody(errorBodyFactory.createJson())
-        })
-
-        val flipPagingSource = FlipPagingSource(
-            pageSize = pageSize,
-            apiCall = { loadKey ->
-                networkCall {
-                    apiService.getPosts(loadKey?.toString(), pageSize)
-                }
+        val expectedException =
+            FlipPagingException(errorType = ErrorType.Network.NOT_FOUND, errorBody = errorBody)
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(404)
+                setBody(errorBodyFactory.createJson())
             }
         )
 
-        val result = flipPagingSource.load(
-            PagingSource.LoadParams.Refresh(
-                key = null,
-                placeholdersEnabled = false,
-                loadSize = pageSize
+        val flipPagingSource =
+            FlipPagingSource(
+                pageSize = pageSize,
+                apiCall = { loadKey ->
+                    networkCall { apiService.getPosts(loadKey?.toString(), pageSize) }
+                },
             )
-        )
+
+        val result =
+            flipPagingSource.load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    placeholdersEnabled = false,
+                    loadSize = pageSize,
+                )
+            )
 
         assertTrue(result is PagingSource.LoadResult.Error)
 

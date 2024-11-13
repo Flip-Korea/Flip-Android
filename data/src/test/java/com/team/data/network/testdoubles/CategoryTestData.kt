@@ -3,7 +3,8 @@ package com.team.data.network.testdoubles
 import com.team.data.local.entity.CategoryEntity
 import com.team.domain.model.category.Category
 
-val networkCategoriesTestData = """
+val networkCategoriesTestData =
+    """
     [
           {
             "categoryId": 1,
@@ -54,7 +55,8 @@ val networkCategoriesTestData = """
             "categoryName": "글로벌"
           }
         ]
-""".trimIndent()
+"""
+        .trimIndent()
 
 val categoriesTestData =
     listOf(

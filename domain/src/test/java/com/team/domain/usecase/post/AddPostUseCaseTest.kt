@@ -23,19 +23,19 @@ class AddPostUseCaseTest {
     @Test
     fun `플립 글 추가 성공`() = runTest {
         // Given
-        every {
-            postRepository.addPost(newPostTestData)
-        } returns flowOf(Result.Success(true))
+        every { postRepository.addPost(newPostTestData) } returns flowOf(Result.Success(true))
 
         // When
-        val result = addPostUseCases(
-            newPostTestData.title,
-            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
-            newPostTestData.bgColorType,
-            newPostTestData.fontStyleType,
-            newPostTestData.tags,
-            newPostTestData.categoryId!!
-        ).first()
+        val result =
+            addPostUseCases(
+                    newPostTestData.title,
+                    newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
+                    newPostTestData.bgColorType,
+                    newPostTestData.fontStyleType,
+                    newPostTestData.tags,
+                    newPostTestData.categoryId!!,
+                )
+                .first()
 
         // Then
         assert((result as Result.Success).data)
@@ -45,24 +45,22 @@ class AddPostUseCaseTest {
     fun `플립 글 추가 실패`() = runTest {
         // Given
         val error = ErrorType.Network.BAD_REQUEST
-        every {
-            postRepository.addPost(newPostTestData)
-        } returns flowOf(Result.Error(error = error))
+        every { postRepository.addPost(newPostTestData) } returns
+            flowOf(Result.Error(error = error))
 
         // When
-        val result = addPostUseCases(
-            newPostTestData.title,
-            newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
-            newPostTestData.bgColorType,
-            newPostTestData.fontStyleType,
-            newPostTestData.tags,
-            newPostTestData.categoryId!!
-        ).first()
+        val result =
+            addPostUseCases(
+                    newPostTestData.title,
+                    newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
+                    newPostTestData.bgColorType,
+                    newPostTestData.fontStyleType,
+                    newPostTestData.tags,
+                    newPostTestData.categoryId!!,
+                )
+                .first()
 
         // Then
-        assertEquals(
-            (result as Result.Error).error,
-            error
-        )
+        assertEquals((result as Result.Error).error, error)
     }
 }

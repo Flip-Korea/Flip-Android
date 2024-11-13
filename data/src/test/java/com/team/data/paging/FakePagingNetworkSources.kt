@@ -9,23 +9,21 @@ import retrofit2.http.Query
 @JsonClass(generateAdapter = true)
 data class FakePagingListResponse(
     override val list: List<FakePagingResponse>,
-    val listTotal: Long
+    val listTotal: Long,
 ) : FlipPagingData<FakePagingResponse> {
     override val firstKey: Long?
         get() = if (list.first().id == 0L) null else list.first().id
+
     override val lastKey: Long
         get() = list.last().id
 }
 
-data class FakePagingResponse(
-    val id: Long,
-    val content: String
-)
+data class FakePagingResponse(val id: Long, val content: String)
 
 interface FakePagingApiService {
     @GET("/pagination")
     suspend fun getPosts(
         @Query("cursor") cursor: String? = null,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): Response<FakePagingListResponse>
 }

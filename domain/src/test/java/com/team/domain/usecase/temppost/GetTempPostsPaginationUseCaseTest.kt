@@ -21,18 +21,14 @@ class GetTempPostsPaginationUseCaseTest {
     private val tempPostFactory = TempPostFactory()
 
     /** 로컬 동기화 페이지네이션 X */
-
     @Test
     fun `임시저장함 목록 조회 실패`() = runTest {
         // Given
         val expected = PagingData.empty<TempPost>()
-        every {
-            tempPostRepository.getTempPostsPagination()
-        } returns flowOf(expected)
+        every { tempPostRepository.getTempPostsPagination() } returns flowOf(expected)
 
         // When
         val actual = getTempPostsUseCase().first()
-
 
         // Then
         assertEquals(expected, actual)
@@ -42,13 +38,9 @@ class GetTempPostsPaginationUseCaseTest {
     fun `임시저장함 목록 조회 성공`() = runTest {
         // Given
         val limit = 5
-        val list = List(limit) {
-            tempPostFactory.create()
-        }
+        val list = List(limit) { tempPostFactory.create() }
         val expected = PagingData.from(list)
-        every {
-            tempPostRepository.getTempPostsPagination()
-        } returns flowOf(expected)
+        every { tempPostRepository.getTempPostsPagination() } returns flowOf(expected)
 
         // When
         val actual = getTempPostsUseCase().first()

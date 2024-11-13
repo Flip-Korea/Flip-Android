@@ -25,19 +25,19 @@ interface UserNetworkDataSource {
 
     suspend fun selectMyCategory(
         profileId: String,
-        category: CategoryRequest
+        category: CategoryRequest,
     ): Result<Boolean, ErrorType>
 
     suspend fun getScrapList(
         profileId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Result<PostListResponse, ErrorType>
 
     suspend fun editScrapComment(
         profileId: String,
         scrapId: Long,
-        scrapCommentRequest: ScrapCommentRequest
+        scrapCommentRequest: ScrapCommentRequest,
     ): Result<Boolean, ErrorType>
 
     suspend fun addScrap(scrapRequest: ScrapRequest): Result<ResultIdResponse, ErrorType>
@@ -48,14 +48,11 @@ interface UserNetworkDataSource {
 
     suspend fun blockAccount(blockRequest: BlockRequest): Result<Boolean, ErrorType>
 
-    suspend fun unblockAccount(
-        profileId: String,
-        blockedId: String
-    ): Result<Boolean, ErrorType>
+    suspend fun unblockAccount(profileId: String, blockedId: String): Result<Boolean, ErrorType>
 
     suspend fun editMyProfile(
         profileId: String,
-        editProfileRequest: EditProfileRequest
+        editProfileRequest: EditProfileRequest,
     ): Result<Boolean, ErrorType>
 
     suspend fun follow(followRequest: FollowRequest): Result<Boolean, ErrorType>
@@ -65,25 +62,25 @@ interface UserNetworkDataSource {
     suspend fun getFollowerList(
         profileId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Result<FollowerListResponse, ErrorType>
 
     suspend fun getFollowingList(
         profileId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Result<FollowingListResponse, ErrorType>
 
     suspend fun getBlockList(
         profileId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Result<BlockListResponse, ErrorType>
 
     suspend fun getMyCommentList(
         profileId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Result<MyCommentListResponse, ErrorType>
 
     suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType>

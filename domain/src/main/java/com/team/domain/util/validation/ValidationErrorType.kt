@@ -2,7 +2,7 @@ package com.team.domain.util.validation
 
 sealed interface ValidationErrorType {
 
-    enum class Post: ValidationErrorType {
+    enum class Post : ValidationErrorType {
         /** 제목이 빈 경우 */
         TITLE_IS_EMPTY,
         /** 내용이 빈 경우 */
@@ -15,7 +15,7 @@ sealed interface ValidationErrorType {
         TAGS_EMPTY_ITEM,
     }
 
-    enum class TempPost: ValidationErrorType {
+    enum class TempPost : ValidationErrorType {
         EMPTY_TITLE_AND_CONTENT
     }
 }

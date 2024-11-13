@@ -25,32 +25,43 @@ interface PostNetworkDataSource {
         type: PathParameterType,
         typeId: String,
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Result<PostListResponse, ErrorType>
+
     suspend fun deletePost(postId: Long): Result<Boolean, ErrorType>
+
     suspend fun getPostsByPopularUser(
         categoryId: Int,
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Result<PostListResponse, ErrorType>
+
     suspend fun getComments(
         postId: Long,
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Result<CommentListResponse, ErrorType>
+
     suspend fun addComment(
         postId: Long,
-        commentRequest: CommentRequest
+        commentRequest: CommentRequest,
     ): Result<ResultIdResponse, ErrorType>
+
     suspend fun deleteComment(commentId: Long): Result<Boolean, ErrorType>
+
     suspend fun likePost(likeRequest: LikeRequest): Result<ResultIdResponse, ErrorType>
+
     suspend fun unLikePost(likeRequest: LikeRequest): Result<Boolean, ErrorType>
+
     suspend fun addTemporaryPost(postRequest: PostRequest): Result<Boolean, ErrorType>
+
     suspend fun deleteTemporaryPost(tempPostId: Long): Result<Boolean, ErrorType>
+
     suspend fun getTemporaryPosts(
         cursor: String?,
-        limit: Int
+        limit: Int,
     ): Result<TempPostListResponse, ErrorType>
+
     suspend fun editTemporaryPost(
         tempPostId: Long,
         postRequest: PostRequest,
