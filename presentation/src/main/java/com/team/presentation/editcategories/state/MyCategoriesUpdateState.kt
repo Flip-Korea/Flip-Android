@@ -5,5 +5,5 @@ import com.team.presentation.util.uitext.UiText
 data class MyCategoriesUpdateState(
     val success: Boolean = false,
     val loading: Boolean = false,
-    val error: UiText = UiText.DynamicString(""),
+    val error: UiText = UiText.DynamicString("")
 )

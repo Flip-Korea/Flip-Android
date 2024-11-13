@@ -25,8 +25,11 @@ import com.team.designsystem.theme.FlipTheme
 @Preview(showBackground = true)
 @Composable
 private fun FlipDropdownMenuPreview() {
-    val dropDownItems =
-        listOf(DropdownItem(0, "Text"), DropdownItem(1, "Text"), DropdownItem(2, "Text"))
+    val dropDownItems = listOf(
+        DropdownItem(0, "Text"),
+        DropdownItem(1, "Text"),
+        DropdownItem(2, "Text"),
+    )
 
     var expanded by rememberSaveable { mutableStateOf(true) }
 
@@ -41,7 +44,7 @@ private fun FlipDropdownMenuPreview() {
                         imageVector = ImageVector.vectorResource(R.drawable.ic_more),
                         contentDescription = null,
                         tint = FlipTheme.colors.main,
-                        onClick = { expanded = true },
+                        onClick = { expanded = true }
                     )
                 },
                 menu = { modifier, offset ->
@@ -51,9 +54,11 @@ private fun FlipDropdownMenuPreview() {
                         offset = offset,
                         dropDownItems = dropDownItems,
                         onDismissRequest = { expanded = false },
-                        onItemClick = { item -> if (item.id == 1) expanded = false },
+                        onItemClick = { item ->
+                            if (item.id == 1) expanded = false
+                        }
                     )
-                },
+                }
             )
         }
     }
@@ -62,12 +67,11 @@ private fun FlipDropdownMenuPreview() {
 @Preview(showBackground = true, heightDp = 250)
 @Composable
 private fun FlipDropdownMenu2Preview() {
-    val dropDownItems =
-        listOf(
-            DropdownItem(0, "Option 1"),
-            DropdownItem(1, "Option 2"),
-            DropdownItem(2, "Option 3"),
-        )
+    val dropDownItems = listOf(
+        DropdownItem(0, "Option 1"),
+        DropdownItem(1, "Option 2"),
+        DropdownItem(2, "Option 3"),
+    )
 
     var expanded by rememberSaveable { mutableStateOf(true) }
 
@@ -80,7 +84,7 @@ private fun FlipDropdownMenu2Preview() {
                         imageVector = ImageVector.vectorResource(R.drawable.ic_more),
                         contentDescription = null,
                         tint = FlipTheme.colors.main,
-                        onClick = { expanded = true },
+                        onClick = { expanded = true }
                     )
                 },
                 menu = { modifier, offset ->
@@ -90,9 +94,11 @@ private fun FlipDropdownMenu2Preview() {
                         offset = offset,
                         dropDownItems = dropDownItems,
                         onDismissRequest = { expanded = false },
-                        onItemClick = { item -> if (item.id == 1) expanded = false },
+                        onItemClick = { item ->
+                            if (item.id == 1) expanded = false
+                        }
                     )
-                },
+                }
             )
         }
     }
@@ -101,13 +107,12 @@ private fun FlipDropdownMenu2Preview() {
 @Preview(showBackground = true)
 @Composable
 private fun FlipDropdownButtonPreview() {
-    val dropDownItems =
-        listOf(
-            DropdownItem(0, "인기순"),
-            DropdownItem(1, "최신순"),
-            DropdownItem(2, "댓글순"),
-            DropdownItem(3, "스크랩순"),
-        )
+    val dropDownItems = listOf(
+        DropdownItem(0, "인기순"),
+        DropdownItem(1, "최신순"),
+        DropdownItem(2, "댓글순"),
+        DropdownItem(3, "스크랩순"),
+    )
 
     var expanded by rememberSaveable { mutableStateOf(true) }
 
@@ -122,7 +127,7 @@ private fun FlipDropdownButtonPreview() {
                     FlipDropdownButton(
                         isSelect = expanded,
                         text = selectedText,
-                        onClick = { expanded = true },
+                        onClick = { expanded = true }
                     )
                 },
                 menu = { modifier, offset ->
@@ -135,9 +140,9 @@ private fun FlipDropdownButtonPreview() {
                         onItemClick = { item ->
                             selectedText = item.text
                             expanded = false
-                        },
+                        }
                     )
-                },
+                }
             )
         }
     }

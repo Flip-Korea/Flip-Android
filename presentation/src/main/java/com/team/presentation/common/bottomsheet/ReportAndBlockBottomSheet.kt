@@ -54,6 +54,7 @@ fun ReportAndBlockBottomSheet(
 ) {
 
     startFromReportView?.let {
+
         var isReportView by remember(startFromReportView) { mutableStateOf(startFromReportView) }
 
         FlipModalBottomSheet(
@@ -61,7 +62,7 @@ fun ReportAndBlockBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = sheetState,
         ) { bottomSheetModifier ->
-            // TODO Bottom 패딩 기준, 화면 바닥부터 인지 시스템 바부터 인지 확인해 보기
+            //TODO Bottom 패딩 기준, 화면 바닥부터 인지 시스템 바부터 인지 확인해 보기
             Box(modifier = bottomSheetModifier.padding(bottom = BottomSheetTokens.bottomPadding)) {
                 if (startFromReportView && isReportView) {
                     ReportPagerView(
@@ -69,7 +70,7 @@ fun ReportAndBlockBottomSheet(
                         reportedProfileId = profileId,
                         onReport = { onReport(it) },
                         onOkClick = onDismissRequest,
-                        onBlockClick = { isReportView = false },
+                        onBlockClick = { isReportView = false }
                     )
                 } else {
                     BlockPagerView(
@@ -77,7 +78,7 @@ fun ReportAndBlockBottomSheet(
                         photoUrl = photoUrl,
                         blockState = blockState,
                         onBlockClick = onBlockClick,
-                        onOkClick = onDismissRequest,
+                        onOkClick = onDismissRequest
                     )
                 }
             }
@@ -91,6 +92,7 @@ fun ReportAndBlockBottomSheet(
 private fun ReportAndBlockBottomSheetPreview() {
 
     FlipAppTheme {
+
         var showBottomSheet by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -105,13 +107,11 @@ private fun ReportAndBlockBottomSheetPreview() {
                 profileId = "",
                 photoUrl = "",
                 onDismissRequest = {
-                    coroutineScope
-                        .launch { sheetState.hide() }
-                        .invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
-                            }
+                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
                         }
+                    }
                 },
                 onReport = {},
                 onBlockClick = {},
@@ -119,7 +119,9 @@ private fun ReportAndBlockBottomSheetPreview() {
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            Button(onClick = { showBottomSheet = true }) { Text(text = "Open") }
+            Button(onClick = { showBottomSheet = true }) {
+                Text(text = "Open")
+            }
         }
     }
 }

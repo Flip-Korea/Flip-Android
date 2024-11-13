@@ -35,8 +35,8 @@ import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
-import com.team.presentation.util.CategoriesTestData
 import com.team.presentation.util.CategoryIconsMap
+import com.team.presentation.util.CategoriesTestData
 import kotlinx.coroutines.launch
 
 /**
@@ -64,11 +64,11 @@ fun HomeTab(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.Start),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        state = listState,
+        state = listState
     ) {
         itemsIndexed(
-            items = items
-            //            key = { idx, category -> category.id }
+            items = items,
+//            key = { idx, category -> category.id }
         ) { index, category ->
             TabItem(
                 selected = category.id == selectedItemId,
@@ -84,14 +84,16 @@ fun HomeTab(
                             )
                         }
                     }
-                },
+                }
             )
 
             if (index == itemSplitSize - 1) {
                 VerticalDivider(
-                    modifier = Modifier.height(32.dp).padding(start = 10.dp, end = 2.dp),
+                    modifier = Modifier
+                        .height(32.dp)
+                        .padding(start = 10.dp, end = 2.dp),
                     thickness = 1.dp,
-                    color = FlipTheme.colors.gray3,
+                    color = FlipTheme.colors.gray3
                 )
             }
         }
@@ -107,46 +109,47 @@ private fun TabItem(
     onClick: () -> Unit,
 ) {
 
-    val rowPadding =
-        if (icon == null) {
-            Modifier.padding(horizontal = 16.dp, vertical = 6.5.dp)
-        } else {
-            Modifier.padding(start = 12.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
-        }
+    val rowPadding = if (icon == null) {
+        Modifier.padding(horizontal = 16.dp, vertical = 6.5.dp)
+    } else {
+        Modifier.padding(start = 12.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
+    }
 
     val contentColor = if (selected) FlipTheme.colors.white else FlipTheme.colors.main
 
     Box(
-        modifier =
-            modifier
-                .wrapContentSize()
-                .clip(FlipTheme.shapes.roundedCornerSmall)
-                .border(1.dp, FlipTheme.colors.main, FlipTheme.shapes.roundedCornerSmall)
-                .background(if (selected) FlipTheme.colors.main else FlipTheme.colors.white)
-                .clickableSingle { onClick() }
+        modifier = modifier
+            .wrapContentSize()
+            .clip(FlipTheme.shapes.roundedCornerSmall)
+            .border(1.dp, FlipTheme.colors.main, FlipTheme.shapes.roundedCornerSmall)
+            .background(if (selected) FlipTheme.colors.main else FlipTheme.colors.white)
+            .clickableSingle { onClick() },
     ) {
         Row(
-            modifier = Modifier.align(Alignment.Center).then(rowPadding),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .then(rowPadding),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement =
-                Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(
+                4.dp,
+                alignment = Alignment.CenterHorizontally
+            )
         ) {
             icon?.let { ic ->
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(ic),
                     contentDescription = text,
-                    tint = contentColor,
+                    tint = contentColor
                 )
             }
             Text(
                 modifier = Modifier,
                 text = text,
-                style =
-                    if (icon != null) {
-                        FlipTheme.typography.body5
-                    } else FlipTheme.typography.headline1,
-                color = contentColor,
+                style = if (icon != null) {
+                    FlipTheme.typography.body5
+                } else FlipTheme.typography.headline1,
+                color = contentColor
             )
         }
     }
@@ -160,7 +163,7 @@ private fun HomeTabPreview() {
             modifier = Modifier.fillMaxWidth(),
             items = CategoriesTestData,
             itemSplitSize = 3,
-            onItemClick = {},
+            onItemClick = { }
         )
     }
 }

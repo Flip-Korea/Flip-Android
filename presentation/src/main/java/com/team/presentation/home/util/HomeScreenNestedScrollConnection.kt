@@ -7,8 +7,8 @@ import androidx.compose.ui.unit.Velocity
 
 class HomeScreenNestedScrollConnection(
     private val onPreScrollAction: (Offset) -> Unit,
-    private val onPostFlingAction: () -> Unit,
-) : NestedScrollConnection {
+    private val onPostFlingAction: () -> Unit
+): NestedScrollConnection {
 
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
 

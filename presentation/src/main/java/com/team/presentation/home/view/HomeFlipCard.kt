@@ -43,49 +43,50 @@ import com.team.domain.type.BackgroundColorType
 import com.team.presentation.R
 import com.team.presentation.common.bottomsheet.ReportAndBlockUiEvent
 import com.team.presentation.home.FlipCardUiEvent
+import com.team.presentation.home.util.FlipCardTokens
 import com.team.presentation.util.asColor
 
 /**
  * Flip Card
  *
  * Flip의 일부 정보가 보여지는 CardView 형태이다.
- *
  * @param post Flip 카드에 필요한 post 정보가 담겨있다. (flip == post)
  * @param flipCardUiEvent Flip 카드에 대한 UiEvent 이다.
  */
 @Composable
 fun HomeFlipCard(
     modifier: Modifier = Modifier,
-    post: Post, // TODO Post 말고 보여지는 정보만 가지고 있는 객체 따로 생성
+    post: Post, //TODO Post 말고 보여지는 정보만 가지고 있는 객체 따로 생성
     flipCardUiEvent: (FlipCardUiEvent) -> Unit,
-    reportAndBlockUiEvent: (ReportAndBlockUiEvent) -> Unit,
+    reportAndBlockUiEvent: (ReportAndBlockUiEvent) -> Unit
 ) {
 
     Box(
-        modifier =
-            modifier
-                .clip(FlipTheme.shapes.roundedCornerFlipCard)
-                .background(post.bgColorType.asColor())
-                .clickableSingle { flipCardUiEvent(FlipCardUiEvent.OnFlipCardClick) }
+       modifier = modifier
+           .clip(FlipTheme.shapes.roundedCornerFlipCard)
+           .background(post.bgColorType.asColor())
+           .clickableSingle { flipCardUiEvent(FlipCardUiEvent.OnFlipCardClick) },
     ) {
         Column(
-            modifier =
-                Modifier.align(Alignment.Center).padding(horizontal = 16.dp, vertical = 20.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 16.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement =
-                Arrangement.spacedBy(16.dp, alignment = Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.CenterVertically)
         ) {
             CardTopSection(
                 modifier = Modifier.fillMaxWidth(),
                 photoUrl = post.profile.photoUrl,
                 nickname = post.profile.nickname,
                 profileId = post.profile.profileId,
-                reportAndBlockUiEvent = { uiEvent -> reportAndBlockUiEvent(uiEvent) },
+                reportAndBlockUiEvent = { uiEvent ->
+                    reportAndBlockUiEvent(uiEvent)
+                }
             )
             CardMiddleSection(
                 modifier = Modifier.fillMaxWidth(),
                 title = post.title,
-                content = post.content,
+                content = post.content
             )
             CardBottomSection(
                 modifier = Modifier.fillMaxWidth(),
@@ -94,7 +95,7 @@ fun HomeFlipCard(
                 likeCnt = post.likeCnt,
                 commentCnt = post.commentCnt,
                 scraped = post.scraped,
-                uiEvent = { uiEvent -> flipCardUiEvent(uiEvent) },
+                uiEvent = { uiEvent -> flipCardUiEvent(uiEvent) }
             )
         }
     }
@@ -114,20 +115,21 @@ private fun CardTopSection(
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.Top
     ) {
         Row(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(8.62.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                modifier = Modifier.size(40.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
                 model = photoUrl,
-                contentDescription =
-                    "${nickname}의 ${stringResource(id = R.string.home_flip_card_content_desc_photo_url)}",
+                contentDescription = "${nickname}의 ${stringResource(id = R.string.home_flip_card_content_desc_photo_url)}",
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.ic_logo_dark),
+                placeholder = painterResource(id = R.drawable.ic_logo_dark)
             )
             Column {
                 Text(text = nickname, style = FlipTheme.typography.headline1)
@@ -136,7 +138,7 @@ private fun CardTopSection(
                     style = FlipTheme.typography.body1,
                     color = FlipTheme.colors.gray6,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -146,10 +148,9 @@ private fun CardTopSection(
                 FlipIconButton(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_more),
-                    contentDescription =
-                        stringResource(id = R.string.home_flip_card_content_desc_more),
+                    contentDescription = stringResource(id = R.string.home_flip_card_content_desc_more),
                     tint = FlipTheme.colors.main,
-                    onClick = { expanded = true },
+                    onClick = { expanded = true }
                 )
             },
             menu = { modifier, dpOffset ->
@@ -162,29 +163,27 @@ private fun CardTopSection(
                     onItemClick = { item ->
                         /** 0: 신고하기, 1: 차단하기 */
                         when (item.id) {
-                            0 ->
-                                reportAndBlockUiEvent(
-                                    ReportAndBlockUiEvent.OnReport(profileId, photoUrl)
-                                )
-                            1 ->
-                                reportAndBlockUiEvent(
-                                    ReportAndBlockUiEvent.OnBlock(profileId, photoUrl)
-                                )
+                            0 -> reportAndBlockUiEvent(ReportAndBlockUiEvent.OnReport(profileId, photoUrl))
+                            1 -> reportAndBlockUiEvent(ReportAndBlockUiEvent.OnBlock(profileId, photoUrl))
                         }
                         expanded = false
-                    },
+                    }
                 )
-            },
+            }
         )
     }
 }
 
 @Composable
-private fun CardMiddleSection(modifier: Modifier = Modifier, title: String, content: String) {
+private fun CardMiddleSection(
+    modifier: Modifier = Modifier,
+    title: String,
+    content: String,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.Top),
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.Top)
     ) {
         Text(
             text = title,
@@ -197,7 +196,7 @@ private fun CardMiddleSection(modifier: Modifier = Modifier, title: String, cont
             style = FlipTheme.typography.body5,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            //            textAlign = TextAlign.Justify
+//            textAlign = TextAlign.Justify
         )
     }
 }
@@ -219,81 +218,82 @@ private fun CardBottomSection(
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = createdAt, style = FlipTheme.typography.body3, color = FlipTheme.colors.gray5)
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
-                modifier =
-                    Modifier.clip(FlipTheme.shapes.roundedCornerFlipCard).clickableSingle {
+                modifier = Modifier
+                    .clip(FlipTheme.shapes.roundedCornerFlipCard)
+                    .clickableSingle {
                         uiEvent(FlipCardUiEvent.OnLikeClick)
                         likedClicked = !likedClicked
                     },
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    imageVector =
-                        ImageVector.vectorResource(
-                            if (liked || likedClicked) {
-                                R.drawable.ic_filled_like
-                            } else R.drawable.ic_outlined_like
-                        ),
+                    imageVector = ImageVector.vectorResource(
+                        if (liked || likedClicked) {
+                            R.drawable.ic_filled_like
+                        } else R.drawable.ic_outlined_like
+                    ),
                     contentDescription = stringResource(id = R.string.icon_button_like),
-                    tint = Color(0xFFFF1F4B),
+                    tint = Color(0xFFFF1F4B)
                 )
                 Text(
                     text = likeCnt.toString(),
                     style = FlipTheme.typography.body3,
-                    color = FlipTheme.colors.gray6,
+                    color = FlipTheme.colors.gray6
                 )
             }
 
             Row(
-                modifier =
-                    Modifier.clip(FlipTheme.shapes.roundedCornerFlipCard).clickableSingle {
-                        uiEvent(FlipCardUiEvent.OnCommentClick)
-                    },
+                modifier = Modifier
+                    .clip(FlipTheme.shapes.roundedCornerFlipCard)
+                    .clickableSingle { uiEvent(FlipCardUiEvent.OnCommentClick) },
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_comment),
                     contentDescription = stringResource(id = R.string.icon_button_comment),
-                    tint = Color(0xFF212121),
+                    tint = Color(0xFF212121)
                 )
                 Text(
                     text = commentCnt.toString(),
                     style = FlipTheme.typography.body3,
-                    color = FlipTheme.colors.gray6,
+                    color = FlipTheme.colors.gray6
                 )
             }
 
             FlipIconButton(
                 modifier = Modifier.size(24.dp),
-                imageVector =
-                    ImageVector.vectorResource(
-                        if (scraped || scrapClicked) {
-                            R.drawable.ic_filled_scrap
-                        } else R.drawable.ic_outlined_scrap
-                    ),
+                imageVector = ImageVector.vectorResource(
+                    if (scraped || scrapClicked) {
+                        R.drawable.ic_filled_scrap
+                    } else R.drawable.ic_outlined_scrap
+                ),
                 contentDescription = stringResource(id = R.string.icon_button_scrap),
                 tint = Color(0xFF212121),
                 onClick = {
                     uiEvent(FlipCardUiEvent.OnScrapClick)
                     scrapClicked = !scrapClicked
-                },
+                }
             )
         }
     }
 }
 
-private val dropdownItem = listOf(DropdownItem(0, "신고하기"), DropdownItem(1, "차단하기"))
+private val dropdownItem = listOf(
+    DropdownItem(0, "신고하기"),
+    DropdownItem(1, "차단하기")
+)
 
 @Preview(showBackground = true)
 @Composable
@@ -303,7 +303,7 @@ private fun CardTopSectionPreview() {
             photoUrl = "",
             nickname = "어스름늑대",
             profileId = "90WXYZ6789A1B2C3",
-            reportAndBlockUiEvent = {},
+            reportAndBlockUiEvent = { }
         )
     }
 }
@@ -314,12 +314,11 @@ private fun CardMiddleSectionPreview() {
     FlipAppTheme {
         CardMiddleSection(
             title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
-            content =
-                "행정권은 대통령을 수반으로 하는 정부에\n" +
+            content = "행정권은 대통령을 수반으로 하는 정부에\n" +
                     "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
                     "의하여 법률에 의한 재판을 받을 권리를 가진다.행정권은 대통령을 수반으로 하는 정부에\n" +
                     "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                    "의하여 법률에 의한 재판을 받을 권리를 가진다.",
+                    "의하여 법률에 의한 재판을 받을 권리를 가진다."
         )
     }
 }
@@ -335,7 +334,7 @@ fun CardBottomSectionPreview() {
             likeCnt = 78,
             commentCnt = 21,
             scraped = false,
-            uiEvent = {},
+            uiEvent = { }
         )
     }
 }
@@ -345,31 +344,28 @@ fun CardBottomSectionPreview() {
 private fun HomeFlipCardPreview() {
     FlipAppTheme {
         HomeFlipCard(
-            post =
-                Post(
-                    postId = 0L,
-                    profile =
-                        DisplayProfile(
-                            nickname = "어스름늑대",
-                            profileId = "90WXYZ6789A1B2C3",
-                            photoUrl = "",
-                        ),
-                    title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
-                    content =
-                        "행정권은 대통령을 수반으로 하는 정부에\n" +
-                            "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                            "의하여 법률에 의한 재판을 받을 권리를 가진다.행정권은 대통령을 수반으로 하는 정부에\n" +
-                            "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                            "의하여 법률에 의한 재판을 받을 권리를 가진다.",
-                    createdAt = "2024.01.24",
-                    liked = false,
-                    likeCnt = 78,
-                    commentCnt = 21,
-                    scraped = false,
-                    bgColorType = BackgroundColorType.BLUE,
+            post = Post(
+                postId = 0L,
+                profile = DisplayProfile(
+                    nickname = "어스름늑대",
+                    profileId = "90WXYZ6789A1B2C3",
+                    photoUrl = ""
                 ),
-            flipCardUiEvent = {},
-            reportAndBlockUiEvent = {},
+                title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+                content = "행정권은 대통령을 수반으로 하는 정부에\n" +
+                        "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
+                        "의하여 법률에 의한 재판을 받을 권리를 가진다.행정권은 대통령을 수반으로 하는 정부에\n" +
+                        "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
+                        "의하여 법률에 의한 재판을 받을 권리를 가진다.",
+                createdAt = "2024.01.24",
+                liked = false,
+                likeCnt = 78,
+                commentCnt = 21,
+                scraped = false,
+                bgColorType = BackgroundColorType.BLUE
+            ),
+            flipCardUiEvent = { },
+            reportAndBlockUiEvent = {}
         )
     }
 }

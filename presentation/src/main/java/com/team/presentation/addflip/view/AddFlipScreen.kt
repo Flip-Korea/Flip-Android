@@ -121,7 +121,10 @@ import kotlinx.coroutines.launch
  * @param hideModal 모달 숨기기 & 뒤로가기
  * @param onBackPress 뒤로가기 시
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun AddFlipScreen(
     modifier: Modifier = Modifier,
@@ -134,27 +137,28 @@ fun AddFlipScreen(
     onUiEvent: (AddFlipUiEvent) -> Unit,
     hideModal: () -> Unit,
     onBackPress: () -> Unit,
-    onNavigateToTempFlipBox: () -> Unit,
+    onNavigateToTempFlipBox: () -> Unit
 ) {
-    // TODO: 키보드 포커싱 처리 좀 더 수정하기
+    //TODO: 키보드 포커싱 처리 좀 더 수정하기
 
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
     var contents by rememberSaveable { mutableStateOf(listOf("")) }
-    LaunchedEffect(contents) { onUiEvent(AddFlipUiEvent.OnContentsChanged(contents)) }
+    LaunchedEffect(contents) {
+        onUiEvent(AddFlipUiEvent.OnContentsChanged(contents))
+    }
 
     val pagerState = rememberPagerState { contents.size }
-    val currentContent =
-        rememberSaveable(pagerState.currentPage, contents) {
-            contents.getOrNull(pagerState.currentPage.coerceIn(0, contents.lastIndex)) ?: ""
-        }
+    val currentContent = rememberSaveable(pagerState.currentPage, contents) {
+        contents.getOrNull(pagerState.currentPage.coerceIn(0, contents.lastIndex)) ?: ""
+    }
 
     var showCategoryBottomSheet by remember { mutableStateOf(false) }
     val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val focusManager = LocalFocusManager.current
-    //    val focusRequester = remember { FocusRequester() }
+//    val focusRequester = remember { FocusRequester() }
 
     var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -164,8 +168,8 @@ fun AddFlipScreen(
     LaunchedEffect(selectedCategory, newPostState.title, contents) {
         enableSaveButton =
             selectedCategory != null &&
-                newPostState.title.isNotEmpty() &&
-                contents.filter { it.isEmpty() }.isEmpty()
+                    newPostState.title.isNotEmpty() &&
+                    contents.filter { it.isEmpty() }.isEmpty()
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -174,15 +178,13 @@ fun AddFlipScreen(
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var backPressed by rememberSaveable { mutableStateOf(false) }
     var isModalVisible by rememberSaveable { mutableStateOf(false) }
-    BackHandler { onUiEvent(AddFlipUiEvent.OnSafeSave(newPostState.title, contents)) }
+    BackHandler {
+        onUiEvent(AddFlipUiEvent.OnSafeSave(newPostState.title, contents))
+    }
     LaunchedEffect(modalState) {
         when (modalState) {
-            ModalState.Idle -> {
-                isModalVisible = false
-            }
-            ModalState.Hide -> {
-                isModalVisible = false
-            }
+            ModalState.Idle -> { isModalVisible = false }
+            ModalState.Hide -> { isModalVisible = false }
             is ModalState.Display -> {
                 if (modalState.showed) {
                     isModalVisible = true
@@ -195,7 +197,7 @@ fun AddFlipScreen(
     FlipModalWrapper(
         isOpen = isModalVisible,
         onDismissRequest = { hideModal() },
-        onAnimationFinished = { if (backPressed) onBackPress() },
+        onAnimationFinished = { if (backPressed) onBackPress() }
     ) {
         FlipModal(
             mainTitle = stringResource(id = R.string.add_flip_screen_modal_main_title),
@@ -204,14 +206,7 @@ fun AddFlipScreen(
             itemText2 = stringResource(id = R.string.add_flip_screen_modal_item_1),
             itemText3 = stringResource(id = R.string.add_flip_screen_modal_item_3),
             onItemClick = {
-                onUiEvent(
-                    AddFlipUiEvent.OnSaveTempPost(
-                        newPostState.title,
-                        contents,
-                        newPostState.bgColorType,
-                        newPostState.tags,
-                    )
-                )
+                onUiEvent(AddFlipUiEvent.OnSaveTempPost(newPostState.title, contents, newPostState.bgColorType, newPostState.tags))
                 backPressed = true
                 hideModal()
             },
@@ -219,7 +214,9 @@ fun AddFlipScreen(
                 backPressed = true
                 hideModal()
             },
-            onItem3Click = { hideModal() },
+            onItem3Click = {
+                hideModal()
+            }
         )
     }
 
@@ -236,24 +233,23 @@ fun AddFlipScreen(
         SelectCategoryBottomSheet(
             sheetState = categorySheetState,
             categories = categoriesState.categories,
-            onSelect = { category ->
-                onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(category))
-            },
+            onSelect = { category -> onUiEvent(AddFlipUiEvent.OnSelectedCategoryChanged(category)) },
             onDismissRequest = {
                 dismissRequester(
                     coroutineScope = coroutineScope,
                     sheetState = categorySheetState,
                     onDismissRequest = { keyboardController?.hide() },
-                    onDismissCompletion = { showCategoryBottomSheet = false },
+                    onDismissCompletion = { showCategoryBottomSheet = false }
                 )
-            },
+            }
         )
     }
 
     /** 메인 컨텐츠 */
     Scaffold(
-        modifier =
-            modifier.fillMaxSize().pointerInput(Unit) {
+        modifier = modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
                     isShowMoreClicked = false
@@ -267,21 +263,22 @@ fun AddFlipScreen(
             },
         topBar = {
             FlipCenterAlignedTopBar(
-                modifier =
-                    Modifier.fillMaxWidth().padding(CommonPaddingValues.TopBarWithTouchTarget),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 actions = FlipCenterAlignedTopBarActions.CLOSE,
                 onAction = { onBackPressedDispatcher?.onBackPressed() },
                 title = stringResource(id = R.string.add_flip_screen_topbar_title),
                 options = {
                     Text(
-                        modifier =
-                            Modifier.clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
-                                .padding(10.dp),
+                        modifier = Modifier
+                            .clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
+                            .padding(10.dp),
                         text = stringResource(id = R.string.add_flip_screen_topbar_btn),
                         style = FlipTheme.typography.body6,
-                        color = FlipTheme.colors.gray5,
+                        color = FlipTheme.colors.gray5
                     )
-                },
+                }
             )
         },
         bottomBar = {
@@ -290,26 +287,22 @@ fun AddFlipScreen(
                 text = stringResource(id = R.string.add_flip_screen_bottom_btn),
                 enabled = enableSaveButton,
                 onClick = {
-                    onUiEvent(
-                        AddFlipUiEvent.OnSavePost(
-                            newPostState.title,
-                            contents,
-                            newPostState.bgColorType,
-                            newPostState.tags,
-                        )
-                    )
-                },
+                    onUiEvent(AddFlipUiEvent.OnSavePost(newPostState.title, contents, newPostState.bgColorType, newPostState.tags))
+                }
             )
         },
         containerColor = FlipTheme.colors.white,
     ) { innerPadding ->
+
         CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-            FlipImeDoneToolbarWrapper(onDone = { keyboardController?.hide() }) {
+            FlipImeDoneToolbarWrapper(onDone = {
+                keyboardController?.hide()
+            }) {
                 LazyColumn(
-                    modifier =
-                        Modifier.consumeWindowInsets(innerPadding)
-                            .padding(innerPadding)
-                            .imePadding(),
+                    modifier = Modifier
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding)
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top,
                     contentPadding = PaddingValues(vertical = 9.dp),
@@ -318,28 +311,29 @@ fun AddFlipScreen(
                     item {
                         /** 카테고리 선택 바 */
                         SelectCategoryBar(
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                             selectedCategory = selectedCategory,
-                            onClick = { showCategoryBottomSheet = true },
+                            onClick = { showCategoryBottomSheet = true }
                         )
 
                         /** 제목 입력 텍스트필드 */
                         AddFlipTitleTextField(
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .padding(top = 17.dp)
-                                    .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 17.dp)
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                             title = newPostState.title,
                             onTitleChanged = { onUiEvent(AddFlipUiEvent.OnTitleChanged(it)) },
-                            placeholder =
-                                stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
+                            placeholder = stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
                         )
 
                         Column(
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             /** 본문 입력 텍스트 필드 */
                             AddFlipContentSection(
@@ -348,22 +342,20 @@ fun AddFlipScreen(
                                 newPostState = newPostState,
                                 pagerState = pagerState,
                                 contents = contents,
-                                onContentsChanged = { changedContents ->
-                                    contents = changedContents
-                                },
-                                onFocusChanged = { contentTextFieldFocused = it },
+                                onContentsChanged = { changedContents -> contents = changedContents },
+                                onFocusChanged = { contentTextFieldFocused = it }
                             )
 
                             /** 페이지 카운터, 페이지 추가&삭제 버튼 */
                             Row(
-                                modifier =
-                                    Modifier.fillMaxWidth()
-                                        .padding(
-                                            horizontal = CommonPaddingValues.HorizontalPadding,
-                                            vertical = 12.dp,
-                                        ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        horizontal = CommonPaddingValues.HorizontalPadding,
+                                        vertical = 12.dp
+                                    ),
                                 horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 /** 페이지 카운터 */
                                 PageCounter(
@@ -378,18 +370,17 @@ fun AddFlipScreen(
                                                 val newPage = (currentPage - 1).coerceAtLeast(0)
                                                 pagerState.animateScrollToPage(newPage)
 
-                                                contents =
-                                                    contents.toMutableList().apply {
-                                                        removeAt(currentPage)
-                                                    }
+                                                contents = contents.toMutableList().apply {
+                                                    removeAt(currentPage)
+                                                }
                                             }
                                         }
-                                    },
+                                    }
                                 )
 
                                 /** 페이지 추가&삭제 버튼 */
                                 if (pagerState.currentPage != MAX_PAGE) {
-                                    // TODO: 삭제버튼 위치 미정
+                                    //TODO: 삭제버튼 위치 미정
                                     PageAddDeleteButton(
                                         isDeletable = false,
                                         onAdd = {
@@ -397,10 +388,9 @@ fun AddFlipScreen(
                                                 val newPageIndex = pagerState.currentPage + 1
 
                                                 if (contents.size + 1 <= MAX_PAGE) {
-                                                    contents =
-                                                        contents.toMutableList().apply {
-                                                            add(newPageIndex, "")
-                                                        }
+                                                    contents = contents
+                                                        .toMutableList()
+                                                        .apply { add(newPageIndex, "") }
                                                 }
 
                                                 pagerState.animateScrollToPage(newPageIndex)
@@ -414,13 +404,12 @@ fun AddFlipScreen(
                                                     val newPage = (currentPage - 1).coerceAtLeast(0)
                                                     pagerState.animateScrollToPage(newPage)
 
-                                                    contents =
-                                                        contents.toMutableList().apply {
-                                                            removeAt(currentPage)
-                                                        }
+                                                    contents = contents.toMutableList().apply {
+                                                        removeAt(currentPage)
+                                                    }
                                                 }
                                             }
-                                        },
+                                        }
                                     )
                                 }
                             }
@@ -430,7 +419,7 @@ fun AddFlipScreen(
                         HorizontalDivider(
                             modifier = Modifier.fillMaxWidth(),
                             thickness = 1.dp,
-                            color = FlipTheme.colors.gray3,
+                            color = FlipTheme.colors.gray3
                         )
 
                         /** 글자 수 도우미 */
@@ -439,29 +428,28 @@ fun AddFlipScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 length = currentContent.length.toFloat(),
                                 limit = MAX_LETTER_LIMIT,
-                                progress = currentContent.length.toFloat() / MAX_LETTER_LIMIT,
+                                progress = currentContent.length.toFloat() / MAX_LETTER_LIMIT
                             )
                         }
 
                         /** 배경 컬러 설정 바 */
                         SettingBackgroundColor(
-                            modifier =
-                                Modifier.fillMaxWidth()
-                                    .padding(
-                                        horizontal = CommonPaddingValues.HorizontalPadding,
-                                        vertical = 28.dp,
-                                    ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = CommonPaddingValues.HorizontalPadding,
+                                    vertical = 28.dp
+                                ),
                             selectedColor = newPostState.bgColorType,
                             isShowMoreClicked = isShowMoreClicked,
                             showMore = { isShowMoreClicked = !isShowMoreClicked },
-                            onSelectedColor = { color ->
-                                onUiEvent(AddFlipUiEvent.OnBackgroundColorChanged(color))
-                            },
+                            onSelectedColor = { color -> onUiEvent(AddFlipUiEvent.OnBackgroundColorChanged(color)) }
                         )
                     }
                 }
             }
         }
+
     }
 }
 
@@ -475,69 +463,73 @@ fun AddFlipScreen(
 private fun SelectCategoryBar(
     modifier: Modifier = Modifier,
     selectedCategory: Category?,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
 
     Box(
-        modifier =
-            modifier
-                .clip(RoundedCornerShape(50.dp))
-                .fillMaxWidth()
-                .border(1.dp, FlipTheme.colors.gray5, RoundedCornerShape(50.dp))
-                .clickableSingle { onClick() },
-        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .clip(RoundedCornerShape(50.dp))
+            .fillMaxWidth()
+            .border(1.dp, FlipTheme.colors.gray5, RoundedCornerShape(50.dp))
+            .clickableSingle { onClick() },
+        contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = if (selectedCategory == null) 8.dp else 6.dp,
-                    ),
-            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 20.dp,
+                    vertical = if (selectedCategory == null) 8.dp else 6.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (selectedCategory == null) {
                 Text(
-                    modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.Start),
-                    text =
-                        stringResource(
-                            id = R.string.add_flip_screen_select_category_bar_placeholder
-                        ),
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentWidth(align = Alignment.Start),
+                    text = stringResource(id = R.string.add_flip_screen_select_category_bar_placeholder),
                     style = FlipTheme.typography.body5,
                     color = FlipTheme.colors.gray5,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
             } else {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     CategoryIconsMap[selectedCategory.id]?.let { iconRes ->
                         Icon(
                             modifier = Modifier.size(24.dp),
                             imageVector = ImageVector.vectorResource(iconRes),
                             contentDescription = null,
-                            tint = FlipTheme.colors.main,
+                            tint = FlipTheme.colors.main
                         )
                     }
-                    Text(text = selectedCategory.name, style = FlipTheme.typography.headline1)
+                    Text(
+                        text = selectedCategory.name,
+                        style = FlipTheme.typography.headline1,
+                    )
                 }
             }
 
             Icon(
-                modifier =
-                    Modifier.weight(1f).wrapContentWidth(align = Alignment.End).size(7.dp, 14.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .wrapContentWidth(align = Alignment.End)
+                    .size(7.dp, 14.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
-                contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_select_category),
-                tint = FlipTheme.colors.gray7,
+                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_select_category),
+                tint = FlipTheme.colors.gray7
             )
         }
     }
 }
 
-/** 카테고리 선택 바텀시트 (메인) */
+/**
+ * 카테고리 선택 바텀시트 (메인)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectCategoryBottomSheet(
@@ -553,20 +545,21 @@ private fun SelectCategoryBottomSheet(
         sheetState = sheetState,
     ) { bottomSheetModifier ->
         SelectCategoryBottomSheetContent(
-            modifier =
-                bottomSheetModifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
+            modifier = bottomSheetModifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
             categories = categories,
             onSelect = { category ->
                 onSelect(category)
                 onDismissRequest()
-            },
+            }
         )
     }
 }
 
-/** 카테고리 선택 바텀시트 (내부) */
+/**
+ * 카테고리 선택 바텀시트 (내부)
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelectCategoryBottomSheetContent(
@@ -579,53 +572,51 @@ private fun SelectCategoryBottomSheetContent(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top),
+        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
-                contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_select_category),
-                tint = FlipTheme.colors.main,
+                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_select_category),
+                tint = FlipTheme.colors.main
             )
             Text(
                 text = stringResource(id = R.string.add_flip_screen_select_bottom_sheet_title),
-                style = FlipTheme.typography.headline3,
+                style = FlipTheme.typography.headline3
             )
         }
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             categories.forEach { category ->
                 FlipMediumChip(
-                    modifier =
-                        Modifier.pointerInput(Unit) {
-                            awaitPointerEventScope {
-                                while (true) {
-                                    val event = awaitPointerEvent(pass = PointerEventPass.Initial)
-                                    when {
-                                        event.changes.any { it.changedToDown() } -> {
-                                            isTap = category.id
-                                        }
-                                        event.changes.any { it.changedToUp() } -> {
-                                            isTap = -1
-                                        }
+                    modifier = Modifier.pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                                when {
+                                    event.changes.any { it.changedToDown() } -> {
+                                        isTap = category.id
+                                    }
+                                    event.changes.any { it.changedToUp() } -> {
+                                        isTap = -1
                                     }
                                 }
                             }
-                        },
+                        }
+                    },
                     text = category.name,
                     icon = CategoryIconsMap[category.id],
                     onClick = { onSelect(category) },
-                    solid = isTap == category.id,
+                    solid = isTap == category.id
                 )
             }
         }
@@ -651,20 +642,25 @@ private fun AddFlipContentSection(
         userScrollEnabled = true,
         contentPadding = PaddingValues(horizontal = CommonPaddingValues.HorizontalPadding),
         pageSpacing = CommonPaddingValues.HorizontalPadding,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.Top
     ) { page ->
+
         AddFlipContentTextField(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .flipGradient(color = newPostState.bgColorType.asColor())
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .flipGradient(color = newPostState.bgColorType.asColor())
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp),
             focusManager = focusManager,
             placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
             content = contents[page],
             onContentChanged = {
-                onContentsChanged(contents.toMutableList().apply { this[page] = it })
+                onContentsChanged(
+                    contents.toMutableList().apply {
+                        this[page] = it
+                    }
+                )
             },
-            onFocusChanged = onFocusChanged,
+            onFocusChanged = onFocusChanged
         )
     }
 }
@@ -675,16 +671,17 @@ private fun PageCounter(
     modifier: Modifier = Modifier,
     currentPage: Int,
     currentMaxPage: Int,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Text(
-        text =
-            buildAnnotatedString {
-                withStyle(SpanStyle(color = FlipTheme.colors.point)) { append("$currentPage") }
-                append("/$currentMaxPage")
-            },
+        text = buildAnnotatedString {
+            withStyle(SpanStyle(color = FlipTheme.colors.point)) {
+                append("$currentPage")
+            }
+            append("/$currentMaxPage")
+        },
         style = FlipTheme.typography.body3,
-        color = FlipTheme.colors.gray6,
+        color = FlipTheme.colors.gray6
     )
 }
 
@@ -694,34 +691,33 @@ private fun PageAddDeleteButton(
     modifier: Modifier = Modifier,
     isDeletable: Boolean,
     onAdd: () -> Unit,
-    onDelete: () -> Unit,
+    onDelete: () -> Unit
 ) {
 
     if (isDeletable) {
-        // TODO: 색상, 폰트 미정
+        //TODO: 색상, 폰트 미정
         Text(
             modifier = Modifier.clickableSingleWithoutRipple { onDelete() },
             text = stringResource(id = R.string.add_flip_screen_delete_page_btn),
             style = FlipTheme.typography.body3,
-            color = FlipTheme.colors.gray4,
+            color = FlipTheme.colors.gray4
         )
     } else {
         Row(
             modifier = modifier.clickableSingleWithoutRipple { onAdd() },
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier.sizeIn(maxWidth = 18.dp, maxHeight = 18.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_plus_small),
-                contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_add_content),
-                tint = FlipTheme.colors.gray4,
+                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_add_content),
+                tint = FlipTheme.colors.gray4
             )
             Text(
                 text = stringResource(id = R.string.add_flip_screen_add_page_btn),
                 style = FlipTheme.typography.body3,
-                color = FlipTheme.colors.gray4,
+                color = FlipTheme.colors.gray4
             )
         }
     }
@@ -744,45 +740,49 @@ private fun SettingBackgroundColor(
     onSelectedColor: (BackgroundColorType) -> Unit,
 ) {
 
-    val animateRotateValue =
-        animateFloatAsState(targetValue = if (isShowMoreClicked) 90f else 0f, label = "")
+    val animateRotateValue = animateFloatAsState(
+        targetValue = if (isShowMoreClicked) 90f else 0f,
+        label = ""
+    )
 
     Row(modifier = modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.weight(1f).wrapContentWidth(Alignment.Start),
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentWidth(Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_background_color),
-                contentDescription =
-                    stringResource(
-                        id = R.string.add_flip_screen_content_desc_setting_background_color
-                    ),
-                tint = FlipTheme.colors.main,
+                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_setting_background_color),
+                tint = FlipTheme.colors.main
             )
             Text(
                 text = stringResource(id = R.string.add_flip_screen_setting_background_color),
                 style = FlipTheme.typography.body6,
-                maxLines = 1,
+                maxLines = 1
             )
         }
 
         Row(
-            modifier =
-                Modifier.weight(2f).wrapContentWidth(Alignment.End).clickableSingleWithoutRipple {
-                    showMore()
-                },
+            modifier = Modifier
+                .weight(2f)
+                .wrapContentWidth(Alignment.End)
+                .clickableSingleWithoutRipple { showMore() },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End),
-        ) animatedRow@{
-            Box(modifier = Modifier.wrapContentSize(), contentAlignment = Alignment.CenterEnd) {
+            horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End)
+        ) animatedRow@ {
+            Box(
+                modifier = Modifier.wrapContentSize(),
+                contentAlignment = Alignment.CenterEnd
+            ) {
                 this@animatedRow.AnimatedVisibility(
                     modifier = Modifier.wrapContentSize(),
                     visible = isShowMoreClicked,
                     enter = fadeIn() + slideInVertically(),
-                    exit = fadeOut() + slideOutVertically(),
+                    exit = fadeOut() + slideOutVertically()
                 ) {
                     BackgroundColorOptions(
                         selectedColor = selectedColor,
@@ -796,25 +796,26 @@ private fun SettingBackgroundColor(
                     modifier = Modifier.wrapContentSize(),
                     visible = !isShowMoreClicked,
                     enter = fadeIn() + slideInVertically(),
-                    exit = fadeOut() + slideOutVertically(),
+                    exit = fadeOut() + slideOutVertically()
                 ) {
                     BackgroundColorOptionDisplay(selectedColor = selectedColor)
                 }
             }
 
             Icon(
-                modifier =
-                    Modifier.size(24.dp)
-                        .graphicsLayer { rotationZ = animateRotateValue.value }
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { showMore() },
-                        ),
+                modifier = Modifier
+                    .size(24.dp)
+                    .graphicsLayer {
+                        rotationZ = animateRotateValue.value
+                    }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { showMore() }
+                    ),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
-                contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_show_more),
-                tint = FlipTheme.colors.gray5,
+                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_show_more),
+                tint = FlipTheme.colors.gray5
             )
         }
     }
@@ -825,32 +826,37 @@ private fun SettingBackgroundColor(
 private fun BackgroundColorOptions(
     modifier: Modifier = Modifier,
     selectedColor: BackgroundColorType,
-    onSelectedColor: (BackgroundColorType) -> Unit,
+    onSelectedColor: (BackgroundColorType) -> Unit
 ) {
 
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         BackgroundColorType.entries.forEach { color ->
-            val itemModifier =
-                if (selectedColor == color) {
-                    Modifier.clip(CircleShape)
-                        .background(FlipTheme.colors.point3)
-                        .border(1.dp, FlipTheme.colors.point, CircleShape)
-                } else Modifier
 
-            Box(modifier = Modifier.size(24.dp).then(itemModifier)) {
+            val itemModifier = if (selectedColor == color) {
+                Modifier
+                    .clip(CircleShape)
+                    .background(FlipTheme.colors.point3)
+                    .border(1.dp, FlipTheme.colors.point, CircleShape)
+            } else Modifier
+
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .then(itemModifier)
+            ) {
                 Icon(
-                    modifier =
-                        Modifier.align(Alignment.Center)
-                            .size(16.dp)
-                            .border(1.dp, Color(0xFF212121), CircleShape)
-                            .clickableSingleWithoutRipple { onSelectedColor(color) },
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(16.dp)
+                        .border(1.dp, Color(0xFF212121), CircleShape)
+                        .clickableSingleWithoutRipple { onSelectedColor(color) },
                     imageVector = Icons.Default.Circle,
                     contentDescription = "bg-color",
-                    tint = color.asColor(),
+                    tint = color.asColor()
                 )
             }
         }
@@ -861,23 +867,25 @@ private fun BackgroundColorOptions(
 @Composable
 private fun BackgroundColorOptionDisplay(
     modifier: Modifier = Modifier,
-    selectedColor: BackgroundColorType,
+    selectedColor: BackgroundColorType
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
-            modifier = Modifier.size(16.dp).border(1.dp, Color(0xFF212121), CircleShape),
+            modifier = Modifier
+                .size(16.dp)
+                .border(1.dp, Color(0xFF212121), CircleShape),
             imageVector = Icons.Default.Circle,
             contentDescription = null,
-            tint = selectedColor.asColor(),
+            tint = selectedColor.asColor()
         )
         Text(
             text = selectedColor.asString(),
             style = FlipTheme.typography.body5,
-            color = FlipTheme.colors.gray5,
+            color = FlipTheme.colors.gray5
         )
     }
 }
@@ -895,17 +903,15 @@ private fun dismissRequester(
     coroutineScope: CoroutineScope,
     sheetState: SheetState,
     onDismissRequest: () -> Unit = {},
-    onDismissCompletion: () -> Unit,
+    onDismissCompletion: () -> Unit
 ) {
     onDismissRequest()
 
-    coroutineScope
-        .launch { sheetState.hide() }
-        .invokeOnCompletion {
-            if (!sheetState.isVisible) {
-                onDismissCompletion()
-            }
+    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+        if (!sheetState.isVisible) {
+            onDismissCompletion()
         }
+    }
 }
 
 /** 플립을 작성할 수 있는 최대 페이지 수 */
@@ -919,8 +925,14 @@ private fun SelectCategoryBarPreview() {
 
     FlipAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-            SelectCategoryBar(selectedCategory = null, onClick = {})
-            SelectCategoryBar(selectedCategory = Category(6, "예술/문화"), onClick = {})
+            SelectCategoryBar(
+                selectedCategory = null,
+                onClick = { }
+            )
+            SelectCategoryBar(
+                selectedCategory = Category(6, "예술/문화"),
+                onClick = { }
+            )
         }
     }
 }
@@ -930,7 +942,10 @@ private fun SelectCategoryBarPreview() {
 private fun SelectCategoryBottomSheetContentPreview() {
 
     FlipAppTheme {
-        SelectCategoryBottomSheetContent(categories = CategoriesTestData, onSelect = {})
+        SelectCategoryBottomSheetContent(
+            categories = CategoriesTestData,
+            onSelect = {},
+        )
     }
 }
 
@@ -963,10 +978,10 @@ private fun AddFlipScreenPreview() {
             addTempPostState = AddTempPostState(),
             modalState = ModalState.Idle,
             selectedCategory = null,
-            hideModal = {},
-            onUiEvent = {},
-            onBackPress = {},
-            onNavigateToTempFlipBox = {},
+            hideModal = { },
+            onUiEvent = { },
+            onBackPress = { },
+            onNavigateToTempFlipBox = { }
         )
     }
 }
@@ -983,10 +998,10 @@ private fun AddFlipScreenPreview2() {
             addTempPostState = AddTempPostState(),
             modalState = ModalState.Idle,
             selectedCategory = null,
-            hideModal = {},
-            onUiEvent = {},
-            onBackPress = {},
-            onNavigateToTempFlipBox = {},
+            hideModal = { },
+            onUiEvent = { },
+            onBackPress = { },
+            onNavigateToTempFlipBox = { }
         )
     }
 }

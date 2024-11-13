@@ -27,15 +27,14 @@ fun FlipBackHandler(
 ) {
 
     // 뒤로가기 방식 1
-    //    val onBackPressedDispatcher =
-    // LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+//    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var backPressHandled by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     BackHandler(enabled = !backPressHandled) {
         backPressHandled = true
         coroutineScope.launch {
             awaitFrame()
-            //            onBackPressedDispatcher?.onBackPressed()
+//            onBackPressedDispatcher?.onBackPressed()
             if (condition) {
                 onBack()
             } else {

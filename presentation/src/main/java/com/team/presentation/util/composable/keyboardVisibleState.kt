@@ -9,10 +9,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalDensity
 
-/** 키보드 활성화 감지 상태 */
+/**
+ * 키보드 활성화 감지 상태
+ */
 @Composable
 fun keyboardVisibleState(): State<Boolean> {
-    //    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+//    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     val isImeVisible = WindowInsets.isImeVisible
     return rememberUpdatedState(isImeVisible)
 }
@@ -22,5 +24,9 @@ private val WindowInsets.Companion.isImeVisible: Boolean
     get() {
         val density = LocalDensity.current
         val ime = this.ime
-        return remember { derivedStateOf { ime.getBottom(density) > 0 } }.value
+        return remember {
+            derivedStateOf {
+                ime.getBottom(density) > 0
+            }
+        }.value
     }

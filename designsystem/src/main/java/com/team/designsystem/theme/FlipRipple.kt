@@ -6,13 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 class FlipRipple : RippleTheme {
-    @Composable override fun defaultColor(): Color = Color.LightGray
+    @Composable
+    override fun defaultColor(): Color = Color.LightGray
 
-    @Composable override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.12f, 0.12f, 0.12f, 0.12f)
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.12f, 0.12f, 0.12f, 0.12f)
 }
 
 class FlipNoRipple : RippleTheme {
-    @Composable override fun defaultColor(): Color = Color.Unspecified
+    @Composable
+    override fun defaultColor(): Color = Color.Unspecified
 
-    @Composable override fun rippleAlpha(): RippleAlpha = RippleAlpha(0f, 0f, 0f, 0f)
+    @Composable
+    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0f, 0f, 0f, 0f)
 }

@@ -21,7 +21,6 @@ import com.team.presentation.R
 
 /**
  * 홈 화면에서 사용되는 TopBar
- *
  * @param logo Flip 로고의 리소스 ID
  * @param onSearchClick 검색 클릭 시
  * @param onNotiClick 알림 클릭 시
@@ -33,38 +32,37 @@ fun HomeTopBar(
     @DrawableRes logo: Int,
     onSearchClick: () -> Unit,
     onNotiClick: () -> Unit,
-    onSettingClick: () -> Unit,
+    onSettingClick: () -> Unit
 ) {
 
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier.size(48.dp, 30.dp),
             imageVector = ImageVector.vectorResource(logo),
-            contentDescription = stringResource(id = R.string.home_screen_content_desc_logo),
+            contentDescription = stringResource(id = R.string.home_screen_content_desc_logo)
         )
         Row {
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_search),
                 contentDescription = stringResource(id = R.string.home_screen_content_desc_search),
                 tint = FlipTheme.colors.main,
-                onClick = onSearchClick,
+                onClick = onSearchClick
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_notification),
-                contentDescription =
-                    stringResource(id = R.string.home_screen_content_desc_notification),
+                contentDescription = stringResource(id = R.string.home_screen_content_desc_notification),
                 tint = FlipTheme.colors.main,
-                onClick = onNotiClick,
+                onClick = onNotiClick
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                 contentDescription = stringResource(id = R.string.home_screen_content_desc_setting),
                 tint = FlipTheme.colors.main,
-                onClick = onSettingClick,
+                onClick = onSettingClick
             )
         }
     }
@@ -77,9 +75,9 @@ private fun HomeTopBarPreview() {
         HomeTopBar(
             modifier = Modifier.fillMaxWidth(),
             logo = R.drawable.ic_logo_dark,
-            onSearchClick = {},
-            onNotiClick = {},
-            onSettingClick = {},
+            onSearchClick = { },
+            onNotiClick = { },
+            onSettingClick = { }
         )
     }
 }
