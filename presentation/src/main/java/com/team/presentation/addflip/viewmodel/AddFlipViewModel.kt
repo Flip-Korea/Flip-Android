@@ -28,6 +28,7 @@ import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,10 +39,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class AddFlipViewModel @Inject constructor(
+class AddFlipViewModel
+@Inject
+constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
@@ -71,9 +73,7 @@ class AddFlipViewModel @Inject constructor(
     val modalState: StateFlow<ModalState> = _modalState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            fetchCategories()
-        }
+        viewModelScope.launch { fetchCategories() }
     }
 
     private suspend fun fetchCategories() {
@@ -83,9 +83,9 @@ class AddFlipViewModel @Inject constructor(
         } catch (e: Exception) {
             _categoriesState.update {
                 it.copy(
-                    error = e.localizedMessage?.let { msg ->
-                        UiText.DynamicString(msg)
-                    } ?: ErrorType.Exception.EXCEPTION.asUiText()
+                    error =
+                        e.localizedMessage?.let { msg -> UiText.DynamicString(msg) }
+                            ?: ErrorType.Exception.EXCEPTION.asUiText()
                 )
             }
         }
@@ -106,10 +106,7 @@ class AddFlipViewModel @Inject constructor(
             }
 
             is AddFlipUiEvent.OnSafeSave -> {
-                onSafeSave(
-                    title = uiEvent.title,
-                    contents = uiEvent.contents,
-                )
+                onSafeSave(title = uiEvent.title, contents = uiEvent.contents)
             }
 
             is AddFlipUiEvent.OnCategoryChanged -> {
@@ -139,7 +136,7 @@ class AddFlipViewModel @Inject constructor(
         title: String,
         content: List<String>,
         selectedColor: BackgroundColorType,
-        tags: List<String>
+        tags: List<String>,
     ) {
         viewModelScope.launch {
             if (selectedCategory.value == null) {
@@ -150,13 +147,10 @@ class AddFlipViewModel @Inject constructor(
             _addPostState.update { it.copy(loading = true) }
 
             // 유효성 검사
-            val validationResultsDeferred = async(ioDispatcher) {
-                validatePostUseCase(
-                    title = title,
-                    content = content,
-                    tags = tags,
-                )
-            }
+            val validationResultsDeferred =
+                async(ioDispatcher) {
+                    validatePostUseCase(title = title, content = content, tags = tags)
+                }
 
             val validationResults = validationResultsDeferred.await()
 
@@ -165,47 +159,48 @@ class AddFlipViewModel @Inject constructor(
                 _addPostState.update {
                     it.copy(
                         loading = false,
-                        error = validationResults
-                            .filterIsInstance<ValidationResult.Error>()
-                            .first().error.asUiText()
+                        error =
+                            validationResults
+                                .filterIsInstance<ValidationResult.Error>()
+                                .first()
+                                .error
+                                .asUiText(),
                     )
                 }
             } else {
                 addPostUseCases(
-                    title = title,
-                    content = content,
-                    bgColorType = selectedColor,
-                    tags = tags,
-                    categoryId = selectedCategory.value!!.id
-                ).onEach { result ->
-                    when (result) {
-                        Result.Loading -> {
-                            _addPostState.update { it.copy(loading = true) }
-                        }
+                        title = title,
+                        content = content,
+                        bgColorType = selectedColor,
+                        tags = tags,
+                        categoryId = selectedCategory.value!!.id,
+                    )
+                    .onEach { result ->
+                        when (result) {
+                            Result.Loading -> {
+                                _addPostState.update { it.copy(loading = true) }
+                            }
 
-                        is Result.Error -> {
-                            val message = errorBodyFirst(
-                                errorBody = result.errorBody,
-                                error = result.error
-                            )
+                            is Result.Error -> {
+                                val message =
+                                    errorBodyFirst(
+                                        errorBody = result.errorBody,
+                                        error = result.error,
+                                    )
 
-                            showSnackbar(message)
-//                            _addPostState.update { it.copy(
-//                                loading = false,
-//                                error = message
-//                            ) }
-                        }
+                                showSnackbar(message)
+                                //                            _addPostState.update { it.copy(
+                                //                                loading = false,
+                                //                                error = message
+                                //                            ) }
+                            }
 
-                        is Result.Success -> {
-                            _addPostState.update {
-                                it.copy(
-                                    loading = false,
-                                    postSave = true
-                                )
+                            is Result.Success -> {
+                                _addPostState.update { it.copy(loading = false, postSave = true) }
                             }
                         }
                     }
-                }.launchIn(viewModelScope)
+                    .launchIn(viewModelScope)
             }
         }
     }
@@ -215,57 +210,53 @@ class AddFlipViewModel @Inject constructor(
         title: String,
         content: List<String>,
         selectedColor: BackgroundColorType,
-        tags: List<String>
+        tags: List<String>,
     ) {
         viewModelScope.launch {
             // 유효성 검사
-            val validationResultDeferred = async(ioDispatcher) {
-                validateTempPostUseCase(title, content)
-            }
+            val validationResultDeferred =
+                async(ioDispatcher) { validateTempPostUseCase(title, content) }
             val validationResult = validationResultDeferred.await()
             if (validationResult is ValidationResult.Error) {
                 _addTempPostState.update {
-                    it.copy(
-                        loading = false,
-                        error = validationResult.error.asUiText()
-                    )
+                    it.copy(loading = false, error = validationResult.error.asUiText())
                 }
             } else {
                 addTempPostUseCase(
-                    title = title,
-                    content = content,
-                    bgColorType = selectedColor,
-                    tags = tags,
-                    categoryId = selectedCategory.value?.id
-                ).onEach { result ->
-                    when (result) {
-                        Result.Loading -> {
-                            _addTempPostState.update { it.copy(loading = true) }
-                        }
+                        title = title,
+                        content = content,
+                        bgColorType = selectedColor,
+                        tags = tags,
+                        categoryId = selectedCategory.value?.id,
+                    )
+                    .onEach { result ->
+                        when (result) {
+                            Result.Loading -> {
+                                _addTempPostState.update { it.copy(loading = true) }
+                            }
 
-                        is Result.Error -> {
-                            _addTempPostState.update {
-                                it.copy(
-                                    loading = false,
-                                    error = errorBodyFirst(
-                                        errorBody = result.errorBody,
-                                        error = result.error
+                            is Result.Error -> {
+                                _addTempPostState.update {
+                                    it.copy(
+                                        loading = false,
+                                        error =
+                                            errorBodyFirst(
+                                                errorBody = result.errorBody,
+                                                error = result.error,
+                                            ),
                                     )
-                                )
+                                }
                             }
-                        }
 
-                        is Result.Success -> {
-                            _addTempPostState.update {
-                                it.copy(
-                                    loading = false,
-                                    tempPostSave = true
-                                )
+                            is Result.Success -> {
+                                _addTempPostState.update {
+                                    it.copy(loading = false, tempPostSave = true)
+                                }
+                                showSnackbar(message = SuccessType.TempPost.SAVE.asUiText())
                             }
-                            showSnackbar(message = SuccessType.TempPost.SAVE.asUiText())
                         }
                     }
-                }.launchIn(viewModelScope)
+                    .launchIn(viewModelScope)
             }
         }
     }
@@ -273,18 +264,16 @@ class AddFlipViewModel @Inject constructor(
     /**
      * 뒤로가기 감지 시 작성된 내용이 있다면 (임시저장)경고모달 표시
      *
-     * 기능 정의서[RQ-0038] 요약
-     * 제목(title)이나 본문(content) 중 하나 라도 입력 했다면 경고모달 표시
+     * 기능 정의서[RQ-0038] 요약 제목(title)이나 본문(content) 중 하나 라도 입력 했다면 경고모달 표시
      */
-    private fun onSafeSave(
-        title: String = "",
-        contents: List<String> = emptyList(),
-    ) {
+    private fun onSafeSave(title: String = "", contents: List<String> = emptyList()) {
         when (validateTempPostUseCase(title, contents)) {
             is ValidationResult.Error -> {
                 viewModelScope.launch { displayModal(false) }
             }
-            ValidationResult.Success -> { displayModal(true) }
+            ValidationResult.Success -> {
+                displayModal(true)
+            }
         }
     }
 
@@ -296,15 +285,7 @@ class AddFlipViewModel @Inject constructor(
         _modalState.update { ModalState.Hide }
     }
 
-    private suspend fun showSnackbar(
-        message: UiText,
-        action: SnackbarAction? = null
-    ) {
-        SnackbarController.sendEvent(
-            event = SnackbarEvent(
-                message = message,
-                action = action
-            )
-        )
+    private suspend fun showSnackbar(message: UiText, action: SnackbarAction? = null) {
+        SnackbarController.sendEvent(event = SnackbarEvent(message = message, action = action))
     }
 }

@@ -1,3 +1,3 @@
 package com.team.designsystem.theme
 
-//data class FlipDimens()
+// data class FlipDimens()

@@ -1,6 +1,7 @@
 package com.team.data.network.testdoubles
 
-val displayProfileListResponseTestData = """
+val displayProfileListResponseTestData =
+    """
     {
         "has_next": true,
         "next_cursor": "0000002024030854",
@@ -25,8 +26,10 @@ val displayProfileListResponseTestData = """
     		}
     	]
     }
-""".trimIndent()
-val displayProfileListResponseTestDataEndOfPage = """
+"""
+        .trimIndent()
+val displayProfileListResponseTestDataEndOfPage =
+    """
     {
         "has_next": false,
         "next_cursor": "",
@@ -51,9 +54,11 @@ val displayProfileListResponseTestDataEndOfPage = """
     		}
     	]
     }
-""".trimIndent()
+"""
+        .trimIndent()
 
-val tagListResponseTestData = """
+val tagListResponseTestData =
+    """
     {
       "search_tag": "design",
       "next_cursor": "0000002024030854",
@@ -69,8 +74,10 @@ val tagListResponseTestData = """
         }
       ]
     }
-""".trimIndent()
-val tagListResponseTestDataEndOfPage = """
+"""
+        .trimIndent()
+val tagListResponseTestDataEndOfPage =
+    """
     {
       "search_tag": "design",
       "next_cursor": "",
@@ -86,4 +93,5 @@ val tagListResponseTestDataEndOfPage = """
         }
       ]
     }
-""".trimIndent()
+"""
+        .trimIndent()

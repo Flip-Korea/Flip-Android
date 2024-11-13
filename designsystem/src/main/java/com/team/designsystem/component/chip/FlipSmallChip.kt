@@ -37,45 +37,41 @@ fun FlipSmallChip(
 ) {
 
     Box(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerExtraLarge)
-            .border(
-                width = 1.dp,
-                color = if (lightSolid) FlipTheme.colors.point2 else Color.Transparent,
-                shape = FlipTheme.shapes.roundedCornerExtraLarge
-            )
-            .wrapContentSize()
-            .background(
-                if (lightSolid) {
-                    FlipTheme.colors.point3
-                } else FlipTheme.colors.gray1
-            )
-            .clickableSingle { onClick() }
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerExtraLarge)
+                .border(
+                    width = 1.dp,
+                    color = if (lightSolid) FlipTheme.colors.point2 else Color.Transparent,
+                    shape = FlipTheme.shapes.roundedCornerExtraLarge,
+                )
+                .wrapContentSize()
+                .background(
+                    if (lightSolid) {
+                        FlipTheme.colors.point3
+                    } else FlipTheme.colors.gray1
+                )
+                .clickableSingle { onClick() }
     ) {
         Row(
-            modifier = Modifier
-                .padding(
+            modifier =
+                Modifier.padding(
                     start = 20.dp,
                     end = if (deletable) 12.dp else 20.dp,
                     top = if (deletable) 4.5.dp else 6.dp,
-                    bottom = if (deletable) 4.5.dp else 6.dp
+                    bottom = if (deletable) 4.5.dp else 6.dp,
                 ),
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = text,
-                style = FlipTheme.typography.body5,
-            )
+            Text(text = text, style = FlipTheme.typography.body5)
             if (deletable) {
                 Icon(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(24.dp)
-                        .clickableSingle { onDelete() },
+                    modifier =
+                        Modifier.clip(CircleShape).size(24.dp).clickableSingle { onDelete() },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_delete),
                     contentDescription = stringResource(id = R.string.content_desc_delete),
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
             }
         }
@@ -85,23 +81,17 @@ fun FlipSmallChip(
 @Preview(name = "lightSolid", showBackground = true)
 @Composable
 private fun FlipSmallChipPreview() {
-    FlipAppTheme {
-        FlipSmallChip(text = "Text")
-    }
+    FlipAppTheme { FlipSmallChip(text = "Text") }
 }
 
 @Preview(name = "not lightSolid(tinted)", showBackground = true)
 @Composable
 private fun FlipSmallChip2Preview() {
-    FlipAppTheme {
-        FlipSmallChip(text = "Text", lightSolid = false)
-    }
+    FlipAppTheme { FlipSmallChip(text = "Text", lightSolid = false) }
 }
 
 @Preview(name = "deletable", showBackground = true)
 @Composable
 private fun FlipSmallChip3Preview() {
-    FlipAppTheme {
-        FlipSmallChip(text = "Text", deletable = true, onDelete = {})
-    }
+    FlipAppTheme { FlipSmallChip(text = "Text", deletable = true, onDelete = {}) }
 }

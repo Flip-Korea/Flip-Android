@@ -18,9 +18,4 @@ val categoriesTestData =
         Category(12, "글로벌"),
     )
 
-val myCategoriesTestData =
-    listOf(
-        Category(6, "예술/문화"),
-        Category(7, "디자인"),
-        Category(8, "컴퓨터/IT"),
-    )
+val myCategoriesTestData = listOf(Category(6, "예술/문화"), Category(7, "디자인"), Category(8, "컴퓨터/IT"))

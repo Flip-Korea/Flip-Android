@@ -8,7 +8,7 @@ enum class BackgroundColorTypeResponse {
     YELLOW,
     GREEN,
     BLUE,
-    PURPLE
+    PURPLE,
 }
 
 fun BackgroundColorTypeResponse.toDomainModel(): BackgroundColorType =

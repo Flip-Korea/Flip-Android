@@ -8,8 +8,7 @@ import androidx.compose.ui.unit.dp
  *
  * Each Platform StatusBar Height
  *
- * iOS: 약 42(dp)
- * Android: 약 20(dp)
+ * iOS: 약 42(dp) Android: 약 20(dp)
  *
  * TopBarVertical: ((iOS - Android) / 2) 근사값
  */
@@ -23,15 +22,13 @@ internal object CommonPaddingValues {
     /**
      * TouchTarget이 포함된 요소를 사용하는 TopBar에 적용
      *
-     * horizontal: TopBarHorizontalPadding
-     * vertical: TopBarVerticalPadding
+     * horizontal: TopBarHorizontalPadding vertical: TopBarVerticalPadding
+     *
      * @see TopBarHorizontal
      * @see TopBarVertical
      */
-    val TopBarWithTouchTarget = PaddingValues(
-        horizontal = TopBarHorizontal,
-        vertical = TopBarVertical
-    )
+    val TopBarWithTouchTarget =
+        PaddingValues(horizontal = TopBarHorizontal, vertical = TopBarVertical)
     /**
      * 로고가 포함된 TopBar에 적용
      *
@@ -43,10 +40,6 @@ internal object CommonPaddingValues {
      *
      * bottom: [CommonPaddingValues.TopBarVertical]
      */
-    val TopBarWithLogo = PaddingValues(
-        start = 16.dp,
-        end = 7.dp,
-        top = TopBarVertical,
-        bottom = TopBarVertical
-    )
+    val TopBarWithLogo =
+        PaddingValues(start = 16.dp, end = 7.dp, top = TopBarVertical, bottom = TopBarVertical)
 }

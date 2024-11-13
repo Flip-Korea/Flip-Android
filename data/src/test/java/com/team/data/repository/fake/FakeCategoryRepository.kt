@@ -17,41 +17,34 @@ import kotlinx.coroutines.withContext
 class FakeCategoryRepository(
     private val categoryDao: CategoryDao,
     private val categoryNetworkDataSource: CategoryNetworkDataSource,
-): CategoryRepository {
+) : CategoryRepository {
 
     private val ioDispatcher = Dispatchers.IO
 
     override fun getCategoriesFromLocal(): Flow<List<Category>> =
-        categoryDao.getCategories()
-            .map { it.toDomainModel() }
-            .flowOn(ioDispatcher)
+        categoryDao.getCategories().map { it.toDomainModel() }.flowOn(ioDispatcher)
 
     override suspend fun refreshCategories(): Result<Boolean, ErrorType> {
 
-        val result = withContext(ioDispatcher) {
-            categoryNetworkDataSource.getCategories()
-        }
+        val result = withContext(ioDispatcher) { categoryNetworkDataSource.getCategories() }
 
         return when (result) {
             is Result.Success -> {
-                val categoryEntities = withContext(ioDispatcher) {
-                    result.data.map { it.toEntity() }
-                }
+                val categoryEntities =
+                    withContext(ioDispatcher) { result.data.map { it.toEntity() } }
 
-                withContext(ioDispatcher) {
-                    categoryDao.upsertCategories(categoryEntities)
-                }
+                withContext(ioDispatcher) { categoryDao.upsertCategories(categoryEntities) }
 
-                withContext(ioDispatcher) {
-                    categoryEntities.toDomainModel()
-                }
+                withContext(ioDispatcher) { categoryEntities.toDomainModel() }
 
                 Result.Success(true)
             }
             is Result.Error -> {
                 Result.Error(errorBody = result.errorBody, error = result.error)
             }
-            Result.Loading -> { Result.Loading }
+            Result.Loading -> {
+                Result.Loading
+            }
         }
     }
 }

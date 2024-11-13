@@ -28,44 +28,36 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 @Composable
-fun FlipOutlinedSmallChip(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit = {},
-) {
+fun FlipOutlinedSmallChip(modifier: Modifier = Modifier, text: String, onClick: () -> Unit = {}) {
 
     val clickableSingle = remember { ClickableSingle.get() }
 
     Box(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerExtraLarge)
-            .border(
-                width = 1.dp,
-                color = FlipTheme.colors.gray4,
-                shape = FlipTheme.shapes.roundedCornerExtraLarge
-            )
-            .wrapContentSize()
-            .background(FlipTheme.colors.white)
-            .clickableSingle { clickableSingle.onEvent(onClick) }
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerExtraLarge)
+                .border(
+                    width = 1.dp,
+                    color = FlipTheme.colors.gray4,
+                    shape = FlipTheme.shapes.roundedCornerExtraLarge,
+                )
+                .wrapContentSize()
+                .background(FlipTheme.colors.white)
+                .clickableSingle { clickableSingle.onEvent(onClick) }
     ) {
         Row(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(start = 20.dp, end = 12.dp, top = 4.5.dp, bottom = 4.5.dp),
+            modifier =
+                Modifier.align(Alignment.Center)
+                    .padding(start = 20.dp, end = 12.dp, top = 4.5.dp, bottom = 4.5.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = text,
-                style = FlipTheme.typography.body5,
-                color = FlipTheme.colors.gray7
-            )
+            Text(text = text, style = FlipTheme.typography.body5, color = FlipTheme.colors.gray7)
             Icon(
-                modifier = Modifier
-                    .size(24.dp),
+                modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_delete),
                 contentDescription = stringResource(id = R.string.content_desc_delete),
-                tint = FlipTheme.colors.gray7
+                tint = FlipTheme.colors.gray7,
             )
         }
     }
@@ -74,10 +66,5 @@ fun FlipOutlinedSmallChip(
 @Preview(showBackground = true)
 @Composable
 private fun FlipOutlinedSmallChipPreview() {
-    FlipAppTheme {
-        FlipOutlinedSmallChip(
-            text = "Text",
-            onClick = {},
-        )
-    }
+    FlipAppTheme { FlipOutlinedSmallChip(text = "Text", onClick = {}) }
 }

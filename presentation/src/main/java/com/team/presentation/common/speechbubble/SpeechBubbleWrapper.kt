@@ -87,17 +87,14 @@ fun SpeechBubbleWrapper(
         content()
     } else {
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        onDismissRequest()
-                    }
+            modifier =
+                modifier.fillMaxSize().pointerInput(Unit) {
+                    detectTapGestures { onDismissRequest() }
                 }
         ) {
             Box(
-                modifier = modifier
-                    .onSizeChanged {
+                modifier =
+                    modifier.onSizeChanged {
                         width = it.width
                         height = it.height
                     }
@@ -107,40 +104,44 @@ fun SpeechBubbleWrapper(
                 if (showedForPopup) {
                     CustomPopup(
                         showed = showed,
-                        onDismissRequest = { },
-                        popupPositionProvider = object : PopupPositionProvider {
-                            override fun calculatePosition(
-                                anchorBounds: IntRect,
-                                windowSize: IntSize,
-                                layoutDirection: LayoutDirection,
-                                popupContentSize: IntSize,
-                            ): IntOffset {
-                                /** 내부 에서 직접 요소의 경계 선을 찾고 싶을 때 사용 */
-//                            return IntOffset(
-//                                x = anchorBounds.left,
-//                                y = anchorBounds.bottom
-//                            )
-                                return IntOffset(
-                                    x = tipStartOffset.x,
-                                    y = tipStartOffset.y
-                                )
-                            }
-                        },
-                        //TODO 애니메이션 디자인시스템에 넣기
-                        enter = fadeIn(
-                            animationSpec = tween(durationMillis = 300, easing = EaseOutCubic)
-                        ) + scaleIn(
-                            initialScale = 0.3f,
-                            transformOrigin = TransformOrigin(pivotFractionX, 0f),
-                            animationSpec = tween(durationMillis = 300, easing = EaseOutBack)
-                        ),
-                        exit = fadeOut(
-                            animationSpec = tween(durationMillis = 300, easing = EaseInOutCubic)
-                        ) + scaleOut(
-                            targetScale = 0.3f,
-                            transformOrigin = TransformOrigin(pivotFractionX, 0f),
-                            animationSpec = tween(durationMillis = 300, easing = EaseInOutBack)
-                        )
+                        onDismissRequest = {},
+                        popupPositionProvider =
+                            object : PopupPositionProvider {
+                                override fun calculatePosition(
+                                    anchorBounds: IntRect,
+                                    windowSize: IntSize,
+                                    layoutDirection: LayoutDirection,
+                                    popupContentSize: IntSize,
+                                ): IntOffset {
+                                    /** 내부 에서 직접 요소의 경계 선을 찾고 싶을 때 사용 */
+                                    //                            return IntOffset(
+                                    //                                x = anchorBounds.left,
+                                    //                                y = anchorBounds.bottom
+                                    //                            )
+                                    return IntOffset(x = tipStartOffset.x, y = tipStartOffset.y)
+                                }
+                            },
+                        // TODO 애니메이션 디자인시스템에 넣기
+                        enter =
+                            fadeIn(
+                                animationSpec = tween(durationMillis = 300, easing = EaseOutCubic)
+                            ) +
+                                scaleIn(
+                                    initialScale = 0.3f,
+                                    transformOrigin = TransformOrigin(pivotFractionX, 0f),
+                                    animationSpec =
+                                        tween(durationMillis = 300, easing = EaseOutBack),
+                                ),
+                        exit =
+                            fadeOut(
+                                animationSpec = tween(durationMillis = 300, easing = EaseInOutCubic)
+                            ) +
+                                scaleOut(
+                                    targetScale = 0.3f,
+                                    transformOrigin = TransformOrigin(pivotFractionX, 0f),
+                                    animationSpec =
+                                        tween(durationMillis = 300, easing = EaseInOutBack),
+                                ),
                     ) {
                         speechBubbleView(Modifier.zIndex(1f))
                     }
@@ -148,7 +149,6 @@ fun SpeechBubbleWrapper(
             }
         }
     }
-
 }
 
 @Composable
@@ -160,23 +160,23 @@ private fun CustomPopup(
     focusable: Boolean = false,
     enter: EnterTransition = fadeIn(),
     exit: ExitTransition = fadeOut(),
-    content: @Composable AnimatedVisibilityScope.() -> Unit
+    content: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     val expandedState = remember { MutableTransitionState(false) }
     expandedState.targetState = showed
 
-    if(expandedState.currentState || expandedState.targetState || !expandedState.isIdle) {
+    if (expandedState.currentState || expandedState.targetState || !expandedState.isIdle) {
         Popup(
             popupPositionProvider = popupPositionProvider,
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(focusable = focusable)
+            properties = PopupProperties(focusable = focusable),
         ) {
             AnimatedVisibility(
                 visibleState = expandedState,
                 enter = enter,
                 exit = exit,
                 modifier = modifier,
-                content = content
+                content = content,
             )
         }
     }
@@ -196,40 +196,29 @@ private fun SpeechBubbleWrapperPreview() {
         enabled = true,
         showed = speechBubbleEnabled,
         tipStartOffset = tipStartOffset,
-        onDismissRequest = { },
+        onDismissRequest = {},
         speechBubbleView = {
             SpeechBubbleView(
                 modifier = it,
                 containerColor = Color.LightGray.copy(0.8f),
                 text = "말풍선 테스트! 말풍선 테스트! 말풍선 테스트!",
-                tipStartOffset = tipStartOffset.x.dp
+                tipStartOffset = tipStartOffset.x.dp,
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .background(Color.Green)
-                    .clickable { speechBubbleEnabled = !speechBubbleEnabled }
+                modifier =
+                    Modifier.clip(CircleShape).size(50.dp).background(Color.Green).clickable {
+                        speechBubbleEnabled = !speechBubbleEnabled
+                    }
             )
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .background(Color.LightGray)
-            )
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(50.dp)
-                    .background(Color.Green)
-            )
+            Box(modifier = Modifier.clip(CircleShape).size(50.dp).background(Color.LightGray))
+            Box(modifier = Modifier.clip(CircleShape).size(50.dp).background(Color.Green))
         }
     }
 }

@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.theme.FlipTheme
 
-//@MustBeDocumented
-//@Retention(AnnotationRetention.SOURCE)
-//@Target(
+// @MustBeDocumented
+// @Retention(AnnotationRetention.SOURCE)
+// @Target(
 //    AnnotationTarget.VALUE_PARAMETER,
 //    AnnotationTarget.TYPE,
-//)
-//annotation class RequiredModifier
+// )
+// annotation class RequiredModifier
 
 /**
  * Flip ModalBottomSheet
@@ -33,7 +33,7 @@ fun FlipModalBottomSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
-    content: @Composable (Modifier) -> Unit
+    content: @Composable (Modifier) -> Unit,
 ) {
 
     ModalBottomSheet(

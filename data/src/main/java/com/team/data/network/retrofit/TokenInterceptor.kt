@@ -3,16 +3,15 @@ package com.team.data.network.retrofit
 import android.util.Log
 import com.team.domain.DataStoreManager
 import com.team.domain.type.DataStoreType
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import javax.inject.Inject
 
-class TokenInterceptor @Inject constructor(
-    private val dataStoreManager: DataStoreManager
-): Interceptor {
+class TokenInterceptor @Inject constructor(private val dataStoreManager: DataStoreManager) :
+    Interceptor {
 
     private val tag = this.javaClass.simpleName
 
@@ -21,11 +20,13 @@ class TokenInterceptor @Inject constructor(
         Log.d(tag, "Interceptor Triggered!")
 
         // get accessToken & just continue request when accessToken is null
-        val accessToken = runBlocking {
-            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN)
-                .catch { emit("") }
-                .first()
-        } ?: return chain.proceed(chain.request())
+        val accessToken =
+            runBlocking {
+                dataStoreManager
+                    .getStringData(DataStoreType.TokenType.ACCESS_TOKEN)
+                    .catch { emit("") }
+                    .first()
+            } ?: return chain.proceed(chain.request())
 
         // accessToken is not null
         val requestBuilder = chain.request().newBuilder()
@@ -40,17 +41,29 @@ class TokenInterceptor @Inject constructor(
         Log.d(tag, "Interceptor Triggered! (Proceed Response (after)")
 
         if (response.isSuccessful) {
-            when(response.code) {
-                200 -> { Log.d(tag, "Interceptor Code: 200 OK") }
-                201 -> { Log.d(tag, "Interceptor Code: 201 Created") }
-                else -> { Log.d(tag, "Interceptor Code: Anything Success") }
+            when (response.code) {
+                200 -> {
+                    Log.d(tag, "Interceptor Code: 200 OK")
+                }
+                201 -> {
+                    Log.d(tag, "Interceptor Code: 201 Created")
+                }
+                else -> {
+                    Log.d(tag, "Interceptor Code: Anything Success")
+                }
             }
         } else {
             // Failure (Ex. 4xx, 5xx)
-            when(response.code) {
-                401 -> { Log.d(tag, "Interceptor Code: 401 UnAuthorized") } // pass
-                404 -> { Log.d(tag, "Interceptor Code: 404 Not Found") }
-                else -> { Log.d(tag, "Interceptor Code: Unexpected") }
+            when (response.code) {
+                401 -> {
+                    Log.d(tag, "Interceptor Code: 401 UnAuthorized")
+                } // pass
+                404 -> {
+                    Log.d(tag, "Interceptor Code: 404 Not Found")
+                }
+                else -> {
+                    Log.d(tag, "Interceptor Code: Unexpected")
+                }
             }
             Log.d(tag, "request: ${response.request}\n" + "message: ${response.message}")
         }

@@ -13,13 +13,15 @@ import com.team.data.network.model.response.category.toDomainModel
 import com.team.data.network.retrofit.api.CategoryNetworkApi
 import com.team.data.network.source.CategoryNetworkDataSource
 import com.team.data.network.source.fake.FakeCategoryNetworkDataSource
-import com.team.data.repository.fake.FakeCategoryRepository
 import com.team.data.network.testdoubles.categoryEntitiesTestData
 import com.team.data.network.testdoubles.networkCategoriesTestData
+import com.team.data.repository.fake.FakeCategoryRepository
 import com.team.domain.repository.CategoryRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -36,9 +38,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import javax.inject.Inject
-import javax.inject.Named
-
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -50,11 +49,9 @@ import javax.inject.Named
 )
 class DefaultCategoryRepositoryTest {
 
-    @get:Rule(order = 1)
-    var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var categoryNetworkDataSource: CategoryNetworkDataSource
     private lateinit var categoryRepository: CategoryRepository
@@ -63,9 +60,7 @@ class DefaultCategoryRepositoryTest {
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
 
-    @Inject
-    @Named("test_db")
-    lateinit var database: FlipDatabase
+    @Inject @Named("test_db") lateinit var database: FlipDatabase
     private lateinit var categoryDao: CategoryDao
 
     @Before
@@ -75,15 +70,14 @@ class DefaultCategoryRepositoryTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        categoryNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(CategoryNetworkApi::class.java)
+        categoryNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(CategoryNetworkApi::class.java)
 
         categoryDao = database.categoryDao()
 
@@ -105,7 +99,7 @@ class DefaultCategoryRepositoryTest {
 
         assertEquals(
             categoryRepository.getCategoriesFromLocal().first().size,
-            categoryEntitiesTestData.size
+            categoryEntitiesTestData.size,
         )
     }
 
@@ -113,16 +107,16 @@ class DefaultCategoryRepositoryTest {
     fun `Network API 에서 모든 카테고리 가져오기 (getCategoriesFromNetwork())`() = runTest {
         categoryDao.clearAll()
 
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(networkCategoriesTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(networkCategoriesTestData)
+            }
+        )
 
         val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
         val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
-        val categories = adapter
-                .fromJson(networkCategoriesTestData)
-                ?.map { it.toDomainModel() }
+        val categories = adapter.fromJson(networkCategoriesTestData)?.map { it.toDomainModel() }
 
         categoryRepository.refreshCategories()
 

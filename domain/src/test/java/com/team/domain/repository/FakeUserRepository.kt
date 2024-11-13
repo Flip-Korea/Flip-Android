@@ -38,7 +38,7 @@ class FakeUserRepository(
                     0,
                     0,
                     myCategoriesTestData.map { c -> c.id },
-                    ""
+                    "",
                 )
             }
         }
@@ -65,7 +65,7 @@ class FakeUserRepository(
                     0,
                     0,
                     myCategoriesTestData.map { c -> c.id },
-                    ""
+                    "",
                 )
             }
         }
@@ -75,9 +75,7 @@ class FakeUserRepository(
         return emptyFlow()
     }
 
-    override fun updateMyCategories(
-        categoryIds: List<Int>,
-    ): Flow<Result<Boolean, ErrorType>> {
+    override fun updateMyCategories(categoryIds: List<Int>): Flow<Result<Boolean, ErrorType>> {
         return emptyFlow()
     }
 

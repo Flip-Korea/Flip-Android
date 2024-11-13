@@ -11,5 +11,4 @@ data class CommentRequest(
     @Json(name = "comment") val comment: String,
 )
 
-fun NewComment.toNetwork(): CommentRequest =
-    CommentRequest(profileId, postId, comment)
+fun NewComment.toNetwork(): CommentRequest = CommentRequest(profileId, postId, comment)

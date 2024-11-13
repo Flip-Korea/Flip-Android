@@ -7,5 +7,5 @@ class FlipPagingException(
     val errorType: ErrorType,
     val errorBody: ErrorBody?,
     message: String = "",
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : Exception(message, cause)

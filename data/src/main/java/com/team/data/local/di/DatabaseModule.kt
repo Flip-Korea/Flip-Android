@@ -22,27 +22,17 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideMoshi(): Moshi =
-        Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+    fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     @Singleton
     @Provides
-    fun provideFlipDatabase(
-        @ApplicationContext context: Context,
-        moshi: Moshi
-    ): FlipDatabase {
+    fun provideFlipDatabase(@ApplicationContext context: Context, moshi: Moshi): FlipDatabase {
 
         val listTypeConverter = ListTypeConverter(moshi)
 
-        return Room.databaseBuilder(
-            context,
-            FlipDatabase::class.java,
-            "flip_database.db"
-        )
+        return Room.databaseBuilder(context, FlipDatabase::class.java, "flip_database.db")
             .addTypeConverter(listTypeConverter)
-            .fallbackToDestructiveMigration() //TODO: 출시 후에는 제거할 것
+            .fallbackToDestructiveMigration() // TODO: 출시 후에는 제거할 것
             .build()
     }
 
@@ -56,5 +46,6 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideRecentSearchDao(flipDatabase: FlipDatabase): RecentSearchDao = flipDatabase.recentSearchDao()
+    fun provideRecentSearchDao(flipDatabase: FlipDatabase): RecentSearchDao =
+        flipDatabase.recentSearchDao()
 }

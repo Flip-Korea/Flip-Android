@@ -7,12 +7,8 @@ import com.team.domain.util.ErrorBody
 data class ErrorResponse(
     val code: String,
     val errors: List<ErrorContentResponse>?,
-    val message: String
+    val message: String,
 )
 
 fun ErrorResponse.toDomainModel(): ErrorBody =
-    ErrorBody(
-        code,
-        errors?.map { it.toDomainModel() },
-        message
-    )
+    ErrorBody(code, errors?.map { it.toDomainModel() }, message)

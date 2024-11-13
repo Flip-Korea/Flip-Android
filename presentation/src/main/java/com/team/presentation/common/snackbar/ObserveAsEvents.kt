@@ -18,19 +18,14 @@ import kotlinx.coroutines.withContext
  * @param onEvent 이벤트 처리
  *
  * ### 사용 예시
- *     ObserveAsEvents(
- *         flow = SnackbarController.events,
- *         key1 = snackbarHostState
- *     ) { event ->
- *         scope.launch {
- *             snackbarHostState.currentSnackbarData?.dismiss()
+ * ObserveAsEvents( flow = SnackbarController.events, key1 = snackbarHostState ) { event ->
+ * scope.launch { snackbarHostState.currentSnackbarData?.dismiss()
  *
  *             val result = snackbarHostState.showSnackbar(
  *                 message = event.message,
  *                 actionLabel = event.action?.name,
  *                 duration = SnackbarDuration.Short
  *             )
- *
  *             if (result == SnackbarResult.ActionPerformed) {
  *                 event.action?.action?.invoke()
  *             }
@@ -38,19 +33,12 @@ import kotlinx.coroutines.withContext
  *     }
  */
 @Composable
-fun <T> ObserveAsEvents(
-    flow: Flow<T>,
-    key1: Any? = null,
-    key2: Any? = null,
-    onEvent: (T) -> Unit
-) {
+fun <T> ObserveAsEvents(flow: Flow<T>, key1: Any? = null, key2: Any? = null, onEvent: (T) -> Unit) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner.lifecycle, key1, key2, flow) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                flow.collect(onEvent)
-            }
+            withContext(Dispatchers.Main.immediate) { flow.collect(onEvent) }
         }
     }
 }

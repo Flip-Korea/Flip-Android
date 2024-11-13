@@ -14,6 +14,7 @@ class ValidatePostUseCase {
      * 각 조건의 상황은 [ValidationErrorType] 에서 확인
      *
      * //TODO 비속어, 부적절한 언어 필터링 필요
+     *
      * @see ValidationErrorType
      * @see LETTER_HIDDEN_LIMIT
      */

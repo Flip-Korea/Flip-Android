@@ -3,11 +3,13 @@ package com.team.domain.usecase.interestcategory
 import com.team.domain.model.category.Category
 import com.team.domain.model.category.fixedCategories
 import com.team.domain.usecase.category.GetCategoriesUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import javax.inject.Inject
 
-class GetFilteredMyCategoriesUseCase @Inject constructor(
+class GetFilteredMyCategoriesUseCase
+@Inject
+constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getMyCategoriesUseCase: GetMyCategoriesUseCase,
 ) {
@@ -22,9 +24,7 @@ class GetFilteredMyCategoriesUseCase @Inject constructor(
     operator fun invoke(): Flow<List<Category>> =
         combine(getCategoriesUseCase(), getMyCategoriesUseCase()) { categories, myCategoryIds ->
             myCategoryIds?.let { myCateIds ->
-                fixedCategories + myCateIds.mapNotNull { id ->
-                    categories.find { it.id == id }
-                }
+                fixedCategories + myCateIds.mapNotNull { id -> categories.find { it.id == id } }
             } ?: fixedCategories
         }
 }

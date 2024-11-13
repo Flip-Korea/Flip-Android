@@ -4,40 +4,20 @@ import com.team.presentation.util.uitext.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
-data class SnackbarEvent(
-    val message: UiText,
-    val action: SnackbarAction? = null
-)
+data class SnackbarEvent(val message: UiText, val action: SnackbarAction? = null)
 
-data class SnackbarAction(
-    val name: String,
-    val action: suspend () -> Unit
-)
+data class SnackbarAction(val name: String, val action: suspend () -> Unit)
 
 /**
  * Flip Snackbar Controller
  *
  * ### 사용 예시
- *     fun showSnackbar() {
- *         viewModelScope.launch {
- *             SnackbarController.sendEvent(
- *                 event = SnackbarEvent(
- *                     message = "Event Message",
- *                     action = SnackbarAction(
- *                         name = "Click me!",
- *                         action = {
- *                             SnackbarController.sendEvent(
- *                                 event = SnackbarEvent("Action Pressed!")
- *                             )
- *                         }
- *                     )
- *                 )
- *             )
- *         }
- *     }
+ * fun showSnackbar() { viewModelScope.launch { SnackbarController.sendEvent( event = SnackbarEvent(
+ * message = "Event Message", action = SnackbarAction( name = "Click me!", action = {
+ * SnackbarController.sendEvent( event = SnackbarEvent("Action Pressed!") ) } ) ) ) } }
  *
- *  @see SnackbarEvent
- *  @see SnackbarAction
+ * @see SnackbarEvent
+ * @see SnackbarAction
  */
 object SnackbarController {
 

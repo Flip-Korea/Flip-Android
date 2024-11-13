@@ -14,9 +14,8 @@ import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakePostNetworkDataSource(
-    private val postNetworkApi: PostNetworkApi,
-) : PostNetworkDataSource {
+class FakePostNetworkDataSource(private val postNetworkApi: PostNetworkApi) :
+    PostNetworkDataSource {
 
     override suspend fun getPosts(
         cursor: String?,
@@ -177,7 +176,7 @@ class FakePostNetworkDataSource(
 
     override suspend fun editTemporaryPost(
         tempPostId: Long,
-        postRequest: PostRequest
+        postRequest: PostRequest,
     ): Result<Boolean, ErrorType> {
         val result = postNetworkApi.editTemporaryPost(tempPostId, postRequest)
         return if (result.isSuccessful) {

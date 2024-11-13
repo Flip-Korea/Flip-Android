@@ -36,15 +36,14 @@ class UserNetworkApiTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        userNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(UserNetworkApi::class.java)
+        userNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(UserNetworkApi::class.java)
     }
 
     @After
@@ -54,11 +53,12 @@ class UserNetworkApiTest {
 
     @Test
     fun `getProfile Call Test`() = runTest {
-
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(networkProfileTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(networkProfileTestData)
+            }
+        )
 
         val adapter = moshi.adapter(ProfileResponse::class.java)
         val mockResponseToObject = adapter.fromJson(networkProfileTestData)
@@ -72,26 +72,25 @@ class UserNetworkApiTest {
 
     @Test
     fun `selectMyCategory Call Test`() = runTest {
-
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(201) })
 
         val response =
             userNetworkApi.selectMyCategory(
                 profileId = "honggd",
-                category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3))
+                category = com.team.data.network.model.request.CategoryRequest(listOf(1, 2, 3)),
             )
 
         val recordedRequest = server.takeRequest()
 
         val adapter = moshi.adapter(com.team.data.network.model.request.CategoryRequest::class.java)
         val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
-        val requestBody = """
+        val requestBody =
+            """
             {
                 "categoryIds": [1,2,3]
             }
-        """.trimIndent()
+        """
+                .trimIndent()
         val expectedRequestBody = adapter.fromJson(requestBody)
 
         assertNotNull(response.body())
@@ -101,17 +100,18 @@ class UserNetworkApiTest {
 
     @Test
     fun `API-030 (스크랩 추가)`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(201)
-            setBody(resultIdResponseTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(201)
+                setBody(resultIdResponseTestData)
+            }
+        )
 
         val requestAdapter = moshi.adapter(ScrapRequest::class.java)
         val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
 
-        val actualResponse = userNetworkApi.addScrap(
-            requestAdapter.fromJson(addScrapRequestTestData)!!
-        )
+        val actualResponse =
+            userNetworkApi.addScrap(requestAdapter.fromJson(addScrapRequestTestData)!!)
         val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
 
         Assert.assertNotNull(actualResponse)
@@ -121,9 +121,7 @@ class UserNetworkApiTest {
 
     @Test
     fun `API-031 (스크랩 삭제)`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-        })
+        server.enqueue(MockResponse().apply { setResponseCode(200) })
 
         val actualResponse = userNetworkApi.deleteScrap(1)
 

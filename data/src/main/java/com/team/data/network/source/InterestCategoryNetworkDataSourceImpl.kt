@@ -10,11 +10,16 @@ import com.team.domain.util.Result
 
 class InterestCategoryNetworkDataSourceImpl(
     private val interestCategoryNetworkApi: InterestCategoryNetworkApi
-): InterestCategoryNetworkDataSource {
+) : InterestCategoryNetworkDataSource {
 
     override suspend fun getMyCategories(): Result<List<CategoryResponse>, ErrorType> =
-        networkCall { interestCategoryNetworkApi.getMyCategories() }
+        networkCall {
+            interestCategoryNetworkApi.getMyCategories()
+        }
 
-    override suspend fun updateMyCategories(categoryIds: CategoryRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { interestCategoryNetworkApi.updateMyCategories(categoryIds) }
+    override suspend fun updateMyCategories(
+        categoryIds: CategoryRequest
+    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
+        interestCategoryNetworkApi.updateMyCategories(categoryIds)
+    }
 }

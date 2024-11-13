@@ -22,9 +22,8 @@ import com.team.data.network.retrofit.api.UserNetworkApi
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class UserNetworkDataSourceImpl(
-    private val userNetworkApi: UserNetworkApi,
-) : UserNetworkDataSource {
+class UserNetworkDataSourceImpl(private val userNetworkApi: UserNetworkApi) :
+    UserNetworkDataSource {
 
     override suspend fun getProfile(profileId: String): Result<ProfileResponse, ErrorType> =
         networkCall {
@@ -55,16 +54,24 @@ class UserNetworkDataSourceImpl(
     }
 
     override suspend fun addScrap(scrapRequest: ScrapRequest): Result<ResultIdResponse, ErrorType> =
-        networkCall { userNetworkApi.addScrap(scrapRequest) }
+        networkCall {
+            userNetworkApi.addScrap(scrapRequest)
+        }
 
     override suspend fun deleteScrap(scrapId: Long): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.deleteScrap(scrapId) }
+        networkCallWithoutResponse {
+            userNetworkApi.deleteScrap(scrapId)
+        }
 
     override suspend fun reportAccount(reportRequest: ReportRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.reportAccount(reportRequest)}
+        networkCallWithoutResponse {
+            userNetworkApi.reportAccount(reportRequest)
+        }
 
     override suspend fun blockAccount(blockRequest: BlockRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.blockAccount(blockRequest) }
+        networkCallWithoutResponse {
+            userNetworkApi.blockAccount(blockRequest)
+        }
 
     override suspend fun unblockAccount(
         profileId: String,
@@ -75,47 +82,61 @@ class UserNetworkDataSourceImpl(
 
     override suspend fun editMyProfile(
         profileId: String,
-        editProfileRequest: EditProfileRequest
-    ): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.editMyProfile(profileId, editProfileRequest) }
+        editProfileRequest: EditProfileRequest,
+    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
+        userNetworkApi.editMyProfile(profileId, editProfileRequest)
+    }
 
     override suspend fun follow(followRequest: FollowRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.follow(followRequest) }
+        networkCallWithoutResponse {
+            userNetworkApi.follow(followRequest)
+        }
 
     override suspend fun unfollow(followRequest: FollowRequest): Result<Boolean, ErrorType> =
-        networkCallWithoutResponse { userNetworkApi.unfollow(followRequest) }
+        networkCallWithoutResponse {
+            userNetworkApi.unfollow(followRequest)
+        }
 
     override suspend fun getFollowerList(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Result<FollowerListResponse, ErrorType> =
-        networkCall { userNetworkApi.getFollowerList(profileId, cursor, limit)}
+    ): Result<FollowerListResponse, ErrorType> = networkCall {
+        userNetworkApi.getFollowerList(profileId, cursor, limit)
+    }
 
     override suspend fun getFollowingList(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Result<FollowingListResponse, ErrorType> =
-        networkCall { userNetworkApi.getFollowingList(profileId, cursor, limit) }
+    ): Result<FollowingListResponse, ErrorType> = networkCall {
+        userNetworkApi.getFollowingList(profileId, cursor, limit)
+    }
 
     override suspend fun getBlockList(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Result<BlockListResponse, ErrorType> =
-        networkCall { userNetworkApi.getBlockList(profileId, cursor, limit) }
+    ): Result<BlockListResponse, ErrorType> = networkCall {
+        userNetworkApi.getBlockList(profileId, cursor, limit)
+    }
 
     override suspend fun getMyCommentList(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Result<MyCommentListResponse, ErrorType> =
-        networkCall { userNetworkApi.getMyCommentList(profileId, cursor, limit) }
+    ): Result<MyCommentListResponse, ErrorType> = networkCall {
+        userNetworkApi.getMyCommentList(profileId, cursor, limit)
+    }
 
-    override suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType> =
-        networkCall { userNetworkApi.getMyCategories(profileId) }
+    override suspend fun getMyCategories(
+        profileId: String
+    ): Result<List<CategoryResponse>, ErrorType> = networkCall {
+        userNetworkApi.getMyCategories(profileId)
+    }
 
     override suspend fun getMyProfile(profileId: String): Result<MyProfileResponse, ErrorType> =
-        networkCall { userNetworkApi.getMyProfile(profileId) }
+        networkCall {
+            userNetworkApi.getMyProfile(profileId)
+        }
 }

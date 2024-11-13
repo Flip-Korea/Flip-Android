@@ -4,12 +4,10 @@ import com.team.domain.model.category.Category
 import com.team.domain.repository.UserRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class UpdateMyCategoriesUseCase @Inject constructor(
-    private val userRepository: UserRepository
-) {
+class UpdateMyCategoriesUseCase @Inject constructor(private val userRepository: UserRepository) {
 
     /**
      * 나의 관심 카테고리 수정

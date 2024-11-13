@@ -8,16 +8,12 @@ import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
 import com.team.presentation.register.view.RegisterScreen
 
-fun NavGraphBuilder.registerNavigation(
-    navController: NavHostController,
-) {
+fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
 
     navigation(
         route = NavigationItem.REGISTER_NAV.name,
-        startDestination = ScreenItem.REGISTER.name
+        startDestination = ScreenItem.REGISTER.name,
     ) {
-        composable(ScreenItem.REGISTER.name) {
-            RegisterScreen()
-        }
+        composable(ScreenItem.REGISTER.name) { RegisterScreen() }
     }
 }

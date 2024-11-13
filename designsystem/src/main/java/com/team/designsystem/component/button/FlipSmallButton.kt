@@ -40,13 +40,14 @@ fun FlipSmallButton(
     Button(
         onClick = { if (!isLoading) clickableSingle.onEvent(onClick) },
         modifier = modifier.height(48.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (solid) FlipTheme.colors.main else FlipTheme.colors.gray2,
-            contentColor = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray7
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = if (solid) FlipTheme.colors.main else FlipTheme.colors.gray2,
+                contentColor = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray7,
+            ),
         enabled = enabled,
         shape = FlipTheme.shapes.roundedCornerSmall,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -58,9 +59,10 @@ fun FlipSmallButton(
             Text(
                 text = text,
                 style = FlipTheme.typography.headline3,
-                color = if (solid) {
-                    FlipTheme.colors.white
-                } else FlipTheme.colors.gray7
+                color =
+                    if (solid) {
+                        FlipTheme.colors.white
+                    } else FlipTheme.colors.gray7,
             )
         }
     }
@@ -72,19 +74,19 @@ private fun FlipSmallButtonPreview() {
     FlipAppTheme {
         Row(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = "sample",
                 solid = true,
-                onClick = {}
+                onClick = {},
             )
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = "sample",
                 solid = false,
-                onClick = {}
+                onClick = {},
             )
         }
     }
@@ -111,21 +113,21 @@ private fun FlipSmallButton2Preview() {
     FlipAppTheme {
         Row(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = "sample",
                 solid = true,
                 isLoading = isClick,
-                onClick = { isClick = !isClick }
+                onClick = { isClick = !isClick },
             )
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = "sample",
                 solid = false,
                 isLoading = isClick2,
-                onClick = { isClick2 = !isClick2 }
+                onClick = { isClick2 = !isClick2 },
             )
         }
     }

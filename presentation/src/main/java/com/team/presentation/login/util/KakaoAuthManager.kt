@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 
 /**
  * 'SignIn(Login) with Kakao' Manager Class
+ *
  * @param context context of declaration location (ex. applicationContext)
  */
 class KakaoAuthManager(private val context: Context) : AuthManager {
@@ -55,14 +56,11 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
             login(context)
         }
 
-        awaitClose {
-            Log.d(tag, "Login With Kakao Finished(maybe success or failure")
-        }
+        awaitClose { Log.d(tag, "Login With Kakao Finished(maybe success or failure") }
     }
 
     override suspend fun signOut() {
-        UserApiClient.instance.logout { e ->
-        }
+        UserApiClient.instance.logout { e -> }
     }
 
     override suspend fun deleteAccount(): Flow<AuthUiState> = callbackFlow {
@@ -77,7 +75,7 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         }
         close()
 
-        awaitClose {  }
+        awaitClose {}
     }
 
     private fun ProducerScope<AuthUiState>.login(context: Context) {
@@ -90,11 +88,10 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         }
     }
 
-    /** Login With KakaoTalk
-     *
+    /**
+     * Login With KakaoTalk
      * 1. error != null: error occurred
-     * 2. token != null: Login Success
-     * When KakaoTalk Login Failed, login with KakaoAccount
+     * 2. token != null: Login Success When KakaoTalk Login Failed, login with KakaoAccount
      */
     private fun ProducerScope<AuthUiState>.loginWithKakaoTalk(context: Context) =
         UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->

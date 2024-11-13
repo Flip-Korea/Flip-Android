@@ -40,15 +40,14 @@ class CategoryNetworkDataSourceTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        categoryNetworkApi = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(server.url("/"))
-            .build()
-            .create(CategoryNetworkApi::class.java)
+        categoryNetworkApi =
+            Retrofit.Builder()
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .baseUrl(server.url("/"))
+                .build()
+                .create(CategoryNetworkApi::class.java)
 
         categoryNetworkDataSource = FakeCategoryNetworkDataSource(categoryNetworkApi)
     }
@@ -60,18 +59,26 @@ class CategoryNetworkDataSourceTest {
 
     private suspend fun <T> getResult(response: Flow<Result<T, ErrorType>>): T? {
         return when (val result = response.first()) {
-            is Result.Error -> { null }
-            Result.Loading -> { null }
-            is Result.Success -> { result.data }
+            is Result.Error -> {
+                null
+            }
+            Result.Loading -> {
+                null
+            }
+            is Result.Success -> {
+                result.data
+            }
         }
     }
 
     @Test
     fun `getCategories Call Test`() = runTest {
-        server.enqueue(MockResponse().apply {
-            setResponseCode(200)
-            setBody(networkCategoriesTestData)
-        })
+        server.enqueue(
+            MockResponse().apply {
+                setResponseCode(200)
+                setBody(networkCategoriesTestData)
+            }
+        )
 
         val actualResponse = categoryNetworkDataSource.getCategories()
 
@@ -80,9 +87,6 @@ class CategoryNetworkDataSourceTest {
         val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
         assertNotNull(actualResponse)
-        assertEquals(
-            expectedResponse!!,
-            (actualResponse as Result.Success).data
-        )
+        assertEquals(expectedResponse!!, (actualResponse as Result.Success).data)
     }
 }

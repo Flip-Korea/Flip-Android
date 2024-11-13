@@ -18,8 +18,17 @@ data class TempPostResponse(
     val postAt: String,
 )
 
-fun List<TempPostResponse>.toDomainModel(): List<TempPost> =
-    this.map { it.toDomainModel() }
+fun List<TempPostResponse>.toDomainModel(): List<TempPost> = this.map { it.toDomainModel() }
 
 fun TempPostResponse.toDomainModel(): TempPost =
-    TempPost(tempPostId, title, content, bgColorType, fontStyleType, categoryId, categoryName, tags, postAt)
+    TempPost(
+        tempPostId,
+        title,
+        content,
+        bgColorType,
+        fontStyleType,
+        categoryId,
+        categoryName,
+        tags,
+        postAt,
+    )

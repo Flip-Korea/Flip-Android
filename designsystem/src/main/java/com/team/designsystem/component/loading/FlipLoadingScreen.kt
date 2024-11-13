@@ -33,34 +33,31 @@ import com.team.designsystem.theme.FlipTheme
  * @param text 로딩 문구
  */
 @Composable
-fun FlipLoadingScreen(
-    modifier: Modifier = Modifier,
-    isLoading: Boolean,
-    text: String,
-) {
+fun FlipLoadingScreen(modifier: Modifier = Modifier, isLoading: Boolean, text: String) {
 
-    FlipModalWrapper(isOpen = isLoading, onDismissRequest = { }, animated = false) {
+    FlipModalWrapper(isOpen = isLoading, onDismissRequest = {}, animated = false) {
         Box(
-            modifier = modifier
-                .clip(FlipTheme.shapes.roundedCornerSmall)
-                .sizeIn(minWidth = 160.dp, minHeight = 160.dp)
-                .background(FlipTheme.colors.main.copy(0.8f)),
-            contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .clip(FlipTheme.shapes.roundedCornerSmall)
+                    .sizeIn(minWidth = 160.dp, minHeight = 160.dp)
+                    .background(FlipTheme.colors.main.copy(0.8f)),
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(50.dp),
                     color = FlipTheme.colors.white,
                     strokeWidth = 3.dp,
-                    strokeCap = StrokeCap.Round
+                    strokeCap = StrokeCap.Round,
                 )
                 Text(
                     text = text,
                     style = FlipTheme.typography.body5,
-                    color = FlipTheme.colors.white
+                    color = FlipTheme.colors.white,
                 )
             }
         }
@@ -75,26 +72,17 @@ private fun FlipLoadingScreenPreview() {
     var isLoading by remember { mutableStateOf(false) }
 
     FlipAppTheme {
-        FlipLoadingScreen(
-            isLoading = isLoading,
-            text = "임시 저장 중",
-        )
+        FlipLoadingScreen(isLoading = isLoading, text = "임시 저장 중")
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(
-                40.dp,
-                alignment = Alignment.CenterVertically
-            )
+            verticalArrangement =
+                Arrangement.spacedBy(40.dp, alignment = Alignment.CenterVertically),
         ) {
             Text(text = "$count")
-            Button(onClick = { count++ }) {
-                Text(text = "Click!")
-            }
-            Button(onClick = { isLoading = true }) {
-                Text(text = "Loading Start")
-            }
+            Button(onClick = { count++ }) { Text(text = "Click!") }
+            Button(onClick = { isLoading = true }) { Text(text = "Loading Start") }
         }
     }
 }

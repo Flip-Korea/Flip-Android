@@ -10,7 +10,7 @@ import com.team.domain.model.profile.DisplayProfileList
 data class FollowerListResponse(
     @Json(name = "has_next") val hasNext: Boolean,
     @Json(name = "next_cursor") val nextCursor: String,
-    @Json(name = "followers") val followers: List<DisplayProfileResponse>
+    @Json(name = "followers") val followers: List<DisplayProfileResponse>,
 )
 
 fun FollowerListResponse.toDomainModel(): DisplayProfileList =

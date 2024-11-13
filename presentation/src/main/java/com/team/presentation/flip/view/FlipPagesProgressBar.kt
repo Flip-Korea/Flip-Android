@@ -20,34 +20,28 @@ import com.team.designsystem.theme.FlipLightColors
  * @param maxPage 최대 페이지 개수 (기획 상, 3개 고정)
  */
 @Composable
-fun FlipPagesProgressBar(
-    currentPage: Int,
-    maxPage: Int = 3
-) {
+fun FlipPagesProgressBar(currentPage: Int, maxPage: Int = 3) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(2.dp)
-            .drawWithContent {
+        modifier =
+            Modifier.fillMaxWidth().height(2.dp).drawWithContent {
                 val cornerRadius = 2.dp.toPx()
                 val barSpace = 5.dp.toPx()
                 val barWidth = (this.size.width - barSpace * (maxPage - 1)) / maxPage
                 val barHeight = 2.dp.toPx()
 
                 repeat(maxPage) { idx ->
-
-                    val color = if (idx <= currentPage) {
-                        FlipLightColors.gray7
-                    } else { FlipLightColors.gray2 }
+                    val color =
+                        if (idx <= currentPage) {
+                            FlipLightColors.gray7
+                        } else {
+                            FlipLightColors.gray2
+                        }
 
                     drawRoundRect(
                         color = color,
                         cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                        size = Size(
-                            width = barWidth,
-                            height = barHeight
-                        ),
-                        topLeft = Offset((barWidth + barSpace) * idx, 0f)
+                        size = Size(width = barWidth, height = barHeight),
+                        topLeft = Offset((barWidth + barSpace) * idx, 0f),
                     )
                 }
             }
@@ -63,8 +57,5 @@ private fun PagesProgressBarPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PagesProgressBarPreview2() {
-    FlipPagesProgressBar(
-        currentPage = 2,
-        maxPage = 5
-    )
+    FlipPagesProgressBar(currentPage = 2, maxPage = 5)
 }

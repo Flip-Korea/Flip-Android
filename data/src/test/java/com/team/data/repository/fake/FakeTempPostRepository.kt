@@ -25,36 +25,32 @@ class FakeTempPostRepository(
     private val tempPostResponseFactory = TempPostResponseFactory()
 
     override fun getTempPostsPagination(): Flow<PagingData<TempPost>> = flow {
-        val tempPosts = List(pageSize) {
-            tempPostResponseFactory
-                .create()
-                .toDomainModel()
-        }
+        val tempPosts = List(pageSize) { tempPostResponseFactory.create().toDomainModel() }
         val tempPostPagingData = PagingData.from(tempPosts)
 
         emit(tempPostPagingData)
     }
 
-    override fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> = flow {
-        emit(Result.Loading)
+    override fun addTemporaryPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> =
+        flow {
+                emit(Result.Loading)
 
-        val newPostNetwork = newPost.toNetwork()
+                val newPostNetwork = newPost.toNetwork()
 
-        when (val result =
-            postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
-            is Result.Success -> {
-                emit(Result.Success(true))
+                when (val result = postNetworkDataSource.addTemporaryPost(newPostNetwork)) {
+                    is Result.Success -> {
+                        emit(Result.Success(true))
+                    }
+
+                    is Result.Error -> {
+                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                    }
+
+                    Result.Loading -> {}
+                }
             }
-
-            is Result.Error -> {
-                emit(Result.Error(errorBody = result.errorBody, error = result.error))
-            }
-
-            Result.Loading -> {}
-        }
-    }
-        .flowOn(ioDispatcher)
-        .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+            .flowOn(ioDispatcher)
+            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
     override fun deleteTemporaryPost(tempPostId: Long): Flow<Result<Boolean, ErrorType>> = flow {
         emit(Result.Loading)
@@ -74,25 +70,27 @@ class FakeTempPostRepository(
 
     override fun editTemporaryPost(
         tempPostId: Long,
-        newPost: NewPost
-    ): Flow<Result<Boolean, ErrorType>> = flow {
-        emit(Result.Loading)
+        newPost: NewPost,
+    ): Flow<Result<Boolean, ErrorType>> =
+        flow {
+                emit(Result.Loading)
 
-        val newPostNetwork = newPost.toNetwork()
+                val newPostNetwork = newPost.toNetwork()
 
-        when (val result =
-            postNetworkDataSource.editTemporaryPost(tempPostId, newPostNetwork)) {
-            is Result.Success -> {
-                emit(Result.Success(true))
+                when (
+                    val result = postNetworkDataSource.editTemporaryPost(tempPostId, newPostNetwork)
+                ) {
+                    is Result.Success -> {
+                        emit(Result.Success(true))
+                    }
+
+                    is Result.Error -> {
+                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                    }
+
+                    Result.Loading -> {}
+                }
             }
-
-            is Result.Error -> {
-                emit(Result.Error(errorBody = result.errorBody, error = result.error))
-            }
-
-            Result.Loading -> {}
-        }
-    }
-        .flowOn(ioDispatcher)
-        .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+            .flowOn(ioDispatcher)
+            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 }

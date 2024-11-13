@@ -29,7 +29,7 @@ fun AddFlipTitleTextField(
     modifier: Modifier = Modifier,
     placeholder: String,
     title: String,
-    onTitleChanged: (String) -> Unit
+    onTitleChanged: (String) -> Unit,
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -41,39 +41,33 @@ fun AddFlipTitleTextField(
         onValueChange = { onTitleChanged(it) },
         textStyle = FlipTheme.typography.headline1,
         cursorBrush = FlipTextFieldStyles.cursorBrushPoint,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            }
-        ),
+        keyboardOptions =
+            KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
+            ),
     ) { innerTextField ->
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(top = 3.dp, bottom = 3.dp)
+                modifier = Modifier.align(Alignment.CenterStart).padding(top = 3.dp, bottom = 3.dp)
             ) {
                 innerTextField()
                 if (title.isEmpty()) {
                     Text(
                         text = placeholder,
                         style = FlipTheme.typography.body5,
-                        color = FlipTheme.colors.gray5
+                        color = FlipTheme.colors.gray5,
                     )
                 }
             }
             HorizontalDivider(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
                 thickness = 1.dp,
-                color = FlipTheme.colors.gray3
+                color = FlipTheme.colors.gray3,
             )
         }
     }
@@ -86,15 +80,12 @@ private fun AddFlipTitleTextFieldPreview() {
     val (title, onTitleChanged) = remember { mutableStateOf("") }
 
     FlipAppTheme {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
-        ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             AddFlipTitleTextField(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 title = title,
                 placeholder = "제목",
-                onTitleChanged = { onTitleChanged(it) }
+                onTitleChanged = { onTitleChanged(it) },
             )
         }
     }

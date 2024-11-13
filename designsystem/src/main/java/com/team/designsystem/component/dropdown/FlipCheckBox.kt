@@ -26,23 +26,20 @@ import com.team.designsystem.component.TouchTarget
 import com.team.designsystem.theme.FlipTheme
 
 @Composable
-fun FlipCheckBox(
-    modifier: Modifier = Modifier,
-    checked: Boolean,
-    onClick: () -> Unit,
-) {
+fun FlipCheckBox(modifier: Modifier = Modifier, checked: Boolean, onClick: () -> Unit) {
     Box(
-        modifier = modifier
-            .border(
-                1.dp,
-                if (checked) FlipTheme.colors.main else FlipTheme.colors.gray5,
-                CircleShape
-            )
-            .size(24.dp)
-            .clip(CircleShape)
-            .background(if (checked) FlipTheme.colors.main else Color.Transparent, CircleShape)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .border(
+                    1.dp,
+                    if (checked) FlipTheme.colors.main else FlipTheme.colors.gray5,
+                    CircleShape,
+                )
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(if (checked) FlipTheme.colors.main else Color.Transparent, CircleShape)
+                .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
     ) {
         if (checked) {
             Icon(
@@ -61,11 +58,9 @@ private fun FlipCheckBoxPreview() {
     var checked by remember { mutableStateOf(false) }
 
     FlipCheckBox(
-        modifier = Modifier
-            .padding(TouchTarget.padding)
-            .size(24.dp),
+        modifier = Modifier.padding(TouchTarget.padding).size(24.dp),
         checked = checked,
-        onClick = { checked = !checked }
+        onClick = { checked = !checked },
     )
 }
 
@@ -78,6 +73,6 @@ private fun FlipCheckBoxPreview2() {
     FlipCheckBox(
         modifier = Modifier.size(24.dp),
         checked = checked,
-        onClick = { checked = !checked }
+        onClick = { checked = !checked },
     )
 }
