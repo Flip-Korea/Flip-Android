@@ -35,60 +35,62 @@ internal fun ReportCompleteView(
     modifier: Modifier = Modifier,
     reportedProfileId: String,
     onOkClick: () -> Unit,
-    onBlockClick: () -> Unit
+    onBlockClick: () -> Unit,
 ) {
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(66.dp)
+        verticalArrangement = Arrangement.spacedBy(66.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Icon(
-                modifier = Modifier
-                    .size(57.dp)
-                    .padding(bottom = 2.dp),
+                modifier = Modifier.size(57.dp).padding(bottom = 2.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_check),
-                contentDescription = stringResource(id = R.string.bottom_sheet_report_content_desc_complete),
-                tint = FlipTheme.colors.point
+                contentDescription =
+                    stringResource(id = R.string.bottom_sheet_report_content_desc_complete),
+                tint = FlipTheme.colors.point,
             )
             Text(
                 text = stringResource(id = R.string.bottom_sheet_report_complete_title),
                 style = FlipTheme.typography.headline6,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Text(
-                text = buildAnnotatedString {
-                    append(stringResource(id = R.string.bottom_sheet_report_complete_sub_title_1))
-                    append(reportedProfileId)
-                    append(stringResource(id = R.string.bottom_sheet_report_complete_sub_title_2))
-                },
+                text =
+                    buildAnnotatedString {
+                        append(
+                            stringResource(id = R.string.bottom_sheet_report_complete_sub_title_1)
+                        )
+                        append(reportedProfileId)
+                        append(
+                            stringResource(id = R.string.bottom_sheet_report_complete_sub_title_2)
+                        )
+                    },
                 style = FlipTheme.typography.body5,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(7.dp)
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.bottom_sheet_report_complete_btn_ok),
                 solid = false,
-                onClick = onOkClick
+                onClick = onOkClick,
             )
             FlipSmallButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.bottom_sheet_report_complete_btn_with_block),
                 solid = true,
-                onClick = onBlockClick
+                onClick = onBlockClick,
             )
         }
     }
@@ -98,10 +100,6 @@ internal fun ReportCompleteView(
 @Composable
 private fun ReportCompleteViewPreview() {
     FlipAppTheme {
-        ReportCompleteView(
-            reportedProfileId = "profileId",
-            onOkClick = { },
-            onBlockClick = { }
-        )
+        ReportCompleteView(reportedProfileId = "profileId", onOkClick = {}, onBlockClick = {})
     }
 }

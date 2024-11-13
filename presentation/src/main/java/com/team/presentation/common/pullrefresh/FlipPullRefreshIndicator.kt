@@ -30,19 +30,16 @@ fun FlipPullRefreshIndicator(
     isLoading: Boolean,
     strokeWidth: Dp = 3.dp,
     color: Color = FlipTheme.colors.gray3,
-    size: Dp = 50.dp
+    size: Dp = 50.dp,
 ) {
-    Box(
-        modifier = modifier.size(size),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(size),
                 strokeWidth = strokeWidth,
                 strokeCap = StrokeCap.Round,
                 trackColor = Color.Transparent,
-                color = color
+                color = color,
             )
         } else {
             CircularProgressIndicator(
@@ -51,7 +48,7 @@ fun FlipPullRefreshIndicator(
                 strokeWidth = strokeWidth,
                 strokeCap = StrokeCap.Round,
                 trackColor = Color.Transparent,
-                color = color
+                color = color,
             )
         }
     }

@@ -40,6 +40,7 @@ firebaseBom = "33.0.0"
 kakaoSdk = "2.19.0"
 material-icons-extended = "1.6.8"
 paging = "3.3.2"
+ktfmt = "0.21.0"
 
 [libraries]
 # add
@@ -131,6 +132,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 #kotlin-gradle-plugin = {module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGms" }
+ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 
 [bundles]
 

@@ -26,16 +26,15 @@ fun LoginNavigation(
     navController: NavHostController,
     googleAuthManager: GoogleAuthManager,
     kakaoAuthManager: KakaoAuthManager,
-    onNavigateMain: () -> Unit
+    onNavigateMain: () -> Unit,
 ) {
 
     NavHost(
         modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
         navController = navController,
-        startDestination = ScreenItem.LOGIN.name
+        startDestination = ScreenItem.LOGIN.name,
     ) {
         composable(ScreenItem.LOGIN.name) {
-
             val loginViewModel: LoginViewModel = hiltViewModel()
             val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
 
@@ -53,12 +52,17 @@ fun LoginNavigation(
             LoginScreen(
                 loginState = loginState,
                 onLoginClick = { socialLoginPlatform ->
-                    val authManager = when(socialLoginPlatform) {
-                        SocialLoginPlatform.GOOGLE -> { googleAuthManager }
-                        SocialLoginPlatform.KAKAO -> { kakaoAuthManager }
-                    }
+                    val authManager =
+                        when (socialLoginPlatform) {
+                            SocialLoginPlatform.GOOGLE -> {
+                                googleAuthManager
+                            }
+                            SocialLoginPlatform.KAKAO -> {
+                                kakaoAuthManager
+                            }
+                        }
                     loginViewModel.login(socialLoginPlatform, authManager)
-                }
+                },
             )
         }
 

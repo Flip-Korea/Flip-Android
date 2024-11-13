@@ -20,6 +20,7 @@ import com.team.presentation.home.state.PostState
 import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,30 +31,28 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel
+@Inject
+constructor(
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     private val getPostUseCases: GetPostUseCases,
     private val getCurrentProfileIdUseCase: GetCurrentProfileIdUseCase,
-    private val getFilteredMyCategoriesUseCase: GetFilteredMyCategoriesUseCase
+    private val getFilteredMyCategoriesUseCase: GetFilteredMyCategoriesUseCase,
 ) : ViewModel() {
 
-    val currentProfileID = getCurrentProfileIdUseCase()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            ""
-        )
+    val currentProfileID =
+        getCurrentProfileIdUseCase().stateIn(viewModelScope, SharingStarted.Lazily, "")
 
-    val filteredMyCategoriesState = getFilteredMyCategoriesUseCase()
-        .flowOn(defaultDispatcher)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
+    val filteredMyCategoriesState =
+        getFilteredMyCategoriesUseCase()
+            .flowOn(defaultDispatcher)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList(),
+            )
 
     private val _refreshState = MutableStateFlow(false)
     val refreshState = _refreshState.asStateFlow()
@@ -72,9 +71,7 @@ class HomeViewModel @Inject constructor(
     val blockState = _blockState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            getPostsByCategory(fixedCategories[0].id)
-        }
+        viewModelScope.launch { getPostsByCategory(fixedCategories[0].id) }
     }
 
     fun onFlipCardEvent(uiEvent: FlipCardUiEvent) {
@@ -92,7 +89,7 @@ class HomeViewModel @Inject constructor(
             HomeUiEvent.OnSearchClick -> {}
             HomeUiEvent.OnRefresh -> {
                 viewModelScope.launch {
-                    //TODO: 임시코드, 반드시 삭제할 것
+                    // TODO: 임시코드, 반드시 삭제할 것
                     _refreshState.update { true }
                     delay(2000L)
                     _refreshState.update { false }
@@ -103,6 +100,7 @@ class HomeViewModel @Inject constructor(
 
     /**
      * 카테고리 별로 Flip(Post)을 가져옴
+     *
      * @param categoryId 카테고리 ID
      * @see fixedCategories
      */
@@ -130,86 +128,83 @@ class HomeViewModel @Inject constructor(
     private fun getAllPosts(): Job {
 
         return viewModelScope.launch {
-
             try {
 
                 getPostUseCases.getPostsUseCase(nextCursor).collect { result ->
                     _postState.update { state ->
                         when (result) {
                             Result.Loading -> state.copy(loading = true)
-                            is Result.Error -> state.copy(
-                                loading = false,
-                                error = result.errorBody?.let { errorBody ->
-                                    UiText.DynamicString(errorBody.message)
-                                } ?: result.error.asUiText()
-                            )
-                            is Result.Success -> state.copy(
-                                loading = false,
-                                posts = result.data.posts
-                            )
+                            is Result.Error ->
+                                state.copy(
+                                    loading = false,
+                                    error =
+                                        result.errorBody?.let { errorBody ->
+                                            UiText.DynamicString(errorBody.message)
+                                        } ?: result.error.asUiText(),
+                                )
+                            is Result.Success ->
+                                state.copy(loading = false, posts = result.data.posts)
                         }
                     }
                 }
             } catch (e: Exception) {
 
-                _postState.update { it.copy(
-                    loading = false,
-                    error = e.localizedMessage?.let { message ->
-                        UiText.DynamicString(message)
-                    } ?: ErrorType.Exception.EXCEPTION.asUiText()
-                ) }
+                _postState.update {
+                    it.copy(
+                        loading = false,
+                        error =
+                            e.localizedMessage?.let { message -> UiText.DynamicString(message) }
+                                ?: ErrorType.Exception.EXCEPTION.asUiText(),
+                    )
+                }
             }
-//            postUseCases.getPostsUseCase(nextCursor).onEach { result ->
-//                when (result) {
-//                    is Result.Success -> {
-//                        _postState.update {
-//                            it.copy(
-//                                loading = false,
-//                                posts = result.data.posts
-//                            )
-//                        }
-//                    }
-//
-//                    is Result.Error -> {
-//                        _postState.update {
-//                            it.copy(
-//                                loading = false,
-//                                error = result.errorBody?.let { errorBody ->
-//                                    UiText.DynamicString(errorBody.message)
-//                                } ?: result.error.asUiText()
-//                            )
-//                        }
-//                    }
-//
-//                    Result.Loading -> {
-//                        _postState.update { it.copy(loading = true) }
-//                    }
-//                }
-//            }.launchIn(viewModelScope)
+            //            postUseCases.getPostsUseCase(nextCursor).onEach { result ->
+            //                when (result) {
+            //                    is Result.Success -> {
+            //                        _postState.update {
+            //                            it.copy(
+            //                                loading = false,
+            //                                posts = result.data.posts
+            //                            )
+            //                        }
+            //                    }
+            //
+            //                    is Result.Error -> {
+            //                        _postState.update {
+            //                            it.copy(
+            //                                loading = false,
+            //                                error = result.errorBody?.let { errorBody ->
+            //                                    UiText.DynamicString(errorBody.message)
+            //                                } ?: result.error.asUiText()
+            //                            )
+            //                        }
+            //                    }
+            //
+            //                    Result.Loading -> {
+            //                        _postState.update { it.copy(loading = true) }
+            //                    }
+            //                }
+            //            }.launchIn(viewModelScope)
         }
     }
 
-    //TODO API 문서 확정되고 나서 개발 마저 진행
+    // TODO API 문서 확정되고 나서 개발 마저 진행
     fun onReport(
         /** ReportReq 를 위한 매개변수 */
-//        reportType: ReportType,
-//        reportId: String,
-//        reporterId: String,
-//        postId: Long? = null,
-//        commentId: Long? = null
-    ) {
+        //        reportType: ReportType,
+        //        reportId: String,
+        //        reporterId: String,
+        //        postId: Long? = null,
+        //        commentId: Long? = null
+    ) {}
 
-    }
-
-    //TODO API 문서 확정되고 나서 개발 마저 진행
+    // TODO API 문서 확정되고 나서 개발 마저 진행
     fun onBlock(
         /** BlockReq 를 위한 매개변수 */
-//        profileId: String,
-//        postId: Long?,
-//        blockedId: String
-    ) {
-
-    }
+        //        profileId: String,
+        //        postId: Long?,
+        //        blockedId: String
+    ) {}
 
     override fun onCleared() {
         getPostsJob?.cancel()

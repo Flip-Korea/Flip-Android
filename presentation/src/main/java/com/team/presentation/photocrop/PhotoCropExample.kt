@@ -39,14 +39,15 @@ fun PhotoCropExample() {
         val context = LocalContext.current
 
         var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-        val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.PickVisualMedia(),
-            onResult = { uri ->
-                if (uri != null) {
-                    selectedImageUri = uri
-                }
-            }
-        )
+        val singlePhotoPickerLauncher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.PickVisualMedia(),
+                onResult = { uri ->
+                    if (uri != null) {
+                        selectedImageUri = uri
+                    }
+                },
+            )
 
         LaunchedEffect(Unit) {
             singlePhotoPickerLauncher.launch(
@@ -57,43 +58,42 @@ fun PhotoCropExample() {
         var croppedImage: ImageBitmap? by remember { mutableStateOf(null) }
 
         Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-            if (croppedImage ==  null) {
+            if (croppedImage == null) {
                 PhotoCropScreen(
                     selectedImageUri = selectedImageUri,
                     onCancel = { showToast(context, "취소") },
                     onCrop = {
                         croppedImage = it
                         showToast(context, "성공: ${it.width}, ${it.height}")
-                    }
+                    },
                 )
 
-                /** 사진 선택을 위한 임시 버튼 **/
+                /** 사진 선택을 위한 임시 버튼 * */
                 PhotoCropButton(
-                    modifier = Modifier.fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().statusBarsPadding().padding(16.dp),
                     text = "사진 선택",
                     solid = true,
                     onClick = {
                         singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
                         )
-                    }
+                    },
                 )
             } else {
-                /** 편집한 사진을 보기 위한 임시 화면 **/
+                /** 편집한 사진을 보기 위한 임시 화면 * */
                 Image(
                     bitmap = croppedImage!!,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(16.dp)
+                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
                 )
 
-                Button(modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 30.dp), onClick = { croppedImage = null }) {
+                Button(
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 30.dp),
+                    onClick = { croppedImage = null },
+                ) {
                     Text(text = "Retry")
                 }
             }
@@ -101,13 +101,6 @@ fun PhotoCropExample() {
     }
 }
 
-private fun showToast(
-    context: Context,
-    text: String
-) {
-    Toast.makeText(
-        context,
-        text,
-        Toast.LENGTH_SHORT
-    ).show()
+private fun showToast(context: Context, text: String) {
+    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }

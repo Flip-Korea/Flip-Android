@@ -16,14 +16,14 @@ interface BaseUiEvent
 
 interface BaseUiEffect
 
-/**
- * MVI 패턴을 사용하는 Base ViewModel
- */
-abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect: BaseUiEffect>: ViewModel() {
+/** MVI 패턴을 사용하는 Base ViewModel */
+abstract class FlipBaseViewModel<State : BaseUiState, Event : BaseUiEvent, Effect : BaseUiEffect> :
+    ViewModel() {
 
     /** [createInitialState]를 통해 초기 상태(UI State)를 지정한다. */
-    private val initialState : State by lazy { createInitialState() }
-    abstract fun createInitialState() : State
+    private val initialState: State by lazy { createInitialState() }
+
+    abstract fun createInitialState(): State
 
     /** UI State */
     private val _uiState: MutableStateFlow<State> = MutableStateFlow(initialState)
@@ -39,6 +39,7 @@ abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect:
     protected fun updateState(newUiState: State) {
         _uiState.update { newUiState }
     }
+
     protected fun updateState(reducer: State.() -> State) {
         val newState = currentUiState.reducer()
         _uiState.update { newState }
@@ -46,10 +47,9 @@ abstract class FlipBaseViewModel<State: BaseUiState, Event: BaseUiEvent, Effect:
 
     /** Handle UiEvent */
     fun processEvent(event: Event) {
-        viewModelScope.launch {
-            handleEvent(event)
-        }
+        viewModelScope.launch { handleEvent(event) }
     }
+
     protected abstract suspend fun handleEvent(event: Event)
 
     /** Send UiEffect */

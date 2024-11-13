@@ -29,7 +29,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-//TODO 나중에 삭제
+// TODO 나중에 삭제
 @Preview(name = "IconButton-TouchTarget-MinimumSize", showBackground = true)
 @Composable
 private fun AccessibilityPreview() {
@@ -37,26 +37,20 @@ private fun AccessibilityPreview() {
         // default
         Icon(
             imageVector = Icons.Default.Delete,
-            modifier = Modifier.clickable(onClick = { }),
-            contentDescription = null
+            modifier = Modifier.clickable(onClick = {}),
+            contentDescription = null,
         )
 
         // adding padding and define size to helps us to meet the requirements of 48dp touch area
         Icon(
             imageVector = Icons.Default.Delete,
-            modifier = Modifier
-                .clickable(onClick = { })
-                .padding(12.dp)
-                .size(24.dp),
-            contentDescription = null
+            modifier = Modifier.clickable(onClick = {}).padding(12.dp).size(24.dp),
+            contentDescription = null,
         )
 
         // Use IconButton
-        IconButton(onClick = { }) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = null
-            )
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = null)
         }
     }
 }
@@ -73,14 +67,14 @@ private fun AccessibilityPreview2() {
         // Wrapped
         var checked2 by remember { mutableStateOf(false) }
         Row(
-            modifier = Modifier
-                .toggleable(
-                    value = checked2,
-                    role = Role.Checkbox,
-                    onValueChange = { checked2 = !checked2 }
-                )
-                .padding(horizontal = 16.dp)
-                .width(200.dp)
+            modifier =
+                Modifier.toggleable(
+                        value = checked2,
+                        role = Role.Checkbox,
+                        onValueChange = { checked2 = !checked2 },
+                    )
+                    .padding(horizontal = 16.dp)
+                    .width(200.dp)
         ) {
             Text("Option", Modifier.weight(1f))
             Checkbox(checked = checked2, onCheckedChange = null)
@@ -94,17 +88,12 @@ fun AccessibilityPreview3() {
 
     var clicked by remember { mutableStateOf(false) }
 
-    Box(
-        Modifier
-            .size(100.dp)
-            .background(if (clicked) Color.DarkGray else Color.LightGray)
-    ) {
+    Box(Modifier.size(100.dp).background(if (clicked) Color.DarkGray else Color.LightGray)) {
         Box(
-            Modifier
-                .align(Alignment.Center)
+            Modifier.align(Alignment.Center)
                 .clickable { clicked = !clicked }
                 .background(Color.Black)
-//                .size(10.dp)
+                //                .size(10.dp)
                 .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
         )
     }

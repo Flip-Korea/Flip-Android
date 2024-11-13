@@ -47,16 +47,18 @@ fun FlipMediumButton(
 
     Button(
         onClick = { if (!isLoading) clickableSingle.onEvent(onClick) },
-        modifier = modifier
-            .height(48.dp)
-            .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = FlipTheme.colors.main,
-            contentColor = FlipTheme.colors.white
-        ),
+        modifier =
+            modifier
+                .height(48.dp)
+                .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = FlipTheme.colors.main,
+                contentColor = FlipTheme.colors.white,
+            ),
         enabled = enabled,
         shape = FlipTheme.shapes.roundedCornerSmall,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -68,7 +70,7 @@ fun FlipMediumButton(
             Text(
                 text = text,
                 style = FlipTheme.typography.headline3,
-                color = FlipTheme.colors.white
+                color = FlipTheme.colors.white,
             )
         }
     }
@@ -89,13 +91,11 @@ private fun FlipMediumButtonPreview() {
 
     FlipAppTheme {
         FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             text = "sample",
             enabled = true,
             isLoading = isClick,
-            onClick = { isClick = !isClick }
+            onClick = { isClick = !isClick },
         )
     }
 }
@@ -105,13 +105,11 @@ private fun FlipMediumButtonPreview() {
 private fun FlipMediumButton2Preview() {
     FlipAppTheme {
         FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             text = "sample",
             enabled = false,
             isLoading = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -121,13 +119,11 @@ private fun FlipMediumButton2Preview() {
 private fun FlipMediumButton3Preview() {
     FlipAppTheme {
         FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             text = "sample",
             enabled = true,
             isLoading = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }

@@ -18,44 +18,38 @@ import com.team.presentation.login.util.GoogleAuthManager
 import com.team.presentation.login.util.KakaoAuthManager
 import dagger.hilt.android.AndroidEntryPoint
 
-/** Flip 로그인 및 회원가입을 위한 액티비티**/
+/** Flip 로그인 및 회원가입을 위한 액티비티* */
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
     private val googleAuthManager by lazy {
         GoogleAuthManager(
             context = applicationContext,
-            credentialManager = CredentialManager.create(applicationContext)
+            credentialManager = CredentialManager.create(applicationContext),
         )
     }
 
-    private val kakaoAuthManager by lazy {
-        KakaoAuthManager(this@LoginActivity)
-    }
+    private val kakaoAuthManager by lazy { KakaoAuthManager(this@LoginActivity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        /** statusBarsPadding() & navigationBarsPadding() 사용하기 **/
+        /** statusBarsPadding() & navigationBarsPadding() 사용하기 * */
         setContent {
-
             val navController = rememberNavController()
 
             FlipAppTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(FlipTheme.colors.white)
-                ) {
+                Surface(modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white)) {
                     LoginNavigation(
                         navController = navController,
-                        googleAuthManager, kakaoAuthManager,
+                        googleAuthManager,
+                        kakaoAuthManager,
                         onNavigateMain = {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             finish()
-                        }
+                        },
                     )
                 }
             }
