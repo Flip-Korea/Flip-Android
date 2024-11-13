@@ -16,7 +16,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.R
 import com.team.presentation.util.uitext.UiText
 
-//TODO: 임시화면이고 디자인 팀에게 요청 필요
+// TODO: 임시화면이고 디자인 팀에게 요청 필요
 /**
  * 공통 에러 화면
  *
@@ -24,15 +24,11 @@ import com.team.presentation.util.uitext.UiText
  * @param onRetry 재시도 버튼 클릭 시 수행할 작업
  */
 @Composable
-fun FlipErrorScreen(
-    modifier: Modifier = Modifier,
-    errorMessage: UiText,
-    onRetry: () -> Unit
-) {
+fun FlipErrorScreen(modifier: Modifier = Modifier, errorMessage: UiText, onRetry: () -> Unit) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(30.dp, alignment = Alignment.CenterVertically),
     ) {
         Text(
             text = errorMessage.asString(),
@@ -42,7 +38,7 @@ fun FlipErrorScreen(
         FlipSmallButton(
             text = stringResource(id = R.string.common_error_screen_retry_btn),
             solid = true,
-            onClick = onRetry
+            onClick = onRetry,
         )
     }
 }
@@ -51,9 +47,6 @@ fun FlipErrorScreen(
 @Composable
 private fun ErrorScreenPreview() {
     FlipAppTheme {
-        FlipErrorScreen(
-            errorMessage = UiText.DynamicString("에러스크린 입니당~"),
-            onRetry = { }
-        )
+        FlipErrorScreen(errorMessage = UiText.DynamicString("에러스크린 입니당~"), onRetry = {})
     }
 }

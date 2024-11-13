@@ -24,8 +24,9 @@ import kotlin.math.max
  * 2. Failure: 실패 시 errorMessage 문자열을 포함 (nullable)
  */
 sealed interface CropImageResult {
-    data class Success(val imageBitmap: ImageBitmap): CropImageResult
-    data class Failure(val errorMessage: String? = null): CropImageResult
+    data class Success(val imageBitmap: ImageBitmap) : CropImageResult
+
+    data class Failure(val errorMessage: String? = null) : CropImageResult
 }
 
 /**
@@ -39,7 +40,6 @@ sealed interface CropImageResult {
  * @param viewWidth 화면 사이즈의 가로 길이
  * @param viewHeight 화면 사이즈의 가로 길이
  * @param offsetChanged 자르고 싶은 부분의 Offset 값(기준은 TopLeft)
- *
  * @return CropImageResult
  */
 fun cropImage(
@@ -48,7 +48,7 @@ fun cropImage(
     scale: Float = 1f,
     viewWidth: Int,
     viewHeight: Int,
-    offsetChanged: Offset
+    offsetChanged: Offset,
 ): CropImageResult {
 
     return if (imageBitmap == null) {
@@ -81,7 +81,7 @@ fun cropImage(
             srcSize = IntSize(width, height),
             dstOffset = IntOffset(0, 0),
             dstSize = IntSize(width, height),
-            paint = Paint()
+            paint = Paint(),
         )
         CropImageResult.Success(croppedImage)
     }
@@ -89,21 +89,15 @@ fun cropImage(
 
 /**
  * Uri 를 Bitmap(ImageBitmap)으로 변환 시켜준다.
- * @param imageUri 이미지의 Uri
  *
+ * @param imageUri 이미지의 Uri
  * @return ImageBitmap(nullable)
  */
-suspend fun uriToBitmap(
-    context: Context,
-    imageUri: Uri,
-): ImageBitmap? {
+suspend fun uriToBitmap(context: Context, imageUri: Uri): ImageBitmap? {
     var bitmap: Bitmap? = null
 
     val loader = ImageLoader(context)
-    val request = ImageRequest.Builder(context)
-        .data(imageUri)
-        .allowHardware(false)
-        .build()
+    val request = ImageRequest.Builder(context).data(imageUri).allowHardware(false).build()
     val result = loader.execute(request)
     if (result is SuccessResult) {
         bitmap = (result.drawable as BitmapDrawable).bitmap

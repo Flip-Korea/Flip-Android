@@ -36,38 +36,32 @@ import com.team.presentation.ScreenItem
  * @param navController BottomNavController
  */
 @Composable
-fun FlipBottomNavigationBar(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-) {
+fun FlipBottomNavigationBar(modifier: Modifier = Modifier, navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     if (allowedBottomNavItems.map { it.route }.contains(currentRoute)) {
         NavigationBar(
-            modifier = modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 61.dp)
-                .dropShadow1()
-                .zIndex(1f),
+            modifier =
+                modifier.fillMaxWidth().defaultMinSize(minHeight = 61.dp).dropShadow1().zIndex(1f),
             containerColor = FlipTheme.colors.white,
-            contentColor = FlipTheme.colors.gray5
+            contentColor = FlipTheme.colors.gray5,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 bottomNavItems.forEach { item ->
-                    val color = if (currentRoute == item.route) {
-                        FlipTheme.colors.main
-                    } else FlipTheme.colors.gray5
-                    val fontStyle = if (currentRoute == item.route) {
-                        FlipTheme.typography.body2
-                    } else FlipTheme.typography.body1
+                    val color =
+                        if (currentRoute == item.route) {
+                            FlipTheme.colors.main
+                        } else FlipTheme.colors.gray5
+                    val fontStyle =
+                        if (currentRoute == item.route) {
+                            FlipTheme.typography.body2
+                        } else FlipTheme.typography.body1
 
                     FlipNavigationBarItem(
                         selected = currentRoute == item.route,
@@ -76,7 +70,7 @@ fun FlipBottomNavigationBar(
                                 text = stringResource(id = item.title),
                                 style = fontStyle,
                                 color = color,
-                                maxLines = 1
+                                maxLines = 1,
                             )
                         },
                         icon = {
@@ -84,7 +78,7 @@ fun FlipBottomNavigationBar(
                                 modifier = Modifier.size(24.dp),
                                 imageVector = ImageVector.vectorResource(id = item.icon),
                                 contentDescription = stringResource(id = item.title),
-                                tint = color
+                                tint = color,
                             )
                         },
                         onClick = { onItemClickWithOptions(navController, item.route) },
@@ -104,18 +98,19 @@ private fun RowScope.FlipNavigationBarItem(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .weight(1f)
-//            .background(Color.LightGray)
-            .selectable(
-                selected = selected,
-                onClick = onClick,
-                role = Role.Tab,
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ),
+        modifier =
+            modifier
+                .weight(1f)
+                //            .background(Color.LightGray)
+                .selectable(
+                    selected = selected,
+                    onClick = onClick,
+                    role = Role.Tab,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp, alignment = Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(2.dp, alignment = Alignment.CenterVertically),
     ) {
         icon()
         label()
@@ -124,15 +119,11 @@ private fun RowScope.FlipNavigationBarItem(
 
 /**
  * 선택한 화면으로 이동하게 해주는 함수
- * 1. popUpTo(it) { saveState = true }:
- * 첫 번째 화면만 스택에 쌓이게 하고 백버튼 클릭 시 첫 번째 화면으로 이동한다.
+ * 1. popUpTo(it) { saveState = true }: 첫 번째 화면만 스택에 쌓이게 하고 백버튼 클릭 시 첫 번째 화면으로 이동한다.
  * 2. launchSingleTop: true 일 때 화면 인스턴스가 하나만 만들어진다.
  * 3. restoreState: true 일 때 버튼을 재 클릭 했을 때 이전 상태가 남아있게 한다.
  */
-private fun onItemClickWithOptions(
-    navController: NavHostController,
-    route: String,
-) {
+private fun onItemClickWithOptions(navController: NavHostController, route: String) {
     navController.navigate(route) {
         navController.graph.startDestinationRoute?.let {
             // 첫번째 화면만 스택에 쌓이게 -> 백버튼 클릭 시 첫번째 화면으로 감

@@ -27,7 +27,6 @@ import com.team.designsystem.theme.FlipTheme
 
 /**
  * Flip IconButton
- *
  * 1. Icon Size는 최소 24dp
  * 2. Button, TextField 같은 작은 요소 안에서 보다 큼직한 요소 및 외부에서 쓰임
  * 3. TouchTarget: 44dp
@@ -44,22 +43,18 @@ fun FlipIconButton(
 
     val clickableSingle = remember { ClickableSingle.get() }
 
-    IconButton(
-        modifier = modifier.size(44.dp),
-        onClick = { clickableSingle.onEvent(onClick) }
-    ) {
+    IconButton(modifier = modifier.size(44.dp), onClick = { clickableSingle.onEvent(onClick) }) {
         Icon(
             modifier = Modifier.size(iconSize),
             imageVector = imageVector,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }
 
 /**
  * Flip IconButton
- *
  * 1. Size는 최소 24dp
  * 2. Button, TextField 같은 작은 요소 안에서 보다 큼직한 요소 및 외부에서 쓰임
  * 3. TouchTarget: 44dp
@@ -76,15 +71,12 @@ fun FlipIconButton(
 
     val clickableSingle = remember { ClickableSingle.get() }
 
-    IconButton(
-        modifier = modifier.size(44.dp),
-        onClick = { clickableSingle.onEvent(onClick) }
-    ) {
+    IconButton(modifier = modifier.size(44.dp), onClick = { clickableSingle.onEvent(onClick) }) {
         Icon(
             modifier = Modifier.size(iconSize),
             painter = painter,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }
@@ -93,15 +85,15 @@ fun FlipIconButton(
 @Composable
 private fun FlipIconButtonPreview() {
     FlipAppTheme {
-//        Box(modifier = Modifier.size(100.dp)) {
-//        }
+        //        Box(modifier = Modifier.size(100.dp)) {
+        //        }
         FlipIconButton(
             modifier = Modifier,
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_outlined_setting),
             iconSize = DpSize(30.dp, 30.dp),
             contentDescription = null,
-            onClick = { },
-            tint = FlipTheme.colors.main
+            onClick = {},
+            tint = FlipTheme.colors.main,
         )
     }
 }
@@ -118,17 +110,19 @@ private fun FlipIconButtonPreview2() {
                 painter = painterResource(id = R.drawable.ic_outlined_setting),
                 contentDescription = null,
                 onClick = { clicked = !clicked },
-                tint = if (clicked) {
-                    Color.Red
-                } else FlipTheme.colors.main
+                tint =
+                    if (clicked) {
+                        Color.Red
+                    } else FlipTheme.colors.main,
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                 contentDescription = null,
                 onClick = { clicked = !clicked },
-                tint = if (clicked) {
-                    Color.Red
-                } else FlipTheme.colors.main
+                tint =
+                    if (clicked) {
+                        Color.Red
+                    } else FlipTheme.colors.main,
             )
         }
     }

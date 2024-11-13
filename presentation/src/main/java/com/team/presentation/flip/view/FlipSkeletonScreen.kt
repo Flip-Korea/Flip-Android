@@ -22,7 +22,7 @@ fun FlipSkeletonScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.shimmerEffect(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         TopSection(Modifier.fillMaxWidth())
         MiddleSection()
@@ -32,15 +32,9 @@ fun FlipSkeletonScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun TopSection(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         SkeletonBox(size = DpSize(160.dp, 24.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             SkeletonBox(size = DpSize(60.dp, 16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SkeletonBox(size = DpSize(45.dp, 16.dp))
@@ -52,10 +46,7 @@ private fun TopSection(modifier: Modifier = Modifier) {
 
 @Composable
 private fun MiddleSection(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         for (i in 1..4) {
             val size = if (i == 4) DpSize(240.dp, 16.dp) else DpSize(326.dp, 16.dp)
             SkeletonBox(size = size)
@@ -65,13 +56,10 @@ private fun MiddleSection(modifier: Modifier = Modifier) {
 
 @Composable
 fun BottomSection(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             SkeletonBox(size = DpSize(40.dp, 40.dp), shape = CircleShape)
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

@@ -35,10 +35,7 @@ import com.team.presentation.util.composable.keyboardVisibleState
  * @see content 키보드 툴바를 사용할 컴포저블
  */
 @Composable
-fun FlipImeDoneToolbarWrapper(
-    onDone: () -> Unit,
-    content: @Composable () -> Unit,
-) {
+fun FlipImeDoneToolbarWrapper(onDone: () -> Unit, content: @Composable () -> Unit) {
 
     val isImeVisible by keyboardVisibleState()
 
@@ -48,32 +45,26 @@ fun FlipImeDoneToolbarWrapper(
         // 키보드 툴바
         AnimatedVisibility(
             visible = isImeVisible,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .imePadding(),
+            modifier = Modifier.align(Alignment.BottomCenter).imePadding(),
             enter = fadeIn(tween(500)),
-            exit = fadeOut(tween(200))
+            exit = fadeOut(tween(200)),
         ) {
             Column {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = 1.dp,
-                    color = FlipTheme.colors.gray2
+                    color = FlipTheme.colors.gray2,
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(40.dp)
-                        .background(Color.White),
-                    contentAlignment = Alignment.CenterEnd
+                    modifier = Modifier.fillMaxWidth().height(40.dp).background(Color.White),
+                    contentAlignment = Alignment.CenterEnd,
                 ) {
                     Text(
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .clickableSingleWithoutRipple { onDone() },
+                        modifier =
+                            Modifier.padding(end = 16.dp).clickableSingleWithoutRipple { onDone() },
                         text = stringResource(id = R.string.keyboard_toolbar_btn_done),
                         style = FlipTheme.typography.headline3,
-                        color = FlipTheme.colors.point
+                        color = FlipTheme.colors.point,
                     )
                 }
             }

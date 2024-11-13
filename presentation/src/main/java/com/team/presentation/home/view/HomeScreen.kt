@@ -47,9 +47,7 @@ import com.team.presentation.util.fixedCategoriesSize
 import com.team.presentation.util.pullrefresh.rememberPullToRefreshStateM3
 import kotlin.math.abs
 
-/**
- * Flip의 메인 화면이자 홈 화면
- */
+/** Flip의 메인 화면이자 홈 화면 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -69,18 +67,21 @@ fun HomeScreen(
 
     /** PullToRefresh */
     val pullToRefreshState = rememberPullToRefreshStateM3()
-    var pullToRefreshConsumeState by rememberSaveable { mutableStateOf(PullToRefreshConsumeState.Released) }
+    var pullToRefreshConsumeState by rememberSaveable {
+        mutableStateOf(PullToRefreshConsumeState.Released)
+    }
 
     /** TopBar Values */
-    val topBarHeightDp  = with(density) { 310f.toDp() }
+    val topBarHeightDp = with(density) { 310f.toDp() }
     val topBarHeightPx = with(density) { topBarHeightDp.toPx() }
     var topBarOffsetHeightPx by rememberSaveable { mutableFloatStateOf(0f) }
     var isPostFling by remember { mutableStateOf(false) }
-    val animatedTopBarOffsetDp by animateDpAsState(
-        targetValue = with(density) { topBarOffsetHeightPx.toDp() },
-        label = "",
-        animationSpec = tween(durationMillis = if (isPostFling) 300 else 0)
-    )
+    val animatedTopBarOffsetDp by
+        animateDpAsState(
+            targetValue = with(density) { topBarOffsetHeightPx.toDp() },
+            label = "",
+            animationSpec = tween(durationMillis = if (isPostFling) 300 else 0),
+        )
     val nestedScrollConnection = remember {
         HomeScreenNestedScrollConnection(
             onPreScrollAction = { available ->
@@ -103,16 +104,29 @@ fun HomeScreen(
                     val bottom = topBarHeightPx
                     val offset = abs(topBarOffsetHeightPx)
 
-                    topBarOffsetHeightPx = when {
-                        top < offset && offset <= topMiddle -> { -top }
-                        topMiddle < offset && offset <= middle -> { -middle }
-                        middle < offset && offset <= bottomMiddle -> { -middle }
-                        bottomMiddle < offset && offset <= bottom -> { -bottom }
-                        offset > bottom -> { -bottom }
-                        else -> { 0f }
-                    }
+                    topBarOffsetHeightPx =
+                        when {
+                            top < offset && offset <= topMiddle -> {
+                                -top
+                            }
+                            topMiddle < offset && offset <= middle -> {
+                                -middle
+                            }
+                            middle < offset && offset <= bottomMiddle -> {
+                                -middle
+                            }
+                            bottomMiddle < offset && offset <= bottom -> {
+                                -bottom
+                            }
+                            offset > bottom -> {
+                                -bottom
+                            }
+                            else -> {
+                                0f
+                            }
+                        }
                 }
-            }
+            },
         )
     }
 
@@ -125,32 +139,32 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             HomeTopBar(
-                modifier = Modifier
-                    .background(FlipTheme.colors.white)
-                    .fillMaxWidth()
-                    .padding(CommonPaddingValues.TopBarWithLogo),
+                modifier =
+                    Modifier.background(FlipTheme.colors.white)
+                        .fillMaxWidth()
+                        .padding(CommonPaddingValues.TopBarWithLogo),
                 logo = R.drawable.ic_logo_dark,
-                onSearchClick = { },
+                onSearchClick = {},
                 onSettingClick = onSettingClick,
-                onNotiClick = { }
+                onNotiClick = {},
             )
             HomeTab(
-                modifier = Modifier
-                    .background(FlipTheme.colors.white)
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                modifier =
+                    Modifier.background(FlipTheme.colors.white)
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                 items = myCategories,
                 itemSplitSize = fixedCategoriesSize,
-                onItemClick = { }
+                onItemClick = {},
             )
         }
 
         /** 플립 카드뷰 리스트 */
         Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxSize()
-                .padding(HomeScreenPaddingValues.Horizontal)
+            modifier =
+                Modifier.align(Alignment.TopCenter)
+                    .fillMaxSize()
+                    .padding(HomeScreenPaddingValues.Horizontal)
         ) {
             if (postState.loading) {
                 HomeSkeletonScreen(Modifier.padding(top = topBarHeightDp))
@@ -160,27 +174,25 @@ fun HomeScreen(
                     additionalPadding = topBarHeightDp,
                     isRefreshing = refreshState,
                     onRefresh = { homeUiEvent(HomeUiEvent.OnRefresh) },
-                    onConsumeState = { consumeState ->
-                        pullToRefreshConsumeState = consumeState
-                    }
+                    onConsumeState = { consumeState -> pullToRefreshConsumeState = consumeState },
                 ) { contentModifier ->
                     LazyColumn(
                         modifier = contentModifier,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
+                        verticalArrangement =
+                            Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
                         contentPadding = PaddingValues(bottom = 8.dp, top = topBarHeightDp),
                         state = lazyListState,
                     ) {
-                        //TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
-                        items(
-                            items = postState.posts,
-                            key = { post -> post.postId }
-                        ) { post ->
+                        // TODO 드문 확률이지만 ID가 겹치면 앱이 팅김
+                        items(items = postState.posts, key = { post -> post.postId }) { post ->
                             HomeFlipCard(
                                 modifier = Modifier.fillMaxWidth(),
                                 post = post,
                                 flipCardUiEvent = { flipCardUiEvent(it) },
-                                reportAndBlockUiEvent = { uiEvent -> reportAndBlockUiEvent(uiEvent) }
+                                reportAndBlockUiEvent = { uiEvent ->
+                                    reportAndBlockUiEvent(uiEvent)
+                                },
                             )
                         }
                     }
@@ -198,34 +210,39 @@ private fun HomeScreenPreview() {
             modifier = Modifier.fillMaxSize(),
             myCategories = CategoriesTestData.subList(0, 3),
             refreshState = false,
-            postState = PostState().copy(
-                posts = listOf(
-                    Post(
-                        postId = 0L,
-                        profile = DisplayProfile(
-                            nickname = "어스름늑대",
-                            profileId = "90WXYZ6789A1B2C3",
-                            photoUrl = ""
-                        ),
-                        title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
-                        content = "행정권은 대통령을 수반으로 하는 정부에\n" +
-                                "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                                "의하여 법률에 의한 재판을 받을 권리를 가진다.행정권은 대통령을 수반으로 하는 정부에\n" +
-                                "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
-                                "의하여 법률에 의한 재판을 받을 권리를 가진다.",
-                        createdAt = "2024.01.24",
-                        liked = false,
-                        likeCnt = 78,
-                        commentCnt = 21,
-                        scraped = false,
-                        bgColorType = BackgroundColorType.BLUE
-                    )
-                )
-            ),
-            flipCardUiEvent = { },
-            reportAndBlockUiEvent = { },
-            homeUiEvent = { },
-            onSettingClick = { }
+            postState =
+                PostState()
+                    .copy(
+                        posts =
+                            listOf(
+                                Post(
+                                    postId = 0L,
+                                    profile =
+                                        DisplayProfile(
+                                            nickname = "어스름늑대",
+                                            profileId = "90WXYZ6789A1B2C3",
+                                            photoUrl = "",
+                                        ),
+                                    title = "행정권은 대통령을 수반으로 어쩌고 어쩌고!",
+                                    content =
+                                        "행정권은 대통령을 수반으로 하는 정부에\n" +
+                                            "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
+                                            "의하여 법률에 의한 재판을 받을 권리를 가진다.행정권은 대통령을 수반으로 하는 정부에\n" +
+                                            "속한다. 모든 국민은 헌법과 법률이 정한 법관에\n" +
+                                            "의하여 법률에 의한 재판을 받을 권리를 가진다.",
+                                    createdAt = "2024.01.24",
+                                    liked = false,
+                                    likeCnt = 78,
+                                    commentCnt = 21,
+                                    scraped = false,
+                                    bgColorType = BackgroundColorType.BLUE,
+                                )
+                            )
+                    ),
+            flipCardUiEvent = {},
+            reportAndBlockUiEvent = {},
+            homeUiEvent = {},
+            onSettingClick = {},
         )
     }
 }

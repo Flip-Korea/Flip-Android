@@ -3,9 +3,7 @@ package com.team.presentation.util.uitext
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.presentation.R
 
-/**
- * [ValidationErrorType]을 [UiText] 타입으로 변환
- */
+/** [ValidationErrorType]을 [UiText] 타입으로 변환 */
 fun ValidationErrorType.asUiText(): UiText =
     when (this) {
         // Post

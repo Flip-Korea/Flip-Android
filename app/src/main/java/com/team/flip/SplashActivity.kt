@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-/** Flip 커스텀 스플래시 액티비티 **/
+/** Flip 커스텀 스플래시 액티비티 * */
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
@@ -27,9 +27,7 @@ class SplashActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        splashScreen.apply {
-            setKeepOnScreenCondition { keepOnScreen }
-        }
+        splashScreen.apply { setKeepOnScreenCondition { keepOnScreen } }
 
         // Flow 수집이 LifeCycle에 따라 작동함
         lifecycleScope.launch {

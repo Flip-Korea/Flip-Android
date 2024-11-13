@@ -47,53 +47,45 @@ internal fun ReportCheckView(
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         TopSection(
             title = stringResource(id = R.string.bottom_sheet_report_title),
-            subTitle = stringResource(id = R.string.bottom_sheet_report_sub_title)
+            subTitle = stringResource(id = R.string.bottom_sheet_report_sub_title),
         )
         MiddleSection(
             reportReasons = reportReasons,
-            onCheck = { reportType -> onCheck(reportType) }
+            onCheck = { reportType -> onCheck(reportType) },
         )
         FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             enabled = checkedReportReason != null,
             isLoading = reportState.loading,
             text = stringResource(id = R.string.bottom_sheet_report_btn),
-            onClick = { checkedReportReason?.let { onReport(it) } }
+            onClick = { checkedReportReason?.let { onReport(it) } },
         )
     }
 }
 
 @Composable
-private fun TopSection(
-    modifier: Modifier = Modifier,
-    title: String,
-    subTitle: String
-) {
+private fun TopSection(modifier: Modifier = Modifier, title: String, subTitle: String) {
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 26.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 26.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = title,
             style = FlipTheme.typography.headline5,
             color = FlipTheme.colors.statusRed,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Text(
             text = subTitle,
             style = FlipTheme.typography.body5,
             color = FlipTheme.colors.gray6,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -112,54 +104,55 @@ private fun MiddleSection(
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 1.dp,
-                color = FlipTheme.colors.gray2
+                color = FlipTheme.colors.gray2,
             )
             Row(
-                modifier = Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            checkedReason = reason
-                            onCheck(checkedReason)
-                        }
-                    )
-                    .padding(horizontal = 16.dp, vertical = 13.5.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                checkedReason = reason
+                                onCheck(checkedReason)
+                            },
+                        )
+                        .padding(horizontal = 16.dp, vertical = 13.5.dp)
+                        .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Start),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 FlipRadioButton(
                     checked = reason == checkedReason,
                     onCheckedChange = {
                         checkedReason = reason
                         onCheck(checkedReason)
-                    }
+                    },
                 )
                 Text(
                     text = reason.asString(),
                     style = FlipTheme.typography.body5,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
                 )
             }
             if (reason == ReportType.HateSpeech) {
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = 1.dp,
-                    color = FlipTheme.colors.gray2
+                    color = FlipTheme.colors.gray2,
                 )
             }
         }
     }
 }
 
-private val reportReasons = listOf(
-    ReportType.DontLike,
-    ReportType.SpamAndAdvertising,
-    ReportType.Inappropriate,
-    ReportType.Fake,
-    ReportType.HateSpeech,
-)
+private val reportReasons =
+    listOf(
+        ReportType.DontLike,
+        ReportType.SpamAndAdvertising,
+        ReportType.Inappropriate,
+        ReportType.Fake,
+        ReportType.HateSpeech,
+    )
 
 @Preview
 @Composable
@@ -167,9 +160,8 @@ private fun TopSectionPreview() {
     FlipAppTheme {
         TopSection(
             title = "게시글을 신고하시겠어요?",
-            subTitle = "이 게시글을 신고합니다. 신고 내용은 Flip 이용약관 및" +
-                    "정책에 의해서 처리되며, 허위신고 시 서비스 이용이" +
-                    "제한될 수 있습니다."
+            subTitle =
+                "이 게시글을 신고합니다. 신고 내용은 Flip 이용약관 및" + "정책에 의해서 처리되며, 허위신고 시 서비스 이용이" + "제한될 수 있습니다.",
         )
     }
 }
@@ -177,10 +169,5 @@ private fun TopSectionPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun MiddleSectionPreview() {
-    FlipAppTheme {
-        MiddleSection(
-            reportReasons = reportReasons,
-            onCheck = {}
-        )
-    }
+    FlipAppTheme { MiddleSection(reportReasons = reportReasons, onCheck = {}) }
 }

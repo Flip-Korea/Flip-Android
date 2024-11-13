@@ -7,6 +7,14 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.gms.google.services) apply false
+    alias(libs.plugins.ktfmt)
+}
+
+allprojects {
+    apply(plugin = "com.ncorti.ktfmt.gradle")
+    ktfmt {
+        kotlinLangStyle()
+    }
 }
 
 buildscript {

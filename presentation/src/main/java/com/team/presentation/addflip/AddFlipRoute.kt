@@ -17,7 +17,7 @@ import com.team.presentation.addflip.viewmodel.AddFlipViewModel
 fun AddFlipRoute(
     addFlipViewModel: AddFlipViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
-    onNavigateToTempFlipBox: () -> Unit
+    onNavigateToTempFlipBox: () -> Unit,
 ) {
 
     val categoriesState by addFlipViewModel.categoriesState.collectAsStateWithLifecycle()
@@ -43,6 +43,6 @@ fun AddFlipRoute(
         onUiEvent = addFlipViewModel::onUiEvent,
         hideModal = { addFlipViewModel.hideModal() },
         onBackPress = popBackStack,
-        onNavigateToTempFlipBox = onNavigateToTempFlipBox
+        onNavigateToTempFlipBox = onNavigateToTempFlipBox,
     )
 }

@@ -19,20 +19,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/**
- * Skeleton Screen 에서 사용 하는 Shimmer Effect 확장 함수
- */
+/** Skeleton Screen 에서 사용 하는 Shimmer Effect 확장 함수 */
 fun Modifier.shimmerEffect() = composed {
     val infiniteTransition = rememberInfiniteTransition(label = "")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = ""
-    )
+    val alpha by
+        infiniteTransition.animateFloat(
+            initialValue = 0.3f,
+            targetValue = 1f,
+            animationSpec =
+                infiniteRepeatable(animation = tween(1000), repeatMode = RepeatMode.Reverse),
+            label = "",
+        )
 
     alpha(alpha)
 }
@@ -41,10 +38,7 @@ fun Modifier.shimmerEffect() = composed {
 @Composable
 private fun ShimmerEffectPreview() {
     Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .size(150.dp)
-            .shimmerEffect()
-            .background(Color.LightGray)
+        modifier =
+            Modifier.clip(CircleShape).size(150.dp).shimmerEffect().background(Color.LightGray)
     )
 }

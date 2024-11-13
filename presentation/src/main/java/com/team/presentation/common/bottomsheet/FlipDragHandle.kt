@@ -16,24 +16,17 @@ import androidx.compose.ui.unit.dp
 import com.team.designsystem.theme.FlipTheme
 
 @Composable
-fun FlipDragHandle(
-    modifier: Modifier = Modifier,
-    verticalPadding: Dp
-) {
+fun FlipDragHandle(modifier: Modifier = Modifier, verticalPadding: Dp) {
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(verticalPadding)
-    ) {
+    Box(modifier = modifier.fillMaxWidth().height(verticalPadding)) {
         Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 8.dp)
-                .clip(RoundedCornerShape(200.dp))
-                .width(48.dp)
-                .height(5.dp)
-                .background(FlipTheme.colors.gray3)
+            modifier =
+                Modifier.align(Alignment.TopCenter)
+                    .padding(top = 8.dp)
+                    .clip(RoundedCornerShape(200.dp))
+                    .width(48.dp)
+                    .height(5.dp)
+                    .background(FlipTheme.colors.gray3)
         )
     }
 }

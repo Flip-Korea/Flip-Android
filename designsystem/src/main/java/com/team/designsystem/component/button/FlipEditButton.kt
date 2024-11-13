@@ -24,25 +24,21 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 @Composable
-fun FlipEditButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
+fun FlipEditButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 
     val clickableSingle = remember { ClickableSingle.get() }
 
     OutlinedButton(
         onClick = { clickableSingle.onEvent(onClick) },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(34.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = FlipTheme.colors.white,
-            contentColor = FlipTheme.colors.main
-        ),
+        modifier = modifier.fillMaxWidth().height(34.dp),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = FlipTheme.colors.white,
+                contentColor = FlipTheme.colors.main,
+            ),
         shape = FlipTheme.shapes.roundedCornerSmall,
         border = BorderStroke(1.dp, FlipTheme.colors.main),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
     ) {
         Text(
             text = stringResource(id = R.string.btn_flip_edit),
@@ -56,9 +52,7 @@ fun FlipEditButton(
 private fun FlipEditButtonPreview() {
     FlipAppTheme {
         Box(modifier = Modifier.size(200.dp)) {
-            FlipEditButton(modifier = Modifier
-                .align(Alignment.Center)
-                .width(168.dp), onClick = {})
+            FlipEditButton(modifier = Modifier.align(Alignment.Center).width(168.dp), onClick = {})
         }
     }
 }
