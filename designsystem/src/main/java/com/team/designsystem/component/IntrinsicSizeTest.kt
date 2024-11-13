@@ -16,20 +16,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// TODO 나중에 삭제
+//TODO 나중에 삭제
 @Composable
 fun TwoTexts(modifier: Modifier = Modifier, text1: String, text2: String) {
     Row(modifier = modifier.height(IntrinsicSize.Min)) {
         Text(
-            modifier = Modifier.weight(1f).padding(start = 4.dp).wrapContentWidth(Alignment.Start),
-            text = text1,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 4.dp)
+                .wrapContentWidth(Alignment.Start),
+            text = text1
         )
 
-        VerticalDivider(color = Color.Black, modifier = Modifier.fillMaxHeight().width(1.dp))
+        VerticalDivider(color = Color.Black, modifier = Modifier
+            .fillMaxHeight()
+            .width(1.dp))
 
         Text(
-            modifier = Modifier.weight(1f).padding(end = 4.dp).wrapContentWidth(Alignment.End),
-            text = text2,
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 4.dp)
+                .wrapContentWidth(Alignment.End),
+            text = text2
         )
     }
 }

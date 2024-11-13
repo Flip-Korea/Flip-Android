@@ -10,5 +10,5 @@ data class FlipShapes(
     val roundedCornerLarge: CornerBasedShape = RoundedCornerShape(12.dp),
     val roundedCornerExtraLarge: CornerBasedShape = RoundedCornerShape(24.dp),
     val roundedCornerTextField: CornerBasedShape = RoundedCornerShape(6.dp),
-    val roundedCornerFlipCard: CornerBasedShape = RoundedCornerShape(6.dp),
+    val roundedCornerFlipCard: CornerBasedShape = RoundedCornerShape(6.dp)
 )

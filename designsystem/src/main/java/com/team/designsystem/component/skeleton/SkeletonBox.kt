@@ -20,8 +20,16 @@ import com.team.designsystem.theme.FlipTheme
  * @param shape 요소의 모양
  */
 @Composable
-fun SkeletonBox(size: DpSize, shape: Shape = RoundedCornerShape(11.dp)) {
-    Box(modifier = Modifier.clip(shape).size(size).background(FlipTheme.colors.gray3, shape))
+fun SkeletonBox(
+    size: DpSize,
+    shape: Shape = RoundedCornerShape(11.dp)
+) {
+    Box(
+        modifier = Modifier
+            .clip(shape)
+            .size(size)
+            .background(FlipTheme.colors.gray3, shape)
+    )
 }
 
 @Preview

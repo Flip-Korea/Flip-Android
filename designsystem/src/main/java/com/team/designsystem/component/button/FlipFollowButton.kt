@@ -3,6 +3,7 @@ package com.team.designsystem.component.button
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -27,10 +28,7 @@ import com.team.designsystem.theme.FlipTheme
  * [FlipFollowButton]에서 사이즈를 제어할 때 사용
  */
 enum class FlipFollowButtonSize {
-    Large,
-    Medium,
-    Small,
-    Small2,
+    Large, Medium, Small, Small2
 }
 
 /**
@@ -52,46 +50,44 @@ fun FlipFollowButton(
 
     val clickableSingle = remember { ClickableSingle.get() }
 
-    val (textRes, containerColor, contentColor) =
-        when {
-            isFollowing ->
-                Triple(R.string.btn_following, FlipTheme.colors.gray1, FlipTheme.colors.main)
-            isFollower ->
-                Triple(R.string.btn_follow_back, FlipTheme.colors.main, FlipTheme.colors.white)
-            else -> Triple(R.string.btn_follow, FlipTheme.colors.main, FlipTheme.colors.white)
-        }
+    val (textRes, containerColor, contentColor) = when {
+        isFollowing -> Triple(R.string.btn_following, FlipTheme.colors.gray1, FlipTheme.colors.main)
+        isFollower -> Triple(R.string.btn_follow_back, FlipTheme.colors.main, FlipTheme.colors.white)
+        else -> Triple(R.string.btn_follow, FlipTheme.colors.main, FlipTheme.colors.white)
+    }
 
-    val width =
-        when (size) {
-            FlipFollowButtonSize.Large -> 343.dp
-            FlipFollowButtonSize.Medium -> 144.dp
-            FlipFollowButtonSize.Small -> 81.dp
-            FlipFollowButtonSize.Small2 -> 71.dp
-        }
+    val width = when(size) {
+        FlipFollowButtonSize.Large -> 343.dp
+        FlipFollowButtonSize.Medium -> 144.dp
+        FlipFollowButtonSize.Small -> 81.dp
+        FlipFollowButtonSize.Small2 -> 71.dp
+    }
 
-    val height =
-        when (size) {
-            FlipFollowButtonSize.Large -> 34.dp
-            FlipFollowButtonSize.Medium -> 34.dp
-            FlipFollowButtonSize.Small -> 30.dp
-            FlipFollowButtonSize.Small2 -> 30.dp
-        }
+    val height = when(size) {
+        FlipFollowButtonSize.Large -> 34.dp
+        FlipFollowButtonSize.Medium -> 34.dp
+        FlipFollowButtonSize.Small -> 30.dp
+        FlipFollowButtonSize.Small2 -> 30.dp
+    }
 
     Button(
         onClick = { clickableSingle.onEvent(onClick) },
-        modifier = modifier.width(width).height(height),
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = containerColor,
-                contentColor = contentColor,
-            ),
+        modifier = modifier
+            .width(width)
+            .height(height),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
         shape = FlipTheme.shapes.roundedCornerSmall,
-        contentPadding = PaddingValues(0.dp),
+        contentPadding = PaddingValues(0.dp)
     ) {
         Text(
             text = stringResource(id = textRes),
-            style = LocalTextStyle.current.merge(FlipTheme.typography.headline1),
-            color = contentColor,
+            style = LocalTextStyle.current.merge(
+                FlipTheme.typography.headline1
+            ),
+            color = contentColor
         )
     }
 }
@@ -105,19 +101,19 @@ private fun FlipFollowButtonPreview() {
                 modifier = Modifier.width(343.dp),
                 isFollowing = false,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(144.dp),
                 isFollowing = false,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(81.dp),
                 isFollowing = false,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
         }
     }
@@ -132,19 +128,19 @@ private fun FlipFollowButton2Preview() {
                 modifier = Modifier.width(343.dp),
                 isFollowing = true,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(144.dp),
                 isFollowing = true,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(81.dp),
                 isFollowing = true,
                 isFollower = false,
-                onClick = {},
+                onClick = {}
             )
         }
     }
@@ -159,19 +155,19 @@ private fun FlipFollowButton3Preview() {
                 modifier = Modifier.width(343.dp),
                 isFollowing = false,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(144.dp),
                 isFollowing = false,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(81.dp),
                 isFollowing = false,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
         }
     }
@@ -186,19 +182,19 @@ private fun FlipFollowButton4Preview() {
                 modifier = Modifier.width(343.dp),
                 isFollowing = true,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(144.dp),
                 isFollowing = true,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
             FlipFollowButton(
                 modifier = Modifier.width(81.dp),
                 isFollowing = true,
                 isFollower = true,
-                onClick = {},
+                onClick = {}
             )
         }
     }

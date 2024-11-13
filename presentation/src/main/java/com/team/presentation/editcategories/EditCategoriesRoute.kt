@@ -30,18 +30,14 @@ fun EditCategoriesRoute(
     popBackStack: () -> Unit,
 ) {
     val context = LocalContext.current
-    val myCategoriesState by
-        editMyCategoriesViewModel.myCategoriesState.collectAsStateWithLifecycle()
+    val myCategoriesState by editMyCategoriesViewModel.myCategoriesState.collectAsStateWithLifecycle()
     val nicknameState by editMyCategoriesViewModel.nicknameState.collectAsStateWithLifecycle()
-    val speechBubbleState by
-        editMyCategoriesViewModel.speechBubbleState.collectAsStateWithLifecycle()
-    val myCategoriesUpdateState by
-        editMyCategoriesViewModel.myCategoriesUpdateState.collectAsStateWithLifecycle()
+    val speechBubbleState by editMyCategoriesViewModel.speechBubbleState.collectAsStateWithLifecycle()
+    val myCategoriesUpdateState by editMyCategoriesViewModel.myCategoriesUpdateState.collectAsStateWithLifecycle()
 
-    val nickname =
-        nicknameState.ifEmpty {
-            context.resources.getString(R.string.edit_interest_categories_placeholder_nickname)
-        }
+    val nickname = nicknameState.ifEmpty {
+        context.resources.getString(R.string.edit_interest_categories_placeholder_nickname)
+    }
 
     LaunchedEffect(myCategoriesUpdateState) {
         if (myCategoriesUpdateState.success) {
@@ -50,13 +46,12 @@ fun EditCategoriesRoute(
     }
 
     EditMyCategoriesScreen(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(FlipTheme.colors.white)
-                .statusBarsPadding()
-                .navigationBarsPadding()
-                .padding(bottom = 26.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .background(FlipTheme.colors.white)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(bottom = 26.dp),
         nickname = nickname,
         myCategoriesState = myCategoriesState,
         speechBubbleState = speechBubbleState,
@@ -64,9 +59,9 @@ fun EditCategoriesRoute(
         updateMyCategories = editMyCategoriesViewModel::updateMyCategories,
         uiEvent = editMyCategoriesViewModel::onUiEvent,
         onBackPress = {
-            // TODO: 실행 시 HomeScreen 으로 돌아가는데 이 부분에서 딜레이 발생, 해결 필요
+            //TODO: 실행 시 HomeScreen 으로 돌아가는데 이 부분에서 딜레이 발생, 해결 필요
             // (HomeScreen, HomeViewModel 체크)
             popBackStack()
-        },
+        }
     )
 }

@@ -20,25 +20,29 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 @Composable
-fun FlipProfileEditButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun FlipProfileEditButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
 
     val clickableSingle = remember { ClickableSingle.get() }
 
     Button(
         onClick = { clickableSingle.onEvent(onClick) },
-        modifier = modifier.fillMaxWidth().height(34.dp),
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = FlipTheme.colors.main,
-                contentColor = FlipTheme.colors.white,
-            ),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(34.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = FlipTheme.colors.main,
+            contentColor = FlipTheme.colors.white
+        ),
         shape = FlipTheme.shapes.roundedCornerSmall,
-        contentPadding = PaddingValues(0.dp),
+        contentPadding = PaddingValues(0.dp)
     ) {
         Text(
             text = stringResource(id = R.string.btn_profile_edit),
             style = FlipTheme.typography.headline1,
-            color = FlipTheme.colors.white,
+            color = FlipTheme.colors.white
         )
     }
 }
@@ -46,5 +50,7 @@ fun FlipProfileEditButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 private fun FlipProfileEditButtonPreview() {
-    FlipAppTheme { FlipProfileEditButton(modifier = Modifier.width(168.dp), onClick = {}) }
+    FlipAppTheme {
+        FlipProfileEditButton(modifier = Modifier.width(168.dp), onClick = {})
+    }
 }

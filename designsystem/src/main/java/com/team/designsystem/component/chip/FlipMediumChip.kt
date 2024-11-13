@@ -23,45 +23,45 @@ import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
-/** 중간 사이즈의 Flip Chip */
+/**
+ * 중간 사이즈의 Flip Chip
+ */
 @Composable
 fun FlipMediumChip(
     modifier: Modifier = Modifier,
     text: String,
     @DrawableRes icon: Int?,
     solid: Boolean = true,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
 
     Box(
-        modifier =
-            modifier
-                .wrapContentSize()
-                .clip(FlipTheme.shapes.roundedCornerSmall)
-                .background(if (solid) FlipTheme.colors.point else FlipTheme.colors.gray1)
-                .clickableSingle { onClick() }
+        modifier = modifier
+            .wrapContentSize()
+            .clip(FlipTheme.shapes.roundedCornerSmall)
+            .background(if (solid) FlipTheme.colors.point else FlipTheme.colors.gray1)
+            .clickableSingle { onClick() },
     ) {
         Row(
-            modifier =
-                Modifier.align(Alignment.Center)
-                    .padding(start = 12.dp, end = 16.dp, top = 5.dp, bottom = 5.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(start = 12.dp, end = 16.dp, top = 5.dp, bottom = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement =
-                Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
         ) {
             icon?.let {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(icon),
                     contentDescription = text,
-                    tint = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6,
+                    tint = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6
                 )
             }
             Text(
                 modifier = Modifier,
                 text = text,
                 style = FlipTheme.typography.body5,
-                color = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6,
+                color = if (solid) FlipTheme.colors.white else FlipTheme.colors.gray6
             )
         }
     }
@@ -71,7 +71,11 @@ fun FlipMediumChip(
 @Composable
 private fun FlipMediumChipPreview() {
     FlipAppTheme {
-        FlipMediumChip(text = "Text", icon = R.drawable.ic_outlined_setting, onClick = {})
+        FlipMediumChip(
+            text = "Text",
+            icon = R.drawable.ic_outlined_setting,
+            onClick = {}
+        )
     }
 }
 
@@ -83,7 +87,7 @@ private fun FlipMediumChip2Preview() {
             text = "Text",
             icon = R.drawable.ic_outlined_setting,
             solid = false,
-            onClick = {},
+            onClick = {}
         )
     }
 }

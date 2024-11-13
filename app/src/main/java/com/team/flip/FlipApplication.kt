@@ -11,7 +11,7 @@ import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class FlipApplication : Application(), ImageLoaderFactory {
+class FlipApplication: Application(), ImageLoaderFactory {
 
     // 약 10MB 정도
     private val imageCacheMaxSize: Long = 10 * 1024 * 1024
@@ -29,9 +29,11 @@ class FlipApplication : Application(), ImageLoaderFactory {
         return ImageLoader.Builder(this)
             .memoryCachePolicy(CachePolicy.ENABLED) // 메모리 캐시 활성화
             .memoryCache {
-                MemoryCache.Builder(this).maxSizePercent(memoryCacheMaxSizePercent).build()
+                MemoryCache.Builder(this)
+                    .maxSizePercent(memoryCacheMaxSizePercent)
+                    .build()
             }
-            .diskCachePolicy(CachePolicy.ENABLED) // 디스크 캐시 활성화
+            .diskCachePolicy(CachePolicy.ENABLED)   // 디스크 캐시 활성화
             .diskCache {
                 DiskCache.Builder()
                     .maxSizeBytes(imageCacheMaxSize)
@@ -39,11 +41,9 @@ class FlipApplication : Application(), ImageLoaderFactory {
                     .build()
             }
             .apply {
-                if (BuildConfig.DEBUG) {
-                    logger(DebugLogger())
-                }
+                if (BuildConfig.DEBUG) { logger(DebugLogger()) }
             }
-            .respectCacheHeaders(true) // 서버의 캐시 제어 헤더 사용 여부
+            .respectCacheHeaders(true)  // 서버의 캐시 제어 헤더 사용 여부
             .build()
     }
 }
