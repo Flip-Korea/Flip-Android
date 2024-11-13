@@ -8,8 +8,6 @@ import com.team.data.local.testdoubles.makeCategoryTestData
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -21,6 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Named
+
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -32,11 +33,15 @@ import org.robolectric.annotation.Config
 )
 class CategoryDaoTest {
 
-    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Inject @Named("test_db") lateinit var database: FlipDatabase
+    @Inject
+    @Named("test_db")
+    lateinit var database: FlipDatabase
     private lateinit var categoryDao: CategoryDao
 
     @Before
@@ -78,7 +83,7 @@ class CategoryDaoTest {
         repeat(5) { id -> categoryIds.add(id) }
         categoryDao.upsertCategories(makeCategoriesTestData(categoryIds))
 
-        val findIds = listOf(1, 2, 3, 7) // Not Exists Data Id is 7
+        val findIds = listOf(1,2,3,7) // Not Exists Data Id is 7
         val findCategories = categoryDao.getCategoryByIds(findIds).first()
 
         assertEquals(findCategories.size, 3)

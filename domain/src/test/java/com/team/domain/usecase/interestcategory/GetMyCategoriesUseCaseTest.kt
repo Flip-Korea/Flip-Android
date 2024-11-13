@@ -31,8 +31,11 @@ class GetMyCategoriesUseCaseTest {
         val expected = myCategoriesTestData
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = true, isNetworkError = false)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = true,
+            isNetworkError = false
+        )
         val getMyCategoriesUseCase = GetMyCategoriesUseCase(dataStoreManager, userRepository)
 
         // When
@@ -50,8 +53,11 @@ class GetMyCategoriesUseCaseTest {
         val expected = myCategoriesTestData
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = false
+        )
         val getMyCategoriesUseCase = GetMyCategoriesUseCase(dataStoreManager, userRepository)
 
         // When
@@ -68,8 +74,11 @@ class GetMyCategoriesUseCaseTest {
         val profileId = "profileId"
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = true)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = true
+        )
         val getMyCategoriesUseCase = GetMyCategoriesUseCase(dataStoreManager, userRepository)
 
         // When
@@ -84,8 +93,11 @@ class GetMyCategoriesUseCaseTest {
         // Given
         val profileId = "profileId"
 
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = true)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = true
+        )
         val getMyCategoriesUseCase = GetMyCategoriesUseCase(dataStoreManager, userRepository)
 
         // When

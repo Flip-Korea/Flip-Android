@@ -32,15 +32,21 @@ class GetMyProfileUseCaseTest {
         val expected = myProfileTestData(profileId)
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = true, isNetworkError = false)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = true,
+            isNetworkError = false
+        )
         val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
         // When
         val actual = getMyProfileUseCase().last()
 
         // Then
-        assertEquals(expected, (actual as Result.Success).data)
+        assertEquals(
+            expected,
+            (actual as Result.Success).data
+        )
     }
 
     @Test
@@ -50,15 +56,21 @@ class GetMyProfileUseCaseTest {
         val expected = myProfileTestData(profileId)
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = false
+        )
         val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
         // When
         val actual = getMyProfileUseCase().last()
 
         // Then
-        assertEquals(expected, (actual as Result.Success).data)
+        assertEquals(
+            expected,
+            (actual as Result.Success).data
+        )
     }
 
     @Test
@@ -67,8 +79,11 @@ class GetMyProfileUseCaseTest {
         val profileId = "profileId"
 
         dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = true)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = true
+        )
         val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
         // When
@@ -84,8 +99,11 @@ class GetMyProfileUseCaseTest {
         val profileId = "profileId"
         val expected: Result<Nothing, ErrorType> = Result.Error(ErrorType.Auth.USER_NOT_FOUND)
 
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
+        val userRepository = FakeUserRepository(
+            profileId = profileId,
+            hasLocalData = false,
+            isNetworkError = false
+        )
         val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
         // When

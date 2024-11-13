@@ -1,17 +1,12 @@
 package com.team.domain.type
 
 enum class SocialLoginPlatform {
-    GOOGLE,
-    KAKAO,
+    GOOGLE, KAKAO
 }
 
 fun SocialLoginPlatform.asString(): String {
     return when (this) {
-        SocialLoginPlatform.GOOGLE -> {
-            "google"
-        }
-        SocialLoginPlatform.KAKAO -> {
-            "kakao"
-        }
+        SocialLoginPlatform.GOOGLE -> { "google" }
+        SocialLoginPlatform.KAKAO -> { "kakao" }
     }
 }

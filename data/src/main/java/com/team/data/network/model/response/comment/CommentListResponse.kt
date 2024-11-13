@@ -17,5 +17,5 @@ fun CommentListResponse.toDomainModel(): CommentList =
         commentCnt = commentCnt,
         hasNext = hasNext,
         nextCursor = nextCursor,
-        comments = comments.toDomainModel(),
+        comments = comments.toDomainModel()
     )

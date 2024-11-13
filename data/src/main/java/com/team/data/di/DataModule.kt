@@ -20,17 +20,35 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 interface DataModule {
-    // 해당 모듈을 interface 로 바꾸는 거랑 뭔 차이지?
+// 해당 모듈을 interface 로 바꾸는 거랑 뭔 차이지?
 
-    @Binds fun bindsPostRepository(impl: DefaultPostRepository): PostRepository
+    @Binds
+    fun bindsPostRepository(
+        impl: DefaultPostRepository
+    ): PostRepository
 
-    @Binds fun bindsTempPostRepository(impl: DefaultTempPostRepository): TempPostRepository
+    @Binds
+    fun bindsTempPostRepository(
+        impl: DefaultTempPostRepository
+    ): TempPostRepository
 
-    @Binds fun bindsAuthRepository(impl: DefaultAccountRepository): AccountRepository
+    @Binds
+    fun bindsAuthRepository(
+        impl: DefaultAccountRepository
+    ): AccountRepository
 
-    @Binds fun bindsCommentRepository(impl: DefaultCommentRepository): CommentRepository
+    @Binds
+    fun bindsCommentRepository(
+        impl: DefaultCommentRepository
+    ): CommentRepository
 
-    @Binds fun bindsUserRepository(impl: DefaultUserRepository): UserRepository
+    @Binds
+    fun bindsUserRepository(
+        impl: DefaultUserRepository
+    ): UserRepository
 
-    @Binds fun bindsCategoryRepository(impl: DefaultCategoryRepository): CategoryRepository
+    @Binds
+    fun bindsCategoryRepository(
+        impl: DefaultCategoryRepository
+    ): CategoryRepository
 }

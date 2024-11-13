@@ -9,10 +9,10 @@ import com.team.data.util.retry
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import java.io.IOException
-import java.util.concurrent.TimeoutException
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 /**
  * 모든 네트워크 호출에 사용 되는 제네릭 함수
@@ -20,6 +20,7 @@ import retrofit2.Response
  * 'networkCall()' 과 차이는 해당 함수는 응답 값의 body 가 없을 때만 사용 한다.
  *
  * @param call suspend function 이어야 하며, 반환 값은 Response 타입
+ *
  * @return Result<T, ErrorType>
  * @see ErrorType
  * @see networkCall
@@ -36,7 +37,7 @@ suspend fun <T> networkCallWithoutResponse(
             404 -> ErrorType.Network.NOT_FOUND
             500 -> ErrorType.Network.INTERNAL_SERVER_ERROR
             else -> {
-                if (code / 100 == 5) {
+                if (code/100 == 5) {
                     ErrorType.Network.UNEXPECTED_SERVER
                 } else {
                     ErrorType.Network.UNEXPECTED
@@ -50,11 +51,17 @@ suspend fun <T> networkCallWithoutResponse(
         return if (response.isSuccessful) {
             Result.Success(true)
         } else {
-            val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+            val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
             val adapter = moshi.adapter(ErrorBody::class.java)
-            val errorBody =
-                response.errorBody()?.source()?.let { source -> adapter.fromJson(source) }
-            Result.Error(error = toNetworkErrorType(response.code()), errorBody = errorBody)
+            val errorBody = response.errorBody()?.source()?.let { source ->
+                adapter.fromJson(source)
+            }
+            Result.Error(
+                error = toNetworkErrorType(response.code()),
+                errorBody = errorBody
+            )
         }
     } catch (e: HttpException) {
         return Result.Error(error = toNetworkErrorType(e.code()), message = e.message())

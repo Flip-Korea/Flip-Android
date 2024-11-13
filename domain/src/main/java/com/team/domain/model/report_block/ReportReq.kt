@@ -7,5 +7,5 @@ data class ReportReq(
     val reportId: String,
     val reporterId: String,
     val postId: Long?,
-    val commentId: Long?,
+    val commentId: Long?
 )

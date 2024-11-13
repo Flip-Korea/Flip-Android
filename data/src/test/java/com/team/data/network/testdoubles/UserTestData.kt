@@ -1,7 +1,6 @@
 package com.team.data.network.testdoubles
 
-val networkProfileTestData =
-    """
+val networkProfileTestData = """
     {
       "profile_id": "honggildong_main",
       "nickname": "홍길동이(메인)",
@@ -14,11 +13,9 @@ val networkProfileTestData =
       "is_following": false,
       "is_follower": false
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val networkMyProfileTestData =
-    """
+val networkMyProfileTestData = """
     {
       "profile_id": "honggildong_main",
       "nickname": "홍길동이(메인)",
@@ -30,8 +27,7 @@ val networkMyProfileTestData =
       "photo_url": "https://maybe-storage-server.com/12",
       "categories": [1, 2, 3]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 val makeNetworkMyProfileTestData = { profileId: String ->
     """
         {
@@ -45,12 +41,10 @@ val makeNetworkMyProfileTestData = { profileId: String ->
           "categories": [1, 2, 3],
           "rating": "default"
         }
-    """
-        .trimIndent()
+    """.trimIndent()
 }
 
-val networkFollowersTestData =
-    """
+val networkFollowersTestData = """
     {
       "has_next": true,
       "next_cursor": "0000002024030854",
@@ -71,10 +65,8 @@ val networkFollowersTestData =
         }
       ]
     }
-"""
-        .trimIndent()
-val networkFollowersTestDataEndOfPage =
-    """
+""".trimIndent()
+val networkFollowersTestDataEndOfPage = """
     {
       "has_next": false,
       "next_cursor": "0000002024030854",
@@ -95,11 +87,9 @@ val networkFollowersTestDataEndOfPage =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val networkFollowingsTestData =
-    """
+val networkFollowingsTestData = """
     {
       "has_next": true,
       "next_cursor": "0000002024030854",
@@ -120,10 +110,8 @@ val networkFollowingsTestData =
         }
       ]
     }
-"""
-        .trimIndent()
-val networkFollowingsTestDataEndOfPage =
-    """
+""".trimIndent()
+val networkFollowingsTestDataEndOfPage = """
     {
       "has_next": false,
       "next_cursor": "0000002024030854",
@@ -144,11 +132,9 @@ val networkFollowingsTestDataEndOfPage =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val networkBlocksTestData =
-    """
+val networkBlocksTestData = """
     {
       "has_next": true,
       "next_cursor": "0000002024030854",
@@ -161,10 +147,8 @@ val networkBlocksTestData =
         }
       ]
     }
-"""
-        .trimIndent()
-val networkBlocksTestDataEndOfPage =
-    """
+""".trimIndent()
+val networkBlocksTestDataEndOfPage = """
     {
       "has_next": false,
       "next_cursor": "",
@@ -177,11 +161,9 @@ val networkBlocksTestDataEndOfPage =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val networkMyCommentsTestData =
-    """
+val networkMyCommentsTestData = """
     {
       "has_next": true,
       "next_cursor": "0000002024030854",
@@ -202,10 +184,8 @@ val networkMyCommentsTestData =
         }
       ]
     }
-"""
-        .trimIndent()
-val networkMyCommentsTestDataEndOfPage =
-    """
+""".trimIndent()
+val networkMyCommentsTestDataEndOfPage = """
     {
       "has_next": false,
       "next_cursor": "",
@@ -226,5 +206,4 @@ val networkMyCommentsTestDataEndOfPage =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()

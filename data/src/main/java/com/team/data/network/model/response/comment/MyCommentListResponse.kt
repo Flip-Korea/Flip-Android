@@ -8,7 +8,7 @@ import com.team.domain.model.post.DisplayPostList
 data class MyCommentListResponse(
     @Json(name = "has_next") val hasNext: Boolean,
     @Json(name = "next_cursor") val nextCursor: String,
-    @Json(name = "posts") val posts: List<DisplayPostResponse>,
+    @Json(name = "posts") val posts: List<DisplayPostResponse>
 )
 
 fun MyCommentListResponse.toDomainModel(): DisplayPostList =

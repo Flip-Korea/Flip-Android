@@ -24,3 +24,4 @@ fun NewPost.toNetwork(): PostRequest =
         fontStyleType = fontStyleType,
         tags = tags,
     )
+

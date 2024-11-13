@@ -37,33 +37,36 @@ fun AddFlipContentTextField(
 ) {
 
     BasicTextField(
-        modifier =
-            modifier
-                .heightIn(min = 200.dp, max = (200 * 2).dp)
-                .focusCleaner(focusManager)
-                //            .focusRequester(focusRequester)
-                //            .focusable()
-                //            .clickable {}
-                .onFocusChanged {
-                    when {
-                        it.isFocused -> onFocusChanged(it.isFocused)
-                        it.isCaptured -> onFocusChanged(it.isCaptured)
-                    }
-                },
+        modifier = modifier
+            .heightIn(min = 200.dp, max = (200 * 2).dp)
+            .focusCleaner(focusManager)
+//            .focusRequester(focusRequester)
+//            .focusable()
+//            .clickable {}
+            .onFocusChanged {
+                when {
+                    it.isFocused -> onFocusChanged(it.isFocused)
+                    it.isCaptured -> onFocusChanged(it.isCaptured)
+                }
+            },
         value = content,
         onValueChange = { onContentChanged(it) },
         textStyle = FlipTheme.typography.headline1,
         cursorBrush = SolidColor(FlipTheme.colors.point),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     ) { innerTextField ->
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
             Box(modifier = Modifier.align(Alignment.TopStart)) {
                 innerTextField()
                 if (content.isEmpty()) {
                     Text(
                         text = placeholder,
                         style = FlipTheme.typography.body5,
-                        color = FlipTheme.colors.gray5,
+                        color = FlipTheme.colors.gray5
                     )
                 }
             }
@@ -80,14 +83,14 @@ private fun AddFlipContentTextFieldPreview() {
 
     FlipAppTheme {
         Box(
-            modifier =
-                Modifier.fillMaxSize()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { focusManager.clearFocus() },
-                    ),
-            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { focusManager.clearFocus() }
+                ),
+            contentAlignment = Alignment.TopCenter
         ) {
             AddFlipContentTextField(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -95,7 +98,7 @@ private fun AddFlipContentTextFieldPreview() {
                 placeholder = "내용을 자유롭게 작성해보세요.",
                 focusManager = LocalFocusManager.current,
                 onContentChanged = { onTitleChanged(it) },
-                onFocusChanged = {},
+                onFocusChanged = { },
             )
         }
     }

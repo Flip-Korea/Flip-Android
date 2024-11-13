@@ -38,14 +38,15 @@ class SearchNetworkDataSourceTest {
         server = MockWebServer()
         server.start()
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
-        searchNetworkApi =
-            Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl(server.url("/"))
-                .build()
-                .create(SearchNetworkApi::class.java)
+        searchNetworkApi = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(server.url("/"))
+            .build()
+            .create(SearchNetworkApi::class.java)
 
         searchNetworkDataSource = FakeSearchNetworkDataSource(searchNetworkApi)
     }
@@ -57,15 +58,13 @@ class SearchNetworkDataSourceTest {
 
     @Test
     fun `게시글 검색 (searchByPost())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(postsResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi.adapter(PostListResponse::class.java).fromJson(postsResponseTestData)!!
+        val expectedResponse = moshi.adapter(PostListResponse::class.java)
+            .fromJson(postsResponseTestData)!!
 
         val actualResponse = searchNetworkDataSource.searchByPost("123", "aaa", 15)
 
@@ -74,17 +73,13 @@ class SearchNetworkDataSourceTest {
 
     @Test
     fun `프로필 검색 (searchByNickname())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(displayProfileListResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(displayProfileListResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi
-                .adapter(DisplayProfileListResponse::class.java)
-                .fromJson(displayProfileListResponseTestData)!!
+        val expectedResponse = moshi.adapter(DisplayProfileListResponse::class.java)
+            .fromJson(displayProfileListResponseTestData)!!
 
         val actualResponse = searchNetworkDataSource.searchByNickname("123", "aaa", 15)
 
@@ -93,15 +88,13 @@ class SearchNetworkDataSourceTest {
 
     @Test
     fun `태그 검색 (searchByTag())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(tagListResponseTestData)
-            }
-        )
+        server.enqueue(MockResponse().apply {
+            setResponseCode(200)
+            setBody(tagListResponseTestData)
+        })
 
-        val expectedResponse =
-            moshi.adapter(TagListResponse::class.java).fromJson(tagListResponseTestData)!!
+        val expectedResponse = moshi.adapter(TagListResponse::class.java)
+            .fromJson(tagListResponseTestData)!!
 
         val actualResponse = searchNetworkDataSource.searchByTag("123", "aaa", 15)
 

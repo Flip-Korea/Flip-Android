@@ -4,10 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.team.domain.model.profile.MyProfile
 
-/** This Entity is My Profile Entity * */
+/** This Entity is My Profile Entity **/
 @Entity
 data class MyProfileEntity(
-    @PrimaryKey(autoGenerate = false) val profileId: String,
+    @PrimaryKey(autoGenerate = false)
+    val profileId: String,
     val nickname: String,
     val introduce: String,
     val photoUrl: String,
@@ -18,7 +19,8 @@ data class MyProfileEntity(
     val rating: String,
 )
 
-fun List<MyProfileEntity>.toDomainModel(): List<MyProfile> = this.map { it.toDomainModel() }
+fun List<MyProfileEntity>.toDomainModel(): List<MyProfile> =
+    this.map { it.toDomainModel() }
 
 fun MyProfileEntity.toDomainModel(): MyProfile =
     MyProfile(

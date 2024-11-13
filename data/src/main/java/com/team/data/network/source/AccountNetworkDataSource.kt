@@ -1,8 +1,8 @@
 package com.team.data.network.source
 
 import com.team.data.network.model.request.RegisterRequest
-import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
+import com.team.data.network.model.response.TokenResponse
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
@@ -19,4 +19,5 @@ interface AccountNetworkDataSource {
     suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType>
 
     suspend fun tokenRefresh(refreshToken: String): Result<TokenResponse, ErrorType>
+
 }

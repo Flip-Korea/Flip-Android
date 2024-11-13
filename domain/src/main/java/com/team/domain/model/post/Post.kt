@@ -31,7 +31,7 @@ data class Post(
         likeCnt: Long,
         commentCnt: Long,
         scraped: Boolean,
-        bgColorType: BackgroundColorType,
+        bgColorType: BackgroundColorType
     ) : this(
         postId = postId,
         profile = profile,
@@ -47,6 +47,6 @@ data class Post(
         bgColorType = bgColorType,
         fontStyleType = FontStyleType.NORMAL,
         tags = emptyList(),
-        createdAt = createdAt,
+        createdAt = createdAt
     )
 }

@@ -5,27 +5,29 @@ import com.team.data.network.model.request.RegisterRequest
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
 
-fun ProfileRequest.toExternal(): RegisterProfile = RegisterProfile(profileId, nickname, photoUrl)
+fun ProfileRequest.toExternal(): RegisterProfile =
+    RegisterProfile(profileId, nickname, photoUrl)
 
 fun RegisterRequest.toExternal(): Register =
     Register(
         accountId = accountId,
         categories = categories,
         name = name,
-        profile = profile.toExternal(),
+        profile = profile.toExternal()
     )
 
-val networkRegisterTestData =
-    RegisterRequest(
-        accountId = "kakao123test",
-        name = "testName",
-        categories = listOf(1, 2, 3),
-        profile =
-            ProfileRequest(profileId = "honggd", nickname = "testNickName", photoUrl = "test.com"),
+val networkRegisterTestData = RegisterRequest(
+    accountId = "kakao123test",
+    name = "testName",
+    categories = listOf(1, 2, 3),
+    profile = ProfileRequest(
+        profileId = "honggd",
+        nickname = "testNickName",
+        photoUrl = "test.com"
     )
+)
 
-val networkAccountJsonTestData =
-    """
+val networkAccountJsonTestData = """
             {
               "account_id": "kakao12s3sd4aadv5",
               "name": "홍길동",
@@ -56,5 +58,4 @@ val networkAccountJsonTestData =
                 }
               ]
             }
-        """
-        .trimIndent()
+        """.trimIndent()

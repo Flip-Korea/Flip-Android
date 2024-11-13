@@ -49,50 +49,47 @@ fun FlipSearchTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
 
-    val backgroundColor =
-        if (!focused) {
-            FlipTheme.colors.gray1
-        } else FlipTheme.colors.white
+    val backgroundColor = if (!focused) {
+        FlipTheme.colors.gray1
+    } else FlipTheme.colors.white
 
-    val borderColor =
-        if (!focused) {
-            Color.Transparent
-        } else FlipTheme.colors.gray4
+    val borderColor = if (!focused) {
+        Color.Transparent
+    } else FlipTheme.colors.gray4
 
     BasicTextField(
-        modifier =
-            modifier
-                .clip(FlipTheme.shapes.roundedCornerTextField)
-                .border(1.dp, borderColor, FlipTheme.shapes.roundedCornerTextField)
-                .fillMaxWidth()
-                .height(40.dp)
-                .focusCleaner(focusManager),
+        modifier = modifier
+            .clip(FlipTheme.shapes.roundedCornerTextField)
+            .border(1.dp, borderColor, FlipTheme.shapes.roundedCornerTextField)
+            .fillMaxWidth()
+            .height(40.dp)
+            .focusCleaner(focusManager),
         value = text,
         onValueChange = onTextChanged,
         textStyle = FlipTheme.typography.body6,
         singleLine = true,
         interactionSource = interactionSource,
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        cursorBrush = FlipTextFieldStyles.cursorBrushBlack,
+        cursorBrush = FlipTextFieldStyles.cursorBrushBlack
     ) { innerTextField ->
         Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .background(backgroundColor)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(backgroundColor)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier.weight(1f).wrapContentSize(Alignment.CenterStart),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_search),
                     contentDescription = stringResource(id = R.string.content_desc_search),
-                    tint = FlipTheme.colors.gray5,
+                    tint = FlipTheme.colors.gray5
                 )
                 if (!focused && text.isEmpty()) {
                     Text(
@@ -102,7 +99,7 @@ fun FlipSearchTextField(
                         color = FlipTheme.colors.gray5,
                         textAlign = TextAlign.Start,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 innerTextField()
@@ -110,15 +107,15 @@ fun FlipSearchTextField(
 
             if (text.isNotEmpty()) {
                 Image(
-                    modifier =
-                        Modifier.size(24.dp)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                                onClick = { onTextChanged("") },
-                            ),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = { onTextChanged("") }
+                        ),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_tf_remove),
-                    contentDescription = stringResource(id = R.string.content_desc_tf_remove),
+                    contentDescription = stringResource(id = R.string.content_desc_tf_remove)
                 )
             }
         }
@@ -133,6 +130,10 @@ private fun FlipSearchTextFieldPreview() {
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
-        FlipSearchTextField(text = text, onTextChanged = onTextChanged, focusManager = focusManager)
+        FlipSearchTextField(
+            text = text,
+            onTextChanged = onTextChanged,
+            focusManager = focusManager,
+        )
     }
 }

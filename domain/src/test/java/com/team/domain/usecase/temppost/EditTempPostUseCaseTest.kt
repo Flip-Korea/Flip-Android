@@ -25,30 +25,28 @@ class EditTempPostUseCaseTest {
     fun `임시 저장 한 Flip(Post) 수정 실패`() = runTest {
         // Given
         val tempPostId: Long = 1
-        val newPost =
-            NewPost(
-                title = "title",
-                content = "content",
-                bgColorType = BackgroundColorType.DEFAULT,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf(""),
-                categoryId = 0,
-            )
+        val newPost = NewPost(
+            title = "title",
+            content = "content",
+            bgColorType = BackgroundColorType.DEFAULT,
+            fontStyleType = FontStyleType.NORMAL,
+            tags = listOf(""),
+            categoryId = 0,
+        )
         val actualError = ErrorType.Network.FORBIDDEN
-        every { tempPostRepository.editTemporaryPost(tempPostId, newPost) } returns
-            flowOf(Result.Error(actualError))
+        every {
+            tempPostRepository.editTemporaryPost(tempPostId, newPost)
+        } returns flowOf(Result.Error(actualError))
 
         // When
-        val result =
-            editTempPostUseCase(
-                    tempPostId = tempPostId,
-                    title = newPost.title,
-                    content = newPost.content,
-                    bgColorType = newPost.bgColorType,
-                    tags = newPost.tags,
-                    categoryId = newPost.categoryId,
-                )
-                .first()
+        val result = editTempPostUseCase(
+            tempPostId = tempPostId,
+            title = newPost.title,
+            content = newPost.content,
+            bgColorType = newPost.bgColorType,
+            tags = newPost.tags,
+            categoryId = newPost.categoryId
+        ).first()
         val expectedError = (result as Result.Error).error
 
         // Then
@@ -59,29 +57,27 @@ class EditTempPostUseCaseTest {
     fun `임시 저장 한 Flip(Post) 수정 성공`() = runTest {
         // Given
         val tempPostId: Long = 1
-        val newPost =
-            NewPost(
-                title = "title",
-                content = "content",
-                bgColorType = BackgroundColorType.DEFAULT,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf(""),
-                categoryId = 0,
-            )
-        every { tempPostRepository.editTemporaryPost(tempPostId, newPost) } returns
-            flowOf(Result.Success(true))
+        val newPost = NewPost(
+            title = "title",
+            content = "content",
+            bgColorType = BackgroundColorType.DEFAULT,
+            fontStyleType = FontStyleType.NORMAL,
+            tags = listOf(""),
+            categoryId = 0,
+        )
+        every {
+            tempPostRepository.editTemporaryPost(tempPostId, newPost)
+        } returns flowOf(Result.Success(true))
 
         // When
-        val result =
-            editTempPostUseCase(
-                    tempPostId = tempPostId,
-                    title = newPost.title,
-                    content = newPost.content,
-                    bgColorType = newPost.bgColorType,
-                    tags = newPost.tags,
-                    categoryId = newPost.categoryId,
-                )
-                .first()
+        val result = editTempPostUseCase(
+            tempPostId = tempPostId,
+            title = newPost.title,
+            content = newPost.content,
+            bgColorType = newPost.bgColorType,
+            tags = newPost.tags,
+            categoryId = newPost.categoryId
+        ).first()
 
         // Then
         assert((result as Result.Success).data)

@@ -5,11 +5,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.team.data.network.retrofit.cache.NetworkCheckUtil
 
-class NetworkCheckUtilImpl(private val context: Context) : NetworkCheckUtil {
+class NetworkCheckUtilImpl(
+    private val context: Context
+): NetworkCheckUtil {
 
     override fun hasNetwork(): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
 

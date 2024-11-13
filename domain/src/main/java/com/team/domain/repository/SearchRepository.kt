@@ -19,18 +19,18 @@ interface SearchRepository {
     fun searchByPostPagination(
         searchQuery: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<PostList, ErrorType>>
 
     fun searchByNicknamePagination(
         searchQuery: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<DisplayProfileList, ErrorType>>
 
     fun searchByTagPagination(
         searchQuery: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<TagResultList, ErrorType>>
 }

@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.team.domain.model.report_block.ReportReq
 
-/** reportId, reporterId는 profileId 형태 * */
+/** reportId, reporterId는 profileId 형태 **/
 @JsonClass(generateAdapter = true)
 data class ReportRequest(
     @Json(name = "blame_type") val blameType: String,
@@ -15,4 +15,7 @@ data class ReportRequest(
 )
 
 fun ReportReq.toNetwork(): ReportRequest =
-    ReportRequest(blameType = reportType.asString(), reportId, reporterId, postId, commentId)
+    ReportRequest(
+        blameType = reportType.asString(),
+        reportId, reporterId, postId, commentId
+    )

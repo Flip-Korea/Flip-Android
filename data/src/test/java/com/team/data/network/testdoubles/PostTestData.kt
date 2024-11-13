@@ -1,7 +1,6 @@
 package com.team.data.network.testdoubles
 
-val postsResponseTestData =
-    """
+val postsResponseTestData = """
     {
       "post_cnt": 12001,
       "has_next": true,
@@ -59,10 +58,8 @@ val postsResponseTestData =
         }
       ]
     }
-"""
-        .trimIndent()
-val postsResponseTestDataEndOfPage =
-    """
+""".trimIndent()
+val postsResponseTestDataEndOfPage = """
     {
       "post_cnt": 12001,
       "has_next": false,
@@ -120,11 +117,9 @@ val postsResponseTestDataEndOfPage =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val postsResponseTestDataWithScrapComment =
-    """
+val postsResponseTestDataWithScrapComment = """
     {
       "post_cnt": 12001,
       "has_next": true,
@@ -184,11 +179,9 @@ val postsResponseTestDataWithScrapComment =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val postResponseTestData =
-    """
+val postResponseTestData = """
     {
       "postId": 2,
       "profile": {
@@ -214,11 +207,9 @@ val postResponseTestData =
       ],
       "postAt": "2024-03-04 MON"
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val postRequestTestData =
-    """
+val postRequestTestData = """
     {
       "title" : "title",
       "content" : "content",
@@ -227,19 +218,15 @@ val postRequestTestData =
       "tags" : [ "tag1", "tag2" ],
       "categoryId" : 1
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val resultIdResponseTestData =
-    """
+val resultIdResponseTestData = """
     {
       "result_id": 123
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val commentResponseTestData =
-    """
+val commentResponseTestData = """
     {
       "comment_cnt": 2,
       "has_next": true,
@@ -263,40 +250,32 @@ val commentResponseTestData =
         }
       ]
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val commentRequestTestData =
-    """
+val commentRequestTestData = """
     {
       "profile_id": "honggd123",
       "post_id": 4312,
       "comment": "좋은 글이네용~"
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val likePostRequestTestData =
-    """
+val likePostRequestTestData = """
     {
       "profile_id": "honggd",
       "post_id": 12424
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val addScrapRequestTestData =
-    """
+val addScrapRequestTestData = """
     {
       "profile_id": "honggd",
       "post_id": 624,
       "message": "어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구"
     }
-"""
-        .trimIndent()
+""".trimIndent()
 
-val tempPostListResponseTestData =
-    """
+val tempPostListResponseTestData = """
     {
       "tempPosts": [
         {
@@ -365,5 +344,4 @@ val tempPostListResponseTestData =
       ],
       "totalCount": 5
     }
-"""
-        .trimIndent()
+""".trimIndent()

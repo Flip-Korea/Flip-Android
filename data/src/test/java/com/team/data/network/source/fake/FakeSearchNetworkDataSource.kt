@@ -8,8 +8,9 @@ import com.team.data.network.source.SearchNetworkDataSource
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakeSearchNetworkDataSource(private val searchNetworkApi: SearchNetworkApi) :
-    SearchNetworkDataSource {
+class FakeSearchNetworkDataSource(
+    private val searchNetworkApi: SearchNetworkApi
+): SearchNetworkDataSource {
 
     override suspend fun searchByPost(
         searchQuery: String,

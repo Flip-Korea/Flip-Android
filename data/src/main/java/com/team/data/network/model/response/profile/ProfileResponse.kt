@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.team.domain.model.profile.Profile
 
-/** 다른 사용자의 프로필 (Res-1) * */
+/** 다른 사용자의 프로필 (Res-1) **/
 @JsonClass(generateAdapter = true)
 data class ProfileResponse(
     @Json(name = "profile_id") val profileId: String,
@@ -16,19 +16,8 @@ data class ProfileResponse(
     @Json(name = "following_cnt") val followingCnt: Int,
     @Json(name = "is_follower") val isFollower: Boolean,
     @Json(name = "is_following") val isFollowing: Boolean,
-    @Json(name = "rating") val rating: String,
+    @Json(name = "rating") val rating: String
 )
 
 fun ProfileResponse.toDomainModel(): Profile =
-    Profile(
-        profileId,
-        nickname,
-        introduce,
-        photoUrl,
-        postCnt,
-        followerCnt,
-        followingCnt,
-        isFollower,
-        isFollowing,
-        rating,
-    )
+    Profile(profileId, nickname, introduce, photoUrl, postCnt, followerCnt, followingCnt, isFollower, isFollowing, rating)

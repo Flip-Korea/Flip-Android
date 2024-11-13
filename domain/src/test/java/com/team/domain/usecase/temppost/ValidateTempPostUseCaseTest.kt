@@ -32,7 +32,7 @@ class ValidateTempPostUseCaseTest {
         val validationResult = validateTempPostUseCase("", listOf(""))
         assertEquals(
             (validationResult as ValidationResult.Error).error,
-            ValidationErrorType.TempPost.EMPTY_TITLE_AND_CONTENT,
+            ValidationErrorType.TempPost.EMPTY_TITLE_AND_CONTENT
         )
     }
 }

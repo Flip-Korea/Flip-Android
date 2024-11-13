@@ -1,10 +1,8 @@
 package com.team.domain.model.profile
 
-/**
- * 다른 사용자의 프로필 일부분
+/** 다른 사용자의 프로필 일부분
  *
- * 플립 글에서 보여지는 프로필 일부*
- */
+ * 플립 글에서 보여지는 프로필 일부**/
 data class DisplayProfile(
     val profileId: String,
     val nickname: String,
@@ -18,8 +16,8 @@ data class DisplayProfile(
     constructor(
         profileId: String,
         nickname: String,
-        photoUrl: String,
-    ) : this(
+        photoUrl: String
+    ): this(
         profileId = profileId,
         nickname = nickname,
         photoUrl = photoUrl,
@@ -27,6 +25,6 @@ data class DisplayProfile(
         isFollowing = false,
         introduce = null,
         followerCnt = null,
-        rating = null,
+        rating = null
     )
 }

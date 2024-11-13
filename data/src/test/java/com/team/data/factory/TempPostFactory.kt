@@ -17,7 +17,7 @@ class TempPostFactory {
             bgColorType = BackgroundColorType.DEFAULT,
             categoryId = 0,
             categoryName = "",
-            postAt = "2024",
+            postAt = "2024"
         )
     }
 }

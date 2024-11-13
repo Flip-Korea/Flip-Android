@@ -13,23 +13,29 @@ private interface MockRepository {
 }
 
 private class MockTest(private val mockRepository: MockRepository) {
-    operator fun invoke(): Boolean = mockRepository.getNumber() == 10
+    operator fun invoke(): Boolean =
+        mockRepository.getNumber() == 10
 }
 
 @ExperimentalCoroutinesApi
 class MockKTest {
 
-    /** When Coroutine Test, Use coEvery { ... } */
+    /**
+     * When Coroutine Test, Use coEvery { ... }
+     */
+
     private val mockRepository: MockRepository = mockk()
     private val mockTest = MockTest(mockRepository)
 
     @Test
     fun `MockK Success Test`() = runTest {
         // Given
-        every { mockRepository.getNumber() } returns 10
+        every {
+            mockRepository.getNumber()
+        } returns 10
 
         // When
-        val result = mockTest()
+       val result = mockTest()
 
         // Then
         verify(exactly = 1) { mockRepository.getNumber() }
@@ -39,7 +45,9 @@ class MockKTest {
     @Test
     fun `MockK Failure Test`() = runTest {
         // Given
-        every { mockRepository.getNumber() } returns 5
+        every {
+            mockRepository.getNumber()
+        } returns 5
 
         // When
         val result = mockTest()

@@ -6,10 +6,12 @@ import com.team.domain.type.BackgroundColorType
 import com.team.domain.type.FontStyleType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class EditTempPostUseCase @Inject constructor(private val tempPostRepository: TempPostRepository) {
+class EditTempPostUseCase @Inject constructor(
+    private val tempPostRepository: TempPostRepository
+) {
 
     /**
      * 임시 저장 한 Flip(Post)를 수정한다.

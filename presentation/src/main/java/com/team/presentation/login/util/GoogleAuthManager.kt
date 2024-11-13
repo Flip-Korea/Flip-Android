@@ -22,15 +22,15 @@ import kotlinx.coroutines.tasks.await
 
 /**
  * 'SignIn(Login) with Google' Manager Class
- * - Used Firebase Auth
  *
+ * - Used Firebase Auth
  * @param context context of declaration location (ex. applicationContext)
  * @param credentialManager CredentialManager(Android Jetpack API)
  */
 class GoogleAuthManager(
     private val context: Context,
     private val credentialManager: CredentialManager,
-) : AuthManager {
+): AuthManager {
 
     private val auth = Firebase.auth
 
@@ -38,27 +38,31 @@ class GoogleAuthManager(
         emit(AuthUiState.Loading)
 
         val googleIdOption: GetSignInWithGoogleOption =
-            GetSignInWithGoogleOption.Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID).build()
+            GetSignInWithGoogleOption.Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                .build()
 
-        val request: GetCredentialRequest =
-            GetCredentialRequest.Builder().addCredentialOption(googleIdOption).build()
+        val request: GetCredentialRequest = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
 
         try {
-            val result = credentialManager.getCredential(request = request, context = context)
+            val result = credentialManager.getCredential(
+                request = request,
+                context = context
+            )
 
             when (val credential = result.credential) {
                 is CustomCredential -> {
-                    if (
-                        credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                    ) {
+                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                         try {
-                            val googleIdTokenCredential =
-                                GoogleIdTokenCredential.createFrom(credential.data)
+                            val googleIdTokenCredential = GoogleIdTokenCredential
+                                .createFrom(credential.data)
                             val googleIdToken = googleIdTokenCredential.idToken
                             val userResult = signInWithFirebase(googleIdToken)
 
-                            userResult?.let { user -> emit(AuthUiState.Success(user.uid)) }
-                                ?: emit(AuthUiState.Error(ErrorType.Auth.USER_NOT_FOUND))
+                            userResult?.let { user ->
+                                emit(AuthUiState.Success(user.uid))
+                            } ?: emit(AuthUiState.Error(ErrorType.Auth.USER_NOT_FOUND))
                         } catch (e: GoogleIdTokenParsingException) {
                             emit(AuthUiState.Error(ErrorType.Auth.PARSING_EXCEPTION))
                         } catch (e: Exception) {
@@ -67,9 +71,7 @@ class GoogleAuthManager(
                     }
                 }
 
-                else -> {
-                    emit(AuthUiState.Error(ErrorType.Auth.CREDENTIAL_TYPE_INVALID))
-                }
+                else -> { emit(AuthUiState.Error(ErrorType.Auth.CREDENTIAL_TYPE_INVALID)) }
             }
         } catch (e: GetCredentialCancellationException) {
             emit(AuthUiState.Error(ErrorType.Auth.CANCELLED))
@@ -80,7 +82,9 @@ class GoogleAuthManager(
 
     override suspend fun signOut() {
         auth.signOut()
-        credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest()
+        )
     }
 
     override suspend fun deleteAccount(): Flow<AuthUiState> = flow {
@@ -91,7 +95,9 @@ class GoogleAuthManager(
             try {
                 val task = currentUser.delete()
                 if (task.isComplete && task.isSuccessful) {
-                    credentialManager.clearCredentialState(ClearCredentialStateRequest())
+                    credentialManager.clearCredentialState(
+                        ClearCredentialStateRequest()
+                    )
                     emit(AuthUiState.Success("success"))
                 } else {
                     emit(AuthUiState.Error(ErrorType.Auth.DELETE_ACCOUNT_FAILED))

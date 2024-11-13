@@ -67,77 +67,87 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.img_login_bg),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Crop
         )
         TopSection(
-            modifier = Modifier.fillMaxWidth().padding(start = 32.dp, end = 32.dp, top = 134.dp),
-            logo = R.drawable.ic_logo,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 32.dp, end = 32.dp, top = 134.dp),
+            logo = R.drawable.ic_logo
         )
         BottomSection(
-            modifier =
-                Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(vertical = 127.dp),
-            loginPlatforms =
-                remember {
-                    listOf(
-                        Pair(SocialLoginPlatform.KAKAO, R.drawable.ic_login_kakao),
-                        Pair(SocialLoginPlatform.GOOGLE, R.drawable.ic_login_google),
-                    )
-                },
-            onLoginClick = { onLoginClick(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 127.dp),
+            loginPlatforms = remember {
+                listOf(
+                    Pair(SocialLoginPlatform.KAKAO, R.drawable.ic_login_kakao),
+                    Pair(SocialLoginPlatform.GOOGLE, R.drawable.ic_login_google),
+                )
+            },
+            onLoginClick = { onLoginClick(it) }
         )
         if (loginState.loading) {
             Box(
-                modifier =
-                    Modifier.fillMaxSize()
-                        .background(FlipTheme.colors.main.copy(0.5f))
-                        .zIndex(1f)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {},
-                        )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(FlipTheme.colors.main.copy(0.5f))
+                    .zIndex(1f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { }
+                    )
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center).size(50.dp),
-                    color = FlipTheme.colors.main,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(50.dp),
+                    color = FlipTheme.colors.main
                 )
             }
         }
     }
 }
 
-/** 로고 & 타이틀이 있는 부분 * */
+/** 로고 & 타이틀이 있는 부분 **/
 @Composable
-private fun TopSection(modifier: Modifier = Modifier, @DrawableRes logo: Int) {
+private fun TopSection(
+    modifier: Modifier = Modifier,
+    @DrawableRes logo: Int,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(32.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         Image(
             modifier = Modifier.size(72.dp, 45.dp),
             imageVector = ImageVector.vectorResource(logo),
-            contentDescription = null,
+            contentDescription = null
         )
         Text(
-            text =
-                buildAnnotatedString {
-                    append(stringResource(id = R.string.login_screen_title_1))
-                    append("\n")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(stringResource(id = R.string.login_screen_title_2))
-                    }
-                    append("\n")
-                    append(stringResource(id = R.string.login_screen_title_3))
-                },
-            style = FlipTheme.typography.headline7.copy(fontSize = 32.sp, lineHeight = 32.sp * 1.4),
+            text = buildAnnotatedString {
+                append(stringResource(id = R.string.login_screen_title_1))
+                append("\n")
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(stringResource(id = R.string.login_screen_title_2))
+                }
+                append("\n")
+                append(stringResource(id = R.string.login_screen_title_3))
+            },
+            style = FlipTheme.typography.headline7.copy(
+                fontSize = 32.sp,
+                lineHeight = 32.sp * 1.4
+            ),
             color = Color.White,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Start
         )
     }
 }
 
-/** 소셜로그인 플랫폼 버튼들이 있는 부분 * */
+/** 소셜로그인 플랫폼 버튼들이 있는 부분 **/
 @Composable
 private fun BottomSection(
     modifier: Modifier = Modifier,
@@ -147,27 +157,27 @@ private fun BottomSection(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.CenterVertically)
     ) {
         Text(
             text = stringResource(id = R.string.login_screen_select_platform),
             style = FlipTheme.typography.body3,
             color = Color.White,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             loginPlatforms.forEach { (platform, logo) ->
                 Image(
-                    modifier =
-                        Modifier.size(54.dp).clip(CircleShape).clickableSingle {
-                            onLoginClick(platform)
-                        },
+                    modifier = Modifier
+                        .size(54.dp)
+                        .clip(CircleShape)
+                        .clickableSingle { onLoginClick(platform) },
                     painter = painterResource(id = logo),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Crop
                 )
             }
         }
@@ -177,5 +187,10 @@ private fun BottomSection(
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    FlipAppTheme { LoginScreen(loginState = LoginState(loading = true), onLoginClick = {}) }
+    FlipAppTheme {
+        LoginScreen(
+            loginState = LoginState(loading = true),
+            onLoginClick = { }
+        )
+    }
 }

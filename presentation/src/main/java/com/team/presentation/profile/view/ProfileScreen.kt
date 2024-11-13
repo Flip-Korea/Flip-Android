@@ -13,13 +13,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, deleteToken: () -> Unit) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    deleteToken: () -> Unit
+) {
     Column(
-        modifier = modifier.fillMaxSize().background(Color.LightGray),
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp, alignment = Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(20.dp, alignment = Alignment.CenterVertically)
     ) {
         Text(text = "Profile Screen")
-        Button(onClick = deleteToken) { Text(text = "Delete Token") }
+        Button(onClick = deleteToken) {
+            Text(text = "Delete Token")
+        }
     }
 }

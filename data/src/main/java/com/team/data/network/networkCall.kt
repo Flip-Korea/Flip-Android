@@ -9,19 +9,22 @@ import com.team.data.util.retry
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import java.io.IOException
-import java.util.concurrent.TimeoutException
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 /**
  * 모든 네트워크 호출에 사용 되는 제네릭 함수
  *
  * @param call suspend function 이어야 하며, 반환 값은 Response 타입
+ *
  * @return Result<T, ErrorType>
  * @see ErrorType
  */
-suspend fun <T> networkCall(call: suspend () -> Response<T>): Result<T, ErrorType> {
+suspend fun <T> networkCall(
+    call: suspend () -> Response<T>
+): Result<T, ErrorType> {
 
     val toNetworkErrorType = { code: Int ->
         when (code) {
@@ -31,7 +34,7 @@ suspend fun <T> networkCall(call: suspend () -> Response<T>): Result<T, ErrorTyp
             404 -> ErrorType.Network.NOT_FOUND
             500 -> ErrorType.Network.INTERNAL_SERVER_ERROR
             else -> {
-                if (code / 100 == 5) {
+                if (code/100 == 5) {
                     ErrorType.Network.UNEXPECTED_SERVER
                 } else {
                     ErrorType.Network.UNEXPECTED
@@ -45,11 +48,17 @@ suspend fun <T> networkCall(call: suspend () -> Response<T>): Result<T, ErrorTyp
         return if (response.body() != null && response.isSuccessful) {
             Result.Success(response.body()!!)
         } else {
-            val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+            val moshi = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
             val adapter = moshi.adapter(ErrorBody::class.java)
-            val errorBody =
-                response.errorBody()?.source()?.let { source -> adapter.fromJson(source) }
-            Result.Error(error = toNetworkErrorType(response.code()), errorBody = errorBody)
+            val errorBody = response.errorBody()?.source()?.let { source ->
+                adapter.fromJson(source)
+            }
+            Result.Error(
+                error = toNetworkErrorType(response.code()),
+                errorBody = errorBody,
+            )
         }
     } catch (e: HttpException) {
         return Result.Error(error = toNetworkErrorType(e.code()), message = e.message())

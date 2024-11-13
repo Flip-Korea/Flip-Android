@@ -11,13 +11,13 @@ interface ScrapRepository {
     fun getScrapListPagination(
         profileId: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): Flow<Result<PostList, ErrorType>>
 
     fun editScrapComment(
         profileId: String,
         scrapId: Long,
-        scrapComment: String,
+        scrapComment: String
     ): Flow<Result<Boolean, ErrorType>>
 
     fun addScrap(newScrap: NewScrap): Flow<Result<Boolean, ErrorType>>
