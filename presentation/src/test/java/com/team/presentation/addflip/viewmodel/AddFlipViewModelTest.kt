@@ -69,13 +69,12 @@ class AddFlipViewModelTest {
     fun `카테고리 가져오기`() = runTest {
         addFlipViewModel =
             AddFlipViewModel(
-                getCurrentProfileIdUseCase = getCurrentProfileIdUseCase,
+                ioDispatcher = UnconfinedTestDispatcher(),
                 getCategoriesUseCase = getCategoriesUseCase,
                 addPostUseCases = addPostUseCase,
                 addTempPostUseCase = addTempPostUseCase,
                 validatePostUseCase = validatePostUseCase,
                 validateTempPostUseCase = validateTempPostUseCase,
-                ioDispatcher = UnconfinedTestDispatcher(),
             )
         val categoriesState = addFlipViewModel.categoriesState.first()
         advanceTimeBy(2.seconds)
@@ -103,7 +102,6 @@ class AddFlipViewModelTest {
         addFlipViewModel =
             AddFlipViewModel(
                 UnconfinedTestDispatcher(),
-                getCurrentProfileIdUseCase,
                 getCategoriesUseCase,
                 addPostUseCase,
                 addTempPostUseCase,
@@ -151,7 +149,6 @@ class AddFlipViewModelTest {
         addFlipViewModel =
             AddFlipViewModel(
                 UnconfinedTestDispatcher(),
-                getCurrentProfileIdUseCase,
                 getCategoriesUseCase,
                 addPostUseCase,
                 addTempPostUseCase,
@@ -195,7 +192,6 @@ class AddFlipViewModelTest {
         addFlipViewModel =
             AddFlipViewModel(
                 UnconfinedTestDispatcher(),
-                getCurrentProfileIdUseCase,
                 getCategoriesUseCase,
                 addPostUseCase,
                 addTempPostUseCase,
@@ -243,7 +239,6 @@ class AddFlipViewModelTest {
         addFlipViewModel =
             AddFlipViewModel(
                 UnconfinedTestDispatcher(),
-                getCurrentProfileIdUseCase,
                 getCategoriesUseCase,
                 addPostUseCase,
                 addTempPostUseCase,
@@ -297,7 +292,6 @@ class AddFlipViewModelTest {
         addFlipViewModel =
             AddFlipViewModel(
                 UnconfinedTestDispatcher(),
-                getCurrentProfileIdUseCase,
                 getCategoriesUseCase,
                 addPostUseCase,
                 addTempPostUseCase,

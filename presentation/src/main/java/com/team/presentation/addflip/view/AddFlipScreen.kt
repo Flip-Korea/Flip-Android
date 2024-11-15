@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -115,12 +114,14 @@ import kotlinx.coroutines.launch
  *
  * @param newPostState [NewPostState] 작성 중인 글 상태 값
  * @param categoriesState [CategoriesState] 전체 카테고리
- * @param addPostState [AddPostState] 저장, 임시저장 상태
+ * @param addPostState [AddPostState] 저장 상태
+ * @param addTempPostState [AddTempPostState] 임시 저장 상태
  * @param modalState [ModalState]
  * @param selectedCategory 선택된 카테고리
  * @param onUiEvent AddFlipScreen 의 UiEvent
  * @param hideModal 모달 숨기기 & 뒤로가기
  * @param onBackPress 뒤로가기 시
+ * @param onNavigateToTempFlipBox 임시저장함으로 이동
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -155,8 +156,6 @@ fun AddFlipScreen(
     val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val focusManager = LocalFocusManager.current
-    //    val focusRequester = remember { FocusRequester() }
-
     var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
 
     var isShowMoreClicked by remember { mutableStateOf(false) }
@@ -254,15 +253,13 @@ fun AddFlipScreen(
     /** 메인 컨텐츠 */
     Scaffold(
         modifier =
-        modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
+            modifier.fillMaxSize().pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
                     isShowMoreClicked = false
                 }
                 detectDragGestures(
-                    onDrag = { change, offset ->
+                    onDrag = { _, _ ->
                         focusManager.clearFocus()
                         isShowMoreClicked = false
                     }
@@ -271,18 +268,15 @@ fun AddFlipScreen(
         topBar = {
             FlipCenterAlignedTopBar(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(CommonPaddingValues.TopBarWithTouchTarget),
+                    Modifier.fillMaxWidth().padding(CommonPaddingValues.TopBarWithTouchTarget),
                 actions = FlipCenterAlignedTopBarActions.CLOSE,
                 onAction = { onBackPressedDispatcher?.onBackPressed() },
                 title = stringResource(id = R.string.add_flip_screen_topbar_title),
                 options = {
                     Text(
                         modifier =
-                        Modifier
-                            .clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
-                            .padding(10.dp),
+                            Modifier.clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
+                                .padding(10.dp),
                         text = stringResource(id = R.string.add_flip_screen_topbar_btn),
                         style = FlipTheme.typography.body6,
                         color = FlipTheme.colors.gray5,
@@ -313,10 +307,9 @@ fun AddFlipScreen(
             FlipImeDoneToolbarWrapper(onDone = { keyboardController?.hide() }) {
                 LazyColumn(
                     modifier =
-                    Modifier
-                        .consumeWindowInsets(innerPadding)
-                        .padding(innerPadding)
-                        .imePadding(),
+                        Modifier.consumeWindowInsets(innerPadding)
+                            .padding(innerPadding)
+                            .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top,
                     contentPadding = PaddingValues(vertical = 9.dp),
@@ -326,9 +319,8 @@ fun AddFlipScreen(
                         /** 카테고리 선택 바 */
                         SelectCategoryBar(
                             modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                                Modifier.fillMaxWidth()
+                                    .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                             selectedCategory = selectedCategory,
                             onClick = { showCategoryBottomSheet = true },
                         )
@@ -336,20 +328,18 @@ fun AddFlipScreen(
                         /** 제목 입력 텍스트필드 */
                         AddFlipTitleTextField(
                             modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 17.dp)
-                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                                Modifier.fillMaxWidth()
+                                    .padding(top = 17.dp)
+                                    .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                             title = newPostState.title,
                             onTitleChanged = { onUiEvent(AddFlipUiEvent.OnTitleChanged(it)) },
                             placeholder =
                                 stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
                         )
 
+                        /** 본문 입력 영역 */
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp),
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             /** 본문 입력 텍스트 필드 */
@@ -368,12 +358,11 @@ fun AddFlipScreen(
                             /** 페이지 카운터, 페이지 추가&삭제 버튼 */
                             Row(
                                 modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        horizontal = CommonPaddingValues.HorizontalPadding,
-                                        vertical = 10.dp,
-                                    ),
+                                    Modifier.fillMaxWidth()
+                                        .padding(
+                                            horizontal = CommonPaddingValues.HorizontalPadding,
+                                            vertical = 10.dp,
+                                        ),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
@@ -456,12 +445,11 @@ fun AddFlipScreen(
                         /** 배경 컬러 설정 바 */
                         SettingBackgroundColor(
                             modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    horizontal = CommonPaddingValues.HorizontalPadding,
-                                    vertical = 28.dp,
-                                ),
+                                Modifier.fillMaxWidth()
+                                    .padding(
+                                        horizontal = CommonPaddingValues.HorizontalPadding,
+                                        vertical = 28.dp,
+                                    ),
                             selectedColor = newPostState.bgColorType,
                             isShowMoreClicked = isShowMoreClicked,
                             showMore = { isShowMoreClicked = !isShowMoreClicked },
@@ -491,28 +479,25 @@ private fun SelectCategoryBar(
 
     Box(
         modifier =
-        modifier
-            .clip(RoundedCornerShape(50.dp))
-            .fillMaxWidth()
-            .border(1.dp, FlipTheme.colors.gray5, RoundedCornerShape(50.dp))
-            .clickableSingle { onClick() },
+            modifier
+                .clip(RoundedCornerShape(50.dp))
+                .fillMaxWidth()
+                .border(1.dp, FlipTheme.colors.gray5, RoundedCornerShape(50.dp))
+                .clickableSingle { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 20.dp,
-                    vertical = if (selectedCategory == null) 8.dp else 6.dp,
-                ),
+                Modifier.fillMaxWidth()
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = if (selectedCategory == null) 8.dp else 6.dp,
+                    ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (selectedCategory == null) {
                 Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .wrapContentWidth(align = Alignment.Start),
+                    modifier = Modifier.weight(1f).wrapContentWidth(align = Alignment.Start),
                     text =
                         stringResource(
                             id = R.string.add_flip_screen_select_category_bar_placeholder
@@ -541,10 +526,7 @@ private fun SelectCategoryBar(
 
             Icon(
                 modifier =
-                Modifier
-                    .weight(1f)
-                    .wrapContentWidth(align = Alignment.End)
-                    .size(7.dp, 14.dp),
+                    Modifier.weight(1f).wrapContentWidth(align = Alignment.End).size(7.dp, 14.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription =
                     stringResource(id = R.string.add_flip_screen_content_desc_select_category),
@@ -571,9 +553,9 @@ private fun SelectCategoryBottomSheet(
     ) { bottomSheetModifier ->
         SelectCategoryBottomSheetContent(
             modifier =
-            bottomSheetModifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
+                bottomSheetModifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
             categories = categories,
             onSelect = { category ->
                 onSelect(category)
@@ -672,10 +654,9 @@ private fun AddFlipContentSection(
     ) { page ->
         AddFlipContentTextField(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .flipGradient(color = newPostState.bgColorType.asColor())
-                .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                Modifier.fillMaxWidth()
+                    .flipGradient(color = newPostState.bgColorType.asColor())
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
             focusManager = focusManager,
             placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
             content = contents[page],
@@ -715,17 +696,14 @@ private fun PageAddDeleteButton(
     onAdd: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         if (isAddable) {
             Row(modifier = Modifier.clickableSingleWithoutRipple { onAdd() }) {
                 Icon(
                     modifier = Modifier.size(18.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_plus_small),
                     contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_add_content),
+                        stringResource(id = R.string.add_flip_screen_content_desc_add_content),
                     tint = FlipTheme.colors.gray4,
                 )
                 Text(
@@ -741,14 +719,14 @@ private fun PageAddDeleteButton(
         if (isDeletable) {
             Icon(
                 modifier =
-                Modifier
-                    .clip(CircleShape)
-                    .background(FlipTheme.colors.gray2)
-                    .clickableSingle { onDelete() }
-                    .padding(7.dp)
-                    .size(12.dp, 13.5.dp),
+                    Modifier.clip(CircleShape)
+                        .background(FlipTheme.colors.gray2)
+                        .clickableSingle { onDelete() }
+                        .padding(7.dp)
+                        .size(12.dp, 13.5.dp),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_trash),
-                contentDescription = stringResource(id = R.string.add_flip_screen_content_desc_delete),
+                contentDescription =
+                    stringResource(id = R.string.add_flip_screen_content_desc_delete),
             )
         }
     }
@@ -776,9 +754,7 @@ private fun SettingBackgroundColor(
 
     Row(modifier = modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentWidth(Alignment.Start),
+            modifier = Modifier.weight(1f).wrapContentWidth(Alignment.Start),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -800,10 +776,7 @@ private fun SettingBackgroundColor(
 
         Row(
             modifier =
-            Modifier
-                .weight(2f)
-                .wrapContentWidth(Alignment.End)
-                .clickableSingleWithoutRipple {
+                Modifier.weight(2f).wrapContentWidth(Alignment.End).clickableSingleWithoutRipple {
                     showMore()
                 },
             verticalAlignment = Alignment.CenterVertically,
@@ -836,14 +809,13 @@ private fun SettingBackgroundColor(
 
             Icon(
                 modifier =
-                Modifier
-                    .size(24.dp)
-                    .graphicsLayer { rotationZ = animateRotateValue.value }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { showMore() },
-                    ),
+                    Modifier.size(24.dp)
+                        .graphicsLayer { rotationZ = animateRotateValue.value }
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { showMore() },
+                        ),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription =
                     stringResource(id = R.string.add_flip_screen_content_desc_show_more),
@@ -869,22 +841,18 @@ private fun BackgroundColorOptions(
         BackgroundColorType.entries.forEach { color ->
             val itemModifier =
                 if (selectedColor == color) {
-                    Modifier
-                        .clip(CircleShape)
+                    Modifier.clip(CircleShape)
                         .background(FlipTheme.colors.point3)
                         .border(1.dp, FlipTheme.colors.point, CircleShape)
                 } else Modifier
 
-            Box(modifier = Modifier
-                .size(24.dp)
-                .then(itemModifier)) {
+            Box(modifier = Modifier.size(24.dp).then(itemModifier)) {
                 Icon(
                     modifier =
-                    Modifier
-                        .align(Alignment.Center)
-                        .size(16.dp)
-                        .border(1.dp, Color(0xFF212121), CircleShape)
-                        .clickableSingleWithoutRipple { onSelectedColor(color) },
+                        Modifier.align(Alignment.Center)
+                            .size(16.dp)
+                            .border(1.dp, Color(0xFF212121), CircleShape)
+                            .clickableSingleWithoutRipple { onSelectedColor(color) },
                     imageVector = Icons.Default.Circle,
                     contentDescription = "bg-color",
                     tint = color.asColor(),
@@ -906,9 +874,7 @@ private fun BackgroundColorOptionDisplay(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Icon(
-            modifier = Modifier
-                .size(16.dp)
-                .border(1.dp, Color(0xFF212121), CircleShape),
+            modifier = Modifier.size(16.dp).border(1.dp, Color(0xFF212121), CircleShape),
             imageVector = Icons.Default.Circle,
             contentDescription = null,
             tint = selectedColor.asColor(),
