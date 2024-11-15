@@ -142,7 +142,6 @@
     <string name="add_flip_screen_add_tags_btn">추가</string>
     <string name="add_flip_screen_add_tags_save_btn">저장하기</string>
     <string name="add_flip_screen_bottom_btn">완료</string>
-    <string name="add_flip_screen_delete_page_btn">삭제</string>
 
     <!-- AddFlip Screen (Content Description) -->
     <string name="add_flip_screen_content_desc_select_category">분야 선택</string>
@@ -150,6 +149,7 @@
     <string name="add_flip_screen_content_desc_setting_background_color">배경 컬러</string>
     <string name="add_flip_screen_content_desc_show_more">더보기</string>
     <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
+    <string name="add_flip_screen_content_desc_delete">삭제</string>
 
     <!-- AddFlip Screen (Modal) -->
     <string name="add_flip_screen_modal_main_title">플립을 삭제할까요?</string>
