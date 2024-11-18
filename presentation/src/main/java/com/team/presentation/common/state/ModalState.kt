@@ -1,10 +1,8 @@
 package com.team.presentation.common.state
 
-import com.team.designsystem.component.modal.FlipModalContent
-
 sealed interface ModalState {
-    data class Content(val modalContent: FlipModalContent) : ModalState
-    data object Hide: ModalState
+    data object Show : ModalState
+    data object Hide : ModalState
 }
 
 /** CompositionLocalProvider 를 이용한 Event Bus 주입 방식 */
