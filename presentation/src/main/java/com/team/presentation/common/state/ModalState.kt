@@ -1,8 +1,9 @@
 package com.team.presentation.common.state
 
+import com.team.designsystem.component.modal.FlipModalContent
+
 sealed interface ModalState {
-    data object Idle: ModalState
-    data class Display(val showed: Boolean): ModalState
+    data class Content(val modalContent: FlipModalContent) : ModalState
     data object Hide: ModalState
 }
 

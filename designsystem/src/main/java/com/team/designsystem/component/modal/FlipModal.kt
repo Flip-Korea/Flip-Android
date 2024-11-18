@@ -33,33 +33,14 @@ import com.team.designsystem.component.utils.get
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
-enum class FlipModalStyle { MEDIUM, SMALL }
-
 /**
  * Flip Modal(Dialog)
- *
- * @param modalStyle 모달 스타일(크기)
- * @param mainTitle 메인 제목
- * @param subTitle 서브 제목
- * @param itemText 첫 번째 항목 텍스트
- * @param itemText2 두 번째 항목 텍스트
- * @param itemText3 세 번째 항목 텍스트
- * @param onItemClick 첫 번째 항목 클릭 시
- * @param onItem2Click 두 번째 항목 클릭 시
- * @param onItem3Click 세 번째 항목 클릭 시
+ * @param modalContent [FlipModalContent]
  */
 @Composable
 fun FlipModal(
     modifier: Modifier = Modifier,
-    modalStyle: FlipModalStyle = FlipModalStyle.SMALL,
-    mainTitle: String,
-    subTitle: String? = null,
-    itemText: String,
-    itemText2: String,
-    itemText3: String? = null,
-    onItemClick: () -> Unit,
-    onItem2Click: () -> Unit,
-    onItem3Click: () -> Unit = {},
+    modalContent: FlipModalContent,
 ) {
     Box(
         modifier = modifier
@@ -67,7 +48,7 @@ fun FlipModal(
             .clip(FlipTheme.shapes.roundedCornerMedium)
             .height(IntrinsicSize.Max)
             .width(
-                when(modalStyle) {
+                when(modalContent.modalStyle) {
                     FlipModalStyle.MEDIUM -> 290.dp
                     FlipModalStyle.SMALL -> 262.dp
                 }
@@ -86,10 +67,10 @@ fun FlipModal(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp, alignment = Alignment.CenterVertically)
             ) {
-                Text(text = mainTitle, style = FlipTheme.typography.headline4)
-                if (subTitle != null) {
+                Text(text = modalContent.mainTitle, style = FlipTheme.typography.headline4)
+                if (modalContent.subTitle != null) {
                     Text(
-                        text = subTitle,
+                        text = modalContent.subTitle,
                         style = FlipTheme.typography.body3,
                         color = FlipTheme.colors.gray6,
                         textAlign = TextAlign.Center
@@ -107,26 +88,26 @@ fun FlipModal(
             ) {
                 ModalButton(
                     modifier = Modifier.weight(1f),
-                    text = itemText,
+                    text = modalContent.itemText,
                     containerColor = FlipTheme.colors.point,
                     contentColor = FlipTheme.colors.white,
-                    onClick = onItemClick,
+                    onClick = modalContent.onItemClick,
                     accent = true
                 )
                 ModalButton(
                     modifier = Modifier.weight(1f),
-                    text = itemText2,
+                    text = modalContent.itemText2,
                     containerColor = FlipTheme.colors.gray1,
                     contentColor = FlipTheme.colors.main,
-                    onClick = onItem2Click
+                    onClick = modalContent.onItem2Click
                 )
-                if (itemText3 != null) {
+                if (modalContent.itemText3 != null) {
                     ModalButton(
                         modifier = Modifier.weight(1f),
-                        text = itemText3,
+                        text = modalContent.itemText3,
                         containerColor = FlipTheme.colors.gray1,
                         contentColor = FlipTheme.colors.main,
-                        onClick = onItem3Click
+                        onClick = modalContent.onItem3Click
                     )
                 }
             }
@@ -186,13 +167,15 @@ private fun ModalButtonPreview() {
 private fun FlipMediumModalPreview() {
     FlipAppTheme {
         FlipModal(
-            modalStyle = FlipModalStyle.MEDIUM,
-            mainTitle = "Main Title",
-            subTitle = "지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.",
-            itemText = "Text",
-            itemText2 = "Text",
-            onItemClick = { },
-            onItem2Click = { }
+            modalContent = FlipModalContent(
+                modalStyle = FlipModalStyle.MEDIUM,
+                mainTitle = "Main Title",
+                subTitle = "지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.",
+                itemText = "Text",
+                itemText2 = "Text",
+                onItemClick = { },
+                onItem2Click = { }
+            )
         )
     }
 }
@@ -202,12 +185,14 @@ private fun FlipMediumModalPreview() {
 private fun FlipMediumModalWithoutSubTitlePreview() {
     FlipAppTheme {
         FlipModal(
-            modalStyle = FlipModalStyle.MEDIUM,
-            mainTitle = "Main Title",
-            itemText = "Text",
-            itemText2 = "Text",
-            onItemClick = { },
-            onItem2Click = { }
+            modalContent = FlipModalContent(
+                modalStyle = FlipModalStyle.MEDIUM,
+                mainTitle = "Main Title",
+                itemText = "Text",
+                itemText2 = "Text",
+                onItemClick = { },
+                onItem2Click = { }
+            )
         )
     }
 }
@@ -217,13 +202,15 @@ private fun FlipMediumModalWithoutSubTitlePreview() {
 private fun FlipSmallModalPreview() {
     FlipAppTheme {
         FlipModal(
-            modalStyle = FlipModalStyle.SMALL,
-            mainTitle = "Main Title",
-            subTitle = "sub title",
-            itemText = "Text",
-            itemText2 = "Text",
-            onItemClick = { },
-            onItem2Click = { }
+            modalContent = FlipModalContent(
+                modalStyle = FlipModalStyle.SMALL,
+                mainTitle = "Main Title",
+                subTitle = "sub title",
+                itemText = "Text",
+                itemText2 = "Text",
+                onItemClick = { },
+                onItem2Click = { }
+            )
         )
     }
 }
@@ -233,12 +220,14 @@ private fun FlipSmallModalPreview() {
 private fun FlipMediumModalWithoutSubTitlePreview2() {
     FlipAppTheme {
         FlipModal(
-            modalStyle = FlipModalStyle.SMALL,
-            mainTitle = "Main Title",
-            itemText = "Text",
-            itemText2 = "Text",
-            onItemClick = { },
-            onItem2Click = { }
+            modalContent = FlipModalContent(
+                modalStyle = FlipModalStyle.SMALL,
+                mainTitle = "Main Title",
+                itemText = "Text",
+                itemText2 = "Text",
+                onItemClick = { },
+                onItem2Click = { }
+            )
         )
     }
 }
@@ -257,13 +246,15 @@ private fun FlipMediumModalPreview2() {
         ) {
             FlipModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
                 FlipModal(
-                    modalStyle = FlipModalStyle.MEDIUM,
-                    mainTitle = "Main Title",
-                    subTitle = "sub titlesub titlesub titlesub title",
-                    itemText = "Text",
-                    itemText2 = "Text",
-                    onItemClick = { isOpen = false },
-                    onItem2Click = { isOpen = false }
+                    modalContent = FlipModalContent(
+                        modalStyle = FlipModalStyle.MEDIUM,
+                        mainTitle = "Main Title",
+                        subTitle = "sub titlesub titlesub titlesub title",
+                        itemText = "Text",
+                        itemText2 = "Text",
+                        onItemClick = { isOpen = false },
+                        onItem2Click = { isOpen = false }
+                    )
                 )
             }
 
@@ -288,12 +279,14 @@ private fun FlipSmallModalPreview2() {
         ) {
             FlipModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
                 FlipModal(
-                    mainTitle = "Main Title",
-                    subTitle = "sub title",
-                    itemText = "Text",
-                    itemText2 = "Text",
-                    onItemClick = { isOpen = false },
-                    onItem2Click = { isOpen = false }
+                    modalContent = FlipModalContent(
+                        mainTitle = "Main Title",
+                        subTitle = "sub title",
+                        itemText = "Text",
+                        itemText2 = "Text",
+                        onItemClick = { isOpen = false },
+                        onItem2Click = { isOpen = false }
+                    )
                 )
             }
 
@@ -319,14 +312,16 @@ private fun FlipModalPreview() {
 
     FlipModalWrapper(isOpen = isOpen, onDismissRequest = { isOpen = false }) {
         FlipModal(
-            mainTitle = "Main Title",
-            subTitle = "지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.",
-            itemText = "Text",
-            itemText2 = "Text",
-            itemText3 = "Text",
-            onItemClick = { isOpen = false },
-            onItem2Click = { isOpen = false },
-            onItem3Click = { isOpen = false }
+            modalContent = FlipModalContent(
+                mainTitle = "Main Title",
+                subTitle = "지금 나가면 작성 중인 글이 삭제됩니다.\n저장한 글은 임시저장에서 이어서 작성할 수 있어요.",
+                itemText = "Text",
+                itemText2 = "Text",
+                itemText3 = "Text",
+                onItemClick = { isOpen = false },
+                onItem2Click = { isOpen = false },
+                onItem3Click = { isOpen = false }
+            )
         )
     }
 
