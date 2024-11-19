@@ -43,17 +43,18 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipContract.UiEvent.OnBackgroundColorChanged -> onBackgroundChanged(event.bgColorType)
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
             AddFlipContract.UiEvent.OnSafeSave -> validateTempPost()
-            is AddFlipContract.UiEvent.OnPageDelete -> {
-                if (event.complete) {
-                    sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Hide) }
-                    return
-                }
-                sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Show) }
-            }
-
+            is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
             AddFlipContract.UiEvent.SaveTempPost -> TODO()
             AddFlipContract.UiEvent.SavePost -> TODO()
         }
+    }
+
+    private fun showPageDeleteWarningModal(complete: Boolean) {
+        if (complete) {
+            sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Hide) }
+            return
+        }
+        sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Show) }
     }
 
     private fun validateTempPost() {
@@ -119,10 +120,6 @@ class AddFlipViewModel @Inject constructor(
 
     private fun passModal() {
         sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Pass) }
-    }
-
-    private fun hideModal() {
-        sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Hide) }
     }
 }
 

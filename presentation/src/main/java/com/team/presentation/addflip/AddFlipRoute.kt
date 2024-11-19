@@ -20,6 +20,7 @@ import com.team.presentation.common.state.ModalState
  * 플립 글 작성 화면[AddFlipScreen]에 대한 Route
  *
  * @param popBackStack 뒤로가기 시
+ * @param onNavigateToTempFlipBox 임시저장함으로 이동
  */
 @Composable
 fun AddFlipRoute(
@@ -70,10 +71,18 @@ fun AddFlipRoute(
 
     TempPostWarningModal(
         isModalVisible = tempPostWarningModalVisible,
-        onTempPostSave = { addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost) },
+        onAccept = {
+            addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost)
+            tempPostWarningModalVisible = false
+            backPressed = true
+        },
+        onDiscard = {
+            tempPostWarningModalVisible = false
+            backPressed = true
+        },
+        onCancel = { tempPostWarningModalVisible = false },
         hideModal = { tempPostWarningModalVisible = false },
         onAnimationFinished = { if (backPressed) popBackStack() },
-        onBackPressClicked = { backPressed = true },
     )
 
     PageDeleteWarningModal(
@@ -86,15 +95,10 @@ fun AddFlipRoute(
             pageDeleteWarningModalVisible = false
             pageDelete = false
         },
-        hideModal = {
-            pageDeleteWarningModalVisible = false
-            pageDelete = false
-        },
         onAnimationFinished = {
             pageDeleteWarningModalVisible = false
             pageDelete = false
         },
-        onUiEvent = addFlipViewModel::processEvent
     )
 
     AddFlipScreen(
