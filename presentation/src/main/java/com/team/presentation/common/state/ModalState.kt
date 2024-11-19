@@ -1,6 +1,7 @@
 package com.team.presentation.common.state
 
 sealed interface ModalState {
+    data object Pass : ModalState
     data object Show : ModalState
     data object Hide : ModalState
 }
