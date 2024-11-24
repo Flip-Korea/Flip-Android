@@ -82,7 +82,6 @@ fun AddFlipScreen(
     uiState: AddFlipContract.UiState,
     onUiEvent: (AddFlipContract.UiEvent) -> Unit,
     onNavigateToTempFlipBox: () -> Unit,
-    onBackPressedDispatcher: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -110,7 +109,7 @@ fun AddFlipScreen(
                     .fillMaxWidth()
                     .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 onNavigateToTempFlipBox = onNavigateToTempFlipBox,
-                onBackPressed = onBackPressedDispatcher
+                onBackPressed = { onUiEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
             )
         },
         bottomBar = {
@@ -569,7 +568,6 @@ private fun AddFlipScreenPreview() {
             uiState = AddFlipContract.UiState.Content(),
             onUiEvent = { },
             onNavigateToTempFlipBox = { },
-            onBackPressedDispatcher = { }
         )
     }
 }

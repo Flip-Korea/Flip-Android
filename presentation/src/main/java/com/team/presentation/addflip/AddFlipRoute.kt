@@ -1,7 +1,6 @@
 package com.team.presentation.addflip
 
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,28 +33,15 @@ fun AddFlipRoute(
     var tempPostWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var pageDeleteWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var backPressed by rememberSaveable { mutableStateOf(false) }
-    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.OnSafeSave) }
+    BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
 
     ObserveAsEvents(flow = addFlipViewModel.effect) { event ->
         when (event) {
-            AddFlipContract.UiEffect.NavigateBack -> { popBackStack() }
-
-            is AddFlipContract.UiEffect.ShowTempPostWarningModal -> {
-                when (event.modalState) {
-                    ModalState.Hide -> {
-                        tempPostWarningModalVisible = false
-                    }
-
-                    is ModalState.Result -> {
-                        if (!event.modalState.isError) {
-                            popBackStack()
-                        }
-                    }
-
-                    ModalState.Show -> {
-                        tempPostWarningModalVisible = true
-                    }
+            is AddFlipContract.UiEffect.NavigateBack -> {
+                if (event.safeSave) {
+                    popBackStack()
+                } else {
+                    tempPostWarningModalVisible = true
                 }
             }
 
@@ -66,7 +52,6 @@ fun AddFlipRoute(
                         pageDelete = false
                     }
 
-                    is ModalState.Result -> {}
                     ModalState.Show -> {
                         pageDeleteWarningModalVisible = true
                     }
@@ -115,6 +100,5 @@ fun AddFlipRoute(
         onNavigateToTempFlipBox = {
             // TODO: 임시저장함으로 이동
         },
-        onBackPressedDispatcher = { onBackPressedDispatcher?.onBackPressed() }
     )
 }

@@ -28,20 +28,19 @@ class AddFlipContract {
 
         data class OnCategoryChanged(val category: Category) : UiEvent()
 
-        data object OnSafeSave : UiEvent()
-
         data class OnPageDelete(val complete: Boolean) : UiEvent()
 
         data object SaveTempPost: UiEvent()
 
         data object SavePost : UiEvent()
 
+        data object SafeNavigateBack : UiEvent()
+
         data object NavigateBack : UiEvent()
     }
 
     sealed class UiEffect : BaseUiEffect {
-        data class ShowTempPostWarningModal(val modalState: ModalState) : UiEffect()
         data class ShowPageDeleteWarningModal(val modalState: ModalState) : UiEffect()
-        data object NavigateBack : UiEffect()
+        data class NavigateBack(val safeSave: Boolean) : UiEffect()
     }
 }

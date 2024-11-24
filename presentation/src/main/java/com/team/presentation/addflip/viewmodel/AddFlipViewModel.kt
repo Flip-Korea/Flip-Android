@@ -7,8 +7,10 @@ import com.team.domain.usecase.category.GetCategoriesUseCase
 import com.team.domain.usecase.post.AddPostUseCase
 import com.team.domain.usecase.post.ValidatePostUseCase
 import com.team.domain.usecase.temppost.AddTempPostUseCase
+import com.team.domain.usecase.temppost.ValidateSafeSaveUseCase
 import com.team.domain.usecase.temppost.ValidateTempPostUseCase
 import com.team.domain.util.Result
+import com.team.domain.util.SafeSaveResult
 import com.team.domain.util.SuccessType
 import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.state.AddFlipContract
@@ -34,6 +36,7 @@ class AddFlipViewModel @Inject constructor(
     private val addTempPostUseCase: AddTempPostUseCase,
     private val validatePostUseCase: ValidatePostUseCase,
     private val validateTempPostUseCase: ValidateTempPostUseCase,
+    private val validateSafeSaveUseCase: ValidateSafeSaveUseCase,
 ) : FlipBaseViewModel<AddFlipContract.UiState, AddFlipContract.UiEvent, AddFlipContract.UiEffect>() {
 
     init {
@@ -52,12 +55,12 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipContract.UiEvent.OnContentsChanged -> onContentsChanged(event.contents)
             is AddFlipContract.UiEvent.OnBackgroundColorChanged -> onBackgroundChanged(event.bgColorType)
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
-            AddFlipContract.UiEvent.OnSafeSave -> validateTempPostForModal()
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
             is AddFlipContract.UiEvent.SaveTempPost -> saveTempPost()
             AddFlipContract.UiEvent.SavePost -> TODO()
+            AddFlipContract.UiEvent.SafeNavigateBack -> navigateBackToSafeSave()
             AddFlipContract.UiEvent.NavigateBack -> {
-                sendEffect { AddFlipContract.UiEffect.NavigateBack }
+                sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
             }
         }
     }
@@ -133,14 +136,16 @@ class AddFlipViewModel @Inject constructor(
         sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Show) }
     }
 
-    private fun validateTempPostForModal() {
+    private fun navigateBackToSafeSave() {
         extractContentState { content ->
             val title = content.newPostState.title
             val contents = content.newPostState.contents
-            viewModelScope.launch {
-                when (validateTempPostUseCase(title, contents)) {
-                    is ValidationResult.Error -> errorModal()
-                    ValidationResult.Success -> showModal()
+            when (validateSafeSaveUseCase(title, contents)) {
+                SafeSaveResult.CanSave -> {
+                    sendEffect { AddFlipContract.UiEffect.NavigateBack(false) }
+                }
+                SafeSaveResult.Discard -> {
+                    sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
                 }
             }
         }
@@ -188,14 +193,6 @@ class AddFlipViewModel @Inject constructor(
         if (currentState is AddFlipContract.UiState.Content) {
             block(currentState)
         }
-    }
-
-    private fun showModal() {
-        sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Show) }
-    }
-
-    private fun errorModal() {
-        sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Result(true)) }
     }
 
     private suspend fun showSnackbar(message: UiText, action: SnackbarAction? = null) {
