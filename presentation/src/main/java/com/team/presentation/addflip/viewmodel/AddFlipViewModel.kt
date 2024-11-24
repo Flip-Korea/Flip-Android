@@ -8,12 +8,22 @@ import com.team.domain.usecase.post.AddPostUseCase
 import com.team.domain.usecase.post.ValidatePostUseCase
 import com.team.domain.usecase.temppost.AddTempPostUseCase
 import com.team.domain.usecase.temppost.ValidateTempPostUseCase
+import com.team.domain.util.Result
+import com.team.domain.util.SuccessType
 import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.state.AddFlipContract
+import com.team.presentation.common.snackbar.SnackbarAction
+import com.team.presentation.common.snackbar.SnackbarController
+import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.common.state.ModalState
 import com.team.presentation.common.util.FlipBaseViewModel
+import com.team.presentation.util.uitext.UiText
+import com.team.presentation.util.uitext.asUiText
+import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,10 +52,76 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipContract.UiEvent.OnContentsChanged -> onContentsChanged(event.contents)
             is AddFlipContract.UiEvent.OnBackgroundColorChanged -> onBackgroundChanged(event.bgColorType)
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
-            AddFlipContract.UiEvent.OnSafeSave -> validateTempPost()
+            AddFlipContract.UiEvent.OnSafeSave -> validateTempPostForModal()
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
-            AddFlipContract.UiEvent.SaveTempPost -> TODO()
+            is AddFlipContract.UiEvent.SaveTempPost -> saveTempPost()
             AddFlipContract.UiEvent.SavePost -> TODO()
+            AddFlipContract.UiEvent.NavigateBack -> {
+                sendEffect { AddFlipContract.UiEffect.NavigateBack }
+            }
+        }
+    }
+
+    private fun saveTempPost() {
+        viewModelScope.launch {
+            extractContentState { content ->
+                val title = content.newPostState.title
+                val contents = content.newPostState.contents
+                val bgColorType = content.newPostState.bgColorType
+                val categoryId = content.newPostState.category?.id
+                val validationResult = validationTempPostForSave(title, contents)
+                if (validationResult) {
+                    addTempPostUseCase(
+                        title = title,
+                        content = contents,
+                        bgColorType = bgColorType,
+                        categoryId = categoryId
+                    ).onEach { result ->
+                        when (result) {
+                            is Result.Error -> {
+                                val updatedAddTempPostState =
+                                    content.addTempPostState.copy(loading = false)
+                                updateState {
+                                    content.copy(addTempPostState = updatedAddTempPostState)
+                                }
+                                showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                            }
+
+                            Result.Loading -> extractContentState { content ->
+                                val updatedAddTempPostState =
+                                    content.addTempPostState.copy(loading = true)
+                                updateState {
+                                    content.copy(addTempPostState = updatedAddTempPostState)
+                                }
+                            }
+
+                            is Result.Success -> {
+                                extractContentState { content ->
+                                    val updatedAddTempPostState =
+                                        content.addTempPostState.copy(tempPostSave = true, loading = false)
+                                    updateState {
+                                        content.copy(addTempPostState = updatedAddTempPostState)
+                                    }
+                                }
+                                showSnackbar(SuccessType.TempPost.SAVE.asUiText())
+                            }
+                        }
+                    }.launchIn(viewModelScope)
+                }
+            }
+        }
+    }
+
+    private fun validationTempPostForSave(title: String, contents: List<String>): Boolean {
+        return when (val validationResult = validateTempPostUseCase(title, contents)) {
+            is ValidationResult.Error -> {
+                viewModelScope.launch {
+                    showSnackbar(message = validationResult.error.asUiText())
+                }
+                false
+            }
+
+            ValidationResult.Success -> true
         }
     }
 
@@ -57,13 +133,13 @@ class AddFlipViewModel @Inject constructor(
         sendEffect { AddFlipContract.UiEffect.ShowPageDeleteWarningModal(ModalState.Show) }
     }
 
-    private fun validateTempPost() {
+    private fun validateTempPostForModal() {
         extractContentState { content ->
             val title = content.newPostState.title
             val contents = content.newPostState.contents
             viewModelScope.launch {
                 when (validateTempPostUseCase(title, contents)) {
-                    is ValidationResult.Error -> passModal()
+                    is ValidationResult.Error -> errorModal()
                     ValidationResult.Success -> showModal()
                 }
             }
@@ -118,8 +194,12 @@ class AddFlipViewModel @Inject constructor(
         sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Show) }
     }
 
-    private fun passModal() {
-        sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Pass) }
+    private fun errorModal() {
+        sendEffect { AddFlipContract.UiEffect.ShowTempPostWarningModal(ModalState.Result(true)) }
+    }
+
+    private suspend fun showSnackbar(message: UiText, action: SnackbarAction? = null) {
+        SnackbarController.sendEvent(event = SnackbarEvent(message = message, action = action))
     }
 }
 

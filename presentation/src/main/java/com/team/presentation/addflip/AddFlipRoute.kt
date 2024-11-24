@@ -1,6 +1,7 @@
 package com.team.presentation.addflip
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,18 +34,23 @@ fun AddFlipRoute(
     var tempPostWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var pageDeleteWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var backPressed by rememberSaveable { mutableStateOf(false) }
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.OnSafeSave) }
 
     ObserveAsEvents(flow = addFlipViewModel.effect) { event ->
         when (event) {
+            AddFlipContract.UiEffect.NavigateBack -> { popBackStack() }
+
             is AddFlipContract.UiEffect.ShowTempPostWarningModal -> {
                 when (event.modalState) {
                     ModalState.Hide -> {
                         tempPostWarningModalVisible = false
                     }
 
-                    ModalState.Pass -> {
-                        popBackStack()
+                    is ModalState.Result -> {
+                        if (!event.modalState.isError) {
+                            popBackStack()
+                        }
                     }
 
                     ModalState.Show -> {
@@ -60,7 +66,7 @@ fun AddFlipRoute(
                         pageDelete = false
                     }
 
-                    ModalState.Pass -> {}
+                    is ModalState.Result -> {}
                     ModalState.Show -> {
                         pageDeleteWarningModalVisible = true
                     }
@@ -69,12 +75,12 @@ fun AddFlipRoute(
         }
     }
 
+    /** 임시 저장 경고 모달 */
     TempPostWarningModal(
         isModalVisible = tempPostWarningModalVisible,
         onAccept = {
             addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost)
             tempPostWarningModalVisible = false
-            backPressed = true
         },
         onDiscard = {
             tempPostWarningModalVisible = false
@@ -85,6 +91,7 @@ fun AddFlipRoute(
         onAnimationFinished = { if (backPressed) popBackStack() },
     )
 
+    /** 페이지 삭제 경고 모달 */
     PageDeleteWarningModal(
         isModalVisible = pageDeleteWarningModalVisible,
         onAccept = {
@@ -108,5 +115,6 @@ fun AddFlipRoute(
         onNavigateToTempFlipBox = {
             // TODO: 임시저장함으로 이동
         },
+        onBackPressedDispatcher = { onBackPressedDispatcher?.onBackPressed() }
     )
 }

@@ -14,6 +14,7 @@ class AddFlipContract {
 
         data class Content(
             val newPostState: NewPostState = NewPostState(),
+            val addTempPostState: AddTempPostState = AddTempPostState(),
             val categories: List<Category> = emptyList()
         ) : UiState()
     }
@@ -31,13 +32,16 @@ class AddFlipContract {
 
         data class OnPageDelete(val complete: Boolean) : UiEvent()
 
-        data object SaveTempPost : UiEvent()
+        data object SaveTempPost: UiEvent()
 
         data object SavePost : UiEvent()
+
+        data object NavigateBack : UiEvent()
     }
 
     sealed class UiEffect : BaseUiEffect {
         data class ShowTempPostWarningModal(val modalState: ModalState) : UiEffect()
         data class ShowPageDeleteWarningModal(val modalState: ModalState) : UiEffect()
+        data object NavigateBack : UiEffect()
     }
 }

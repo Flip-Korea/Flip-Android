@@ -1,6 +1,5 @@
 package com.team.presentation.addflip.view
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
@@ -57,6 +56,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
+import com.team.designsystem.component.loading.FlipLoadingScreen
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBarActions
 import com.team.designsystem.component.utils.clickableSingle
@@ -67,6 +67,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 import com.team.presentation.addflip.state.AddFlipContract
+import com.team.presentation.addflip.state.AddTempPostState
 import com.team.presentation.addflip.state.NewPostState
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoryIconsMap
@@ -81,6 +82,7 @@ fun AddFlipScreen(
     uiState: AddFlipContract.UiState,
     onUiEvent: (AddFlipContract.UiEvent) -> Unit,
     onNavigateToTempFlipBox: () -> Unit,
+    onBackPressedDispatcher: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -107,7 +109,8 @@ fun AddFlipScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(CommonPaddingValues.TopBarWithTouchTarget),
-                onNavigateToTempFlipBox = onNavigateToTempFlipBox
+                onNavigateToTempFlipBox = onNavigateToTempFlipBox,
+                onBackPressed = onBackPressedDispatcher
             )
         },
         bottomBar = {
@@ -131,6 +134,7 @@ fun AddFlipScreen(
                     isShowMoreClicked = isShowMoreClicked,
                     showMore = { isShowMoreClicked = !isShowMoreClicked },
                     newPostState = uiState.newPostState,
+                    addTempPostState = uiState.addTempPostState,
                     onUiEvent = onUiEvent
                 )
             }
@@ -146,6 +150,7 @@ private fun IdleScreen(
     modifier: Modifier = Modifier,
     pageDelete: Boolean,
     newPostState: NewPostState,
+    addTempPostState: AddTempPostState,
     focusManager: FocusManager,
     isShowMoreClicked: Boolean,
     showMore: () -> Unit,
@@ -183,6 +188,17 @@ private fun IdleScreen(
             }
         }
     }
+
+    /** 로딩 화면 */
+    LaunchedEffect(addTempPostState) {
+        if (addTempPostState.tempPostSave) {
+            onUiEvent(AddFlipContract.UiEvent.NavigateBack)
+        }
+    }
+    FlipLoadingScreen(
+        isLoading = addTempPostState.loading,
+        text = stringResource(id = R.string.add_flip_screen_temp_save),
+    )
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         FlipImeDoneToolbarWrapper(onDone = { keyboardController?.hide() }) {
@@ -479,13 +495,12 @@ private fun PageAddDeleteButton(
 private fun TopBar(
     modifier: Modifier = Modifier,
     onNavigateToTempFlipBox: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
-    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
     FlipCenterAlignedTopBar(
         modifier = modifier,
         actions = FlipCenterAlignedTopBarActions.CLOSE,
-        onAction = { onBackPressedDispatcher?.onBackPressed() },
+        onAction = { onBackPressed() },
         title = stringResource(id = R.string.add_flip_screen_topbar_title),
         options = {
             Text(
@@ -554,6 +569,7 @@ private fun AddFlipScreenPreview() {
             uiState = AddFlipContract.UiState.Content(),
             onUiEvent = { },
             onNavigateToTempFlipBox = { },
+            onBackPressedDispatcher = { }
         )
     }
 }
