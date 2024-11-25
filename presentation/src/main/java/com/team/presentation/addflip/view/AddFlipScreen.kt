@@ -9,6 +9,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,14 +28,18 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,6 +50,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.changedToDown
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -56,6 +65,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipLargeButton
+import com.team.designsystem.component.chip.FlipMediumChip
 import com.team.designsystem.component.loading.FlipLoadingScreen
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBar
 import com.team.designsystem.component.topbar.FlipCenterAlignedTopBarActions
@@ -69,9 +79,11 @@ import com.team.presentation.R
 import com.team.presentation.addflip.state.AddFlipContract
 import com.team.presentation.addflip.state.AddTempPostState
 import com.team.presentation.addflip.state.NewPostState
+import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoryIconsMap
 import com.team.presentation.util.asColor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /** Flip 작성 화면 */
@@ -86,7 +98,7 @@ fun AddFlipScreen(
     val focusManager = LocalFocusManager.current
 
     var isShowMoreClicked by rememberSaveable { mutableStateOf(false) }
-    var enableSaveButton by remember { mutableStateOf(false) }
+    val enableSaveButton by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -134,6 +146,7 @@ fun AddFlipScreen(
                     showMore = { isShowMoreClicked = !isShowMoreClicked },
                     newPostState = uiState.newPostState,
                     addTempPostState = uiState.addTempPostState,
+                    categories = uiState.categories,
                     onUiEvent = onUiEvent
                 )
             }
@@ -143,13 +156,14 @@ fun AddFlipScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun IdleScreen(
     modifier: Modifier = Modifier,
     pageDelete: Boolean,
     newPostState: NewPostState,
     addTempPostState: AddTempPostState,
+    categories: List<Category>,
     focusManager: FocusManager,
     isShowMoreClicked: Boolean,
     showMore: () -> Unit,
@@ -163,8 +177,9 @@ private fun IdleScreen(
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState { contents.size }
 
-    var selectedCategory: Category? by rememberSaveable { mutableStateOf(null) }
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
     val currentContentLength =
         rememberSaveable(pagerState.currentPage, contents) {
@@ -199,6 +214,25 @@ private fun IdleScreen(
         text = stringResource(id = R.string.add_flip_screen_temp_save),
     )
 
+    /** 분야 선택 바텀 시트 */
+    if (showCategoryBottomSheet) {
+        SelectCategoryBottomSheet(
+            sheetState = categorySheetState,
+            categories = categories,
+            onSelect = { category ->
+                onUiEvent(AddFlipContract.UiEvent.OnCategoryChanged(category))
+            },
+            onDismissRequest = {
+                bottomSheetDismissRequester(
+                    coroutineScope = coroutineScope,
+                    sheetState = categorySheetState,
+                    onDismissRequest = { keyboardController?.hide() },
+                    onDismissCompletion = { showCategoryBottomSheet = false },
+                )
+            },
+        )
+    }
+
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         FlipImeDoneToolbarWrapper(onDone = { keyboardController?.hide() }) {
             LazyColumn(
@@ -214,7 +248,7 @@ private fun IdleScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = CommonPaddingValues.HorizontalPadding),
-                        selectedCategory = selectedCategory,
+                        selectedCategory = newPostState.category,
                         onClick = { showCategoryBottomSheet = true },
                     )
 
@@ -490,6 +524,125 @@ private fun PageAddDeleteButton(
     }
 }
 
+/** 카테고리 선택 바텀시트 (메인) */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SelectCategoryBottomSheet(
+    modifier: Modifier = Modifier,
+    sheetState: SheetState,
+    categories: List<Category>,
+    onSelect: (Category) -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    FlipModalBottomSheet(
+        modifier = modifier.fillMaxWidth(),
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+    ) { bottomSheetModifier ->
+        SelectCategoryBottomSheetContent(
+            modifier =
+            bottomSheetModifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
+            categories = categories,
+            onSelect = { category ->
+                onSelect(category)
+                onDismissRequest()
+            },
+        )
+    }
+}
+
+/** 카테고리 선택 바텀시트 (내부) */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SelectCategoryBottomSheetContent(
+    modifier: Modifier = Modifier,
+    categories: List<Category>,
+    onSelect: (Category) -> Unit,
+) {
+    var isTap by remember { mutableIntStateOf(-1) }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
+                contentDescription =
+                stringResource(id = R.string.add_flip_screen_content_desc_select_category),
+                tint = FlipTheme.colors.main,
+            )
+            Text(
+                text = stringResource(id = R.string.add_flip_screen_select_bottom_sheet_title),
+                style = FlipTheme.typography.headline3,
+            )
+        }
+
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            categories.forEach { category ->
+                FlipMediumChip(
+                    modifier = Modifier.pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                                when {
+                                    event.changes.any { it.changedToDown() } -> {
+                                        isTap = category.id
+                                    }
+                                    event.changes.any { it.changedToUp() } -> {
+                                        isTap = -1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    text = category.name,
+                    icon = CategoryIconsMap[category.id],
+                    onClick = { onSelect(category) },
+                    solid = isTap == category.id,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 바텀시트를 안전하게 즉, 애니메이션과 함께 닫히게 하기 위한 함수
+ *
+ * @param coroutineScope CoroutineScope
+ * @param sheetState Sheet State
+ * @param onDismissRequest CoroutineScope 에서 실행할 작업
+ * @param onDismissCompletion [onDismissRequest] 이후 실행할 작업
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+private fun bottomSheetDismissRequester(
+    coroutineScope: CoroutineScope,
+    sheetState: SheetState,
+    onDismissRequest: () -> Unit = {},
+    onDismissCompletion: () -> Unit,
+) {
+    onDismissRequest()
+
+    coroutineScope
+        .launch { sheetState.hide() }
+        .invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                onDismissCompletion()
+            }
+        }
+}
+
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -557,7 +710,6 @@ private fun List<String>.remove(currentPage: Int): List<String> =
 
 private fun Int.addPage(): Int = (this + 1).coerceAtMost(MAX_PAGE)
 private fun Int.minusPage(): Int = (this - 1).coerceAtLeast(0)
-private const val CONTENTS_INITIAL_MAX_PAGE = 1
 
 @Preview
 @Composable
