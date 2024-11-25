@@ -39,7 +39,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,9 +49,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.changedToDown
-import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -561,8 +557,6 @@ private fun SelectCategoryBottomSheetContent(
     categories: List<Category>,
     onSelect: (Category) -> Unit,
 ) {
-    var isTap by remember { mutableIntStateOf(-1) }
-
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp, alignment = Alignment.Top),
@@ -592,25 +586,10 @@ private fun SelectCategoryBottomSheetContent(
         ) {
             categories.forEach { category ->
                 FlipMediumChip(
-                    modifier = Modifier.pointerInput(Unit) {
-                        awaitPointerEventScope {
-                            while (true) {
-                                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
-                                when {
-                                    event.changes.any { it.changedToDown() } -> {
-                                        isTap = category.id
-                                    }
-                                    event.changes.any { it.changedToUp() } -> {
-                                        isTap = -1
-                                    }
-                                }
-                            }
-                        }
-                    },
                     text = category.name,
                     icon = CategoryIconsMap[category.id],
                     onClick = { onSelect(category) },
-                    solid = isTap == category.id,
+                    solid = false,
                 )
             }
         }
