@@ -18,7 +18,7 @@ class AddPostUseCase @Inject constructor(private val postRepository: PostReposit
         content: List<String>,
         bgColorType: BackgroundColorType,
         fontStyleType: FontStyleType = FontStyleType.NORMAL,
-        tags: List<String>,
+        tags: List<String> = emptyList(),
         categoryId: Int,
     ): Flow<Result<Boolean, ErrorType>> {
         val newPost =

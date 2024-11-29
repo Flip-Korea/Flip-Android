@@ -9,10 +9,8 @@ sealed interface ValidationErrorType {
         CONTENT_IS_EMPTY,
         /** 내용이 너무 긴 경우 */
         CONTENT_TOO_LONG,
-        /** 태그 개수가 10개 초과한 경우 */
-        TAGS_10_LIMIT,
-        /** 태그 중에 빈 문자열이 있는 경우 */
-        TAGS_EMPTY_ITEM,
+        /** 카테고리를 선택하지 않았을 경우 */
+        CATEGORY_IS_NULL
     }
 
     enum class TempPost : ValidationErrorType {

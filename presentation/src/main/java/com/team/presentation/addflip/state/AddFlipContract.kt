@@ -14,8 +14,8 @@ class AddFlipContract {
 
         data class Content(
             val newPostState: NewPostState = NewPostState(),
-            val addTempPostState: AddTempPostState = AddTempPostState(),
-            val categories: List<Category> = emptyList()
+            val postSaveState: PostSaveState = PostSaveState(),
+            val categories: List<Category> = emptyList(),
         ) : UiState()
     }
 

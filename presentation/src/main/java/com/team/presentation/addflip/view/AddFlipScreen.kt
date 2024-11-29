@@ -73,7 +73,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 import com.team.presentation.addflip.state.AddFlipContract
-import com.team.presentation.addflip.state.AddTempPostState
+import com.team.presentation.addflip.state.PostSaveState
 import com.team.presentation.addflip.state.NewPostState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
 import com.team.presentation.common.util.CommonPaddingValues
@@ -94,7 +94,7 @@ fun AddFlipScreen(
     val focusManager = LocalFocusManager.current
 
     var isShowMoreClicked by rememberSaveable { mutableStateOf(false) }
-    val enableSaveButton by remember { mutableStateOf(false) }
+    var enabledSaveButton by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -123,7 +123,7 @@ fun AddFlipScreen(
         bottomBar = {
             BottomBar(
                 modifier = Modifier.fillMaxWidth(),
-                enableSaveButton = enableSaveButton,
+                enableSaveButton = enabledSaveButton,
                 onClick = { onUiEvent(AddFlipContract.UiEvent.SavePost) }
             )
         },
@@ -131,6 +131,19 @@ fun AddFlipScreen(
     ) { innerPadding ->
         when (uiState) {
             is AddFlipContract.UiState.Content -> {
+                LaunchedEffect(uiState.newPostState) {
+                    val title = uiState.newPostState.title
+                    val contents = uiState.newPostState.contents
+                    val category = uiState.newPostState.category
+                    if (
+                        title.isNotEmpty() &&
+                        contents.any { it.isNotEmpty() } &&
+                        category != null
+                    ) {
+                        enabledSaveButton = true
+                    }
+                }
+
                 IdleScreen(
                     modifier = Modifier
                         .consumeWindowInsets(innerPadding)
@@ -141,7 +154,7 @@ fun AddFlipScreen(
                     isShowMoreClicked = isShowMoreClicked,
                     showMore = { isShowMoreClicked = !isShowMoreClicked },
                     newPostState = uiState.newPostState,
-                    addTempPostState = uiState.addTempPostState,
+                    postSaveState = uiState.postSaveState,
                     categories = uiState.categories,
                     onUiEvent = onUiEvent
                 )
@@ -158,7 +171,7 @@ private fun IdleScreen(
     modifier: Modifier = Modifier,
     pageDelete: Boolean,
     newPostState: NewPostState,
-    addTempPostState: AddTempPostState,
+    postSaveState: PostSaveState,
     categories: List<Category>,
     focusManager: FocusManager,
     isShowMoreClicked: Boolean,
@@ -200,13 +213,13 @@ private fun IdleScreen(
     }
 
     /** 로딩 화면 */
-    LaunchedEffect(addTempPostState) {
-        if (addTempPostState.tempPostSave) {
+    LaunchedEffect(postSaveState) {
+        if (postSaveState.tempPostSave) {
             onUiEvent(AddFlipContract.UiEvent.NavigateBack)
         }
     }
     FlipLoadingScreen(
-        isLoading = addTempPostState.loading,
+        isLoading = postSaveState.loading,
         text = stringResource(id = R.string.add_flip_screen_temp_save),
     )
 

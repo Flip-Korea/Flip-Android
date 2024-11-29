@@ -57,12 +57,79 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
             is AddFlipContract.UiEvent.SaveTempPost -> saveTempPost()
-            AddFlipContract.UiEvent.SavePost -> TODO()
+            AddFlipContract.UiEvent.SavePost -> savePost()
             AddFlipContract.UiEvent.SafeNavigateBack -> navigateBackToSafeSave()
             AddFlipContract.UiEvent.NavigateBack -> {
                 sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
             }
         }
+    }
+
+    private fun savePost() {
+        viewModelScope.launch {
+            extractContentState { content ->
+                val title = content.newPostState.title
+                val contents = content.newPostState.contents
+                val bgColorType = content.newPostState.bgColorType
+                val category = content.newPostState.category
+                if (validationPostForSave(title, contents, category)) {
+                    addPostUseCases(
+                        title = title,
+                        content = contents,
+                        bgColorType = bgColorType,
+                        categoryId = category!!.id
+                    ).onEach { result ->
+                        when (result) {
+                            Result.Loading -> {
+                                val updatedPostSaveState =
+                                    content.postSaveState.copy(loading = true)
+                                updateState {
+                                    content.copy(postSaveState = updatedPostSaveState)
+                                }
+                            }
+
+                            is Result.Error -> {
+                                val updatedPostSaveState =
+                                    content.postSaveState.copy(loading = false)
+                                updateState {
+                                    content.copy(postSaveState = updatedPostSaveState)
+                                }
+                                showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                            }
+
+                            is Result.Success -> {
+                                val updatedPostSaveState =
+                                    content.postSaveState.copy(postSave = true, loading = false)
+                                updateState {
+                                    content.copy(postSaveState = updatedPostSaveState)
+                                }
+                                showSnackbar(SuccessType.Post.SAVE.asUiText())
+                            }
+                        }
+                    }.launchIn(viewModelScope)
+                }
+            }
+        }
+    }
+
+    private fun validationPostForSave(
+        title: String,
+        contents: List<String>,
+        category: Category?
+    ): Boolean {
+        val validationResults = validatePostUseCase(title, contents, category)
+        var isValid = true
+        viewModelScope.launch {
+            for (i in validationResults.indices) {
+                val result = validationResults[i]
+                if (result is ValidationResult.Error) {
+                    showSnackbar(result.error.asUiText())
+                    isValid = false
+                    break
+                }
+            }
+        }
+        return isValid
     }
 
     private fun saveTempPost() {
@@ -82,29 +149,30 @@ class AddFlipViewModel @Inject constructor(
                     ).onEach { result ->
                         when (result) {
                             is Result.Error -> {
-                                val updatedAddTempPostState =
-                                    content.addTempPostState.copy(loading = false)
+                                val updatedPostSaveState =
+                                    content.postSaveState.copy(loading = false)
                                 updateState {
-                                    content.copy(addTempPostState = updatedAddTempPostState)
+                                    content.copy(postSaveState = updatedPostSaveState)
                                 }
                                 showSnackbar(errorBodyFirst(result.errorBody, result.error))
                             }
 
-                            Result.Loading -> extractContentState { content ->
+                            Result.Loading -> {
                                 val updatedAddTempPostState =
-                                    content.addTempPostState.copy(loading = true)
+                                    content.postSaveState.copy(loading = true)
                                 updateState {
-                                    content.copy(addTempPostState = updatedAddTempPostState)
+                                    content.copy(postSaveState = updatedAddTempPostState)
                                 }
                             }
 
                             is Result.Success -> {
-                                extractContentState { content ->
-                                    val updatedAddTempPostState =
-                                        content.addTempPostState.copy(tempPostSave = true, loading = false)
-                                    updateState {
-                                        content.copy(addTempPostState = updatedAddTempPostState)
-                                    }
+                                val updatedAddTempPostState =
+                                    content.postSaveState.copy(
+                                        tempPostSave = true,
+                                        loading = false
+                                    )
+                                updateState {
+                                    content.copy(postSaveState = updatedAddTempPostState)
                                 }
                                 showSnackbar(SuccessType.TempPost.SAVE.asUiText())
                             }
@@ -144,6 +212,7 @@ class AddFlipViewModel @Inject constructor(
                 SafeSaveResult.CanSave -> {
                     sendEffect { AddFlipContract.UiEffect.NavigateBack(false) }
                 }
+
                 SafeSaveResult.Discard -> {
                     sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
                 }
@@ -188,6 +257,7 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
+    /** 현재 상태 값을 기준으로 Content 상태 데이터를 추출 */
     private fun extractContentState(block: (content: AddFlipContract.UiState.Content) -> Unit) {
         val currentState = currentUiState
         if (currentState is AddFlipContract.UiState.Content) {
@@ -199,13 +269,3 @@ class AddFlipViewModel @Inject constructor(
         SnackbarController.sendEvent(event = SnackbarEvent(message = message, action = action))
     }
 }
-
-private fun List<String>.add(newPageIndex: Int): List<String> =
-    this.toMutableList().apply {
-        add(newPageIndex, "")
-    }
-
-private fun List<String>.remove(currentPage: Int): List<String> =
-    this.toMutableList().apply {
-        removeAt(currentPage)
-    }
