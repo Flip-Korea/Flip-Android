@@ -1,6 +1,6 @@
 package com.team.domain.usecase.post
 
-import com.team.domain.type.BackgroundColorType
+import com.team.domain.model.category.Category
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.domain.util.validation.ValidationResult
 import org.junit.Assert.assertEquals
@@ -15,12 +15,9 @@ class ValidatePostUseCaseTest {
         // Given
         val title = ""
         val content = listOf("content")
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = emptyList<String>()
-        val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, tags)
+        val validationResult = validatePostUseCase(title, content, null)
 
         // Then
         assertEquals(
@@ -34,12 +31,9 @@ class ValidatePostUseCaseTest {
         // Given
         val title = "title"
         val content = listOf("")
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = emptyList<String>()
-        val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, tags)
+        val validationResult = validatePostUseCase(title, content, null)
 
         // Then
         assertEquals(
@@ -54,12 +48,9 @@ class ValidatePostUseCaseTest {
         val title = "title"
         val longContent = "a".repeat(501)
         val content = listOf(longContent)
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = emptyList<String>()
-        val categoryId = 2
 
         // When
-        val validationResult = validatePostUseCase(title, content, tags)
+        val validationResult = validatePostUseCase(title, content, null)
 
         // Then
         assertEquals(
@@ -69,40 +60,19 @@ class ValidatePostUseCaseTest {
     }
 
     @Test
-    fun `Post 유효성 검사 (태그 수가 10개를 초과 하는 경우)`() {
+    fun `Category 유효성 검사 (카테고리가 Null 일 경우)`() {
         // Given
         val title = "title"
-        val content = listOf("content")
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = List(11) { "a" }
-        val categoryId = 2
+        val longContent = "a".repeat(400)
+        val content = listOf(longContent)
 
         // When
-        val validationResult = validatePostUseCase(title, content, tags)
+        val validationResult = validatePostUseCase(title, content, null)
 
         // Then
         assertEquals(
             (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.TAGS_10_LIMIT,
-        )
-    }
-
-    @Test
-    fun `Post 유효성 검사 (태그 중에 빈 문자열의 태그가 있는 경우)`() {
-        // Given
-        val title = "title"
-        val content = listOf("content")
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = listOf("a", "")
-        val categoryId = 2
-
-        // When
-        val validationResult = validatePostUseCase(title, content, tags)
-
-        // Then
-        assertEquals(
-            (validationResult.first() as ValidationResult.Error).error,
-            ValidationErrorType.Post.TAGS_EMPTY_ITEM,
+            ValidationErrorType.Post.CATEGORY_IS_NULL,
         )
     }
 
@@ -111,12 +81,10 @@ class ValidatePostUseCaseTest {
         // Given
         val title = "title"
         val content = listOf("content")
-        val bgColorType = BackgroundColorType.DEFAULT
-        val tags = listOf("sampleTag")
-        val categoryId = 2
+        val category = Category(1, "일상")
 
         // When
-        val validationResult = validatePostUseCase(title, content, tags)
+        val validationResult = validatePostUseCase(title, content, category)
 
         // Then
         assertEquals(validationResult.first(), ValidationResult.Success)
