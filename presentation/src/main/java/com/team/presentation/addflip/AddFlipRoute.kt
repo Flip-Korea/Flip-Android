@@ -29,11 +29,12 @@ fun AddFlipRoute(
     onNavigateToTempFlipBox: () -> Unit
 ) {
     val uiState by addFlipViewModel.uiState.collectAsStateWithLifecycle()
+    BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
+
     var pageDelete by rememberSaveable { mutableStateOf(false) }
     var tempPostWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var pageDeleteWarningModalVisible by rememberSaveable { mutableStateOf(false) }
     var backPressed by rememberSaveable { mutableStateOf(false) }
-    BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
 
     ObserveAsEvents(flow = addFlipViewModel.effect) { event ->
         when (event) {
@@ -64,7 +65,12 @@ fun AddFlipRoute(
     TempPostWarningModal(
         isModalVisible = tempPostWarningModalVisible,
         onAccept = {
-            addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost)
+            addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost(
+                title = (uiState as AddFlipContract.UiState.Content).newPostState.title,
+                contents = (uiState as AddFlipContract.UiState.Content).newPostState.contents,
+                bgColorType = (uiState as AddFlipContract.UiState.Content).newPostState.bgColorType,
+                category = (uiState as AddFlipContract.UiState.Content).newPostState.category,
+            ))
             tempPostWarningModalVisible = false
         },
         onDiscard = {

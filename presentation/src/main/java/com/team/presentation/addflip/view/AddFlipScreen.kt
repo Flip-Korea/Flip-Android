@@ -124,27 +124,27 @@ fun AddFlipScreen(
             BottomBar(
                 modifier = Modifier.fillMaxWidth(),
                 enableSaveButton = enabledSaveButton,
-                onClick = { onUiEvent(AddFlipContract.UiEvent.SavePost) }
+                onClick = {
+                    onUiEvent(
+                        AddFlipContract.UiEvent.SavePost(
+                            title = (uiState as AddFlipContract.UiState.Content).newPostState.title,
+                            contents = uiState.newPostState.contents,
+                            bgColorType = uiState.newPostState.bgColorType,
+                            category = uiState.newPostState.category,
+                        )
+                    )
+                }
             )
         },
         containerColor = FlipTheme.colors.white,
     ) { innerPadding ->
         when (uiState) {
             is AddFlipContract.UiState.Content -> {
-                LaunchedEffect(uiState.newPostState) {
-                    val title = uiState.newPostState.title
-                    val contents = uiState.newPostState.contents
-                    val category = uiState.newPostState.category
-                    if (
-                        title.isNotEmpty() &&
-                        contents.any { it.isNotEmpty() } &&
-                        category != null
-                    ) {
-                        enabledSaveButton = true
-                    }
+                IsContentSavable(uiState = uiState) {
+                    enabledSaveButton = true
                 }
 
-                IdleScreen(
+                ContentScreen(
                     modifier = Modifier
                         .consumeWindowInsets(innerPadding)
                         .padding(innerPadding)
@@ -167,7 +167,7 @@ fun AddFlipScreen(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun IdleScreen(
+private fun ContentScreen(
     modifier: Modifier = Modifier,
     pageDelete: Boolean,
     newPostState: NewPostState,
@@ -671,6 +671,22 @@ private fun BottomBar(
         enabled = enableSaveButton,
         onClick = onClick,
     )
+}
+
+@Composable
+fun IsContentSavable(uiState: AddFlipContract.UiState.Content, block: () -> Unit) {
+    LaunchedEffect(uiState.newPostState) {
+        val title = uiState.newPostState.title
+        val contents = uiState.newPostState.contents
+        val category = uiState.newPostState.category
+        if (
+            title.isNotEmpty() &&
+            contents.any { it.isNotEmpty() } &&
+            category != null
+        ) {
+            block()
+        }
+    }
 }
 
 /** 플립을 작성할 수 있는 최대 페이지 수 */

@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddFlipViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val addPostUseCases: AddPostUseCase,
+    private val addPostUseCase: AddPostUseCase,
     private val addTempPostUseCase: AddTempPostUseCase,
     private val validatePostUseCase: ValidatePostUseCase,
     private val validateTempPostUseCase: ValidateTempPostUseCase,
@@ -56,8 +56,12 @@ class AddFlipViewModel @Inject constructor(
             is AddFlipContract.UiEvent.OnBackgroundColorChanged -> onBackgroundChanged(event.bgColorType)
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
-            is AddFlipContract.UiEvent.SaveTempPost -> saveTempPost()
-            AddFlipContract.UiEvent.SavePost -> savePost()
+            is AddFlipContract.UiEvent.SaveTempPost -> {
+                saveTempPost(event.title, event.contents, event.bgColorType, event.category)
+            }
+            is AddFlipContract.UiEvent.SavePost -> {
+                savePost(event.title, event.contents, event.bgColorType, event.category)
+            }
             AddFlipContract.UiEvent.SafeNavigateBack -> navigateBackToSafeSave()
             AddFlipContract.UiEvent.NavigateBack -> {
                 sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
@@ -65,49 +69,49 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    private fun savePost() {
+    private fun savePost(
+        title: String,
+        contents: List<String>,
+        bgColorType: BackgroundColorType,
+        category: Category?,
+    ) {
         viewModelScope.launch {
-            extractContentState { content ->
-                val title = content.newPostState.title
-                val contents = content.newPostState.contents
-                val bgColorType = content.newPostState.bgColorType
-                val category = content.newPostState.category
-                if (validationPostForSave(title, contents, category)) {
-                    addPostUseCases(
-                        title = title,
-                        content = contents,
-                        bgColorType = bgColorType,
-                        categoryId = category!!.id
-                    ).onEach { result ->
-                        when (result) {
-                            Result.Loading -> {
-                                val updatedPostSaveState =
-                                    content.postSaveState.copy(loading = true)
-                                updateState {
-                                    content.copy(postSaveState = updatedPostSaveState)
-                                }
-                            }
-
-                            is Result.Error -> {
-                                val updatedPostSaveState =
-                                    content.postSaveState.copy(loading = false)
-                                updateState {
-                                    content.copy(postSaveState = updatedPostSaveState)
-                                }
-                                showSnackbar(errorBodyFirst(result.errorBody, result.error))
-                            }
-
-                            is Result.Success -> {
-                                val updatedPostSaveState =
-                                    content.postSaveState.copy(postSave = true, loading = false)
-                                updateState {
-                                    content.copy(postSaveState = updatedPostSaveState)
-                                }
-                                showSnackbar(SuccessType.Post.SAVE.asUiText())
+            val contentState = getContentState()
+            if (validationPostForSave(title, contents, category)) {
+                addPostUseCase(
+                    title = title,
+                    content = contents,
+                    bgColorType = bgColorType,
+                    categoryId = category!!.id
+                ).onEach { result ->
+                    when (result) {
+                        Result.Loading -> {
+                            val updatedPostSaveState =
+                                contentState.postSaveState.copy(loading = true)
+                            updateState {
+                                contentState.copy(postSaveState = updatedPostSaveState)
                             }
                         }
-                    }.launchIn(viewModelScope)
-                }
+
+                        is Result.Error -> {
+                            val updatedPostSaveState =
+                                contentState.postSaveState.copy(loading = false)
+                            updateState {
+                                contentState.copy(postSaveState = updatedPostSaveState)
+                            }
+                            showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                        }
+
+                        is Result.Success -> {
+                            val updatedPostSaveState =
+                                contentState.postSaveState.copy(postSave = true, loading = false)
+                            updateState {
+                                contentState.copy(postSaveState = updatedPostSaveState)
+                            }
+                            showSnackbar(SuccessType.Post.SAVE.asUiText())
+                        }
+                    }
+                }.launchIn(viewModelScope)
             }
         }
     }
@@ -132,53 +136,54 @@ class AddFlipViewModel @Inject constructor(
         return isValid
     }
 
-    private fun saveTempPost() {
+    private fun saveTempPost(
+        title: String,
+        contents: List<String>,
+        bgColorType: BackgroundColorType,
+        category: Category?
+    ) {
         viewModelScope.launch {
-            extractContentState { content ->
-                val title = content.newPostState.title
-                val contents = content.newPostState.contents
-                val bgColorType = content.newPostState.bgColorType
-                val categoryId = content.newPostState.category?.id
-                val validationResult = validationTempPostForSave(title, contents)
-                if (validationResult) {
-                    addTempPostUseCase(
-                        title = title,
-                        content = contents,
-                        bgColorType = bgColorType,
-                        categoryId = categoryId
-                    ).onEach { result ->
-                        when (result) {
-                            is Result.Error -> {
-                                val updatedPostSaveState =
-                                    content.postSaveState.copy(loading = false)
-                                updateState {
-                                    content.copy(postSaveState = updatedPostSaveState)
-                                }
-                                showSnackbar(errorBodyFirst(result.errorBody, result.error))
+            val contentState = getContentState()
+            val categoryId = category?.id
+            val validationResult = validationTempPostForSave(title, contents)
+            if (validationResult) {
+                addTempPostUseCase(
+                    title = title,
+                    content = contents,
+                    bgColorType = bgColorType,
+                    categoryId = categoryId
+                ).onEach { result ->
+                    when (result) {
+                        is Result.Error -> {
+                            val updatedPostSaveState =
+                                contentState.postSaveState.copy(loading = false)
+                            updateState {
+                                contentState.copy(postSaveState = updatedPostSaveState)
                             }
+                            showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                        }
 
-                            Result.Loading -> {
-                                val updatedAddTempPostState =
-                                    content.postSaveState.copy(loading = true)
-                                updateState {
-                                    content.copy(postSaveState = updatedAddTempPostState)
-                                }
-                            }
-
-                            is Result.Success -> {
-                                val updatedAddTempPostState =
-                                    content.postSaveState.copy(
-                                        tempPostSave = true,
-                                        loading = false
-                                    )
-                                updateState {
-                                    content.copy(postSaveState = updatedAddTempPostState)
-                                }
-                                showSnackbar(SuccessType.TempPost.SAVE.asUiText())
+                        Result.Loading -> {
+                            val updatedAddTempPostState =
+                                contentState.postSaveState.copy(loading = true)
+                            updateState {
+                                contentState.copy(postSaveState = updatedAddTempPostState)
                             }
                         }
-                    }.launchIn(viewModelScope)
-                }
+
+                        is Result.Success -> {
+                            val updatedAddTempPostState =
+                                contentState.postSaveState.copy(
+                                    tempPostSave = true,
+                                    loading = false
+                                )
+                            updateState {
+                                contentState.copy(postSaveState = updatedAddTempPostState)
+                            }
+                            showSnackbar(SuccessType.TempPost.SAVE.asUiText())
+                        }
+                    }
+                }.launchIn(viewModelScope)
             }
         }
     }
@@ -205,64 +210,59 @@ class AddFlipViewModel @Inject constructor(
     }
 
     private fun navigateBackToSafeSave() {
-        extractContentState { content ->
-            val title = content.newPostState.title
-            val contents = content.newPostState.contents
-            when (validateSafeSaveUseCase(title, contents)) {
-                SafeSaveResult.CanSave -> {
-                    sendEffect { AddFlipContract.UiEffect.NavigateBack(false) }
-                }
+        val contentState = getContentState()
+        val title = contentState.newPostState.title
+        val contents = contentState.newPostState.contents
+        when (validateSafeSaveUseCase(title, contents)) {
+            SafeSaveResult.CanSave -> {
+                sendEffect { AddFlipContract.UiEffect.NavigateBack(false) }
+            }
 
-                SafeSaveResult.Discard -> {
-                    sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
-                }
+            SafeSaveResult.Discard -> {
+                sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
             }
         }
     }
 
     private fun onTitleChanged(title: String) {
-        extractContentState { content ->
-            val updatedNewPostState = content.newPostState.copy(title = title)
-            updateState { content.copy(newPostState = updatedNewPostState) }
-        }
+        val contentState = getContentState()
+        val updatedNewPostState = contentState.newPostState.copy(title = title)
+        updateState { contentState.copy(newPostState = updatedNewPostState) }
     }
 
     private fun onContentsChanged(contents: List<String>) {
-        extractContentState { content ->
-            val updatedNewPostState = content.newPostState.copy(contents = contents)
-            updateState { content.copy(newPostState = updatedNewPostState) }
-        }
+        val contentState = getContentState()
+        val updatedNewPostState = contentState.newPostState.copy(contents = contents)
+        updateState { contentState.copy(newPostState = updatedNewPostState) }
     }
 
     private fun onBackgroundChanged(bgColorType: BackgroundColorType) {
-        extractContentState { content ->
-            val updatedNewPostState = content.newPostState.copy(bgColorType = bgColorType)
-            updateState { content.copy(newPostState = updatedNewPostState) }
-        }
+        val contentState = getContentState()
+        val updatedNewPostState = contentState.newPostState.copy(bgColorType = bgColorType)
+        updateState { contentState.copy(newPostState = updatedNewPostState) }
     }
 
     private fun onCategoryChanged(category: Category) {
-        extractContentState { content ->
-            val updatedNewPostState = content.newPostState.copy(category = category)
-            updateState { content.copy(newPostState = updatedNewPostState) }
-        }
+        val contentState = getContentState()
+        val updatedNewPostState = contentState.newPostState.copy(category = category)
+        updateState { contentState.copy(newPostState = updatedNewPostState) }
     }
 
     private suspend fun fetchCategories() {
         val categories = getCategoriesUseCase().first()
-        extractContentState { content ->
-            updateState {
-                content.copy(categories = categories)
-            }
+        val contentState = getContentState()
+        updateState {
+            contentState.copy(categories = categories)
         }
     }
 
     /** 현재 상태 값을 기준으로 Content 상태 데이터를 추출 */
-    private fun extractContentState(block: (content: AddFlipContract.UiState.Content) -> Unit) {
+    private fun getContentState(): AddFlipContract.UiState.Content {
         val currentState = currentUiState
         if (currentState is AddFlipContract.UiState.Content) {
-            block(currentState)
+            return currentState
         }
+        return AddFlipContract.UiState.Content()
     }
 
     private suspend fun showSnackbar(message: UiText, action: SnackbarAction? = null) {

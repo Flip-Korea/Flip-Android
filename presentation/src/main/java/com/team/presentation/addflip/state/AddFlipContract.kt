@@ -30,9 +30,19 @@ class AddFlipContract {
 
         data class OnPageDelete(val complete: Boolean) : UiEvent()
 
-        data object SaveTempPost: UiEvent()
+        data class SaveTempPost(
+            val title: String,
+            val contents: List<String>,
+            val bgColorType: BackgroundColorType,
+            val category: Category?,
+        ): UiEvent()
 
-        data object SavePost : UiEvent()
+        data class SavePost(
+            val title: String,
+            val contents: List<String>,
+            val bgColorType: BackgroundColorType,
+            val category: Category?,
+        ) : UiEvent()
 
         data object SafeNavigateBack : UiEvent()
 
