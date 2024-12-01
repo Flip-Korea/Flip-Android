@@ -1,5 +1,6 @@
 package com.team.domain.usecase.post
 
+import com.team.domain.model.category.Category
 import com.team.domain.type.FlipContentSeparator
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.domain.util.validation.ValidationResult
@@ -21,7 +22,7 @@ class ValidatePostUseCase {
     operator fun invoke(
         title: String,
         content: List<String>,
-        tags: List<String>,
+        category: Category?
     ): List<ValidationResult> {
 
         val validationResults = mutableListOf<ValidationResult>()
@@ -39,12 +40,8 @@ class ValidatePostUseCase {
             validationResults.add(ValidationResult.Error(ValidationErrorType.Post.CONTENT_TOO_LONG))
         }
 
-        if (tags.size > 10) {
-            validationResults.add(ValidationResult.Error(ValidationErrorType.Post.TAGS_10_LIMIT))
-        }
-
-        if (tags.any { it.isEmpty() }) {
-            validationResults.add(ValidationResult.Error(ValidationErrorType.Post.TAGS_EMPTY_ITEM))
+        if (category == null) {
+            validationResults.add(ValidationResult.Error(ValidationErrorType.Post.CATEGORY_IS_NULL))
         }
 
         // 어떠한 에러도 없을 시, 성공

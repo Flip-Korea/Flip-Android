@@ -7,4 +7,5 @@ fun SuccessType.asUiText(): UiText =
     when (this) {
         SuccessType.TempPost.SAVE -> UiText.StringResource(R.string.success_temppost_save)
         SuccessType.TempPost.DELETE -> UiText.StringResource(R.string.success_temppost_delete)
+        SuccessType.Post.SAVE -> UiText.StringResource(R.string.success_post_save)
     }

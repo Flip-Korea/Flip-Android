@@ -1,9 +1,8 @@
 package com.team.presentation.common.state
 
 sealed interface ModalState {
-    data object Idle: ModalState
-    data class Display(val showed: Boolean): ModalState
-    data object Hide: ModalState
+    data object Show : ModalState
+    data object Hide : ModalState
 }
 
 /** CompositionLocalProvider 를 이용한 Event Bus 주입 방식 */

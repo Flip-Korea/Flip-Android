@@ -17,16 +17,12 @@ fun ValidationErrorType.asUiText(): UiText =
             UiText.StringResource(R.string.validation_error_post_content_is_empty)
         }
 
-        ValidationErrorType.Post.TAGS_10_LIMIT -> {
-            UiText.StringResource(R.string.validation_error_post_tags_10_limit)
-        }
-
-        ValidationErrorType.Post.TAGS_EMPTY_ITEM -> {
-            UiText.StringResource(R.string.validation_error_post_tags_empty_item)
-        }
-
         ValidationErrorType.Post.CONTENT_TOO_LONG -> {
             UiText.StringResource(R.string.validation_error_post_content_too_long)
+        }
+
+        ValidationErrorType.Post.CATEGORY_IS_NULL -> {
+            UiText.StringResource(R.string.validation_error_post_category_is_null)
         }
 
         // Temp Post

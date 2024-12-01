@@ -18,7 +18,7 @@ class AddTempPostUseCase @Inject constructor(private val tempPostRepository: Tem
         content: List<String>,
         bgColorType: BackgroundColorType,
         fontStyleType: FontStyleType = FontStyleType.NORMAL,
-        tags: List<String>,
+        tags: List<String> = emptyList(),
         categoryId: Int?,
     ): Flow<Result<Boolean, ErrorType>> {
         val newPost =

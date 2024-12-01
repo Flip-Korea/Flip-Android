@@ -64,7 +64,8 @@ fun FlipImeDoneToolbarWrapper(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp)
-                        .background(Color.White),
+                        .background(Color.White)
+                        .clickableSingleWithoutRipple {  },
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(

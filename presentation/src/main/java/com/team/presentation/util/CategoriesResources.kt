@@ -24,9 +24,7 @@ val CategoriesTestData = listOf(
     Category(12, "글로벌"),
 )
 
-/**
- * 임시 아이콘 Map
- */
+/** 임시 아이콘 Map */
 val CategoryIconsMap = mapOf(
     1 to R.drawable.ic_category_daily,
     2 to R.drawable.ic_category_book,

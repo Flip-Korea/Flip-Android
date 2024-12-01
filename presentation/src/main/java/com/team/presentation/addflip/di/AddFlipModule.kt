@@ -1,6 +1,7 @@
 package com.team.presentation.addflip.di
 
 import com.team.domain.usecase.post.ValidatePostUseCase
+import com.team.domain.usecase.temppost.ValidateSafeSaveUseCase
 import com.team.domain.usecase.temppost.ValidateTempPostUseCase
 import dagger.Module
 import dagger.Provides
@@ -19,4 +20,8 @@ class AddFlipModule {
     @Provides
     @ViewModelScoped
     fun provideValidateTempPostUseCase(): ValidateTempPostUseCase = ValidateTempPostUseCase()
+
+    @Provides
+    @ViewModelScoped
+    fun provideValidateSafeSaveUseCase(): ValidateSafeSaveUseCase = ValidateSafeSaveUseCase()
 }

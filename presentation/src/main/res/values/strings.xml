@@ -45,8 +45,7 @@
     <string name="validation_error_post_title_is_empty">제목이 비어있습니다.</string>
     <string name="validation_error_post_content_is_empty">내용이 비어있습니다.</string>
     <string name="validation_error_post_content_too_long">내용이 너무 깁니다.</string>
-    <string name="validation_error_post_tags_10_limit">태그는 최대 10 개 까지만 입력 가능 합니다.</string>
-    <string name="validation_error_post_tags_empty_item">태그에 빈 글자를 입력할 수 없습니다.</string>
+    <string name="validation_error_post_category_is_null">카테고리를 선택 해 주세요.</string>
     <string name="validation_error_temp_post_empty_title_and_content">제목, 내용이 전부 비어있습니다.</string>
 
     <!-- ReportType -->
@@ -59,6 +58,7 @@
     <!-- SuccessType -->
     <string name="success_temppost_save">임시저장을 완료했어요!</string>
     <string name="success_temppost_delete">임시저장 글을 삭제했어요!</string>
+    <string name="success_post_save">플립 등록 완료!</string>
 
     <!-- LoginScreen -->
     <string name="login_screen_title_1">더욱 쉽게</string>
@@ -142,7 +142,7 @@
     <string name="add_flip_screen_add_tags_btn">추가</string>
     <string name="add_flip_screen_add_tags_save_btn">저장하기</string>
     <string name="add_flip_screen_bottom_btn">완료</string>
-    <string name="add_flip_screen_delete_page_btn">삭제</string>
+    <string name="add_flip_screen_temp_save">임시 저장 중</string>
 
     <!-- AddFlip Screen (Content Description) -->
     <string name="add_flip_screen_content_desc_select_category">분야 선택</string>
@@ -150,13 +150,19 @@
     <string name="add_flip_screen_content_desc_setting_background_color">배경 컬러</string>
     <string name="add_flip_screen_content_desc_show_more">더보기</string>
     <string name="add_flip_screen_content_desc_add_tags">태그 추가</string>
+    <string name="add_flip_screen_content_desc_delete">삭제</string>
 
-    <!-- AddFlip Screen (Modal) -->
+    <!-- AddFlip Screen (TempPostWarningModal) -->
     <string name="add_flip_screen_modal_main_title">플립을 삭제할까요?</string>
     <string name="add_flip_screen_modal_sub_title">지금 돌아가면 변경 사항이 삭제됩니다.</string>
     <string name="add_flip_screen_modal_item_1">삭제</string>
     <string name="add_flip_screen_modal_item_2">임시 저장</string>
     <string name="add_flip_screen_modal_item_3">계속 수정할래요</string>
+
+    <!-- AddFlip Screen (PageDeleteWarningModal) -->
+    <string name="add_flip_screen_page_delete_modal_main_title">페이지를 삭제하시겠어요?</string>
+    <string name="add_flip_screen_page_delete_modal_item_1">삭제하기</string>
+    <string name="add_flip_screen_page_delete_modal_item_2">취소</string>
 
     <!-- TempFlipBox Screen -->
     <string name="temp_flip_box_screen_topbar_title">임시저장함</string>
