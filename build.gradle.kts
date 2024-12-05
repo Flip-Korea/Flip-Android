@@ -7,11 +7,21 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.gms.google.services) apply false
+    alias(libs.plugins.ktlint)
+}
+
+ktlint {
+    version.set("0.46.0")
+}
+
+dependencies {
+    ktlintRuleset(libs.slack.compose.lint.checks)
 }
 
 buildscript {
     dependencies {
         classpath(libs.kotlin.gradle.plugin)
         classpath(libs.hilt.gradle.plugin)
+        classpath(libs.ktlint.gradle)
     }
 }

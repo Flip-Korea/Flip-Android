@@ -40,6 +40,8 @@ firebaseBom = "33.0.0"
 kakaoSdk = "2.19.0"
 material-icons-extended = "1.6.8"
 paging = "3.3.2"
+ktlint = "12.1.2"
+ktlintSlackComposeRule = "1.4.2"
 
 [libraries]
 # add
@@ -119,6 +121,9 @@ androidx-material-icons-extended = {  group = "androidx.compose.material", name 
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
+# Ktlint
+ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
+slack-compose-lint-checks = { module = "com.slack.lint.compose:compose-lint-checks", version.ref = "ktlintSlackComposeRule" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -131,6 +136,8 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 #kotlin-gradle-plugin = {module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGms" }
+# Ktlint
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [bundles]
 
