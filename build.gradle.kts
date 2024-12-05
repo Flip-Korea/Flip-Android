@@ -11,7 +11,7 @@ plugins {
 }
 
 ktlint {
-    version.set("0.46.0")
+    version.set("0.47.1")
 }
 
 dependencies {
