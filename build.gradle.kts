@@ -1,3 +1,5 @@
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -10,8 +12,28 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+allprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+}
+
 ktlint {
     version.set("0.47.1")
+    verbose.set(true)
+    outputToConsole.set(true)
+    coloredOutput.set(true)
+    android.set(true)
+    ignoreFailures.set(false)
+    reporters {
+        reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.JSON)
+        reporter(ReporterType.HTML)
+        reporter(ReporterType.PLAIN)
+    }
+    filter {
+        exclude("**/style-violations.kt")
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
 }
 
 dependencies {
