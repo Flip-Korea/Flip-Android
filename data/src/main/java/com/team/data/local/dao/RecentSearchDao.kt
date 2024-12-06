@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecentSearchDao {
-
     @Query("SELECT * FROM recentsearchentity")
     fun getRecentSearchList(): Flow<List<RecentSearchEntity>>
 

@@ -24,7 +24,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -40,10 +39,10 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class EditMyCategoriesViewModelTest {
-
     @get:Rule val testDispatcher = TestDispatcherRule()
 
     /** 백그라운드 작업을 동기적으로 실행 */
@@ -69,182 +68,190 @@ class EditMyCategoriesViewModelTest {
     }
 
     @Test
-    fun `말풍선 힌트 횟수 초과`() = runTest {
-        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData))
+    fun `말풍선 힌트 횟수 초과`() =
+        runTest {
+            coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData))
 
-        // Given
-        every { getSpeechBubbleCountUseCase() } returns flowOf(0)
+            // Given
+            every { getSpeechBubbleCountUseCase() } returns flowOf(0)
 
-        // When
-        editMyCategoriesViewModel =
-            EditMyCategoriesViewModel(
-                UnconfinedTestDispatcher(),
-                getMyProfileUseCase,
-                getCategoriesUseCase,
-                updateMyCategoriesUseCase,
-                getSpeechBubbleCountUseCase,
-                incrementSpeechBubbleCountUseCase,
-            )
-
-        advanceUntilIdle()
-
-        // Then
-        val speechBubbleState = editMyCategoriesViewModel.speechBubbleState.first()
-
-        assert(!speechBubbleState)
-    }
-
-    @Test
-    fun `말풍선 힌트 횟수 미초과`() = runTest {
-        coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData))
-
-        // Given
-        every { getSpeechBubbleCountUseCase() } returns flowOf(null)
-        coEvery { incrementSpeechBubbleCountUseCase() } just Runs
-
-        // When
-        editMyCategoriesViewModel =
-            EditMyCategoriesViewModel(
-                UnconfinedTestDispatcher(),
-                getMyProfileUseCase,
-                getCategoriesUseCase,
-                updateMyCategoriesUseCase,
-                getSpeechBubbleCountUseCase,
-                incrementSpeechBubbleCountUseCase,
-            )
-
-        advanceUntilIdle()
-
-        // Then
-        val speechBubbleState = editMyCategoriesViewModel.speechBubbleState.first()
-
-        assert(speechBubbleState)
-    }
-
-    @Test
-    fun `카테고리 가져오기 (나의 관심 카테고리 및 제외한 카테고리) - 성공 시`() = runTest {
-        every { getSpeechBubbleCountUseCase() } returns flowOf(null)
-        coEvery { incrementSpeechBubbleCountUseCase() } just Runs
-
-        // Given
-        coEvery { getMyProfileUseCase() } returns
-            flowOf(
-                Result.Success(
-                    myProfileTestData.copy(categories = myCategoriesTestData.map { it.id })
+            // When
+            editMyCategoriesViewModel =
+                EditMyCategoriesViewModel(
+                    UnconfinedTestDispatcher(),
+                    getMyProfileUseCase,
+                    getCategoriesUseCase,
+                    updateMyCategoriesUseCase,
+                    getSpeechBubbleCountUseCase,
+                    incrementSpeechBubbleCountUseCase,
                 )
-            )
 
-        val expectedMyCategories =
-            myCategoriesTestData.mapNotNull { id -> categoriesTestData.find { it.id == id.id } }
-        val expectedExclusiveCategories =
-            categoriesTestData.filter { !myCategoriesTestData.map { m -> m.id }.contains(it.id) }
+            advanceUntilIdle()
 
-        var myCategoriesState: MyCategoriesState? = null
-        val job = launch {
-            editMyCategoriesViewModel.myCategoriesState.collectLatest { myCategoriesState = it }
+            // Then
+            val speechBubbleState = editMyCategoriesViewModel.speechBubbleState.first()
+
+            assert(!speechBubbleState)
         }
 
-        // When
-        editMyCategoriesViewModel =
-            EditMyCategoriesViewModel(
-                UnconfinedTestDispatcher(),
-                getMyProfileUseCase,
-                getCategoriesUseCase,
-                updateMyCategoriesUseCase,
-                getSpeechBubbleCountUseCase,
-                incrementSpeechBubbleCountUseCase,
-            )
-
-        advanceTimeBy(1.seconds)
-        job.cancel()
-
-        // Then
-        val actualMyCategories = myCategoriesState?.myCategories
-        val actualExclusiveCategories = myCategoriesState?.exclusiveCategories
-
-        assertEquals(expectedMyCategories, actualMyCategories)
-        assertEquals(expectedExclusiveCategories, actualExclusiveCategories)
-    }
-
     @Test
-    fun `카테고리 가져오기 (나의 관심 카테고리 및 제외한 카테고리) - 예외 발생 시`() = runTest {
-        every { getSpeechBubbleCountUseCase() } returns flowOf(null)
-        coEvery { incrementSpeechBubbleCountUseCase() } just Runs
+    fun `말풍선 힌트 횟수 미초과`() =
+        runTest {
+            coEvery { getMyProfileUseCase() } returns flowOf(Result.Success(myProfileTestData))
 
-        // Given
-        val expectedException = CancellationException()
-        coEvery { getMyProfileUseCase() } throws expectedException
+            // Given
+            every { getSpeechBubbleCountUseCase() } returns flowOf(null)
+            coEvery { incrementSpeechBubbleCountUseCase() } just Runs
 
-        var myCategoriesState: MyCategoriesState? = null
-        val job = launch {
-            editMyCategoriesViewModel.myCategoriesState.collectLatest { myCategoriesState = it }
-        }
-
-        // When
-        editMyCategoriesViewModel =
-            EditMyCategoriesViewModel(
-                UnconfinedTestDispatcher(),
-                getMyProfileUseCase,
-                getCategoriesUseCase,
-                updateMyCategoriesUseCase,
-                getSpeechBubbleCountUseCase,
-                incrementSpeechBubbleCountUseCase,
-            )
-
-        advanceTimeBy(1.seconds)
-        job.cancel()
-
-        // Then
-        val actualException = myCategoriesState?.error
-
-        assertEquals(
-            expectedException.localizedMessage
-                ?: ErrorType.Exception.IO.asUiText().asString(context),
-            actualException?.asString(context),
-        )
-    }
-
-    @Test
-    fun `나의 관심 카테고리 업데이트 - 성공 시`() = runTest {
-        coEvery { getMyProfileUseCase() } returns
-            flowOf(
-                Result.Success(
-                    myProfileTestData.copy(categories = myCategoriesTestData.map { it.id })
+            // When
+            editMyCategoriesViewModel =
+                EditMyCategoriesViewModel(
+                    UnconfinedTestDispatcher(),
+                    getMyProfileUseCase,
+                    getCategoriesUseCase,
+                    updateMyCategoriesUseCase,
+                    getSpeechBubbleCountUseCase,
+                    incrementSpeechBubbleCountUseCase,
                 )
-            )
-        every { getSpeechBubbleCountUseCase() } returns flowOf(null)
-        coEvery { incrementSpeechBubbleCountUseCase() } just Runs
 
-        // Given
-        val expectedMyCategories = listOf(Category(0, "0"), Category(1, "1"), Category(2, "2"))
-        every { updateMyCategoriesUseCase(expectedMyCategories) } returns
-            flowOf(Result.Success(true))
+            advanceUntilIdle()
 
-        editMyCategoriesViewModel =
-            EditMyCategoriesViewModel(
-                UnconfinedTestDispatcher(),
-                getMyProfileUseCase,
-                getCategoriesUseCase,
-                updateMyCategoriesUseCase,
-                getSpeechBubbleCountUseCase,
-                incrementSpeechBubbleCountUseCase,
-            )
+            // Then
+            val speechBubbleState = editMyCategoriesViewModel.speechBubbleState.first()
 
-        var myCategoriesUpdateState: MyCategoriesUpdateState? = null
-        val job = launch {
-            editMyCategoriesViewModel.myCategoriesUpdateState.collectLatest {
-                myCategoriesUpdateState = it
-            }
+            assert(speechBubbleState)
         }
 
-        // When
-        editMyCategoriesViewModel.updateMyCategories(expectedMyCategories)
+    @Test
+    fun `카테고리 가져오기 (나의 관심 카테고리 및 제외한 카테고리) - 성공 시`() =
+        runTest {
+            every { getSpeechBubbleCountUseCase() } returns flowOf(null)
+            coEvery { incrementSpeechBubbleCountUseCase() } just Runs
 
-        advanceTimeBy(1.seconds)
-        job.cancel()
+            // Given
+            coEvery { getMyProfileUseCase() } returns
+                flowOf(
+                    Result.Success(
+                        myProfileTestData.copy(categories = myCategoriesTestData.map { it.id }),
+                    ),
+                )
 
-        // Then
-        assertNotNull(myCategoriesUpdateState)
-        assert(myCategoriesUpdateState!!.success)
-    }
+            val expectedMyCategories =
+                myCategoriesTestData.mapNotNull { id -> categoriesTestData.find { it.id == id.id } }
+            val expectedExclusiveCategories =
+                categoriesTestData.filter { !myCategoriesTestData.map { m -> m.id }.contains(it.id) }
+
+            var myCategoriesState: MyCategoriesState? = null
+            val job =
+                launch {
+                    editMyCategoriesViewModel.myCategoriesState.collectLatest { myCategoriesState = it }
+                }
+
+            // When
+            editMyCategoriesViewModel =
+                EditMyCategoriesViewModel(
+                    UnconfinedTestDispatcher(),
+                    getMyProfileUseCase,
+                    getCategoriesUseCase,
+                    updateMyCategoriesUseCase,
+                    getSpeechBubbleCountUseCase,
+                    incrementSpeechBubbleCountUseCase,
+                )
+
+            advanceTimeBy(1.seconds)
+            job.cancel()
+
+            // Then
+            val actualMyCategories = myCategoriesState?.myCategories
+            val actualExclusiveCategories = myCategoriesState?.exclusiveCategories
+
+            assertEquals(expectedMyCategories, actualMyCategories)
+            assertEquals(expectedExclusiveCategories, actualExclusiveCategories)
+        }
+
+    @Test
+    fun `카테고리 가져오기 (나의 관심 카테고리 및 제외한 카테고리) - 예외 발생 시`() =
+        runTest {
+            every { getSpeechBubbleCountUseCase() } returns flowOf(null)
+            coEvery { incrementSpeechBubbleCountUseCase() } just Runs
+
+            // Given
+            val expectedException = CancellationException()
+            coEvery { getMyProfileUseCase() } throws expectedException
+
+            var myCategoriesState: MyCategoriesState? = null
+            val job =
+                launch {
+                    editMyCategoriesViewModel.myCategoriesState.collectLatest { myCategoriesState = it }
+                }
+
+            // When
+            editMyCategoriesViewModel =
+                EditMyCategoriesViewModel(
+                    UnconfinedTestDispatcher(),
+                    getMyProfileUseCase,
+                    getCategoriesUseCase,
+                    updateMyCategoriesUseCase,
+                    getSpeechBubbleCountUseCase,
+                    incrementSpeechBubbleCountUseCase,
+                )
+
+            advanceTimeBy(1.seconds)
+            job.cancel()
+
+            // Then
+            val actualException = myCategoriesState?.error
+
+            assertEquals(
+                expectedException.localizedMessage
+                    ?: ErrorType.Exception.IO.asUiText().asString(context),
+                actualException?.asString(context),
+            )
+        }
+
+    @Test
+    fun `나의 관심 카테고리 업데이트 - 성공 시`() =
+        runTest {
+            coEvery { getMyProfileUseCase() } returns
+                flowOf(
+                    Result.Success(
+                        myProfileTestData.copy(categories = myCategoriesTestData.map { it.id }),
+                    ),
+                )
+            every { getSpeechBubbleCountUseCase() } returns flowOf(null)
+            coEvery { incrementSpeechBubbleCountUseCase() } just Runs
+
+            // Given
+            val expectedMyCategories = listOf(Category(0, "0"), Category(1, "1"), Category(2, "2"))
+            every { updateMyCategoriesUseCase(expectedMyCategories) } returns
+                flowOf(Result.Success(true))
+
+            editMyCategoriesViewModel =
+                EditMyCategoriesViewModel(
+                    UnconfinedTestDispatcher(),
+                    getMyProfileUseCase,
+                    getCategoriesUseCase,
+                    updateMyCategoriesUseCase,
+                    getSpeechBubbleCountUseCase,
+                    incrementSpeechBubbleCountUseCase,
+                )
+
+            var myCategoriesUpdateState: MyCategoriesUpdateState? = null
+            val job =
+                launch {
+                    editMyCategoriesViewModel.myCategoriesUpdateState.collectLatest {
+                        myCategoriesUpdateState = it
+                    }
+                }
+
+            // When
+            editMyCategoriesViewModel.updateMyCategories(expectedMyCategories)
+
+            advanceTimeBy(1.seconds)
+            job.cancel()
+
+            // Then
+            assertNotNull(myCategoriesUpdateState)
+            assert(myCategoriesUpdateState!!.success)
+        }
 }

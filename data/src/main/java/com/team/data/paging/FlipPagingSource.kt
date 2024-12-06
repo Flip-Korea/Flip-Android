@@ -49,7 +49,6 @@ class FlipPagingSource<T : Any, R : FlipPagingData<T>>(
     private val apiCall: suspend (loadKey: Long?) -> Result<R, ErrorType>,
     private val pageSize: Int,
 ) : PagingSource<Long, T>() {
-
     override fun getRefreshKey(state: PagingState<Long, T>): Long? =
         state.anchorPosition?.let { anchorPosition ->
             //            val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -66,7 +65,7 @@ class FlipPagingSource<T : Any, R : FlipPagingData<T>>(
             val result = apiCall(loadKey)
             if (result is Result.Error) {
                 return LoadResult.Error(
-                    FlipPagingException(errorType = result.error, errorBody = result.errorBody)
+                    FlipPagingException(errorType = result.error, errorBody = result.errorBody),
                 )
             }
 
@@ -97,7 +96,10 @@ class FlipPagingSource<T : Any, R : FlipPagingData<T>>(
             if (previousKey == 0L) null else previousKey
         }
 
-    private fun getNextKey(loadKey: Long?, pagingData: List<T>): Long? {
+    private fun getNextKey(
+        loadKey: Long?,
+        pagingData: List<T>,
+    ): Long? {
         val nextKey: Long = loadKey?.let { it + pageSize } ?: pageSize.toLong()
         return if (pagingData.isEmpty()) null else nextKey
     }

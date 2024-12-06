@@ -7,7 +7,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ValidatePostUseCaseTest {
-
     private val validatePostUseCase = ValidatePostUseCase()
 
     @Test

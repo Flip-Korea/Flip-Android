@@ -41,5 +41,4 @@ fun DisplayProfileResponse.toDomainModel(): DisplayProfile =
         rating,
     )
 
-fun List<DisplayProfileResponse>.toDomainModel(): List<DisplayProfile> =
-    this.map { it.toDomainModel() }
+fun List<DisplayProfileResponse>.toDomainModel(): List<DisplayProfile> = this.map { it.toDomainModel() }

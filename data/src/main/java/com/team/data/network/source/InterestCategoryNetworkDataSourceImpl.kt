@@ -9,17 +9,15 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 class InterestCategoryNetworkDataSourceImpl(
-    private val interestCategoryNetworkApi: InterestCategoryNetworkApi
+    private val interestCategoryNetworkApi: InterestCategoryNetworkApi,
 ) : InterestCategoryNetworkDataSource {
-
     override suspend fun getMyCategories(): Result<List<CategoryResponse>, ErrorType> =
         networkCall {
             interestCategoryNetworkApi.getMyCategories()
         }
 
-    override suspend fun updateMyCategories(
-        categoryIds: CategoryRequest
-    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
-        interestCategoryNetworkApi.updateMyCategories(categoryIds)
-    }
+    override suspend fun updateMyCategories(categoryIds: CategoryRequest): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse {
+            interestCategoryNetworkApi.updateMyCategories(categoryIds)
+        }
 }

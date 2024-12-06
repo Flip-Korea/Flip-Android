@@ -7,9 +7,6 @@ import com.team.data.local.testdoubles.makeMyProfileEntityTestData
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.random.Random
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -21,6 +18,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -35,7 +35,6 @@ import org.robolectric.annotation.Config
     //    ])
 )
 class MyProfileDaoTest {
-
     @get:Rule(order = 1) var hiltModule = HiltAndroidRule(this)
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -57,112 +56,119 @@ class MyProfileDaoTest {
     }
 
     @Test
-    fun `모든 프로필 불러오기 (getAllProfile())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
-        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
+    fun `모든 프로필 불러오기 (getAllProfile())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
+            val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
-        myProfileDao.upsertProfile(profileEntity)
-        myProfileDao.upsertProfile(profileEntity2)
+            myProfileDao.upsertProfile(profileEntity)
+            myProfileDao.upsertProfile(profileEntity2)
 
-        val profiles = myProfileDao.getAllProfile().first()
+            val profiles = myProfileDao.getAllProfile().first()
 
-        assertEquals(profiles.size, 2)
-    }
-
-    @Test
-    fun `프로필 1개 불러오기 (getProfileById())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
-
-        myProfileDao.upsertProfile(profileEntity)
-
-        val profile = myProfileDao.getProfileById(profileId).first()
-
-        assert(profile != null)
-        assertEquals(profile!!.profileId, profileId)
-    }
+            assertEquals(profiles.size, 2)
+        }
 
     @Test
-    fun `프로필 추가 (upsertProfile())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
+    fun `프로필 1개 불러오기 (getProfileById())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
 
-        myProfileDao.upsertProfile(profileEntity)
+            myProfileDao.upsertProfile(profileEntity)
 
-        val profile = myProfileDao.getProfileById(profileId).first()
+            val profile = myProfileDao.getProfileById(profileId).first()
 
-        assert(profile != null)
-        assertEquals(profile!!.profileId, profileId)
-    }
-
-    @Test
-    fun `여러 프로필 한 번에 추가 (upsertAll())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
-        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
-
-        val profileEntities = listOf(profileEntity, profileEntity2)
-
-        myProfileDao.upsertAll(profileEntities)
-
-        val profiles = myProfileDao.getAllProfile().first()
-
-        assertEquals(profiles.size, profileEntities.size)
-        assert(profiles.contains(profileEntity))
-        assert(profiles.contains(profileEntity2))
-    }
+            assert(profile != null)
+            assertEquals(profile!!.profileId, profileId)
+        }
 
     @Test
-    fun `프로필 삭제 (deleteProfile())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
-        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
+    fun `프로필 추가 (upsertProfile())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
 
-        val profileEntities = listOf(profileEntity, profileEntity2)
+            myProfileDao.upsertProfile(profileEntity)
 
-        myProfileDao.upsertAll(profileEntities)
-        myProfileDao.deleteProfile(profileEntity2)
+            val profile = myProfileDao.getProfileById(profileId).first()
 
-        val profiles = myProfileDao.getAllProfile().first()
-
-        assertEquals(profiles.size, 1)
-        assertEquals(profiles[0].profileId, profileEntity.profileId)
-    }
+            assert(profile != null)
+            assertEquals(profile!!.profileId, profileId)
+        }
 
     @Test
-    fun `모든 프로필 삭제 (deleteAll())`() = runTest {
-        val profileId = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
-        val profileEntity = makeMyProfileEntityTestData(profileId)
-        val profileEntity2 = makeMyProfileEntityTestData(profileId2)
+    fun `여러 프로필 한 번에 추가 (upsertAll())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
+            val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
-        val profileEntities = listOf(profileEntity, profileEntity2)
+            val profileEntities = listOf(profileEntity, profileEntity2)
 
-        myProfileDao.upsertAll(profileEntities)
-        myProfileDao.deleteAll()
+            myProfileDao.upsertAll(profileEntities)
 
-        assert(myProfileDao.getAllProfile().first().isEmpty())
-    }
+            val profiles = myProfileDao.getAllProfile().first()
+
+            assertEquals(profiles.size, profileEntities.size)
+            assert(profiles.contains(profileEntity))
+            assert(profiles.contains(profileEntity2))
+        }
 
     @Test
-    fun `관심분야 카테고리 업데이트 (updateCategories())`() = runTest {
-        val profileId = "testProfileId"
-        val profileEntityTestData =
-            makeMyProfileEntityTestData(profileId).copy(categories = listOf(1, 2, 3, 4))
+    fun `프로필 삭제 (deleteProfile())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
+            val profileEntity2 = makeMyProfileEntityTestData(profileId2)
 
-        myProfileDao.upsertProfile(profileEntityTestData)
+            val profileEntities = listOf(profileEntity, profileEntity2)
 
-        val changeCategories = listOf(5, 6, 7)
-        myProfileDao.updateCategories(profileId, changeCategories)
+            myProfileDao.upsertAll(profileEntities)
+            myProfileDao.deleteProfile(profileEntity2)
 
-        val profileEntity = myProfileDao.getProfileById(profileId).first()
+            val profiles = myProfileDao.getAllProfile().first()
 
-        assert(profileEntity != null)
-        assert(profileEntity!!.categories.isNotEmpty())
-        assertEquals(profileEntity.categories, changeCategories)
-    }
+            assertEquals(profiles.size, 1)
+            assertEquals(profiles[0].profileId, profileEntity.profileId)
+        }
+
+    @Test
+    fun `모든 프로필 삭제 (deleteAll())`() =
+        runTest {
+            val profileId = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileId2 = "test-profile-${Random.nextInt(1, 50000)}"
+            val profileEntity = makeMyProfileEntityTestData(profileId)
+            val profileEntity2 = makeMyProfileEntityTestData(profileId2)
+
+            val profileEntities = listOf(profileEntity, profileEntity2)
+
+            myProfileDao.upsertAll(profileEntities)
+            myProfileDao.deleteAll()
+
+            assert(myProfileDao.getAllProfile().first().isEmpty())
+        }
+
+    @Test
+    fun `관심분야 카테고리 업데이트 (updateCategories())`() =
+        runTest {
+            val profileId = "testProfileId"
+            val profileEntityTestData =
+                makeMyProfileEntityTestData(profileId).copy(categories = listOf(1, 2, 3, 4))
+
+            myProfileDao.upsertProfile(profileEntityTestData)
+
+            val changeCategories = listOf(5, 6, 7)
+            myProfileDao.updateCategories(profileId, changeCategories)
+
+            val profileEntity = myProfileDao.getProfileById(profileId).first()
+
+            assert(profileEntity != null)
+            assert(profileEntity!!.categories.isNotEmpty())
+            assertEquals(profileEntity.categories, changeCategories)
+        }
 }

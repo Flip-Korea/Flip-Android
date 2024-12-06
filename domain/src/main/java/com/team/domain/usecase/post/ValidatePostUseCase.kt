@@ -8,7 +8,6 @@ import com.team.domain.util.validation.ValidationResult
 private const val LETTER_HIDDEN_LIMIT = 500
 
 class ValidatePostUseCase {
-
     /**
      * Flip(Post) 글 등록 시 유효성 검사
      *
@@ -22,9 +21,8 @@ class ValidatePostUseCase {
     operator fun invoke(
         title: String,
         content: List<String>,
-        category: Category?
+        category: Category?,
     ): List<ValidationResult> {
-
         val validationResults = mutableListOf<ValidationResult>()
         val joinContents = content.joinToString(FlipContentSeparator.SEPARATOR)
 

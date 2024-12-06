@@ -11,53 +11,55 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class GetCategoriesUseCaseTest {
-
     //    private val categoryRepository: CategoryRepository = mockk()
 
     /** 테스트 데이터는 categoriesTestData, 이하 생략 */
     @Test
-    fun `Local DB 데이터 O`() = runTest {
-        // Given
-        val categoryRepository: CategoryRepository =
-            FakeCategoryRepository(hasLocalData = true, isNetworkError = false)
-        val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
+    fun `Local DB 데이터 O`() =
+        runTest {
+            // Given
+            val categoryRepository: CategoryRepository =
+                FakeCategoryRepository(hasLocalData = true, isNetworkError = false)
+            val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
 
-        // When
-        val categories = getCategoriesUseCase().firstOrNull()
+            // When
+            val categories = getCategoriesUseCase().firstOrNull()
 
-        // Then
-        assertNotNull(categories)
-        assertEquals(categories?.size, categoriesTestData.size)
-    }
-
-    @Test
-    fun `Local DB 데이터 X, Network Fetch Successful`() = runTest {
-        // 1.
-        // Given
-        val categoryRepository: CategoryRepository =
-            FakeCategoryRepository(hasLocalData = false, isNetworkError = false)
-        val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
-
-        // When
-        val categories = getCategoriesUseCase().firstOrNull()
-
-        // Then
-        assertNotNull(categories)
-        assertEquals(categories?.size, categoriesTestData.size)
-    }
+            // Then
+            assertNotNull(categories)
+            assertEquals(categories?.size, categoriesTestData.size)
+        }
 
     @Test
-    fun `Local DB 데이터 X, Network Fetch Failure`() = runTest {
-        // Given
-        val categoryRepository: CategoryRepository =
-            FakeCategoryRepository(hasLocalData = false, isNetworkError = true)
-        val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
+    fun `Local DB 데이터 X, Network Fetch Successful`() =
+        runTest {
+            // 1.
+            // Given
+            val categoryRepository: CategoryRepository =
+                FakeCategoryRepository(hasLocalData = false, isNetworkError = false)
+            val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
 
-        // When
-        val categories = getCategoriesUseCase().firstOrNull()
+            // When
+            val categories = getCategoriesUseCase().firstOrNull()
 
-        // Then
-        assertNotNull(categories)
-        assert(categories!!.isEmpty())
-    }
+            // Then
+            assertNotNull(categories)
+            assertEquals(categories?.size, categoriesTestData.size)
+        }
+
+    @Test
+    fun `Local DB 데이터 X, Network Fetch Failure`() =
+        runTest {
+            // Given
+            val categoryRepository: CategoryRepository =
+                FakeCategoryRepository(hasLocalData = false, isNetworkError = true)
+            val getCategoriesUseCase = GetCategoriesUseCase(categoryRepository)
+
+            // When
+            val categories = getCategoriesUseCase().firstOrNull()
+
+            // Then
+            assertNotNull(categories)
+            assert(categories!!.isEmpty())
+        }
 }

@@ -6,8 +6,7 @@ interface ClickableSingle {
     companion object
 }
 
-fun ClickableSingle.Companion.get(): ClickableSingle =
-    ClickableSingleImpl()
+fun ClickableSingle.Companion.get(): ClickableSingle = ClickableSingleImpl()
 
 private class ClickableSingleImpl : ClickableSingle {
     private val now: Long

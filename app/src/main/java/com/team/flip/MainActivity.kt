@@ -41,7 +41,6 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @Inject
     lateinit var tokenDataStore: DataStoreManager
 
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
         /** statusBarsPadding() & navigationBarsPadding() 사용하기 **/
         setContent {
-
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
 
@@ -59,16 +57,17 @@ class MainActivity : ComponentActivity() {
 
             /** 스낵바 */
             val snackbarHostState = remember { SnackbarHostState() }
-            val dismissSnackbarState = rememberSwipeToDismissBoxState(
-                confirmValueChange = { value ->
-                    if (value != SwipeToDismissBoxValue.Settled) {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        true
-                    } else {
-                        false
-                    }
-                }
-            )
+            val dismissSnackbarState =
+                rememberSwipeToDismissBoxState(
+                    confirmValueChange = { value ->
+                        if (value != SwipeToDismissBoxValue.Settled) {
+                            snackbarHostState.currentSnackbarData?.dismiss()
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                )
             LaunchedEffect(dismissSnackbarState.currentValue) {
                 if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
                     dismissSnackbarState.reset()
@@ -81,21 +80,21 @@ class MainActivity : ComponentActivity() {
                     coroutineScope.launch {
                         snackbarHostState.currentSnackbarData?.dismiss()
 
-                        val result = snackbarHostState.showSnackbar(
-                            message = event.message.asString(context),
-                            actionLabel = event.action?.name,
-                            duration = SnackbarDuration.Short
-                        )
+                        val result =
+                            snackbarHostState.showSnackbar(
+                                message = event.message.asString(context),
+                                actionLabel = event.action?.name,
+                                duration = SnackbarDuration.Short,
+                            )
 
                         if (result == SnackbarResult.ActionPerformed) {
                             event.action?.action?.invoke()
                         }
                     }
-                }
+                },
             )
 
             FlipAppTheme {
-
                 /**
                  * Snackbar 를 위한 Scaffold
                  * TODO: Snackbar 를 전역적으로 사용하기 위해 또 다른 방법 생각해보기
@@ -105,17 +104,18 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = {
                         FlipSnackbar(
                             snackBarHostState = snackbarHostState,
-                            dismissSnackbarState = dismissSnackbarState
+                            dismissSnackbarState = dismissSnackbarState,
                         )
-                    }
+                    },
                 ) { innerPadding ->
                     MainNavigation(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(FlipTheme.colors.white),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(FlipTheme.colors.white),
                         mainNavController = mainNavController,
                         deleteToken = {
-                            //TODO 임시 테스트용 코드이므로 반드시 삭제할 것
+                            // TODO 임시 테스트용 코드이므로 반드시 삭제할 것
                             lifecycleScope.launch {
                                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                                     tokenDataStore.deleteData(DataStoreType.TokenType.ACCESS_TOKEN)
@@ -127,7 +127,7 @@ class MainActivity : ComponentActivity() {
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                             finish()
-                        }
+                        },
                     )
                 }
             }

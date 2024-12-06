@@ -27,7 +27,6 @@ fun BottomNavigation(
     onSettingClick: () -> Unit,
     deleteToken: () -> Unit,
 ) {
-
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route ?: ""
 
     NavHost(
@@ -37,12 +36,12 @@ fun BottomNavigation(
         enterTransition = { EnterTransition.None },
         popEnterTransition = { popEnterTransition(currentRoute) },
         exitTransition = { exitTransition(currentRoute) },
-        popExitTransition = { ExitTransition.None }
+        popExitTransition = { ExitTransition.None },
     ) {
         composable(route = ScreenItem.HOME.name) {
             HomeRoute(
                 innerPadding = innerPadding,
-                onSettingClick = onSettingClick
+                onSettingClick = onSettingClick,
             )
         }
 
@@ -58,7 +57,7 @@ fun BottomNavigation(
 
         composable(route = ScreenItem.PROFILE.name) {
             ProfileScreen(
-                deleteToken = deleteToken
+                deleteToken = deleteToken,
             )
         }
     }

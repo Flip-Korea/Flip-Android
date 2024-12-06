@@ -2,7 +2,7 @@ package com.team.data.network.model.request
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.team.domain.model.report_block.ReportReq
+import com.team.domain.model.reportBlock.ReportReq
 
 /** reportId, reporterId는 profileId 형태 * */
 @JsonClass(generateAdapter = true)
@@ -14,5 +14,4 @@ data class ReportRequest(
     @Json(name = "comment_id") val commentId: Long?,
 )
 
-fun ReportReq.toNetwork(): ReportRequest =
-    ReportRequest(blameType = reportType.asString(), reportId, reporterId, postId, commentId)
+fun ReportReq.toNetwork(): ReportRequest = ReportRequest(blameType = reportType.asString(), reportId, reporterId, postId, commentId)

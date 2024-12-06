@@ -56,7 +56,6 @@ fun SettingBackgroundColorBar(
     showMore: () -> Unit,
     onSelectedColor: (BackgroundColorType) -> Unit,
 ) {
-
     val animateRotateValue =
         animateFloatAsState(targetValue = if (isShowMoreClicked) 90f else 0f, label = "")
 
@@ -70,9 +69,9 @@ fun SettingBackgroundColorBar(
                 modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_background_color),
                 contentDescription =
-                stringResource(
-                    id = R.string.add_flip_screen_content_desc_setting_background_color
-                ),
+                    stringResource(
+                        id = R.string.add_flip_screen_content_desc_setting_background_color,
+                    ),
                 tint = FlipTheme.colors.main,
             )
             Text(
@@ -84,9 +83,9 @@ fun SettingBackgroundColorBar(
 
         Row(
             modifier =
-            Modifier.weight(2f).wrapContentWidth(Alignment.End).clickableSingleWithoutRipple {
-                showMore()
-            },
+                Modifier.weight(2f).wrapContentWidth(Alignment.End).clickableSingleWithoutRipple {
+                    showMore()
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.End),
         ) animatedRow@{
@@ -117,16 +116,16 @@ fun SettingBackgroundColorBar(
 
             Icon(
                 modifier =
-                Modifier.size(24.dp)
-                    .graphicsLayer { rotationZ = animateRotateValue.value }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { showMore() },
-                    ),
+                    Modifier.size(24.dp)
+                        .graphicsLayer { rotationZ = animateRotateValue.value }
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { showMore() },
+                        ),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription =
-                stringResource(id = R.string.add_flip_screen_content_desc_show_more),
+                    stringResource(id = R.string.add_flip_screen_content_desc_show_more),
                 tint = FlipTheme.colors.gray5,
             )
         }
@@ -140,7 +139,6 @@ private fun BackgroundColorOptions(
     selectedColor: BackgroundColorType,
     onSelectedColor: (BackgroundColorType) -> Unit,
 ) {
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -152,15 +150,17 @@ private fun BackgroundColorOptions(
                     Modifier.clip(CircleShape)
                         .background(FlipTheme.colors.point3)
                         .border(1.dp, FlipTheme.colors.point, CircleShape)
-                } else Modifier
+                } else {
+                    Modifier
+                }
 
             Box(modifier = Modifier.size(24.dp).then(itemModifier)) {
                 Icon(
                     modifier =
-                    Modifier.align(Alignment.Center)
-                        .size(16.dp)
-                        .border(1.dp, Color(0xFF212121), CircleShape)
-                        .clickableSingleWithoutRipple { onSelectedColor(color) },
+                        Modifier.align(Alignment.Center)
+                            .size(16.dp)
+                            .border(1.dp, Color(0xFF212121), CircleShape)
+                            .clickableSingleWithoutRipple { onSelectedColor(color) },
                     imageVector = Icons.Default.Circle,
                     contentDescription = "bg-color",
                     tint = color.asColor(),

@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object FlipCardTokens {
     val bgColorMap = { id: Int ->
-        when(id) {
+        when (id) {
             0 -> Color(0xFFFFFFFF)
             1 -> Color(0xFFFFE1E1)
             2 -> Color(0xFFFFF5E1)

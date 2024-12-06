@@ -11,7 +11,6 @@ import com.team.domain.util.Result
 
 class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetworkApi) :
     AccountNetworkDataSource {
-
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> =
         networkCall {
             accountNetworkApi.getUserAccount(accessToken)
@@ -27,15 +26,15 @@ class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetwork
             accountNetworkApi.checkDuplicateProfileId(profileId)
         }
 
-    override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> = networkCall {
-        accountNetworkApi.login(accountId)
-    }
+    override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =
+        networkCall {
+            accountNetworkApi.login(accountId)
+        }
 
-    override suspend fun register(
-        networkRegister: RegisterRequest
-    ): Result<TokenResponse, ErrorType> = networkCall {
-        accountNetworkApi.register(networkRegister)
-    }
+    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> =
+        networkCall {
+            accountNetworkApi.register(networkRegister)
+        }
 
     override suspend fun tokenRefresh(refreshToken: String): Result<TokenResponse, ErrorType> =
         networkCall {

@@ -5,7 +5,10 @@ import androidx.room.PrimaryKey
 import com.team.domain.model.RecentSearch
 
 @Entity
-data class RecentSearchEntity(@PrimaryKey(autoGenerate = true) val id: Long = 0L, val word: String)
+data class RecentSearchEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    val word: String,
+)
 
 fun RecentSearchEntity.toDomainModel(): RecentSearch = RecentSearch(id, word)
 

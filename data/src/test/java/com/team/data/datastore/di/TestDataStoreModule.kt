@@ -10,8 +10,10 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 
 private val TEST_DATASTORE_NAME = "test_datastore"
+
 @OptIn(ExperimentalCoroutinesApi::class)
 private val testCoroutineDispatcher = UnconfinedTestDispatcher()
+
 @OptIn(ExperimentalCoroutinesApi::class)
 private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher + Job())
 private val Context.testDataStore: DataStore<Preferences> by

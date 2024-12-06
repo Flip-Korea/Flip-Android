@@ -12,31 +12,42 @@ class FakeDataStoreManager : DataStoreManager {
     private val booleanMaps = mutableMapOf<String, Boolean?>()
     private val fakeDelay = 500L
 
-    override fun getStringData(type: DataStoreType): Flow<String?> = flow {
-        delay(fakeDelay)
-        val value = maps[getKey(type)]
-        emit(value)
-    }
+    override fun getStringData(type: DataStoreType): Flow<String?> =
+        flow {
+            delay(fakeDelay)
+            val value = maps[getKey(type)]
+            emit(value)
+        }
 
-    override fun getIntData(type: DataStoreType): Flow<Int?> = flow {
-        delay(fakeDelay)
-        val value = intMaps[getKey(type)]
-        emit(value)
-    }
+    override fun getIntData(type: DataStoreType): Flow<Int?> =
+        flow {
+            delay(fakeDelay)
+            val value = intMaps[getKey(type)]
+            emit(value)
+        }
 
-    override suspend fun <T : DataStoreType.TokenType> saveData(type: T, data: String) {
+    override suspend fun <T : DataStoreType.TokenType> saveData(
+        type: T,
+        data: String,
+    ) {
         delay(fakeDelay)
         val key = getKey(type)
         maps[key] = data
     }
 
-    override suspend fun <T : DataStoreType.AccountType> saveData(type: T, data: String) {
+    override suspend fun <T : DataStoreType.AccountType> saveData(
+        type: T,
+        data: String,
+    ) {
         delay(fakeDelay)
         val key = getKey(type)
         maps[key] = data
     }
 
-    override suspend fun <T : DataStoreType.CheckType> saveData(type: T, data: Int) {
+    override suspend fun <T : DataStoreType.CheckType> saveData(
+        type: T,
+        data: Int,
+    ) {
         delay(fakeDelay)
         val key = getKey(type)
         intMaps[key] = data

@@ -17,7 +17,6 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class GetMyProfileUseCaseTest {
-
     private lateinit var dataStoreManager: DataStoreManager
 
     @Before
@@ -26,73 +25,77 @@ class GetMyProfileUseCaseTest {
     }
 
     @Test
-    fun `Local DB 데이터 O`() = runTest {
-        // Given
-        val profileId = "profileId"
-        val expected = myProfileTestData(profileId)
+    fun `Local DB 데이터 O`() =
+        runTest {
+            // Given
+            val profileId = "profileId"
+            val expected = myProfileTestData(profileId)
 
-        dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = true, isNetworkError = false)
-        val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
+            dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
+            val userRepository =
+                FakeUserRepository(profileId = profileId, hasLocalData = true, isNetworkError = false)
+            val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
-        // When
-        val actual = getMyProfileUseCase().last()
+            // When
+            val actual = getMyProfileUseCase().last()
 
-        // Then
-        assertEquals(expected, (actual as Result.Success).data)
-    }
-
-    @Test
-    fun `Local DB 데이터 X, Network Fetch Successful`() = runTest {
-        // Given
-        val profileId = "profileId"
-        val expected = myProfileTestData(profileId)
-
-        dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
-        val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
-
-        // When
-        val actual = getMyProfileUseCase().last()
-
-        // Then
-        assertEquals(expected, (actual as Result.Success).data)
-    }
+            // Then
+            assertEquals(expected, (actual as Result.Success).data)
+        }
 
     @Test
-    fun `Local DB 데이터 X, Network Fetch Failure`() = runTest {
-        // Given
-        val profileId = "profileId"
+    fun `Local DB 데이터 X, Network Fetch Successful`() =
+        runTest {
+            // Given
+            val profileId = "profileId"
+            val expected = myProfileTestData(profileId)
 
-        dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = true)
-        val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
+            dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
+            val userRepository =
+                FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
+            val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
-        // When
-        val actual = getMyProfileUseCase().last()
+            // When
+            val actual = getMyProfileUseCase().last()
 
-        // Then
-        assertNull((actual as Result.Success).data)
-    }
+            // Then
+            assertEquals(expected, (actual as Result.Success).data)
+        }
 
     @Test
-    fun `Profile ID를 찾을 수 없음`() = runTest {
-        // Given
-        val profileId = "profileId"
-        val expected: Result<Nothing, ErrorType> = Result.Error(ErrorType.Auth.USER_NOT_FOUND)
+    fun `Local DB 데이터 X, Network Fetch Failure`() =
+        runTest {
+            // Given
+            val profileId = "profileId"
 
-        val userRepository =
-            FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
-        val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
+            dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
+            val userRepository =
+                FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = true)
+            val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
 
-        // When
-        dataStoreManager.clearAll()
-        val actual = getMyProfileUseCase().last()
+            // When
+            val actual = getMyProfileUseCase().last()
 
-        // Then
-        assertEquals(expected, actual)
-    }
+            // Then
+            assertNull((actual as Result.Success).data)
+        }
+
+    @Test
+    fun `Profile ID를 찾을 수 없음`() =
+        runTest {
+            // Given
+            val profileId = "profileId"
+            val expected: Result<Nothing, ErrorType> = Result.Error(ErrorType.Auth.USER_NOT_FOUND)
+
+            val userRepository =
+                FakeUserRepository(profileId = profileId, hasLocalData = false, isNetworkError = false)
+            val getMyProfileUseCase = GetMyProfileUseCase(dataStoreManager, userRepository)
+
+            // When
+            dataStoreManager.clearAll()
+            val actual = getMyProfileUseCase().last()
+
+            // Then
+            assertEquals(expected, actual)
+        }
 }

@@ -33,13 +33,12 @@ fun FlipTopBar(
     modifier: Modifier = Modifier,
     title: String,
     onBackPress: (() -> Unit)? = null,
-    options: @Composable (RowScope.() -> Unit)? = null
+    options: @Composable (RowScope.() -> Unit)? = null,
 ) {
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (onBackPress != null) {
@@ -47,16 +46,17 @@ fun FlipTopBar(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
                     contentDescription = stringResource(id = R.string.content_desc_arrow_back),
                     onClick = onBackPress,
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
             }
             Text(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .offset(x = (-2).dp),
+                modifier =
+                    Modifier
+                        .wrapContentSize()
+                        .offset(x = (-2).dp),
                 text = title,
                 style = FlipTheme.typography.headline4,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
 
@@ -64,7 +64,7 @@ fun FlipTopBar(
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                content = options
+                content = options,
             )
         }
     }
@@ -77,7 +77,7 @@ private fun FlipTopBarPreview() {
         FlipTopBar(
             modifier = Modifier.fillMaxWidth(),
             title = "화면 이름",
-            onBackPress = { }
+            onBackPress = { },
         )
     }
 }
@@ -94,9 +94,9 @@ private fun FlipTopBarPreview2() {
                 Text(
                     text = "버튼 이름",
                     style = FlipTheme.typography.body6,
-                    color = FlipTheme.colors.gray6
+                    color = FlipTheme.colors.gray6,
                 )
-            }
+            },
         )
     }
 }
@@ -114,9 +114,9 @@ private fun FlipTopBarPreview3() {
                     imageVector = ImageVector.vectorResource(R.drawable.ic_more),
                     contentDescription = null,
                     tint = FlipTheme.colors.main,
-                    onClick = { }
+                    onClick = { },
                 )
-            }
+            },
         )
     }
 }

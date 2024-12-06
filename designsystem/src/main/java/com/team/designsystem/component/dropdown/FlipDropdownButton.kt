@@ -36,13 +36,12 @@ fun FlipDropdownButton(
     modifier: Modifier = Modifier,
     isSelect: Boolean,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-
     val rotationAnimated by animateFloatAsState(
         targetValue = if (isSelect) 180f else 0f,
         animationSpec = tween(),
-        label = "rotationAnimation"
+        label = "rotationAnimation",
     )
 
     OutlinedButton(
@@ -51,44 +50,45 @@ fun FlipDropdownButton(
         contentPadding = PaddingValues(start = 14.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
         border = BorderStroke(1.dp, if (isSelect) FlipTheme.colors.point else FlipTheme.colors.gray4),
         shape = RoundedCornerShape(50.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = FlipTheme.colors.main,
-            containerColor = Color.Transparent
-        )
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                contentColor = FlipTheme.colors.main,
+                containerColor = Color.Transparent,
+            ),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = text,
                 style = FlipTheme.typography.body3,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Icon(
-                modifier = Modifier.graphicsLayer {
-                    rotationZ = rotationAnimated
-                },
+                modifier =
+                    Modifier.graphicsLayer {
+                        rotationZ = rotationAnimated
+                    },
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_under),
                 contentDescription = stringResource(id = R.string.content_desc_check),
-                tint = FlipTheme.colors.gray5
+                tint = FlipTheme.colors.gray5,
             )
         }
     }
 }
 
-@Preview(showBackground = true )
+@Preview(showBackground = true)
 @Composable
 private fun FlipDropdownButtonPreview() {
-
     var isSelect by remember { mutableStateOf(false) }
 
     FlipDropdownButton(
         isSelect = isSelect,
         text = "Option",
-        onClick = {isSelect = !isSelect}
+        onClick = { isSelect = !isSelect },
     )
 }

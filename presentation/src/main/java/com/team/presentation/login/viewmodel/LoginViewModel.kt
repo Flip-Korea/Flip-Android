@@ -23,15 +23,14 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val getAccountUseCase: GetAccountUseCase
-): ViewModel() {
-
+    private val getAccountUseCase: GetAccountUseCase,
+) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
     fun login(
         socialLoginPlatform: SocialLoginPlatform,
-        authManager: AuthManager
+        authManager: AuthManager,
     ) {
         authManager.signIn().onEach { authUiState ->
             when (authUiState) {
@@ -39,11 +38,14 @@ class LoginViewModel @Inject constructor(
                     _loginState.update { it.copy(loading = true) }
                 }
                 is AuthUiState.Error -> {
-                    _loginState.update { it.copy(
-                        loading = false,
-                        error = authUiState.errorType?.asUiText()
-                            ?: ErrorType.Network.UNEXPECTED.asUiText()
-                    ) }
+                    _loginState.update {
+                        it.copy(
+                            loading = false,
+                            error =
+                                authUiState.errorType?.asUiText()
+                                    ?: ErrorType.Network.UNEXPECTED.asUiText(),
+                        )
+                    }
                 }
                 is AuthUiState.Success -> {
                     signIn(socialLoginPlatform, authUiState.data)
@@ -60,12 +62,15 @@ class LoginViewModel @Inject constructor(
             when (result) {
                 Result.Loading -> { }
                 is Result.Error -> {
-                    _loginState.update { it.copy(
-                        loading = false,
-                        error = result.errorBody?.let { errorBody ->
-                            UiText.DynamicString(errorBody.message)
-                        } ?: result.error.asUiText()
-                    ) }
+                    _loginState.update {
+                        it.copy(
+                            loading = false,
+                            error =
+                                result.errorBody?.let { errorBody ->
+                                    UiText.DynamicString(errorBody.message)
+                                } ?: result.error.asUiText(),
+                        )
+                    }
                 }
                 is Result.Success -> {
                     getAccount()
@@ -79,19 +84,24 @@ class LoginViewModel @Inject constructor(
             when (result) {
                 Result.Loading -> { }
                 is Result.Error -> {
-                    _loginState.update { it.copy(
-                        loading = false,
-                        error = result.errorBody?.let { errorBody ->
-                            UiText.DynamicString(errorBody.message)
-                        } ?: result.error.asUiText()
-                    ) }
+                    _loginState.update {
+                        it.copy(
+                            loading = false,
+                            error =
+                                result.errorBody?.let { errorBody ->
+                                    UiText.DynamicString(errorBody.message)
+                                } ?: result.error.asUiText(),
+                        )
+                    }
                 }
                 is Result.Success -> {
-                    _loginState.update { it.copy(
-                        loading = false,
-                        error = null,
-                        accountExists = result.data.profiles.isNotEmpty()
-                    ) }
+                    _loginState.update {
+                        it.copy(
+                            loading = false,
+                            error = null,
+                            accountExists = result.data.profiles.isNotEmpty(),
+                        )
+                    }
                 }
             }
         }.launchIn(viewModelScope)

@@ -9,42 +9,43 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class DeleteTempPostUseCaseTest {
-
     private val tempPostRepository: TempPostRepository = mockk()
     private val deleteTempPostUseCase = DeleteTempPostUseCase(tempPostRepository)
 
     @Test
-    fun `임시 저장 된 Flip(Post) 삭제 실패`() = runTest {
-        // Given
-        val tempPostId: Long = 1
-        val actualError = ErrorType.Network.BAD_REQUEST
-        every { tempPostRepository.deleteTemporaryPost(tempPostId) } returns
-            flowOf(Result.Error(actualError))
+    fun `임시 저장 된 Flip(Post) 삭제 실패`() =
+        runTest {
+            // Given
+            val tempPostId: Long = 1
+            val actualError = ErrorType.Network.BAD_REQUEST
+            every { tempPostRepository.deleteTemporaryPost(tempPostId) } returns
+                flowOf(Result.Error(actualError))
 
-        // When
-        val result = deleteTempPostUseCase(tempPostId).first()
-        val expectedError = (result as Result.Error).error
+            // When
+            val result = deleteTempPostUseCase(tempPostId).first()
+            val expectedError = (result as Result.Error).error
 
-        // Then
-        assertEquals(actualError, expectedError)
-    }
+            // Then
+            assertEquals(actualError, expectedError)
+        }
 
     @Test
-    fun `임시 저장 된 Flip(Post) 삭제 성공`() = runTest {
-        // Given
-        val tempPostId: Long = 1
-        every { tempPostRepository.deleteTemporaryPost(tempPostId) } returns
-            flowOf(Result.Success(true))
+    fun `임시 저장 된 Flip(Post) 삭제 성공`() =
+        runTest {
+            // Given
+            val tempPostId: Long = 1
+            every { tempPostRepository.deleteTemporaryPost(tempPostId) } returns
+                flowOf(Result.Success(true))
 
-        // When
-        val result = deleteTempPostUseCase(tempPostId).first()
+            // When
+            val result = deleteTempPostUseCase(tempPostId).first()
 
-        // Then
-        assert((result as Result.Success).data)
-    }
+            // Then
+            assert((result as Result.Success).data)
+        }
 }

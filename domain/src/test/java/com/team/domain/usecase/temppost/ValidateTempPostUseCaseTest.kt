@@ -2,11 +2,10 @@ package com.team.domain.usecase.temppost
 
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.domain.util.validation.ValidationResult
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ValidateTempPostUseCaseTest {
-
     private val validateTempPostUseCase = ValidateTempPostUseCase()
 
     @Test

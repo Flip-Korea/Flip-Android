@@ -6,7 +6,6 @@ import com.team.domain.type.FontStyleType
 import java.util.concurrent.atomic.AtomicLong
 
 class TempPostResponseFactory {
-
     private val counter = AtomicLong(0)
 
     fun create(): TempPostResponse {

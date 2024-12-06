@@ -32,37 +32,36 @@ fun HomeTopBar(
     @DrawableRes logo: Int,
     onSearchClick: () -> Unit,
     onNotiClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
 ) {
-
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             modifier = Modifier.size(48.dp, 30.dp),
             imageVector = ImageVector.vectorResource(logo),
-            contentDescription = stringResource(id = R.string.home_screen_content_desc_logo)
+            contentDescription = stringResource(id = R.string.home_screen_content_desc_logo),
         )
         Row {
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_search),
                 contentDescription = stringResource(id = R.string.home_screen_content_desc_search),
                 tint = FlipTheme.colors.main,
-                onClick = onSearchClick
+                onClick = onSearchClick,
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_notification),
                 contentDescription = stringResource(id = R.string.home_screen_content_desc_notification),
                 tint = FlipTheme.colors.main,
-                onClick = onNotiClick
+                onClick = onNotiClick,
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                 contentDescription = stringResource(id = R.string.home_screen_content_desc_setting),
                 tint = FlipTheme.colors.main,
-                onClick = onSettingClick
+                onClick = onSettingClick,
             )
         }
     }
@@ -77,7 +76,7 @@ private fun HomeTopBarPreview() {
             logo = R.drawable.ic_logo_dark,
             onSearchClick = { },
             onNotiClick = { },
-            onSettingClick = { }
+            onSettingClick = { },
         )
     }
 }

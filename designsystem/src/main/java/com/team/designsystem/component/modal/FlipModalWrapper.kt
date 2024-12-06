@@ -38,16 +38,15 @@ fun FlipModalWrapper(
     animated: Boolean = true,
     onDismissRequest: () -> Unit,
     onAnimationFinished: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-
     var isOpenAnimated by remember { mutableStateOf(false) }
     LaunchedEffect(isOpen) { if (isOpen) isOpenAnimated = true }
 
     if (isOpenAnimated) {
         Dialog(
             onDismissRequest = onDismissRequest,
-            properties = DialogProperties(usePlatformDefaultWidth = false)
+            properties = DialogProperties(usePlatformDefaultWidth = false),
         ) {
             val dialogWindow = getDialogWindow()
 
@@ -60,7 +59,7 @@ fun FlipModalWrapper(
 
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 var animateIn by rememberSaveable { mutableStateOf(false) }
                 LaunchedEffect(Unit) { animateIn = true }
@@ -71,17 +70,18 @@ fun FlipModalWrapper(
                     exit = FlipTheme.transition.fadeOut,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .pointerInput(Unit) { detectTapGestures { onDismissRequest() } }
+                        modifier =
+                            Modifier
+                                .pointerInput(Unit) { detectTapGestures { onDismissRequest() } }
 //                            .background(FlipTheme.colors.main.copy(.5f))
-                            .fillMaxSize()
+                                .fillMaxSize(),
                     )
                 }
 
                 AnimatedVisibility(
                     visible = animateIn && isOpen,
                     enter = if (animated) FlipTheme.transition.dialogEnter else EnterTransition.None,
-                    exit = if (animated) FlipTheme.transition.dialogExit else ExitTransition.None
+                    exit = if (animated) FlipTheme.transition.dialogExit else ExitTransition.None,
                 ) {
                     content()
 
@@ -93,7 +93,6 @@ fun FlipModalWrapper(
                     }
                 }
             }
-
         }
     }
 }

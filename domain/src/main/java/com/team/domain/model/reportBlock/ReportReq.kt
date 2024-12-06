@@ -1,4 +1,4 @@
-package com.team.domain.model.report_block
+package com.team.domain.model.reportBlock
 
 import com.team.domain.type.ReportType
 

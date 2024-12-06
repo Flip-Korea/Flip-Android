@@ -5,7 +5,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
 class PagingSourceParser(private val moshi: Moshi) {
-
     fun toJson(list: List<FakePagingResponse>): String {
         val pagingListType =
             Types.newParameterizedType(List::class.java, FakePagingResponse::class.java)

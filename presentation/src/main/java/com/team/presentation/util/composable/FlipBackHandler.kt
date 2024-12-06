@@ -25,7 +25,6 @@ fun FlipBackHandler(
     onBack: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-
     // 뒤로가기 방식 1
 //    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     var backPressHandled by rememberSaveable { mutableStateOf(false) }

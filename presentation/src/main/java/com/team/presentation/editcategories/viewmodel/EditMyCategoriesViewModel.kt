@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.team.data.di.IODispatcher
 import com.team.domain.model.category.Category
 import com.team.domain.usecase.category.GetCategoriesUseCase
-import com.team.domain.usecase.speechbubble.GetSpeechBubbleCountUseCase
-import com.team.domain.usecase.speechbubble.IncrementSpeechBubbleCountUseCase
 import com.team.domain.usecase.interestcategory.UpdateMyCategoriesUseCase
 import com.team.domain.usecase.profile.GetMyProfileUseCase
+import com.team.domain.usecase.speechbubble.GetSpeechBubbleCountUseCase
+import com.team.domain.usecase.speechbubble.IncrementSpeechBubbleCountUseCase
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.presentation.editcategories.EditMyCategoriesUiEvent
@@ -40,8 +40,7 @@ class EditMyCategoriesViewModel @Inject constructor(
     private val updateMyCategoriesUseCase: UpdateMyCategoriesUseCase,
     private val getSpeechBubbleCountUseCase: GetSpeechBubbleCountUseCase,
     private val incrementSpeechBubbleCountUseCase: IncrementSpeechBubbleCountUseCase,
-): ViewModel() {
-
+) : ViewModel() {
     private val _myCategoriesState = MutableStateFlow(MyCategoriesState())
     val myCategoriesState = _myCategoriesState.asStateFlow()
 
@@ -91,17 +90,14 @@ class EditMyCategoriesViewModel @Inject constructor(
      * 2. exclusiveCategories: 모든 카테고리 - 나의 관심 카테고리
      */
     private fun fetchCategories() {
-
         viewModelScope.launch {
-
             _myCategoriesState.update { it.copy(loading = true) }
 
             try {
                 val categories = getCategoriesUseCase().first()
                 val myProfileResult = getMyProfileUseCase().first()
 
-                when(myProfileResult) {
-
+                when (myProfileResult) {
                     Result.Loading -> {
                         _myCategoriesState.update { it.copy(loading = true) }
                     }
@@ -113,56 +109,66 @@ class EditMyCategoriesViewModel @Inject constructor(
 
                         if (myCategoryIds != null) {
                             exclusiveCategories = categories.filter { !myCategoryIds.contains(it.id) }
-                            myCategories = myCategoryIds.mapNotNull { id ->
-                                categories.find { it.id == id }
-                            }
+                            myCategories =
+                                myCategoryIds.mapNotNull { id ->
+                                    categories.find { it.id == id }
+                                }
                             myCategoriesCache = myCategories
-                            _myCategoriesState.update { it.copy(
-                                loading = false,
-                                myCategories = myCategories,
-                                exclusiveCategories = exclusiveCategories
-                            ) }
+                            _myCategoriesState.update {
+                                it.copy(
+                                    loading = false,
+                                    myCategories = myCategories,
+                                    exclusiveCategories = exclusiveCategories,
+                                )
+                            }
                         } else {
-                            _myCategoriesState.update { it.copy(
-                                loading = false,
-                                error = ErrorType.Local.EMPTY.asUiText()
-                            ) }
+                            _myCategoriesState.update {
+                                it.copy(
+                                    loading = false,
+                                    error = ErrorType.Local.EMPTY.asUiText(),
+                                )
+                            }
                         }
                     }
 
                     is Result.Error -> {
-                        _myCategoriesState.update { it.copy(
-                            loading = false,
-                            error = myProfileResult.errorBody?.let { errorBody ->
-                                UiText.DynamicString(errorBody.message)
-                            } ?: myProfileResult.error.asUiText()
-                        ) }
+                        _myCategoriesState.update {
+                            it.copy(
+                                loading = false,
+                                error =
+                                    myProfileResult.errorBody?.let { errorBody ->
+                                        UiText.DynamicString(errorBody.message)
+                                    } ?: myProfileResult.error.asUiText(),
+                            )
+                        }
                     }
                 }
             } catch (e: CancellationException) {
-
-                _myCategoriesState.update { it.copy(
-                    loading = false,
-                    error = e.localizedMessage?.let { error ->
-                        UiText.DynamicString(error)
-                    } ?: ErrorType.Exception.IO.asUiText()
-                ) }
+                _myCategoriesState.update {
+                    it.copy(
+                        loading = false,
+                        error =
+                            e.localizedMessage?.let { error ->
+                                UiText.DynamicString(error)
+                            } ?: ErrorType.Exception.IO.asUiText(),
+                    )
+                }
             } catch (e: Exception) {
-
-                _myCategoriesState.update { it.copy(
-                    loading = false,
-                    error = e.localizedMessage?.let { error ->
-                        UiText.DynamicString(error)
-                    } ?: ErrorType.Exception.IO.asUiText()
-                ) }
+                _myCategoriesState.update {
+                    it.copy(
+                        loading = false,
+                        error =
+                            e.localizedMessage?.let { error ->
+                                UiText.DynamicString(error)
+                            } ?: ErrorType.Exception.IO.asUiText(),
+                    )
+                }
             }
         }
     }
 
     fun onUiEvent(uiEvent: EditMyCategoriesUiEvent) {
-
         when (uiEvent) {
-
             is EditMyCategoriesUiEvent.SelectAll -> {
                 myCategories = myCategories + exclusiveCategories
                 exclusiveCategories = emptyList()
@@ -178,46 +184,50 @@ class EditMyCategoriesViewModel @Inject constructor(
             is EditMyCategoriesUiEvent.MoveCategory -> {
                 myCategories = uiEvent.categories
             }
-
         }
 
-        _myCategoriesState.update { it.copy(
-            myCategories = myCategories,
-            exclusiveCategories = exclusiveCategories
-        ) }
+        _myCategoriesState.update {
+            it.copy(
+                myCategories = myCategories,
+                exclusiveCategories = exclusiveCategories,
+            )
+        }
     }
 
     fun updateMyCategories(reorderedCategories: List<Category>) {
-
         if (reorderedCategories != myCategoriesCache) {
-
             updateMyCategoriesUseCase(reorderedCategories).onEach { result ->
-                when(result) {
+                when (result) {
                     Result.Loading -> {
                         _myCategoriesUpdateState.update { it.copy(loading = true) }
                     }
                     is Result.Error -> {
-                        _myCategoriesUpdateState.update { it.copy(
-                            loading = false,
-                            error = result.errorBody?.let { errorBody ->
-                                UiText.DynamicString(errorBody.message)
-                            } ?: result.error.asUiText()
-                        ) }
+                        _myCategoriesUpdateState.update {
+                            it.copy(
+                                loading = false,
+                                error =
+                                    result.errorBody?.let { errorBody ->
+                                        UiText.DynamicString(errorBody.message)
+                                    } ?: result.error.asUiText(),
+                            )
+                        }
                     }
                     is Result.Success -> {
-                        _myCategoriesUpdateState.update { it.copy(
-                            loading = false,
-                            success = true
-                        ) }
+                        _myCategoriesUpdateState.update {
+                            it.copy(
+                                loading = false,
+                                success = true,
+                            )
+                        }
                     }
                 }
             }.launchIn(viewModelScope)
-
         } else {
-
-            _myCategoriesUpdateState.update { it.copy(
-                success = true
-            ) }
+            _myCategoriesUpdateState.update {
+                it.copy(
+                    success = true,
+                )
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ package com.team.data.network.model.request
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.team.domain.model.report_block.BlockReq
+import com.team.domain.model.reportBlock.BlockReq
 
 @JsonClass(generateAdapter = true)
 data class BlockRequest(

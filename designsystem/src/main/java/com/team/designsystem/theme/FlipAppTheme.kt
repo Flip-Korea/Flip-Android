@@ -17,7 +17,7 @@ private val localColorScheme = staticCompositionLocalOf { FlipLightColors }
 private val localShapes = staticCompositionLocalOf { FlipShapes() }
 private val localTypography = staticCompositionLocalOf { FlipTypography() }
 private val localTransition = staticCompositionLocalOf { FlipTransition() }
-//private val localRipple = staticCompositionLocalOf { FlipRipple() }
+// private val localRipple = staticCompositionLocalOf { FlipRipple() }
 
 object FlipTheme {
     val colors: FlipColors
@@ -41,40 +41,39 @@ object FlipTheme {
         get() = localTransition.current
 }
 
-
-//TODO FlipColors 등의 클래스들에게 @Immutable 부여하기
+// TODO FlipColors 등의 클래스들에게 @Immutable 부여하기
 @Composable
 fun FlipAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-
     val colorScheme = if (darkTheme) FlipLightColors else FlipLightColors
 
-    val typography = FlipTypography(
-        headline8 = headline8(),
-        headline7 = headline7(),
-        headline6 = headline6(),
-        headline5 = headline5(),
-        headline4 = headline4(),
-        headline3 = headline3(),
-        headline2 = headline2(),
-        headline1 = headline1(),
-        body7 = body7(),
-        body6 = body6(),
-        body5 = body5(),
-        body4Underline = body4Underline(),
-        body3 = body3(),
-        body2 = body2(),
-        body1 = body1(),
-    )
+    val typography =
+        FlipTypography(
+            headline8 = headline8(),
+            headline7 = headline7(),
+            headline6 = headline6(),
+            headline5 = headline5(),
+            headline4 = headline4(),
+            headline3 = headline3(),
+            headline2 = headline2(),
+            headline1 = headline1(),
+            body7 = body7(),
+            body6 = body6(),
+            body5 = body5(),
+            body4Underline = body4Underline(),
+            body3 = body3(),
+            body2 = body2(),
+            body1 = body1(),
+        )
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = Color.White.toArgb()
-            window.navigationBarColor=  Color.White.toArgb()
+            window.navigationBarColor = Color.White.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
         }
@@ -97,7 +96,7 @@ fun FlipAppTheme(
         // Usage
 //        Text(
 //            modifier = Modifier.fillMaxWidth()
-    //            .testTag("testText"),
+        //            .testTag("testText"),
 //            text = ""
 //        )
     }

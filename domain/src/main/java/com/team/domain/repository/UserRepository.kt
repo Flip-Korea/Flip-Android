@@ -6,14 +6,13 @@ import com.team.domain.model.profile.DisplayProfileList
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.profile.MyProfile
 import com.team.domain.model.profile.Profile
-import com.team.domain.model.report_block.BlockReq
-import com.team.domain.model.report_block.ReportReq
+import com.team.domain.model.reportBlock.BlockReq
+import com.team.domain.model.reportBlock.ReportReq
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-
     /**
      * 나의 프로필을 Local DB 에서 가져온다.
      * 1. Data is retrieved only from local DB
@@ -68,7 +67,10 @@ interface UserRepository {
      * @param profileId 나의 프로필 ID
      * @param blockedId 차단 해제할 프로필 ID
      */
-    fun unblockAccount(profileId: String, blockedId: String): Flow<Result<Boolean, ErrorType>>
+    fun unblockAccount(
+        profileId: String,
+        blockedId: String,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 나의 프로필 수정
@@ -78,7 +80,10 @@ interface UserRepository {
      * @param profileId 나의 프로필 ID
      * @param editProfile 수정된 프로필 데이터
      */
-    fun editMyProfile(profileId: String, editProfile: EditProfile): Flow<Result<Boolean, ErrorType>>
+    fun editMyProfile(
+        profileId: String,
+        editProfile: EditProfile,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 팔로우
@@ -86,7 +91,10 @@ interface UserRepository {
      * @param followingId: 나의 profile ID
      * @param followerId: 팔로우 당한 profile ID
      */
-    fun follow(followingId: String, followerId: String): Flow<Result<Boolean, ErrorType>>
+    fun follow(
+        followingId: String,
+        followerId: String,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 언팔로우
@@ -94,7 +102,10 @@ interface UserRepository {
      * @param followingId: 나의 profile ID
      * @param followerId: 팔로우 당한 profile ID
      */
-    fun unfollow(followingId: String, followerId: String): Flow<Result<Boolean, ErrorType>>
+    fun unfollow(
+        followingId: String,
+        followerId: String,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 팔로워 리스트 페이지네이션

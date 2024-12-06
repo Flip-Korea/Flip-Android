@@ -2,15 +2,14 @@ package com.team.data.network.retrofit.cache
 
 import android.content.Context
 import android.util.Log
-import java.util.concurrent.TimeUnit
 import okhttp3.Cache
 import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 
 /** Cache 인터셉트 매니저 클래스 */
 class CacheInterceptorManager {
-
     /**
      * Create [CacheInterceptor]
      *
@@ -30,7 +29,10 @@ class CacheInterceptorManager {
      *
      * @param cacheSize 캐시 사이즈 (MB 단위)
      */
-    fun getCache(context: Context, cacheSize: Int): Cache {
+    fun getCache(
+        context: Context,
+        cacheSize: Int,
+    ): Cache {
         val calculatedCacheSize = (cacheSize * 1024 * 1024).toLong()
         return Cache(context.cacheDir, calculatedCacheSize)
     }

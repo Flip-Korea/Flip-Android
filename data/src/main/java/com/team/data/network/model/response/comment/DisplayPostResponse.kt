@@ -13,7 +13,6 @@ data class DisplayPostResponse(
     @Json(name = "created_at") val createdAt: String,
 )
 
-fun DisplayPostResponse.toDomainModel(): DisplayPost =
-    DisplayPost(postId, title, nickname, myComment, createdAt)
+fun DisplayPostResponse.toDomainModel(): DisplayPost = DisplayPost(postId, title, nickname, myComment, createdAt)
 
 fun List<DisplayPostResponse>.toDomainModel(): List<DisplayPost> = this.map { it.toDomainModel() }

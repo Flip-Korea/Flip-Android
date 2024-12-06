@@ -1,12 +1,13 @@
 package com.team.data.util
 
 import android.util.Log
+import kotlinx.coroutines.delay
 import kotlin.math.pow
 import kotlin.random.Random
-import kotlinx.coroutines.delay
 
 // TODO 매개변수들 다른 서비스들 참고해서 실제 수치로 변경하기
 // TODO 주의사항: 올바른 사용자 인증 정보가 제공되기 전까지는 승인되지 않는 HTTP 요청은 다시 시도해서는 안됨 (By Google)
+
 /**
  * Retry Function, Exponential Backoff With Jitter
  *
@@ -23,7 +24,6 @@ suspend fun <T> retry(
     factor: Double = 2.0,
     block: suspend () -> T,
 ): T {
-
     repeat(attempt) {
         val temp =
             maxDelayMillis.coerceAtMost(initialDelayMillis * factor.pow(attempt - 1).toLong())

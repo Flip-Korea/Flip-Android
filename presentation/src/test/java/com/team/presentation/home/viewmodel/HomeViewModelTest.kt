@@ -21,7 +21,6 @@ import com.team.presentation.util.uitext.UiText
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -35,10 +34,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.time.Duration.Companion.seconds
 
 @ExperimentalCoroutinesApi
 class HomeViewModelTest {
-
     @get:Rule val testDispatcher = TestDispatcherRule()
 
     /** 백그라운드 작업을 동기적으로 실행 */
@@ -63,91 +62,94 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `카테고리 가져와서 정렬하기(고정 + 관심 카테고리)`() = runTest {
-        // Given
-        val profileId = "profileId"
-        dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
+    fun `카테고리 가져와서 정렬하기(고정 + 관심 카테고리)`() =
+        runTest {
+            // Given
+            val profileId = "profileId"
+            dataStoreManager.saveData(DataStoreType.AccountType.CURRENT_PROFILE_ID, profileId)
 
-        val expected = myCategoriesTestData
+            val expected = myCategoriesTestData
 
-        homeViewModel =
-            HomeViewModel(
-                UnconfinedTestDispatcher(),
-                getPostUseCases,
-                getCurrentProfileIdUseCase,
-                getFilteredMyCategoriesUseCase,
-            )
+            homeViewModel =
+                HomeViewModel(
+                    UnconfinedTestDispatcher(),
+                    getPostUseCases,
+                    getCurrentProfileIdUseCase,
+                    getFilteredMyCategoriesUseCase,
+                )
 
-        /** 코루틴(비동기 작업) 다 기다림 */
-        advanceUntilIdle()
+            /** 코루틴(비동기 작업) 다 기다림 */
+            advanceUntilIdle()
 
-        // When
-        val categoriesState = homeViewModel.filteredMyCategoriesState.first()
+            // When
+            val categoriesState = homeViewModel.filteredMyCategoriesState.first()
 
-        // Then
-        val actual = categoriesState
+            // Then
+            val actual = categoriesState
 
-        assert(actual.isNotEmpty())
-        assertEquals(expected, actual)
-        assertEquals(expected[2], actual[2])
-    }
-
-    @Test
-    fun `홈 화면 Post(FlipCard) 가져오기 - 성공 시`() = runTest {
-        // Given
-        val expectedPostList = getPostListTestData(15)
-        every { getPostsUseCase(null) } returns flowOf(Result.Success(expectedPostList))
-
-        homeViewModel =
-            HomeViewModel(
-                UnconfinedTestDispatcher(),
-                getPostUseCases,
-                getCurrentProfileIdUseCase,
-                getFilteredMyCategoriesUseCase,
-            )
-
-        var postState: PostState? = null
-        val job = launch { homeViewModel.postState.collectLatest { postState = it } }
-
-        // When (100 -> '전체' 카테고리)
-        homeViewModel.getPostsByCategory(100)
-
-        advanceTimeBy(1.seconds)
-        job.cancel()
-
-        // Then
-        val actualPostList = postState?.posts
-
-        assertEquals(expectedPostList.posts, actualPostList)
-    }
+            assert(actual.isNotEmpty())
+            assertEquals(expected, actual)
+            assertEquals(expected[2], actual[2])
+        }
 
     @Test
-    fun `홈 화면 Post(FlipCard) 가져오기 - 실패 시`() = runTest {
-        // Given
-        val expectedErrorBody = ErrorBody(code = "", errors = null, message = "error")
-        every { getPostsUseCase(null) } returns
-            flowOf(Result.Error(error = ErrorType.Network.NOT_FOUND, errorBody = expectedErrorBody))
+    fun `홈 화면 Post(FlipCard) 가져오기 - 성공 시`() =
+        runTest {
+            // Given
+            val expectedPostList = getPostListTestData(15)
+            every { getPostsUseCase(null) } returns flowOf(Result.Success(expectedPostList))
 
-        homeViewModel =
-            HomeViewModel(
-                UnconfinedTestDispatcher(),
-                getPostUseCases,
-                getCurrentProfileIdUseCase,
-                getFilteredMyCategoriesUseCase,
-            )
+            homeViewModel =
+                HomeViewModel(
+                    UnconfinedTestDispatcher(),
+                    getPostUseCases,
+                    getCurrentProfileIdUseCase,
+                    getFilteredMyCategoriesUseCase,
+                )
 
-        var postState: PostState? = null
-        val job = launch { homeViewModel.postState.collectLatest { postState = it } }
+            var postState: PostState? = null
+            val job = launch { homeViewModel.postState.collectLatest { postState = it } }
 
-        // When (100 -> '전체' 카테고리)
-        homeViewModel.getPostsByCategory(100)
+            // When (100 -> '전체' 카테고리)
+            homeViewModel.getPostsByCategory(100)
 
-        advanceTimeBy(1.seconds)
-        job.cancel()
+            advanceTimeBy(1.seconds)
+            job.cancel()
 
-        // Then
-        assert(postState?.loading == false)
-        assert(postState!!.posts.isEmpty())
-        assertEquals(UiText.DynamicString(expectedErrorBody.message), postState?.error)
-    }
+            // Then
+            val actualPostList = postState?.posts
+
+            assertEquals(expectedPostList.posts, actualPostList)
+        }
+
+    @Test
+    fun `홈 화면 Post(FlipCard) 가져오기 - 실패 시`() =
+        runTest {
+            // Given
+            val expectedErrorBody = ErrorBody(code = "", errors = null, message = "error")
+            every { getPostsUseCase(null) } returns
+                flowOf(Result.Error(error = ErrorType.Network.NOT_FOUND, errorBody = expectedErrorBody))
+
+            homeViewModel =
+                HomeViewModel(
+                    UnconfinedTestDispatcher(),
+                    getPostUseCases,
+                    getCurrentProfileIdUseCase,
+                    getFilteredMyCategoriesUseCase,
+                )
+
+            var postState: PostState? = null
+            val job = launch { homeViewModel.postState.collectLatest { postState = it } }
+
+            // When (100 -> '전체' 카테고리)
+            homeViewModel.getPostsByCategory(100)
+
+            advanceTimeBy(1.seconds)
+            job.cancel()
+
+            // Then
+            assert(postState?.loading == false)
+            assert(postState!!.posts.isEmpty())
+            assertEquals(UiText.DynamicString(expectedErrorBody.message), postState?.error)
+        }
 }

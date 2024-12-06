@@ -14,8 +14,11 @@ import com.team.domain.type.FontStyleType
 import kotlin.random.Random
 
 /** 총 3페이지만 반환 * */
-fun makePostListResponseTestData(cursor: String, pageSize: Int, typeId: String = "1"): String {
-
+fun makePostListResponseTestData(
+    cursor: String,
+    pageSize: Int,
+    typeId: String = "1",
+): String {
     val postIds = mutableListOf<Long>()
     repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<PostResponse>()
@@ -51,7 +54,7 @@ fun makePostListResponseTestData(cursor: String, pageSize: Int, typeId: String =
                 fontStyleType = FontStyleTypeResponse.NORMAL,
                 tags = listOf("1", "2"),
                 postAt = cursor,
-            )
+            ),
         )
     }
 
@@ -74,8 +77,11 @@ fun makePostListResponseTestData(cursor: String, pageSize: Int, typeId: String =
 }
 
 /** 총 3페이지만 반환 * */
-fun makeCommentListResponseTestData(postId: Long, cursor: String, pageSize: Int): String {
-
+fun makeCommentListResponseTestData(
+    postId: Long,
+    cursor: String,
+    pageSize: Int,
+): String {
     val commentIds = mutableListOf<Long>()
     repeat(pageSize) { commentIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<CommentResponse>()
@@ -92,7 +98,7 @@ fun makeCommentListResponseTestData(postId: Long, cursor: String, pageSize: Int)
                 photoUrl = "https://test.com/123",
                 content = "테스트 댓글",
                 commentDate = "2024-04-23",
-            )
+            ),
         )
     }
 
@@ -115,8 +121,10 @@ fun makeCommentListResponseTestData(postId: Long, cursor: String, pageSize: Int)
 }
 
 /** 총 3페이지만 반환 * */
-fun makeTempPostListResponseTestData(cursor: String, pageSize: Int): String {
-
+fun makeTempPostListResponseTestData(
+    cursor: String,
+    pageSize: Int,
+): String {
     val list = mutableListOf<TempPostResponse>()
 
     val hasNext = cursor != "4"
@@ -134,7 +142,7 @@ fun makeTempPostListResponseTestData(cursor: String, pageSize: Int): String {
                 postAt = "2024-09-08",
                 categoryName = "일상",
                 tempPostId = index.toLong(),
-            )
+            ),
         )
     }
 

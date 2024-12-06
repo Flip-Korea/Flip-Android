@@ -38,7 +38,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class DefaultTempPostRepositoryTest {
-
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var postNetworkDataSource: PostNetworkDataSource
@@ -84,65 +83,69 @@ class DefaultTempPostRepositoryTest {
     }
 
     @Test
-    fun `플립 임시저장 글 목록 페이지네이션 (getTempPostsPagination())`() = runTest {
-        val expectedList = List(pageSize) { tempPostFactory.create() }
+    fun `플립 임시저장 글 목록 페이지네이션 (getTempPostsPagination())`() =
+        runTest {
+            val expectedList = List(pageSize) { tempPostFactory.create() }
 
-        val result = tempPostRepository.getTempPostsPagination().first()
-        val actualList = result.collectDataForTest(testDispatcher, testDispatcher)
+            val result = tempPostRepository.getTempPostsPagination().first()
+            val actualList = result.collectDataForTest(testDispatcher, testDispatcher)
 
-        assertEquals(expectedList.size, actualList.size)
-        assertEquals(expectedList, actualList)
-    }
+            assertEquals(expectedList.size, actualList.size)
+            assertEquals(expectedList, actualList)
+        }
 
     @Test
-    fun `플립 임시저장 글 추가 (addTemporaryPost())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val newPost =
-            NewPost(
-                title = "title",
-                content = "content",
-                categoryId = 1,
-                bgColorType = BackgroundColorType.RED,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf("a", "b"),
+    fun `플립 임시저장 글 추가 (addTemporaryPost())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
             )
 
-        val result = tempPostRepository.addTemporaryPost(newPost).last()
+            val newPost =
+                NewPost(
+                    title = "title",
+                    content = "content",
+                    categoryId = 1,
+                    bgColorType = BackgroundColorType.RED,
+                    fontStyleType = FontStyleType.NORMAL,
+                    tags = listOf("a", "b"),
+                )
 
-        assert((result as Result.Success).data)
-    }
+            val result = tempPostRepository.addTemporaryPost(newPost).last()
+
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `플립 임시저장 글 삭제 (deleteTemporaryPost())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `플립 임시저장 글 삭제 (deleteTemporaryPost())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-        val result = tempPostRepository.deleteTemporaryPost(1).last()
+            val result = tempPostRepository.deleteTemporaryPost(1).last()
 
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `플립 임시저장 글 수정 (editTemporaryPost())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `플립 임시저장 글 수정 (editTemporaryPost())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-        val newPost =
-            NewPost(
-                title = "title",
-                content = "content",
-                categoryId = 1,
-                bgColorType = BackgroundColorType.RED,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf("a", "b"),
-            )
+            val newPost =
+                NewPost(
+                    title = "title",
+                    content = "content",
+                    categoryId = 1,
+                    bgColorType = BackgroundColorType.RED,
+                    fontStyleType = FontStyleType.NORMAL,
+                    tags = listOf("a", "b"),
+                )
 
-        val result = tempPostRepository.editTemporaryPost(1, newPost).last()
+            val result = tempPostRepository.editTemporaryPost(1, newPost).last()
 
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
 }

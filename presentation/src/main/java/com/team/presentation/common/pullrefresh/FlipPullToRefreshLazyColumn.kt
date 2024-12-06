@@ -65,11 +65,11 @@ fun FlipPullToRefreshWrapper(
     onConsumeState: (PullToRefreshConsumeState) -> Unit = { },
     content: @Composable (Modifier) -> Unit,
 ) {
-
     // PullToRefreshConsumeState 제어
-    val pulling = remember {
-        derivedStateOf { pullToRefreshState.distanceFraction > 0f }
-    }
+    val pulling =
+        remember {
+            derivedStateOf { pullToRefreshState.distanceFraction > 0f }
+        }
     LaunchedEffect(pullToRefreshState.distanceFraction, isRefreshing) {
         when {
             isRefreshing -> onConsumeState(PullToRefreshConsumeState.Refreshing)
@@ -80,16 +80,18 @@ fun FlipPullToRefreshWrapper(
 
     // 컨텐츠 Offset
     val contentAnimatedOffset by animateDpAsState(
-        targetValue = when {
-            isRefreshing -> RefreshSectionMaxHeight.dp
-            pullToRefreshState.distanceFraction in 0f..1f -> (RefreshSectionMaxHeight * pullToRefreshState.distanceFraction).dp
-            pullToRefreshState.distanceFraction > 1f -> {
+        targetValue =
+            when {
+                isRefreshing -> RefreshSectionMaxHeight.dp
+                pullToRefreshState.distanceFraction in 0f..1f -> (RefreshSectionMaxHeight * pullToRefreshState.distanceFraction).dp
+                pullToRefreshState.distanceFraction > 1f -> {
 //                (RefreshSectionMaxHeight + ((pullToRefreshState.distanceFraction - 1f) * .1f) * RefreshSectionMaxHeight).dp
-                (RefreshSectionMaxHeight * pullToRefreshState.distanceFraction).dp
-            }
+                    (RefreshSectionMaxHeight * pullToRefreshState.distanceFraction).dp
+                }
 
-            else -> 0.dp
-        }, label = "Content Animated Offset"
+                else -> 0.dp
+            },
+        label = "Content Animated Offset",
     )
 
     // Pull 완료 상태 (return true or false)
@@ -97,9 +99,10 @@ fun FlipPullToRefreshWrapper(
         derivedStateOf { pullToRefreshState.distanceFraction >= 1f }
     }
     // Pull 완료 상태에 대한 스케일 값 애니메이션화
-    val scaleAnimationOnPullCompleted = remember {
-        Animatable(initialValue = 1f)
-    }
+    val scaleAnimationOnPullCompleted =
+        remember {
+            Animatable(initialValue = 1f)
+        }
 
     // 기기에서 '터치 피드백'이 활성화 되어있어야 함
     val hapticFeedback = LocalHapticFeedback.current
@@ -116,37 +119,39 @@ fun FlipPullToRefreshWrapper(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         state = pullToRefreshState,
-        indicator = { }
+        indicator = { },
     ) {
         // 로딩 아이콘
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth()
 //                .height(RefreshSectionMaxHeight.dp)
-                .padding(vertical = VerticalPadding.dp)
-                .padding(top = additionalPadding)
-                .graphicsLayer {
-                    scaleX = scaleAnimationOnPullCompleted.value
-                    scaleY = scaleAnimationOnPullCompleted.value
-                }
-                .zIndex(0f),
-            contentAlignment = Alignment.Center
+                    .padding(vertical = VerticalPadding.dp)
+                    .padding(top = additionalPadding)
+                    .graphicsLayer {
+                        scaleX = scaleAnimationOnPullCompleted.value
+                        scaleY = scaleAnimationOnPullCompleted.value
+                    }
+                    .zIndex(0f),
+            contentAlignment = Alignment.Center,
         ) {
             FlipPullRefreshIndicator(
                 progress = pullToRefreshState.distanceFraction,
                 isLoading = isRefreshing,
-                size = IndicatorSize.dp
+                size = IndicatorSize.dp,
             )
         }
 
         content(
             Modifier
                 .graphicsLayer {
-                    translationY = contentAnimatedOffset
-                        .roundToPx()
-                        .toFloat()
+                    translationY =
+                        contentAnimatedOffset
+                            .roundToPx()
+                            .toFloat()
                 }
-                .zIndex(1f)
+                .zIndex(1f),
         )
     }
 }
@@ -171,12 +176,10 @@ private const val RefreshSectionMaxHeight = IndicatorSize + VerticalPadding * 2
  */
 private const val RefreshIconMaxHeight = (RefreshSectionMaxHeight / 2) - (IndicatorSize / 2)
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun PullRefreshScreenPreview() {
-
     val list = List(30) { "#$it" }
     var isRefreshing by remember {
         mutableStateOf(false)
@@ -185,9 +188,10 @@ private fun PullRefreshScreenPreview() {
     val pullToRefreshState = rememberPullToRefreshStateM3()
 
     FlipPullToRefreshWrapper(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
         additionalPadding = 0.dp,
         pullToRefreshState = pullToRefreshState,
         isRefreshing = isRefreshing,
@@ -202,20 +206,22 @@ private fun PullRefreshScreenPreview() {
         LazyColumn(
             modifier = contentModifier,
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(vertical = 16.dp)
+            contentPadding = PaddingValues(vertical = 16.dp),
         ) {
             itemsIndexed(list) { index, item ->
                 Box {
                     Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(80.dp),
                         shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                            contentColor = Color.DarkGray
-                        ),
-                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 7.dp)
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = Color.White,
+                                contentColor = Color.DarkGray,
+                            ),
+                        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 7.dp),
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.CenterHorizontally),

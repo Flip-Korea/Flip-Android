@@ -16,7 +16,6 @@ import com.team.domain.util.Result
 
 class FakePostNetworkDataSource(private val postNetworkApi: PostNetworkApi) :
     PostNetworkDataSource {
-
     override suspend fun getPosts(
         cursor: String?,
         limit: Int,

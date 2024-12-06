@@ -11,5 +11,4 @@ data class DisplayProfileListResponse(
     @Json(name = "profile_list") val profiles: List<DisplayProfileResponse>,
 )
 
-fun DisplayProfileListResponse.toDomainModel(): DisplayProfileList =
-    DisplayProfileList(hasNext, nextCursor, profiles.toDomainModel())
+fun DisplayProfileListResponse.toDomainModel(): DisplayProfileList = DisplayProfileList(hasNext, nextCursor, profiles.toDomainModel())

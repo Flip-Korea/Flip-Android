@@ -7,11 +7,10 @@ import com.team.domain.type.FlipContentSeparator
 import com.team.domain.type.FontStyleType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class AddPostUseCase @Inject constructor(private val postRepository: PostRepository) {
-
     /** Flip(Post)를 추가(게시) 한다. */
     operator fun invoke(
         title: String,

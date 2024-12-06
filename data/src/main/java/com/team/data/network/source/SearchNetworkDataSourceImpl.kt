@@ -10,28 +10,30 @@ import com.team.domain.util.Result
 
 class SearchNetworkDataSourceImpl(private val searchNetworkApi: SearchNetworkApi) :
     SearchNetworkDataSource {
-
     override suspend fun searchByPost(
         searchQuery: String,
         cursor: String,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall {
-        searchNetworkApi.searchByPost(searchQuery, cursor, limit)
-    }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall {
+            searchNetworkApi.searchByPost(searchQuery, cursor, limit)
+        }
 
     override suspend fun searchByNickname(
         searchQuery: String,
         cursor: String,
         limit: Int,
-    ): Result<DisplayProfileListResponse, ErrorType> = networkCall {
-        searchNetworkApi.searchByNickname(searchQuery, cursor, limit)
-    }
+    ): Result<DisplayProfileListResponse, ErrorType> =
+        networkCall {
+            searchNetworkApi.searchByNickname(searchQuery, cursor, limit)
+        }
 
     override suspend fun searchByTag(
         searchQuery: String,
         cursor: String,
         limit: Int,
-    ): Result<TagListResponse, ErrorType> = networkCall {
-        searchNetworkApi.searchByTag(searchQuery, cursor, limit)
-    }
+    ): Result<TagListResponse, ErrorType> =
+        networkCall {
+            searchNetworkApi.searchByTag(searchQuery, cursor, limit)
+        }
 }

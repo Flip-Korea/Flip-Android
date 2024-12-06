@@ -19,7 +19,6 @@ fun makeScrapListResponseTestData(
     cursor: String,
     pageSize: Int,
 ): PostListResponse {
-
     val postIds = mutableListOf<Long>()
     repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<PostResponse>()
@@ -55,7 +54,7 @@ fun makeScrapListResponseTestData(
                 fontStyleType = FontStyleTypeResponse.NORMAL,
                 tags = listOf("1", "2"),
                 postAt = cursor,
-            )
+            ),
         )
     }
 
@@ -73,7 +72,6 @@ fun makeFollowerListResponseTestData(
     cursor: String,
     pageSize: Int,
 ): FollowerListResponse {
-
     val profileIds = mutableListOf<Long>()
     repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayProfileResponse>()
@@ -92,7 +90,7 @@ fun makeFollowerListResponseTestData(
                 introduce = null,
                 followerCnt = 30,
                 rating = null,
-            )
+            ),
         )
     }
 
@@ -105,7 +103,6 @@ fun makeFollowingListResponseTestData(
     cursor: String,
     pageSize: Int,
 ): FollowingListResponse {
-
     val profileIds = mutableListOf<Long>()
     repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayProfileResponse>()
@@ -124,7 +121,7 @@ fun makeFollowingListResponseTestData(
                 introduce = null,
                 followerCnt = 30,
                 rating = null,
-            )
+            ),
         )
     }
 
@@ -137,7 +134,6 @@ fun makeBlockListResponseTestData(
     cursor: String,
     pageSize: Int,
 ): BlockListResponse {
-
     val profileIds = mutableListOf<Long>()
     repeat(pageSize) { profileIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<BlockProfileResponse>()
@@ -152,7 +148,7 @@ fun makeBlockListResponseTestData(
                 blockedId = "honggd",
                 nickname = "nickname",
                 photoUrl = "https://test.com/123",
-            )
+            ),
         )
     }
 
@@ -165,7 +161,6 @@ fun makeMyCommentListResponseTestData(
     cursor: String,
     pageSize: Int,
 ): MyCommentListResponse {
-
     val postIds = mutableListOf<Long>()
     repeat(pageSize) { postIds.add(Random.nextLong(1, 50000)) }
     val list = mutableListOf<DisplayPostResponse>()
@@ -181,7 +176,7 @@ fun makeMyCommentListResponseTestData(
                 nickname = "nickname",
                 myComment = "asdasdasda",
                 createdAt = "2024-04-25",
-            )
+            ),
         )
     }
 

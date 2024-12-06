@@ -10,5 +10,4 @@ data class ErrorResponse(
     val message: String,
 )
 
-fun ErrorResponse.toDomainModel(): ErrorBody =
-    ErrorBody(code, errors?.map { it.toDomainModel() }, message)
+fun ErrorResponse.toDomainModel(): ErrorBody = ErrorBody(code, errors?.map { it.toDomainModel() }, message)

@@ -17,15 +17,15 @@ import com.team.domain.util.Result
 
 class PostNetworkDataSourceImpl(private val postNetworkApi: PostNetworkApi) :
     PostNetworkDataSource {
-
     override suspend fun getPosts(
         cursor: String?,
         limit: Int,
     ): Result<PostListResponse, ErrorType> = networkCall { postNetworkApi.getPosts(cursor, limit) }
 
-    override suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostById(postId)
-    }
+    override suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getPostById(postId)
+        }
 
     override suspend fun addPost(postRequest: PostRequest): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
@@ -42,9 +42,10 @@ class PostNetworkDataSourceImpl(private val postNetworkApi: PostNetworkApi) :
         typeId: String,
         cursor: String?,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostsByType(type.asString(), typeId, cursor, limit)
-    }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getPostsByType(type.asString(), typeId, cursor, limit)
+        }
 
     override suspend fun deletePost(postId: Long): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
@@ -55,24 +56,27 @@ class PostNetworkDataSourceImpl(private val postNetworkApi: PostNetworkApi) :
         categoryId: Int,
         cursor: String?,
         limit: Int,
-    ): Result<PostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit)
-    }
+    ): Result<PostListResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getPostsByPopularUser(categoryId, cursor, limit)
+        }
 
     override suspend fun getComments(
         postId: Long,
         cursor: String?,
         limit: Int,
-    ): Result<CommentListResponse, ErrorType> = networkCall {
-        postNetworkApi.getComments(postId, cursor, limit)
-    }
+    ): Result<CommentListResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getComments(postId, cursor, limit)
+        }
 
     override suspend fun addComment(
         postId: Long,
         commentRequest: CommentRequest,
-    ): Result<ResultIdResponse, ErrorType> = networkCall {
-        postNetworkApi.addComment(postId, commentRequest)
-    }
+    ): Result<ResultIdResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.addComment(postId, commentRequest)
+        }
 
     override suspend fun deleteComment(commentId: Long): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
@@ -102,14 +106,16 @@ class PostNetworkDataSourceImpl(private val postNetworkApi: PostNetworkApi) :
     override suspend fun getTemporaryPosts(
         cursor: String?,
         limit: Int,
-    ): Result<TempPostListResponse, ErrorType> = networkCall {
-        postNetworkApi.getTemporaryPosts(cursor, limit)
-    }
+    ): Result<TempPostListResponse, ErrorType> =
+        networkCall {
+            postNetworkApi.getTemporaryPosts(cursor, limit)
+        }
 
     override suspend fun editTemporaryPost(
         tempPostId: Long,
         postRequest: PostRequest,
-    ): Result<Boolean, ErrorType> = networkCallWithoutResponse {
-        postNetworkApi.editTemporaryPost(tempPostId, postRequest)
-    }
+    ): Result<Boolean, ErrorType> =
+        networkCallWithoutResponse {
+            postNetworkApi.editTemporaryPost(tempPostId, postRequest)
+        }
 }

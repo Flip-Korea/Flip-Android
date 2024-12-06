@@ -15,12 +15,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class PagerModule {
-
     @Provides
     @Singleton
-    fun provideTempPostPager(
-        tempPostNetworkDataSource: PostNetworkDataSource
-    ): Pager<Long, TempPostResponse> {
+    fun provideTempPostPager(tempPostNetworkDataSource: PostNetworkDataSource): Pager<Long, TempPostResponse> {
         val pageSize = FlipPagingTokens.TEMP_POST_PAGE_SIZE
         val prefetchDistance = FlipPagingTokens.TEMP_POST_PREFETCH_DISTANCE
         return Pager(

@@ -10,7 +10,6 @@ import com.team.domain.util.Result
 
 class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetworkApi) :
     AccountNetworkDataSource {
-
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> {
         val result = accountNetworkApi.getUserAccount(accessToken)
         return if (result.isSuccessful) {
@@ -81,9 +80,7 @@ class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetwork
         }
     }
 
-    override suspend fun register(
-        networkRegister: RegisterRequest
-    ): Result<TokenResponse, ErrorType> {
+    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> {
         val result = accountNetworkApi.register(networkRegister)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

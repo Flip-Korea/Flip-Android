@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-
     @Query("SELECT * FROM categoryentity") fun getCategories(): Flow<List<CategoryEntity>>
 
     @Query("SELECT * FROM categoryentity WHERE id=:id")

@@ -22,8 +22,6 @@ import com.team.domain.util.paging.FlipPagingTokens
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -41,6 +39,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -51,7 +51,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
     application = HiltTestApplication::class,
 )
 class DefaultPostRepositoryTest {
-
     @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -101,7 +100,7 @@ class DefaultPostRepositoryTest {
                 MockResponse().apply {
                     setResponseCode(200)
                     setBody(expected)
-                }
+                },
             )
 
             val actual = postRepository.getPostsPagination("1", pageSize).last()
@@ -110,137 +109,145 @@ class DefaultPostRepositoryTest {
         }
 
     @Test
-    fun `ID로 플립 글 불러오기 (getPostById())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postResponseTestData)
-            }
-        )
-
-        val postId = moshi.adapter(PostResponse::class.java).fromJson(postResponseTestData)!!.postId
-
-        val post = postRepository.getPostById(postId).last()
-
-        assert((post as Result.Success).data != null)
-        assertEquals(post.data!!.postId, postId)
-    }
-
-    @Test
-    fun `플립 글 작성 (addPost())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val newPost =
-            NewPost(
-                title = "testTitle",
-                content = "testContent",
-                categoryId = 1,
-                bgColorType = BackgroundColorType.RED,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf("a", "b", "c"),
+    fun `ID로 플립 글 불러오기 (getPostById())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postResponseTestData)
+                },
             )
 
-        val result = postRepository.addPost(newPost).last()
+            val postId = moshi.adapter(PostResponse::class.java).fromJson(postResponseTestData)!!.postId
 
-        assert((result as Result.Success).data)
-    }
+            val post = postRepository.getPostById(postId).last()
+
+            assert((post as Result.Success).data != null)
+            assertEquals(post.data!!.postId, postId)
+        }
 
     @Test
-    fun `플립 글 수정 (editPost())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(204) })
-
-        val newPost =
-            NewPost(
-                title = "testTitle",
-                content = "testContent",
-                categoryId = 1,
-                bgColorType = BackgroundColorType.RED,
-                fontStyleType = FontStyleType.NORMAL,
-                tags = listOf("a", "b", "c"),
+    fun `플립 글 작성 (addPost())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
             )
 
-        val result = postRepository.editPost(newPost).last()
-
-        assert((result as Result.Success).data)
-    }
-
-    @Test
-    fun `타입 별로 플립 글 목록 페이지네이션 (getPostsByType())`() = runTest {
-        val pageSize = 15
-
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(makePostListResponseTestData("1", pageSize, "1"))
-            }
-        )
-
-        val result =
-            postRepository
-                .getPostsByTypePagination(
-                    type = PathParameterType.Post.CATEGORY,
-                    typeId = "2",
-                    cursor = "1",
-                    pageSize,
+            val newPost =
+                NewPost(
+                    title = "testTitle",
+                    content = "testContent",
+                    categoryId = 1,
+                    bgColorType = BackgroundColorType.RED,
+                    fontStyleType = FontStyleType.NORMAL,
+                    tags = listOf("a", "b", "c"),
                 )
-                .last()
 
-        assertEquals(pageSize, (result as Result.Success).data.posts.size)
-    }
+            val result = postRepository.addPost(newPost).last()
 
-    @Test
-    fun `플립 글 삭제 (deletePost())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
-
-        val result = postRepository.deletePost(1).last()
-
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `특정 분야에서 인기 플리퍼의 플립 글 목록 페이지네이션 (getPostsByPopularUserPagination())`() = runTest {
-        val pageSize = 15
+    fun `플립 글 수정 (editPost())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(204) })
 
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(makePostListResponseTestData("1", pageSize))
-            }
-        )
+            val newPost =
+                NewPost(
+                    title = "testTitle",
+                    content = "testContent",
+                    categoryId = 1,
+                    bgColorType = BackgroundColorType.RED,
+                    fontStyleType = FontStyleType.NORMAL,
+                    tags = listOf("a", "b", "c"),
+                )
 
-        val result =
-            postRepository
-                .getPostsByPopularUserPagination(2, "1", FlipPagingTokens.POST_PAGE_SIZE)
-                .last()
+            val result = postRepository.editPost(newPost).last()
 
-        assertEquals(pageSize, (result as Result.Success).data.posts.size)
-    }
-
-    @Test
-    fun `플립 글 좋아요 (likePost())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val result = postRepository.likePost("testProfileId", 1).last()
-
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `플립 글 좋아요 취소 (unLikePost())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
+    fun `타입 별로 플립 글 목록 페이지네이션 (getPostsByType())`() =
+        runTest {
+            val pageSize = 15
 
-        val result = postRepository.unLikePost("testProfileId", 1).last()
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(makePostListResponseTestData("1", pageSize, "1"))
+                },
+            )
 
-        assert((result as Result.Success).data)
-    }
+            val result =
+                postRepository
+                    .getPostsByTypePagination(
+                        type = PathParameterType.Post.CATEGORY,
+                        typeId = "2",
+                        cursor = "1",
+                        pageSize,
+                    )
+                    .last()
+
+            assertEquals(pageSize, (result as Result.Success).data.posts.size)
+        }
+
+    @Test
+    fun `플립 글 삭제 (deletePost())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val result = postRepository.deletePost(1).last()
+
+            assert((result as Result.Success).data)
+        }
+
+    @Test
+    fun `특정 분야에서 인기 플리퍼의 플립 글 목록 페이지네이션 (getPostsByPopularUserPagination())`() =
+        runTest {
+            val pageSize = 15
+
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(makePostListResponseTestData("1", pageSize))
+                },
+            )
+
+            val result =
+                postRepository
+                    .getPostsByPopularUserPagination(2, "1", FlipPagingTokens.POST_PAGE_SIZE)
+                    .last()
+
+            assertEquals(pageSize, (result as Result.Success).data.posts.size)
+        }
+
+    @Test
+    fun `플립 글 좋아요 (likePost())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
+            )
+
+            val result = postRepository.likePost("testProfileId", 1).last()
+
+            assert((result as Result.Success).data)
+        }
+
+    @Test
+    fun `플립 글 좋아요 취소 (unLikePost())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
+
+            val result = postRepository.unLikePost("testProfileId", 1).last()
+
+            assert((result as Result.Success).data)
+        }
 }

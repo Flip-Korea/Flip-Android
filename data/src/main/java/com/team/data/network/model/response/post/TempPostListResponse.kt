@@ -17,5 +17,4 @@ data class TempPostListResponse(val tempPosts: List<TempPostResponse>, val total
         get() = if (tempPosts.isEmpty()) null else list.last().tempPostId
 }
 
-fun TempPostListResponse.toDomainModel(): TempPostList =
-    TempPostList(tempPosts.toDomainModel(), totalCount)
+fun TempPostListResponse.toDomainModel(): TempPostList = TempPostList(tempPosts.toDomainModel(), totalCount)

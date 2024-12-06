@@ -31,9 +31,8 @@ fun BlockPagerView(
     photoUrl: String,
     blockState: BlockState,
     onBlockClick: () -> Unit,
-    onOkClick: () -> Unit
+    onOkClick: () -> Unit,
 ) {
-
     val pagerState = rememberPagerState { PAGE_SIZE }
     val scope = rememberCoroutineScope()
 
@@ -46,9 +45,9 @@ fun BlockPagerView(
     HorizontalPager(
         modifier = modifier.fillMaxWidth(),
         state = pagerState,
-        userScrollEnabled = false
+        userScrollEnabled = false,
     ) { page ->
-        when(page) {
+        when (page) {
             0 -> {
                 BlockCheckView(
                     blockedProfileId = blockedProfileId,
@@ -56,18 +55,18 @@ fun BlockPagerView(
                     blockState = blockState,
                     onBlockClick = {
                         onBlockClick()
-                        //TODO 임시코드, 나중에 blockState 값 결과에 맞게 해줘야 함
+                        // TODO 임시코드, 나중에 blockState 값 결과에 맞게 해줘야 함
                         scope.launch {
                             pagerState.animateScrollToPage(1)
                         }
-                    }
+                    },
                 )
             }
 
             1 -> {
                 BlockCompleteView(
                     blockedProfileId = blockedProfileId,
-                    onOkClick = onOkClick
+                    onOkClick = onOkClick,
                 )
             }
         }
@@ -83,7 +82,7 @@ private fun BlockPagerViewPreview() {
             photoUrl = "",
             blockState = BlockState(),
             onBlockClick = { },
-            onOkClick = { }
+            onOkClick = { },
         )
     }
 }

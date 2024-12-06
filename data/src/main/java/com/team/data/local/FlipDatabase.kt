@@ -18,7 +18,6 @@ import com.team.data.local.typeconverter.ListTypeConverter
     //    exportSchema = false
 )
 abstract class FlipDatabase : RoomDatabase() {
-
     abstract fun myProfileDao(): MyProfileDao
 
     abstract fun categoryDao(): CategoryDao

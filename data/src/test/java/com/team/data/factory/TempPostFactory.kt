@@ -5,7 +5,6 @@ import com.team.domain.type.BackgroundColorType
 import java.util.concurrent.atomic.AtomicLong
 
 class TempPostFactory {
-
     private val counter = AtomicLong(0)
 
     fun create(): TempPost {

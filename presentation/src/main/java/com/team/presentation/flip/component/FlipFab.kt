@@ -85,9 +85,8 @@ fun FlipFab(
     scraped: Boolean,
     fabEvent: (FabEvent) -> Unit,
     changeExpanded: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
-
 //    // Expanded Switch
 //    var isExpanded by remember { mutableStateOf(false) }
     val animateRotation = remember { Animatable(0f) }
@@ -110,63 +109,67 @@ fun FlipFab(
 
     if (isExpanded) {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(1f)
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        onDismissRequest()
-                    }
-                }
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .zIndex(1f)
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            onDismissRequest()
+                        }
+                    },
         )
     }
 
     Column(
-        modifier = modifier
-            .wrapContentSize()
-            .fillMaxSize()
-            .zIndex(2f),
+        modifier =
+            modifier
+                .wrapContentSize()
+                .fillMaxSize()
+                .zIndex(2f),
         horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Bottom)
+        verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Bottom),
     ) {
         AnimatedVisibility(
             visible = isExpanded,
             enter = fadeIn(tween(durationMillis = 150)),
-            exit = fadeOut(tween(durationMillis = 150))
+            exit = fadeOut(tween(durationMillis = 150)),
         ) {
             FabMenu(
                 items = fabItems.value,
                 liked = liked,
                 scraped = scraped,
-                fabEvent = fabEvent
+                fabEvent = fabEvent,
             )
         }
         Box(
-            modifier = Modifier
-                .dropShadow(
-                    color = Color(0xFF636363).copy(0.2f),
-                    offsetY = 2.dp,
-                    blurRadius = 8.dp,
-                    borderRadius = 100.dp
-                )
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(FlipTheme.colors.main)
-                .clickableSingle {
-                    if (enableAgain) {
-                        enableAgain = false
-                        changeExpanded()
-                    }
-                }
+            modifier =
+                Modifier
+                    .dropShadow(
+                        color = Color(0xFF636363).copy(0.2f),
+                        offsetY = 2.dp,
+                        blurRadius = 8.dp,
+                        borderRadius = 100.dp,
+                    )
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(FlipTheme.colors.main)
+                    .clickableSingle {
+                        if (enableAgain) {
+                            enableAgain = false
+                            changeExpanded()
+                        }
+                    },
         ) {
             Icon(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(16.dp)
-                    .rotate(animateRotation.value),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .size(16.dp)
+                        .rotate(animateRotation.value),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_plus),
                 contentDescription = "더보기",
-                tint = Color.White
+                tint = Color.White,
             )
         }
     }
@@ -188,16 +191,16 @@ private fun FabMenu(
     scraped: Boolean,
     fabEvent: (FabEvent) -> Unit,
 ) {
-
     Column(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerLarge)
-            .background(FlipTheme.colors.main)
-            .wrapContentSize()
-            .padding(vertical = 20.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerLarge)
+                .background(FlipTheme.colors.main)
+                .wrapContentSize()
+                .padding(vertical = 20.dp)
+                .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         items.forEachIndexed { index, item ->
 
@@ -207,7 +210,7 @@ private fun FabMenu(
                         FabItem.Like -> liked
                         FabItem.Scrap -> scraped
                         else -> false
-                    }
+                    },
                 )
             }
             val icon = if (isActive) item.filledIcon else item.outlinedIcon
@@ -223,7 +226,7 @@ private fun FabMenu(
                         isActive = !isActive
                         fabEvent(item.fabEvent) // 실제로 수행할 작업 처리
                     }
-                }
+                },
             )
         }
     }
@@ -245,71 +248,73 @@ private fun MenuItem(
     color: Color,
     @StringRes title: Int,
     @DrawableRes icon: Int,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
-
     Box(
-        modifier = modifier
-            .widthIn(max = 109.dp)
-            .fillMaxWidth()
-            .clickableSingle { onClick() },
+        modifier =
+            modifier
+                .widthIn(max = 109.dp)
+                .fillMaxWidth()
+                .clickableSingle { onClick() },
     ) {
         Row(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .wrapContentSize()
-                .padding(start = 12.dp, top = 5.dp, bottom = 5.dp),
-            horizontalArrangement = Arrangement.spacedBy(
-                12.dp,
-                alignment = Alignment.Start
-            ),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .wrapContentSize()
+                    .padding(start = 12.dp, top = 5.dp, bottom = 5.dp),
+            horizontalArrangement =
+                Arrangement.spacedBy(
+                    12.dp,
+                    alignment = Alignment.Start,
+                ),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(icon),
                 contentDescription = stringResource(id = title),
-                tint = color
+                tint = color,
             )
             Text(
                 text = stringResource(id = title),
                 style = FlipTheme.typography.body5,
                 color = Color.White,
                 textAlign = TextAlign.Start,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun FlipFabPreview() {
-
     // Expanded Switch
     var isExpanded by remember { mutableStateOf(true) }
 
     FlipAppTheme {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        isExpanded = false
-                    })
-                }
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            isExpanded = false
+                        })
+                    },
         ) {
             FlipFab(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
                 isExpanded = isExpanded,
                 liked = false,
                 scraped = false,
                 fabEvent = { },
                 changeExpanded = { isExpanded = !isExpanded },
-                onDismissRequest = { isExpanded = false }
+                onDismissRequest = { isExpanded = false },
             )
         }
     }
@@ -325,17 +330,17 @@ private fun FabMenuPreview() {
         items = fabItems,
         liked = false,
         scraped = false,
-        fabEvent = { }
+        fabEvent = { },
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun FabMenuEventPreview() {
-
-    var (text, onTextChanged) = remember {
-        mutableStateOf("Waiting Event...")
-    }
+    var (text, onTextChanged) =
+        remember {
+            mutableStateOf("Waiting Event...")
+        }
     // Expanded Switch
     var isExpanded by remember { mutableStateOf(true) }
 
@@ -349,12 +354,20 @@ private fun FabMenuEventPreview() {
             onDismissRequest = { isExpanded = false },
             fabEvent = {
                 when (it) {
-                    FabEvent.OnLikeClick -> { onTextChanged("OnLikeClick") }
-                    FabEvent.OnScrapClick -> { onTextChanged("OnScrapClick") }
-                    FabEvent.OnCommentClick -> { onTextChanged("OnCommentClick") }
-                    FabEvent.OnMoreClick -> { onTextChanged("OnMoreClick") }
+                    FabEvent.OnLikeClick -> {
+                        onTextChanged("OnLikeClick")
+                    }
+                    FabEvent.OnScrapClick -> {
+                        onTextChanged("OnScrapClick")
+                    }
+                    FabEvent.OnCommentClick -> {
+                        onTextChanged("OnCommentClick")
+                    }
+                    FabEvent.OnMoreClick -> {
+                        onTextChanged("OnMoreClick")
+                    }
                 }
-            }
+            },
         )
     }
 }

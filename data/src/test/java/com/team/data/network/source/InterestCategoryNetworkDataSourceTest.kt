@@ -24,7 +24,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class InterestCategoryNetworkDataSourceTest {
-
     private lateinit var interestCategoryNetworkApi: InterestCategoryNetworkApi
     private lateinit var interestCategoryNetworkDataSource: InterestCategoryNetworkDataSource
     private lateinit var server: MockWebServer
@@ -49,9 +48,10 @@ class InterestCategoryNetworkDataSourceTest {
     }
 
     @Test
-    fun `나의 관심 카테고리 가져오기(getMyCategories())`() = runTest {
-        val myCategories =
-            """
+    fun `나의 관심 카테고리 가져오기(getMyCategories())`() =
+        runTest {
+            val myCategories =
+                """
                 [ {
                   "categoryId" : 1,
                   "categoryName" : "일상"
@@ -60,50 +60,51 @@ class InterestCategoryNetworkDataSourceTest {
                   "categoryName" : "IT과학"
                 } ]
             """
-                .trimIndent()
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(myCategories)
-            }
-        )
-
-        val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val expectedResponse =
-            moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
-
-        val actualResponse = interestCategoryNetworkDataSource.getMyCategories()
-
-        assert(expectedResponse != null)
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
-    }
-
-    @Test
-    fun `나의 관심 카테고리 업데이트(updateMyCategories())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
-
-        val response =
-            interestCategoryNetworkDataSource.updateMyCategories(
-                categoryIds = CategoryRequest(listOf(1, 2, 3))
+                    .trimIndent()
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(myCategories)
+                },
             )
 
-        val recordedRequest = server.takeRequest()
+            val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+            val expectedResponse =
+                moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
 
-        val adapter = moshi.adapter(CategoryRequest::class.java)
-        val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
-        val requestBody =
-            """
+            val actualResponse = interestCategoryNetworkDataSource.getMyCategories()
+
+            assert(expectedResponse != null)
+            assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        }
+
+    @Test
+    fun `나의 관심 카테고리 업데이트(updateMyCategories())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
+
+            val response =
+                interestCategoryNetworkDataSource.updateMyCategories(
+                    categoryIds = CategoryRequest(listOf(1, 2, 3)),
+                )
+
+            val recordedRequest = server.takeRequest()
+
+            val adapter = moshi.adapter(CategoryRequest::class.java)
+            val realRequestBody = adapter.fromJson(recordedRequest.body.peek())
+            val requestBody =
+                """
             {
                 "categoryIds": [1,2,3]
             }
         """
-                .trimIndent()
-        val expectedRequestBody = adapter.fromJson(requestBody)
+                    .trimIndent()
+            val expectedRequestBody = adapter.fromJson(requestBody)
 
-        Assert.assertNotNull(response)
-        org.junit.Assert.assertEquals(
-            expectedRequestBody!!.categoryIds,
-            realRequestBody!!.categoryIds,
-        )
-    }
+            Assert.assertNotNull(response)
+            org.junit.Assert.assertEquals(
+                expectedRequestBody!!.categoryIds,
+                realRequestBody!!.categoryIds,
+            )
+        }
 }

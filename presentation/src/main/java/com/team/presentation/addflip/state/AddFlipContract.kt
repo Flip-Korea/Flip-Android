@@ -35,7 +35,7 @@ class AddFlipContract {
             val contents: List<String>,
             val bgColorType: BackgroundColorType,
             val category: Category?,
-        ): UiEvent()
+        ) : UiEvent()
 
         data class SavePost(
             val title: String,
@@ -51,6 +51,7 @@ class AddFlipContract {
 
     sealed class UiEffect : BaseUiEffect {
         data class ShowPageDeleteWarningModal(val modalState: ModalState) : UiEffect()
+
         data class NavigateBack(val safeSave: Boolean) : UiEffect()
     }
 }

@@ -34,17 +34,20 @@ fun FlipRadioButton(
         onCheckedChange = { onCheckedChange() },
     ) {
         Icon(
-            modifier = Modifier
-                .size(24.dp)
-                .border(
-                    1.dp,
-                    if (checked) {
-                        FlipTheme.colors.main
-                    } else if (!enabled) {
-                        FlipTheme.colors.gray3
-                    } else FlipTheme.colors.gray5,
-                    CircleShape
-                ),
+            modifier =
+                Modifier
+                    .size(24.dp)
+                    .border(
+                        1.dp,
+                        if (checked) {
+                            FlipTheme.colors.main
+                        } else if (!enabled) {
+                            FlipTheme.colors.gray3
+                        } else {
+                            FlipTheme.colors.gray5
+                        },
+                        CircleShape,
+                    ),
             painter = painterResource(id = R.drawable.ic_empty_circle_checkbox),
             contentDescription = stringResource(id = R.string.content_desc_check),
             tint = Color.Transparent,
@@ -66,11 +69,12 @@ fun FlipRadioButtonPreview() {
     var checked by remember { mutableStateOf(false) }
 
     FlipRadioButton(
-        modifier = Modifier
-            .padding(TouchTarget.padding)
-            .size(24.dp),
+        modifier =
+            Modifier
+                .padding(TouchTarget.padding)
+                .size(24.dp),
         checked = checked,
-        onCheckedChange = { checked = !checked }
+        onCheckedChange = { checked = !checked },
     )
 }
 
@@ -82,6 +86,6 @@ fun FlipRadioButtonPreview2() {
     FlipRadioButton(
         modifier = Modifier.size(24.dp),
         checked = checked,
-        onCheckedChange = { checked = !checked }
+        onCheckedChange = { checked = !checked },
     )
 }

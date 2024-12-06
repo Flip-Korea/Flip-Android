@@ -11,5 +11,4 @@ data class MyCommentListResponse(
     @Json(name = "posts") val posts: List<DisplayPostResponse>,
 )
 
-fun MyCommentListResponse.toDomainModel(): DisplayPostList =
-    DisplayPostList(hasNext, nextCursor, posts.toDomainModel())
+fun MyCommentListResponse.toDomainModel(): DisplayPostList = DisplayPostList(hasNext, nextCursor, posts.toDomainModel())

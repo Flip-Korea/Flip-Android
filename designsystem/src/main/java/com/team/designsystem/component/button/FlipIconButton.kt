@@ -41,18 +41,17 @@ fun FlipIconButton(
     tint: Color = LocalContentColor.current,
     onClick: () -> Unit,
 ) {
-
     val clickableSingle = remember { ClickableSingle.get() }
 
     IconButton(
         modifier = modifier.size(44.dp),
-        onClick = { clickableSingle.onEvent(onClick) }
+        onClick = { clickableSingle.onEvent(onClick) },
     ) {
         Icon(
             modifier = Modifier.size(iconSize),
             imageVector = imageVector,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }
@@ -73,18 +72,17 @@ fun FlipIconButton(
     tint: Color = LocalContentColor.current,
     onClick: () -> Unit,
 ) {
-
     val clickableSingle = remember { ClickableSingle.get() }
 
     IconButton(
         modifier = modifier.size(44.dp),
-        onClick = { clickableSingle.onEvent(onClick) }
+        onClick = { clickableSingle.onEvent(onClick) },
     ) {
         Icon(
             modifier = Modifier.size(iconSize),
             painter = painter,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }
@@ -101,7 +99,7 @@ private fun FlipIconButtonPreview() {
             iconSize = DpSize(30.dp, 30.dp),
             contentDescription = null,
             onClick = { },
-            tint = FlipTheme.colors.main
+            tint = FlipTheme.colors.main,
         )
     }
 }
@@ -109,7 +107,6 @@ private fun FlipIconButtonPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun FlipIconButtonPreview2() {
-
     var clicked by remember { mutableStateOf(false) }
 
     FlipAppTheme {
@@ -118,17 +115,23 @@ private fun FlipIconButtonPreview2() {
                 painter = painterResource(id = R.drawable.ic_outlined_setting),
                 contentDescription = null,
                 onClick = { clicked = !clicked },
-                tint = if (clicked) {
-                    Color.Red
-                } else FlipTheme.colors.main
+                tint =
+                    if (clicked) {
+                        Color.Red
+                    } else {
+                        FlipTheme.colors.main
+                    },
             )
             FlipIconButton(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                 contentDescription = null,
                 onClick = { clicked = !clicked },
-                tint = if (clicked) {
-                    Color.Red
-                } else FlipTheme.colors.main
+                tint =
+                    if (clicked) {
+                        Color.Red
+                    } else {
+                        FlipTheme.colors.main
+                    },
             )
         }
     }

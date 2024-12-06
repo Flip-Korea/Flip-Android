@@ -55,9 +55,8 @@ fun PhotoCropScreen(
     modifier: Modifier = Modifier,
     selectedImageUri: Uri?,
     onCancel: () -> Unit,
-    onCrop: (ImageBitmap) -> Unit
+    onCrop: (ImageBitmap) -> Unit,
 ) {
-
     val density = LocalDensity.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -75,28 +74,31 @@ fun PhotoCropScreen(
             val maxX = (viewWidth.toFloat() * (scale - 1f) / 2f) / scale
             val maxY = (viewHeight.toFloat() * (scale - 1f) / 2f) / scale
             scale = (scale * zoomChange).coerceIn(1f, 3f)
-            offset = Offset(
-                x = (offset.x + offsetChange.x).coerceIn(-maxX, maxX),
-                y = (offset.y + offsetChange.y).coerceIn(-maxY, maxY)
-            )
+            offset =
+                Offset(
+                    x = (offset.x + offsetChange.x).coerceIn(-maxX, maxX),
+                    y = (offset.y + offsetChange.y).coerceIn(-maxY, maxY),
+                )
         }
 
     LaunchedEffect(selectedImageUri) {
         selectedImageUri?.let { image ->
-            val imageBitmapDeferred = coroutineScope.async(Dispatchers.IO) {
-                uriToBitmap(context, image)
-            }
+            val imageBitmapDeferred =
+                coroutineScope.async(Dispatchers.IO) {
+                    uriToBitmap(context, image)
+                }
             imageBitmap = imageBitmapDeferred.await()
         }
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .onSizeChanged {
-                viewWidth = it.width
-                viewHeight = it.height
-            }
+        modifier =
+            modifier
+                .fillMaxSize()
+                .onSizeChanged {
+                    viewWidth = it.width
+                    viewHeight = it.height
+                },
     ) {
         HoleFrameView {
             imageBitmap?.let { imageBitmap ->
@@ -104,32 +106,33 @@ fun PhotoCropScreen(
                     bitmap = imageBitmap,
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .align(Alignment.Center)
+                    modifier =
+                        Modifier
+                            .align(Alignment.Center)
 //                        .clipToBounds()
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                            translationX = offset.x * scale,
-                            translationY = offset.y * scale,
-                        )
-                        .transformable(imageTransformState)
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale,
+                                translationX = offset.x * scale,
+                                translationY = offset.y * scale,
+                            ).transformable(imageTransformState),
                 )
             }
         }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(start = 16.dp, end = 16.dp, bottom = 47.dp),
-            horizontalArrangement = Arrangement.spacedBy(7.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 47.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             PhotoCropButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.photo_crop_screen_btn_cancel),
                 solid = false,
-                onClick = onCancel
+                onClick = onCancel,
             )
             PhotoCropButton(
                 modifier = Modifier.weight(1f),
@@ -137,14 +140,15 @@ fun PhotoCropScreen(
                 solid = true,
                 onClick = {
                     imageBitmap?.let { imageBitmap ->
-                        val cropImageResult = cropImage(
-                            density = density,
-                            imageBitmap = imageBitmap,
-                            scale = scale,
-                            viewWidth = viewWidth,
-                            viewHeight = viewHeight,
-                            offsetChanged = offset
-                        )
+                        val cropImageResult =
+                            cropImage(
+                                density = density,
+                                imageBitmap = imageBitmap,
+                                scale = scale,
+                                viewWidth = viewWidth,
+                                viewHeight = viewHeight,
+                                offsetChanged = offset,
+                            )
                         when (cropImageResult) {
                             is CropImageResult.Success -> {
                                 onCrop(cropImageResult.imageBitmap)
@@ -152,7 +156,7 @@ fun PhotoCropScreen(
                             is CropImageResult.Failure -> { /** 에러 처리 **/ }
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -166,31 +170,31 @@ private fun HoleFrameView(
     modifier: Modifier = Modifier,
     image: @Composable () -> Unit,
 ) {
-
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .drawWithContent {
-                /** px **/
-                val width = size.width
-                /** px **/
-                val height = size.height
+        modifier =
+            modifier
+                .fillMaxSize()
+                .drawWithContent {
+                    /** px **/
+                    val width = size.width
 
-                drawContent()
+                    /** px **/
+                    val height = size.height
 
-                drawWithLayer {
-                    drawRect(Color(0xFF212121).copy(0.8f))
+                    drawContent()
 
-                    drawCircle(
-                        color = Color.Transparent,
+                    drawWithLayer {
+                        drawRect(Color(0xFF212121).copy(0.8f))
+
+                        drawCircle(
+                            color = Color.Transparent,
 //                        radius = (width / 2) - padding,
-                        radius = HOLE_RADIUS.dp.toPx(),
-                        /** px (171dp 에서 변환된 값) **/
-                        center = Offset(width / 2, height / 2),
-                        blendMode = BlendMode.SrcIn
-                    )
-                }
-            }
+                            radius = HOLE_RADIUS.dp.toPx(),
+                            center = Offset(width / 2, height / 2),
+                            blendMode = BlendMode.SrcIn,
+                        )
+                    }
+                },
     ) {
         image()
     }
@@ -207,5 +211,5 @@ private fun DrawScope.drawWithLayer(block: DrawScope.() -> Unit) {
     }
 }
 
-/** px: 480.9375 */
+/** px: 480.9375 (171dp 에서 변환된 값) */
 const val HOLE_RADIUS = 171

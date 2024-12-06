@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.flowOn
 
 class FakeCommentRepository(private val postNetworkDataSource: PostNetworkDataSource) :
     CommentRepository {
-
     private val ioDispatcher = Dispatchers.IO
 
     override fun getCommentsPagination(
@@ -25,19 +24,19 @@ class FakeCommentRepository(private val postNetworkDataSource: PostNetworkDataSo
         limit: Int,
     ): Flow<Result<CommentList, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (val result = postNetworkDataSource.getComments(postId, cursor, limit)) {
-                    is Result.Success -> {
-                        val comments = result.data.toDomainModel()
-                        emit(Result.Success(comments))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (val result = postNetworkDataSource.getComments(postId, cursor, limit)) {
+                is Result.Success -> {
+                    val comments = result.data.toDomainModel()
+                    emit(Result.Success(comments))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
@@ -46,43 +45,43 @@ class FakeCommentRepository(private val postNetworkDataSource: PostNetworkDataSo
         newComment: NewComment,
     ): Flow<Result<Boolean, ErrorType>> =
         flow<Result<Boolean, ErrorType>> {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                val commentRequest = newComment.toNetwork()
+            val commentRequest = newComment.toNetwork()
 
-                when (
-                    val result =
-                        postNetworkDataSource.addComment(
-                            postId = postId,
-                            commentRequest = commentRequest,
-                        )
-                ) {
-                    is Result.Success -> {
-                        emit(Result.Success(true))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (
+                val result =
+                    postNetworkDataSource.addComment(
+                        postId = postId,
+                        commentRequest = commentRequest,
+                    )
+            ) {
+                is Result.Success -> {
+                    emit(Result.Success(true))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
     override fun deleteComment(commentId: Long): Flow<Result<Boolean, ErrorType>> =
         flow<Result<Boolean, ErrorType>> {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (val result = postNetworkDataSource.deleteComment(commentId)) {
-                    is Result.Success -> {
-                        emit(Result.Success(true))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (val result = postNetworkDataSource.deleteComment(commentId)) {
+                is Result.Success -> {
+                    emit(Result.Success(true))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 }

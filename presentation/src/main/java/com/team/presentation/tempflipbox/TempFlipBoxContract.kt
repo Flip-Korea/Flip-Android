@@ -9,21 +9,26 @@ import com.team.presentation.util.uitext.UiText
  * 임시저장함을 위한 Contract Class
  */
 class TempFlipBoxContract {
-    sealed class UiState: BaseUiState {
-        data object Idle: UiState()
-        data object Loading: UiState()
-        data class Error(val error: UiText): UiState()
-        data object TempPostSuccess: UiState()
+    sealed class UiState : BaseUiState {
+        data object Idle : UiState()
+
+        data object Loading : UiState()
+
+        data class Error(val error: UiText) : UiState()
+
+        data object TempPostSuccess : UiState()
     }
 
-    sealed class UiEvent: BaseUiEvent {
+    sealed class UiEvent : BaseUiEvent {
         /** @param tempPostIds null 이면 삭제모달창 표시, null이 아니면 삭제 진행*/
-        data class OnTempPostsDelete(val tempPostIds: List<Long>? = null): UiEvent()
-        data object NavigateToPostDetail: UiEvent()
-        data object NavigateToBack: UiEvent()
+        data class OnTempPostsDelete(val tempPostIds: List<Long>? = null) : UiEvent()
+
+        data object NavigateToPostDetail : UiEvent()
+
+        data object NavigateToBack : UiEvent()
     }
 
-    sealed class UiEffect: BaseUiEffect {
-        data object ShowDialogModal: UiEffect()
+    sealed class UiEffect : BaseUiEffect {
+        data object ShowDialogModal : UiEffect()
     }
 }

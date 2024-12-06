@@ -1,7 +1,6 @@
 package com.team.domain.type
 
 sealed class ReportType {
-
     data object DontLike : ReportType()
 
     data object SpamAndAdvertising : ReportType()

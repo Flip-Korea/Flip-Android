@@ -18,14 +18,12 @@ class FakeCategoryRepository(
     private val categoryDao: CategoryDao,
     private val categoryNetworkDataSource: CategoryNetworkDataSource,
 ) : CategoryRepository {
-
     private val ioDispatcher = Dispatchers.IO
 
     override fun getCategoriesFromLocal(): Flow<List<Category>> =
         categoryDao.getCategories().map { it.toDomainModel() }.flowOn(ioDispatcher)
 
     override suspend fun refreshCategories(): Result<Boolean, ErrorType> {
-
         val result = withContext(ioDispatcher) { categoryNetworkDataSource.getCategories() }
 
         return when (result) {

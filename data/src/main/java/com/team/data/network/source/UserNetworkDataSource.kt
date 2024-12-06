@@ -20,7 +20,6 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface UserNetworkDataSource {
-
     suspend fun getProfile(profileId: String): Result<ProfileResponse, ErrorType>
 
     suspend fun selectMyCategory(
@@ -48,7 +47,10 @@ interface UserNetworkDataSource {
 
     suspend fun blockAccount(blockRequest: BlockRequest): Result<Boolean, ErrorType>
 
-    suspend fun unblockAccount(profileId: String, blockedId: String): Result<Boolean, ErrorType>
+    suspend fun unblockAccount(
+        profileId: String,
+        blockedId: String,
+    ): Result<Boolean, ErrorType>
 
     suspend fun editMyProfile(
         profileId: String,

@@ -22,7 +22,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class InterestCategoryNetworkApiTest {
-
     private lateinit var interestCategoryNetworkApi: InterestCategoryNetworkApi
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
@@ -48,9 +47,10 @@ class InterestCategoryNetworkApiTest {
     }
 
     @Test
-    fun `getMyCategories Call Test`() = runTest {
-        val myCategories =
-            """
+    fun `getMyCategories Call Test`() =
+        runTest {
+            val myCategories =
+                """
                 [ {
                   "categoryId" : 1,
                   "categoryName" : "일상"
@@ -59,40 +59,41 @@ class InterestCategoryNetworkApiTest {
                   "categoryName" : "IT과학"
                 } ]
             """
-                .trimIndent()
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(myCategories)
-            }
-        )
+                    .trimIndent()
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(myCategories)
+                },
+            )
 
-        val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val expectedResponse =
-            moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
+            val adapter = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+            val expectedResponse =
+                moshi.adapter<List<CategoryResponse>?>(adapter).fromJson(myCategories)
 
-        val actualResponse = interestCategoryNetworkApi.getMyCategories()
+            val actualResponse = interestCategoryNetworkApi.getMyCategories()
 
-        assert(expectedResponse != null)
-        assert(actualResponse.isSuccessful)
-        assertEquals(expectedResponse, actualResponse.body())
-    }
+            assert(expectedResponse != null)
+            assert(actualResponse.isSuccessful)
+            assertEquals(expectedResponse, actualResponse.body())
+        }
 
     @Test
-    fun `updateMyCategories Call Test`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
+    fun `updateMyCategories Call Test`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
 
-        val categoryRequest = CategoryRequest(listOf(1, 2, 3))
+            val categoryRequest = CategoryRequest(listOf(1, 2, 3))
 
-        val response = interestCategoryNetworkApi.updateMyCategories(categoryIds = categoryRequest)
+            val response = interestCategoryNetworkApi.updateMyCategories(categoryIds = categoryRequest)
 
-        val recordedRequest = server.takeRequest()
+            val recordedRequest = server.takeRequest()
 
-        val adapter = moshi.adapter(CategoryRequest::class.java)
-        val actualRequestBody = adapter.fromJson(recordedRequest.body.peek())
+            val adapter = moshi.adapter(CategoryRequest::class.java)
+            val actualRequestBody = adapter.fromJson(recordedRequest.body.peek())
 
-        assertEquals(201, response.code())
-        assertNotNull(actualRequestBody)
-        assertEquals(categoryRequest.categoryIds, actualRequestBody!!.categoryIds)
-    }
+            assertEquals(201, response.code())
+            assertNotNull(actualRequestBody)
+            assertEquals(categoryRequest.categoryIds, actualRequestBody!!.categoryIds)
+        }
 }

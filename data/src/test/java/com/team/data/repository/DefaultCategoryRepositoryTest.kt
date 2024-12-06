@@ -20,8 +20,6 @@ import com.team.domain.repository.CategoryRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -38,6 +36,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -48,7 +48,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
     application = HiltTestApplication::class,
 )
 class DefaultCategoryRepositoryTest {
-
     @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -92,38 +91,40 @@ class DefaultCategoryRepositoryTest {
     }
 
     @Test
-    fun `Local DB 에서 모든 카테고리 가져오기 (getCategoriesFromLocal())`() = runTest {
-        assert(categoryRepository.getCategoriesFromLocal().first().isEmpty())
+    fun `Local DB 에서 모든 카테고리 가져오기 (getCategoriesFromLocal())`() =
+        runTest {
+            assert(categoryRepository.getCategoriesFromLocal().first().isEmpty())
 
-        categoryDao.upsertCategories(categoryEntitiesTestData)
+            categoryDao.upsertCategories(categoryEntitiesTestData)
 
-        assertEquals(
-            categoryRepository.getCategoriesFromLocal().first().size,
-            categoryEntitiesTestData.size,
-        )
-    }
+            assertEquals(
+                categoryRepository.getCategoriesFromLocal().first().size,
+                categoryEntitiesTestData.size,
+            )
+        }
 
     @Test
-    fun `Network API 에서 모든 카테고리 가져오기 (getCategoriesFromNetwork())`() = runTest {
-        categoryDao.clearAll()
+    fun `Network API 에서 모든 카테고리 가져오기 (getCategoriesFromNetwork())`() =
+        runTest {
+            categoryDao.clearAll()
 
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkCategoriesTestData)
-            }
-        )
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(networkCategoriesTestData)
+                },
+            )
 
-        val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
-        val categories = adapter.fromJson(networkCategoriesTestData)?.map { it.toDomainModel() }
+            val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+            val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
+            val categories = adapter.fromJson(networkCategoriesTestData)?.map { it.toDomainModel() }
 
-        categoryRepository.refreshCategories()
+            categoryRepository.refreshCategories()
 
-        val categoryEntities = categoryDao.getCategories().first()
+            val categoryEntities = categoryDao.getCategories().first()
 
-        assertNotNull(categories)
-        assert(categoryEntities.isNotEmpty())
-        assertEquals(categoryEntities.size, categories!!.size)
-    }
+            assertNotNull(categories)
+            assert(categoryEntities.isNotEmpty())
+            assertEquals(categoryEntities.size, categories!!.size)
+        }
 }

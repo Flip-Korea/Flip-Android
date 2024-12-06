@@ -35,7 +35,6 @@ fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     onSettingClick: () -> Unit,
 ) {
-
     val postState by homeViewModel.postState.collectAsStateWithLifecycle()
     val reportState by homeViewModel.reportState.collectAsStateWithLifecycle()
     val blockState by homeViewModel.blockState.collectAsStateWithLifecycle()
@@ -75,9 +74,10 @@ fun HomeRoute(
     )
 
     HomeScreen(
-        modifier = modifier
-            .fillMaxSize()
-            .background(FlipTheme.colors.white),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(FlipTheme.colors.white),
         refreshState = refreshState,
         myCategories = filteredMyCategoriesState,
         postState = postState,

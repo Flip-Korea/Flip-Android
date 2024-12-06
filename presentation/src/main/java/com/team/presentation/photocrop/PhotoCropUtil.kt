@@ -24,8 +24,9 @@ import kotlin.math.max
  * 2. Failure: 실패 시 errorMessage 문자열을 포함 (nullable)
  */
 sealed interface CropImageResult {
-    data class Success(val imageBitmap: ImageBitmap): CropImageResult
-    data class Failure(val errorMessage: String? = null): CropImageResult
+    data class Success(val imageBitmap: ImageBitmap) : CropImageResult
+
+    data class Failure(val errorMessage: String? = null) : CropImageResult
 }
 
 /**
@@ -48,9 +49,8 @@ fun cropImage(
     scale: Float = 1f,
     viewWidth: Int,
     viewHeight: Int,
-    offsetChanged: Offset
+    offsetChanged: Offset,
 ): CropImageResult {
-
     return if (imageBitmap == null) {
         CropImageResult.Failure("다른 사진으로 시도 해 주세요.")
     } else {
@@ -81,7 +81,7 @@ fun cropImage(
             srcSize = IntSize(width, height),
             dstOffset = IntOffset(0, 0),
             dstSize = IntSize(width, height),
-            paint = Paint()
+            paint = Paint(),
         )
         CropImageResult.Success(croppedImage)
     }
@@ -100,10 +100,11 @@ suspend fun uriToBitmap(
     var bitmap: Bitmap? = null
 
     val loader = ImageLoader(context)
-    val request = ImageRequest.Builder(context)
-        .data(imageUri)
-        .allowHardware(false)
-        .build()
+    val request =
+        ImageRequest.Builder(context)
+            .data(imageUri)
+            .allowHardware(false)
+            .build()
     val result = loader.execute(request)
     if (result is SuccessResult) {
         bitmap = (result.drawable as BitmapDrawable).bitmap

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MyProfileDao {
-
     @Query("SELECT * FROM myprofileentity") fun getAllProfile(): Flow<List<MyProfileEntity>>
 
     @Query("SELECT * FROM myprofileentity WHERE profileId=:profileId")
@@ -32,5 +31,8 @@ interface MyProfileDao {
 
     // Update
     @Query("UPDATE myprofileentity SET categories=:categories WHERE profileId=:profileId")
-    suspend fun updateCategories(profileId: String, categories: List<Int>)
+    suspend fun updateCategories(
+        profileId: String,
+        categories: List<Int>,
+    )
 }

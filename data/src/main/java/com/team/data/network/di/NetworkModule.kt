@@ -31,19 +31,18 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
 // TODO 네트워크 캐싱 필요
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     // TODO OkHttpClient 에 Timeout 추가 하기
 
     /** Interceptor Module * */
@@ -97,8 +96,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
-        TokenInterceptor(dataStoreManager)
+    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor = TokenInterceptor(dataStoreManager)
 
     /** Retrofit Instance * */
     @DefaultRetrofitBuilder
@@ -118,16 +116,14 @@ object NetworkModule {
     fun provideAuthApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): AccountNetworkApi =
-        retrofit.client(loggingOkHttpClient).build().create(AccountNetworkApi::class.java)
+    ): AccountNetworkApi = retrofit.client(loggingOkHttpClient).build().create(AccountNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideUserApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): UserNetworkApi =
-        retrofit.client(tokenOkHttpClient).build().create(UserNetworkApi::class.java)
+    ): UserNetworkApi = retrofit.client(tokenOkHttpClient).build().create(UserNetworkApi::class.java)
 
     @Singleton
     @Provides
@@ -162,31 +158,26 @@ object NetworkModule {
     fun provideSearchApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): SearchNetworkApi =
-        retrofit.client(loggingOkHttpClient).build().create(SearchNetworkApi::class.java)
+    ): SearchNetworkApi = retrofit.client(loggingOkHttpClient).build().create(SearchNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideCategoryApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): CategoryNetworkApi =
-        retrofit.client(loggingOkHttpClient).build().create(CategoryNetworkApi::class.java)
+    ): CategoryNetworkApi = retrofit.client(loggingOkHttpClient).build().create(CategoryNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideInterestCategoryApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): InterestCategoryNetworkApi =
-        retrofit.client(tokenOkHttpClient).build().create(InterestCategoryNetworkApi::class.java)
+    ): InterestCategoryNetworkApi = retrofit.client(tokenOkHttpClient).build().create(InterestCategoryNetworkApi::class.java)
 
     /** DataSource * */
     @Singleton
     @Provides
-    fun provideAccountNetworkDataSource(
-        accountNetworkApi: AccountNetworkApi
-    ): AccountNetworkDataSource {
+    fun provideAccountNetworkDataSource(accountNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
         return AccountNetworkDataSourceImpl(accountNetworkApi)
     }
 
@@ -198,16 +189,14 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideCategoryNetworkDataSource(
-        categoryNetworkApi: CategoryNetworkApi
-    ): CategoryNetworkDataSource {
+    fun provideCategoryNetworkDataSource(categoryNetworkApi: CategoryNetworkApi): CategoryNetworkDataSource {
         return CategoryNetworkDataSourceImpl(categoryNetworkApi)
     }
 
     @Singleton
     @Provides
     fun provideInterestCategoryNetworkDataSource(
-        interestCategoryNetworkApi: InterestCategoryNetworkApi
+        interestCategoryNetworkApi: InterestCategoryNetworkApi,
     ): InterestCategoryNetworkDataSource {
         return InterestCategoryNetworkDataSourceImpl(interestCategoryNetworkApi)
     }
@@ -220,9 +209,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideSearchNetworkDataSource(
-        searchNetworkApi: SearchNetworkApi
-    ): SearchNetworkDataSource {
+    fun provideSearchNetworkDataSource(searchNetworkApi: SearchNetworkApi): SearchNetworkDataSource {
         return SearchNetworkDataSourceImpl(searchNetworkApi)
     }
 }

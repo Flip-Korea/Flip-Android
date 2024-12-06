@@ -16,13 +16,14 @@ fun <T : Any> HandleLoadState(
     lazyPagingItems: LazyPagingItems<T>,
     updateState: (FlipLoadState) -> Unit,
 ) {
-    val loadStates = remember(lazyPagingItems.loadState) {
-        listOf(
-            lazyPagingItems.loadState.refresh,
-            lazyPagingItems.loadState.prepend,
-            lazyPagingItems.loadState.append,
-        )
-    }
+    val loadStates =
+        remember(lazyPagingItems.loadState) {
+            listOf(
+                lazyPagingItems.loadState.refresh,
+                lazyPagingItems.loadState.prepend,
+                lazyPagingItems.loadState.append,
+            )
+        }
 
     LaunchedEffect(loadStates) {
         when {

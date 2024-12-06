@@ -16,8 +16,6 @@ import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -25,18 +23,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.io.IOException
+import javax.inject.Inject
 
 class DefaultAccountRepository
-@Inject
-constructor(
-    private val accountNetworkDataSource: AccountNetworkDataSource,
-    private val myProfileDao: MyProfileDao,
-    private val dataStoreManager: DataStoreManager,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-) : AccountRepository {
-
-    override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> =
-        flow<Result<Boolean, ErrorType>> {
+    @Inject
+    constructor(
+        private val accountNetworkDataSource: AccountNetworkDataSource,
+        private val myProfileDao: MyProfileDao,
+        private val dataStoreManager: DataStoreManager,
+        @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    ) : AccountRepository {
+        override fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>> =
+            flow<Result<Boolean, ErrorType>> {
                 emit(Result.Loading)
 
                 //
@@ -55,10 +54,10 @@ constructor(
                     emit(Result.Error(ErrorType.Exception.EXCEPTION))
                 }
             }
-            .flowOn(ioDispatcher)
+                .flowOn(ioDispatcher)
 
-    override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
-        return flow {
+        override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
+            return flow {
                 emit(Result.Loading)
 
                 val accessToken =
@@ -100,12 +99,12 @@ constructor(
                     }
                 } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+        }
 
-    override fun checkDuplicateName(nickname: String): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+        override fun checkDuplicateName(nickname: String): Flow<Result<Boolean, ErrorType>> {
+            return flow {
                 emit(Result.Loading)
 
                 when (val result = accountNetworkDataSource.checkDuplicateName(nickname)) {
@@ -118,12 +117,12 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+        }
 
-    override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+        override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> {
+            return flow {
                 emit(Result.Loading)
 
                 when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
@@ -136,15 +135,15 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+        }
 
-    override fun login(
-        loginPlatformType: SocialLoginPlatform,
-        accountId: String,
-    ): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+        override fun login(
+            loginPlatformType: SocialLoginPlatform,
+            accountId: String,
+        ): Flow<Result<Boolean, ErrorType>> {
+            return flow {
                 emit(Result.Loading)
 
                 val accountIdResult = loginPlatformType.asString() + accountId
@@ -160,12 +159,12 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+        }
 
-    override fun register(register: Register): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+        override fun register(register: Register): Flow<Result<Boolean, ErrorType>> {
+            return flow {
                 emit(Result.Loading)
 
                 when (val result = accountNetworkDataSource.register(register.toNetwork())) {
@@ -179,12 +178,15 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+        }
 
-    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, accessToken)
-        dataStoreManager.saveData(DataStoreType.TokenType.REFRESH_TOKEN, refreshToken)
+        private suspend fun saveTokens(
+            accessToken: String,
+            refreshToken: String,
+        ) {
+            dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, accessToken)
+            dataStoreManager.saveData(DataStoreType.TokenType.REFRESH_TOKEN, refreshToken)
+        }
     }
-}

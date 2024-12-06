@@ -12,5 +12,4 @@ data class PostListResponse(
     @Json(name = "posts") val posts: List<PostResponse>,
 )
 
-fun PostListResponse.toDomainModel(): PostList =
-    PostList(hasNext, nextCursor, postCnt, posts.toDomainModel())
+fun PostListResponse.toDomainModel(): PostList = PostList(hasNext, nextCursor, postCnt, posts.toDomainModel())

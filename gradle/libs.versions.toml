@@ -41,7 +41,7 @@ kakaoSdk = "2.19.0"
 material-icons-extended = "1.6.8"
 paging = "3.3.2"
 ktlint = "12.1.2"
-ktlintSlackComposeRule = "1.4.2"
+ktlintComposeRules = "0.4.19"
 
 [libraries]
 # add
@@ -123,7 +123,7 @@ androidx-paging-compose = { module = "androidx.paging:paging-compose", version.r
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 # Ktlint
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint" }
-slack-compose-lint-checks = { module = "com.slack.lint.compose:compose-lint-checks", version.ref = "ktlintSlackComposeRule" }
+ktlint-compose-rules = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintComposeRules" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

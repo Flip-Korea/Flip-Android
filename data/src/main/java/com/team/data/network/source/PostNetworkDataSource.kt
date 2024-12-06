@@ -13,7 +13,10 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface PostNetworkDataSource {
-    suspend fun getPosts(cursor: String?, limit: Int): Result<PostListResponse, ErrorType>
+    suspend fun getPosts(
+        cursor: String?,
+        limit: Int,
+    ): Result<PostListResponse, ErrorType>
 
     suspend fun getPostById(postId: Long): Result<PostResponse, ErrorType>
 

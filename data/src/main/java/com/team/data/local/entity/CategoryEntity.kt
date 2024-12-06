@@ -4,7 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.team.domain.model.category.Category
 
-@Entity data class CategoryEntity(@PrimaryKey(autoGenerate = false) val id: Int, val name: String)
+@Entity data class CategoryEntity(
+    @PrimaryKey(autoGenerate = false) val id: Int,
+    val name: String,
+)
 
 fun CategoryEntity.toDomainModel(): Category = Category(id, name)
 

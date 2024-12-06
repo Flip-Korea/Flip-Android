@@ -16,49 +16,50 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class GetPostsByTypeUseCaseTest {
-
     private val postRepository: PostRepository = mockk()
     private val getPostsByTypeUseCase = GetPostsByTypeUseCase(postRepository)
 
     @Test
-    fun `Successful`() = runTest {
-        // Given
-        val expected = getPostListTestData()
-        every {
-            postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
-        } returns flowOf(Result.Success(expected))
+    fun `Successful`() =
+        runTest {
+            // Given
+            val expected = getPostListTestData()
+            every {
+                postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
+            } returns flowOf(Result.Success(expected))
 
-        // When
-        val actual =
-            getPostsByTypeUseCase(
+            // When
+            val actual =
+                getPostsByTypeUseCase(
                     type = PathParameterType.Post.CATEGORY,
                     typeId = "3",
                     cursor = null,
                 )
-                .last()
+                    .last()
 
-        // Then
-        assertEquals(expected, (actual as Result.Success).data)
-    }
+            // Then
+            assertEquals(expected, (actual as Result.Success).data)
+        }
 
     @Test
-    fun `Failure`() = runTest {
-        // Given
-        val expected = ErrorType.Network.NOT_FOUND
-        every {
-            postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
-        } returns flowOf(Result.Error(expected))
+    fun `Failure`() =
+        runTest {
+            // Given
+            val expected = ErrorType.Network.NOT_FOUND
+            every {
+                postRepository.getPostsByTypePagination(PathParameterType.Post.CATEGORY, "3", null, 15)
+            } returns flowOf(Result.Error(expected))
 
-        // When
-        val actual =
-            getPostsByTypeUseCase(
+            // When
+            val actual =
+                getPostsByTypeUseCase(
                     type = PathParameterType.Post.CATEGORY,
                     typeId = "3",
                     cursor = null,
                 )
-                .last()
+                    .last()
 
-        // Then
-        assertEquals(expected, (actual as Result.Error).error)
-    }
+            // Then
+            assertEquals(expected, (actual as Result.Error).error)
+        }
 }

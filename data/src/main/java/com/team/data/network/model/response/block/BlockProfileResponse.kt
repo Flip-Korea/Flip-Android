@@ -12,7 +12,6 @@ data class BlockProfileResponse(
     @Json(name = "photo_url") val photoUrl: String,
 )
 
-fun BlockProfileResponse.toDomainModel(): BlockProfile =
-    BlockProfile(blockId, blockedId, nickname, photoUrl)
+fun BlockProfileResponse.toDomainModel(): BlockProfile = BlockProfile(blockId, blockedId, nickname, photoUrl)
 
 fun List<BlockProfileResponse>.toDomainModel(): List<BlockProfile> = this.map { it.toDomainModel() }

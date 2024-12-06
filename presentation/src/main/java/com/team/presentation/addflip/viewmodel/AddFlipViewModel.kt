@@ -38,7 +38,6 @@ class AddFlipViewModel @Inject constructor(
     private val validateTempPostUseCase: ValidateTempPostUseCase,
     private val validateSafeSaveUseCase: ValidateSafeSaveUseCase,
 ) : FlipBaseViewModel<AddFlipContract.UiState, AddFlipContract.UiEvent, AddFlipContract.UiEffect>() {
-
     init {
         viewModelScope.launch {
             fetchCategories()
@@ -82,7 +81,7 @@ class AddFlipViewModel @Inject constructor(
                     title = title,
                     content = contents,
                     bgColorType = bgColorType,
-                    categoryId = category!!.id
+                    categoryId = category!!.id,
                 ).onEach { result ->
                     when (result) {
                         Result.Loading -> {
@@ -119,7 +118,7 @@ class AddFlipViewModel @Inject constructor(
     private fun validationPostForSave(
         title: String,
         contents: List<String>,
-        category: Category?
+        category: Category?,
     ): Boolean {
         val validationResults = validatePostUseCase(title, contents, category)
         var isValid = true
@@ -140,7 +139,7 @@ class AddFlipViewModel @Inject constructor(
         title: String,
         contents: List<String>,
         bgColorType: BackgroundColorType,
-        category: Category?
+        category: Category?,
     ) {
         viewModelScope.launch {
             val contentState = getContentState()
@@ -151,7 +150,7 @@ class AddFlipViewModel @Inject constructor(
                     title = title,
                     content = contents,
                     bgColorType = bgColorType,
-                    categoryId = categoryId
+                    categoryId = categoryId,
                 ).onEach { result ->
                     when (result) {
                         is Result.Error -> {
@@ -175,7 +174,7 @@ class AddFlipViewModel @Inject constructor(
                             val updatedAddTempPostState =
                                 contentState.postSaveState.copy(
                                     tempPostSave = true,
-                                    loading = false
+                                    loading = false,
                                 )
                             updateState {
                                 contentState.copy(postSaveState = updatedAddTempPostState)
@@ -188,7 +187,10 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    private fun validationTempPostForSave(title: String, contents: List<String>): Boolean {
+    private fun validationTempPostForSave(
+        title: String,
+        contents: List<String>,
+    ): Boolean {
         return when (val validationResult = validateTempPostUseCase(title, contents)) {
             is ValidationResult.Error -> {
                 viewModelScope.launch {
@@ -265,7 +267,10 @@ class AddFlipViewModel @Inject constructor(
         return AddFlipContract.UiState.Content()
     }
 
-    private suspend fun showSnackbar(message: UiText, action: SnackbarAction? = null) {
+    private suspend fun showSnackbar(
+        message: UiText,
+        action: SnackbarAction? = null,
+    ) {
         SnackbarController.sendEvent(event = SnackbarEvent(message = message, action = action))
     }
 }

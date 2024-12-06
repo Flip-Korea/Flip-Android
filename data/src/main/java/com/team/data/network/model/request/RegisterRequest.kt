@@ -22,8 +22,7 @@ data class ProfileRequest(
     @Json(name = "profile_id") val profileId: String,
 )
 
-fun RegisterProfile.toNetwork(): ProfileRequest =
-    ProfileRequest(profileId = profileId, nickname = nickname, photoUrl = photoUrl)
+fun RegisterProfile.toNetwork(): ProfileRequest = ProfileRequest(profileId = profileId, nickname = nickname, photoUrl = photoUrl)
 
 fun Register.toNetwork(): RegisterRequest =
     RegisterRequest(

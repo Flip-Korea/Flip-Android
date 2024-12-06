@@ -11,5 +11,4 @@ data class BlockListResponse(
     @Json(name = "block_list") val blockList: List<BlockProfileResponse>,
 )
 
-fun BlockListResponse.toDomainModel(): BlockProfileList =
-    BlockProfileList(hasNext, nextCursor, blockList.toDomainModel())
+fun BlockListResponse.toDomainModel(): BlockProfileList = BlockProfileList(hasNext, nextCursor, blockList.toDomainModel())

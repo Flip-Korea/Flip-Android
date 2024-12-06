@@ -18,34 +18,35 @@ private class MockTest(private val mockRepository: MockRepository) {
 
 @ExperimentalCoroutinesApi
 class MockKTest {
-
     /** When Coroutine Test, Use coEvery { ... } */
     private val mockRepository: MockRepository = mockk()
     private val mockTest = MockTest(mockRepository)
 
     @Test
-    fun `MockK Success Test`() = runTest {
-        // Given
-        every { mockRepository.getNumber() } returns 10
+    fun `MockK Success Test`() =
+        runTest {
+            // Given
+            every { mockRepository.getNumber() } returns 10
 
-        // When
-        val result = mockTest()
+            // When
+            val result = mockTest()
 
-        // Then
-        verify(exactly = 1) { mockRepository.getNumber() }
-        assertEquals(result, true)
-    }
+            // Then
+            verify(exactly = 1) { mockRepository.getNumber() }
+            assertEquals(result, true)
+        }
 
     @Test
-    fun `MockK Failure Test`() = runTest {
-        // Given
-        every { mockRepository.getNumber() } returns 5
+    fun `MockK Failure Test`() =
+        runTest {
+            // Given
+            every { mockRepository.getNumber() } returns 5
 
-        // When
-        val result = mockTest()
+            // When
+            val result = mockTest()
 
-        // Then
-        verify(exactly = 1) { mockRepository.getNumber() }
-        assertEquals(result, false)
-    }
+            // Then
+            verify(exactly = 1) { mockRepository.getNumber() }
+            assertEquals(result, false)
+        }
 }

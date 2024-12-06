@@ -1,4 +1,4 @@
-package com.team.flip.navigation.bottom_nav
+package com.team.flip.navigation.bottomNav
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -40,34 +40,41 @@ fun FlipBottomNavigationBar(
     modifier: Modifier = Modifier,
     navController: NavHostController,
 ) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     if (allowedBottomNavItems.map { it.route }.contains(currentRoute)) {
         NavigationBar(
-            modifier = modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 61.dp)
-                .dropShadow1()
-                .zIndex(1f),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 61.dp)
+                    .dropShadow1()
+                    .zIndex(1f),
             containerColor = FlipTheme.colors.white,
-            contentColor = FlipTheme.colors.gray5
+            contentColor = FlipTheme.colors.gray5,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 bottomNavItems.forEach { item ->
-                    val color = if (currentRoute == item.route) {
-                        FlipTheme.colors.main
-                    } else FlipTheme.colors.gray5
-                    val fontStyle = if (currentRoute == item.route) {
-                        FlipTheme.typography.body2
-                    } else FlipTheme.typography.body1
+                    val color =
+                        if (currentRoute == item.route) {
+                            FlipTheme.colors.main
+                        } else {
+                            FlipTheme.colors.gray5
+                        }
+                    val fontStyle =
+                        if (currentRoute == item.route) {
+                            FlipTheme.typography.body2
+                        } else {
+                            FlipTheme.typography.body1
+                        }
 
                     FlipNavigationBarItem(
                         selected = currentRoute == item.route,
@@ -76,7 +83,7 @@ fun FlipBottomNavigationBar(
                                 text = stringResource(id = item.title),
                                 style = fontStyle,
                                 color = color,
-                                maxLines = 1
+                                maxLines = 1,
                             )
                         },
                         icon = {
@@ -84,7 +91,7 @@ fun FlipBottomNavigationBar(
                                 modifier = Modifier.size(24.dp),
                                 imageVector = ImageVector.vectorResource(id = item.icon),
                                 contentDescription = stringResource(id = item.title),
-                                tint = color
+                                tint = color,
                             )
                         },
                         onClick = { onItemClickWithOptions(navController, item.route) },
@@ -104,18 +111,19 @@ private fun RowScope.FlipNavigationBarItem(
     onClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .weight(1f)
+        modifier =
+            modifier
+                .weight(1f)
 //            .background(Color.LightGray)
-            .selectable(
-                selected = selected,
-                onClick = onClick,
-                role = Role.Tab,
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ),
+                .selectable(
+                    selected = selected,
+                    onClick = onClick,
+                    role = Role.Tab,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp, alignment = Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(2.dp, alignment = Alignment.CenterVertically),
     ) {
         icon()
         label()

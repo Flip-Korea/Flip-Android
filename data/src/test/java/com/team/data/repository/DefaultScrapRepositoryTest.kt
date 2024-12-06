@@ -31,7 +31,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class DefaultScrapRepositoryTest {
-
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var userNetworkDataSource: UserNetworkDataSource
@@ -65,57 +64,61 @@ class DefaultScrapRepositoryTest {
     }
 
     @Test
-    fun `스크랩 목록 페이지네이션 (getScrapListPagination())`() = runTest {
-        val pageSize = 15
+    fun `스크랩 목록 페이지네이션 (getScrapListPagination())`() =
+        runTest {
+            val pageSize = 15
 
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(makePostListResponseTestData("1", pageSize))
-            }
-        )
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(makePostListResponseTestData("1", pageSize))
+                },
+            )
 
-        val result =
-            scrapRepository
-                .getScrapListPagination("TestProfileId", "1", FlipPagingTokens.POST_PAGE_SIZE)
-                .last()
+            val result =
+                scrapRepository
+                    .getScrapListPagination("TestProfileId", "1", FlipPagingTokens.POST_PAGE_SIZE)
+                    .last()
 
-        assertEquals(pageSize, (result as Result.Success).data.posts.size)
-    }
-
-    @Test
-    fun `스크랩 코멘트 수정 (editScrapComment())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
-
-        val newComment = "수정된 코멘트"
-
-        val result = scrapRepository.editScrapComment("TestProfileId", 1, newComment).last()
-
-        assert((result as Result.Success).data)
-    }
+            assertEquals(pageSize, (result as Result.Success).data.posts.size)
+        }
 
     @Test
-    fun `스크랩 추가 (addScrap())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(resultIdResponseTestData)
-            }
-        )
+    fun `스크랩 코멘트 수정 (editScrapComment())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-        val newScrap = NewScrap("TestProfileId", 1, "코멘트!")
+            val newComment = "수정된 코멘트"
 
-        val result = scrapRepository.addScrap(newScrap).last()
+            val result = scrapRepository.editScrapComment("TestProfileId", 1, newComment).last()
 
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `스크랩 삭제 (deleteScrap())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `스크랩 추가 (addScrap())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(resultIdResponseTestData)
+                },
+            )
 
-        val result = scrapRepository.deleteScrap(1).last()
+            val newScrap = NewScrap("TestProfileId", 1, "코멘트!")
 
-        assert((result as Result.Success).data)
-    }
+            val result = scrapRepository.addScrap(newScrap).last()
+
+            assert((result as Result.Success).data)
+        }
+
+    @Test
+    fun `스크랩 삭제 (deleteScrap())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val result = scrapRepository.deleteScrap(1).last()
+
+            assert((result as Result.Success).data)
+        }
 }

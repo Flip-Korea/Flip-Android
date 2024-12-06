@@ -7,5 +7,5 @@ data class MyCategoriesState(
     val myCategories: List<Category> = emptyList(),
     val exclusiveCategories: List<Category> = emptyList(),
     val loading: Boolean = false,
-    val error: UiText = UiText.DynamicString("")
+    val error: UiText = UiText.DynamicString(""),
 )
