@@ -18,7 +18,7 @@ fun Modifier.dropShadow(
     offsetY: Dp = 0.dp,
     blurRadius: Dp = 0.dp,
     spreadRadius: Dp = 0.dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) = then(
     modifier.drawBehind {
         drawIntoCanvas { canvas ->
@@ -33,10 +33,11 @@ fun Modifier.dropShadow(
             frameworkPaint.color = color.toArgb()
 
             if (blurRadius != 0.dp) {
-                frameworkPaint.maskFilter = BlurMaskFilter(
-                    blurRadius.toPx(),
-                    BlurMaskFilter.Blur.NORMAL
-                )
+                frameworkPaint.maskFilter =
+                    BlurMaskFilter(
+                        blurRadius.toPx(),
+                        BlurMaskFilter.Blur.NORMAL,
+                    )
             }
 
             canvas.drawRoundRect(
@@ -46,29 +47,32 @@ fun Modifier.dropShadow(
                 bottom = bottomPixel,
                 radiusX = borderRadius.toPx(),
                 radiusY = borderRadius.toPx(),
-                paint = paint
+                paint = paint,
             )
         }
-    }
+    },
 )
 
-fun Modifier.dropShadow1() = this
-    .dropShadow(
-        color = Color(0xFF000000).copy(0.1f),
-        offsetY = 4.dp,
-        blurRadius = 12.dp
-    )
+fun Modifier.dropShadow1() =
+    this
+        .dropShadow(
+            color = Color(0xFF000000).copy(0.1f),
+            offsetY = 4.dp,
+            blurRadius = 12.dp,
+        )
 
-fun Modifier.dropShadow2() = this
-    .dropShadow(
-        color = Color(0xFF636363).copy(0.2f),
-        offsetY = 2.dp,
-        blurRadius = 8.dp
-    )
+fun Modifier.dropShadow2() =
+    this
+        .dropShadow(
+            color = Color(0xFF636363).copy(0.2f),
+            offsetY = 2.dp,
+            blurRadius = 8.dp,
+        )
 
-fun Modifier.dropShadow3() = this
-    .dropShadow(
-        color = Color(0xFF000000).copy(0.35f),
-        offsetY = 5.dp,
-        blurRadius = 15.dp
-    )
+fun Modifier.dropShadow3() =
+    this
+        .dropShadow(
+            color = Color(0xFF000000).copy(0.35f),
+            offsetY = 5.dp,
+            blurRadius = 15.dp,
+        )

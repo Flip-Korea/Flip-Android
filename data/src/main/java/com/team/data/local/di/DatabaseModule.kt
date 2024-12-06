@@ -19,15 +19,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Singleton
     @Provides
     fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     @Singleton
     @Provides
-    fun provideFlipDatabase(@ApplicationContext context: Context, moshi: Moshi): FlipDatabase {
-
+    fun provideFlipDatabase(
+        @ApplicationContext context: Context,
+        moshi: Moshi,
+    ): FlipDatabase {
         val listTypeConverter = ListTypeConverter(moshi)
 
         return Room.databaseBuilder(context, FlipDatabase::class.java, "flip_database.db")
@@ -46,6 +47,5 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideRecentSearchDao(flipDatabase: FlipDatabase): RecentSearchDao =
-        flipDatabase.recentSearchDao()
+    fun provideRecentSearchDao(flipDatabase: FlipDatabase): RecentSearchDao = flipDatabase.recentSearchDao()
 }

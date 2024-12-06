@@ -36,28 +36,29 @@ fun SpeechBubbleView(
     text: String,
     tipStartOffset: Dp = 36.dp,
 ) {
-
     val tipHeight by remember { mutableStateOf(12.5.dp) }
 
     Box(
-        modifier = modifier
-            .wrapContentSize()
-            .clip(SpeechBubbleShape(tipHeight = tipHeight, leftSpacePx = tipStartOffset))
-            .background(containerColor)
+        modifier =
+            modifier
+                .wrapContentSize()
+                .clip(SpeechBubbleShape(tipHeight = tipHeight, leftSpacePx = tipStartOffset))
+                .background(containerColor),
     ) {
         Text(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(
-                    top = tipHeight + 11.dp,
-                    bottom = 11.dp,
-                    start = 17.dp,
-                    end = 17.dp
-                ),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .padding(
+                        top = tipHeight + 11.dp,
+                        bottom = 11.dp,
+                        start = 17.dp,
+                        end = 17.dp,
+                    ),
             text = text,
             style = FlipTheme.typography.body3,
             color = FlipTheme.colors.gray1,
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
         )
     }
 }
@@ -67,29 +68,31 @@ fun SpeechBubbleView(
 private fun SpeechBubbleWrapperPreview() {
     FlipAppTheme {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             SpeechBubbleView(
                 modifier = Modifier,
                 containerColor = FlipTheme.colors.main.copy(.9f),
-                text = "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
-                        "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!"
+                text =
+                    "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
+                        "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!",
             )
             SpeechBubbleView(
                 modifier = Modifier,
                 containerColor = FlipTheme.colors.main.copy(.9f),
                 text = "AAA",
-                tipStartOffset = 20.dp
+                tipStartOffset = 20.dp,
             )
             SpeechBubbleView(
                 modifier = Modifier,
                 containerColor = FlipTheme.colors.main.copy(.9f),
-                text = "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
+                text =
+                    "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
                         "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!" +
                         "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
                         "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!" +
                         "관심분야를 자유롭게 추가하고 삭제해보세요.\n" +
-                        "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!"
+                        "꾹 누르면 관심 있는 순서대로 배치할 수도 있어요!",
             )
         }
     }

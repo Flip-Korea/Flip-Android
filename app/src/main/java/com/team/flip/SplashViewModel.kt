@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val dataStoreManager: DataStoreManager
-): ViewModel() {
+    private val dataStoreManager: DataStoreManager,
+) : ViewModel() {
     private val tag = this.javaClass.simpleName
 
     private val _loggedIn: MutableStateFlow<Boolean?> = MutableStateFlow(null)

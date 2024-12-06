@@ -25,8 +25,6 @@ import com.team.domain.util.Result
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import javax.inject.Inject
-import javax.inject.Named
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
@@ -34,7 +32,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,6 +41,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -53,7 +53,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
     application = HiltTestApplication::class,
 )
 class DefaultAccountRepositoryTest {
-
     @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
 
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -79,7 +78,8 @@ class DefaultAccountRepositoryTest {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         accountNetworkApi =
-            Retrofit.Builder()
+            Retrofit
+                .Builder()
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(server.url("/"))
                 .build()
@@ -99,142 +99,152 @@ class DefaultAccountRepositoryTest {
     }
 
     @Test
-    fun `사용자 계정 불러오기(accessToken 없는 경우) (getUserAccount())`() = runTest {
-        val result = accountRepository.getUserAccount().last()
+    fun `사용자 계정 불러오기(accessToken 없는 경우) (getUserAccount())`() =
+        runTest {
+            val result = accountRepository.getUserAccount().last()
 
-        assertEquals((result as Result.Error).error, ErrorType.Token.NOT_FOUND)
-    }
-
-    @Test
-    fun `사용자 계정 불러오기(accessToken 있는 경우) (getUserAccount())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkAccountJsonTestData)
-            }
-        )
-
-        dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
-        val result = accountRepository.getUserAccount().last()
-
-        val actualData =
-            moshi
-                .adapter(AccountResponse::class.java)
-                .fromJson(networkAccountJsonTestData)!!
-                .toDomainModel((result as Result.Success).data.profiles)
-
-        val expectedCurrentProfileId =
-            dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
-
-        assertEquals(result.data, actualData)
-        assertEquals(expectedCurrentProfileId, actualData.profiles[0].profileId)
-    }
+            assertEquals((result as Result.Error).error, ErrorType.Token.NOT_FOUND)
+        }
 
     @Test
-    fun `이름 중복 체크 실패 (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+    fun `사용자 계정 불러오기(accessToken 있는 경우) (getUserAccount())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(networkAccountJsonTestData)
+                },
+            )
 
-        val result = accountRepository.checkDuplicateName("honggd").last()
+            dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
+            val result = accountRepository.getUserAccount().last()
 
-        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
-    }
+            val actualData =
+                moshi
+                    .adapter(AccountResponse::class.java)
+                    .fromJson(networkAccountJsonTestData)!!
+                    .toDomainModel((result as Result.Success).data.profiles)
 
-    @Test
-    fun `이름 중복 체크 실패(409, Conflict) (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+            val expectedCurrentProfileId =
+                dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
 
-        val result = accountRepository.checkDuplicateName("honggd").last()
-
-        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
-    }
-
-    @Test
-    fun `이름 중복 체크 성공 (checkDuplicateName())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
-
-        val result = accountRepository.checkDuplicateName("honggd").last()
-
-        assertEquals((result as Result.Success).data, true)
-    }
-
-    @Test
-    fun `ProfileId 중복 체크 실패 (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
-
-        val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
-
-        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
-    }
+            assertEquals(result.data, actualData)
+            assertEquals(expectedCurrentProfileId, actualData.profiles[0].profileId)
+        }
 
     @Test
-    fun `ProfileId 중복 체크 실패(409, Conflict) (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(404) })
+    fun `이름 중복 체크 실패 (checkDuplicateName())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-        val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+            val result = accountRepository.checkDuplicateName("honggd").last()
 
-        assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
-    }
-
-    @Test
-    fun `ProfileId 중복 체크 성공(200, OK) (checkDuplicateProfileId())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
-
-        val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
-
-        assertEquals((result as Result.Success).data, true)
-    }
+            assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
+        }
 
     @Test
-    fun `로그인 (login())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkTokenTestData)
-            }
-        )
+    fun `이름 중복 체크 실패(409, Conflict) (checkDuplicateName())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-        dataStoreManager.clearAll()
-        val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
+            val result = accountRepository.checkDuplicateName("honggd").last()
 
-        val expectedAccessToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
-        val expectedRefreshToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
-
-        val actualAccessToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
-
-        assertEquals((result as Result.Success).data, true)
-        assertEquals(expectedAccessToken, actualAccessToken)
-        assertEquals(expectedRefreshToken, actualRefreshToken)
-    }
+            assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
+        }
 
     @Test
-    fun `회원가입 (register())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(networkTokenTestData)
-            }
-        )
+    fun `이름 중복 체크 성공 (checkDuplicateName())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-        dataStoreManager.clearAll()
-        val result = accountRepository.register(networkRegisterTestData.toExternal()).last()
+            val result = accountRepository.checkDuplicateName("honggd").last()
 
-        val expectedAccessToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
-        val expectedRefreshToken =
-            moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+            assertEquals((result as Result.Success).data, true)
+        }
 
-        val actualAccessToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
-        val actualRefreshToken =
-            dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
+    @Test
+    fun `ProfileId 중복 체크 실패 (checkDuplicateProfileId())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-        assertEquals((result as Result.Success).data, true)
-        assertEquals(expectedAccessToken, actualAccessToken)
-        assertEquals(expectedRefreshToken, actualRefreshToken)
-    }
+            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+
+            assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
+        }
+
+    @Test
+    fun `ProfileId 중복 체크 실패(409, Conflict) (checkDuplicateProfileId())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(404) })
+
+            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+
+            assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
+        }
+
+    @Test
+    fun `ProfileId 중복 체크 성공(200, OK) (checkDuplicateProfileId())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+
+            assertEquals((result as Result.Success).data, true)
+        }
+
+    @Test
+    fun `로그인 (login())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(networkTokenTestData)
+                },
+            )
+
+            dataStoreManager.clearAll()
+            val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
+
+            val expectedAccessToken =
+                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
+            val expectedRefreshToken =
+                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+
+            val actualAccessToken =
+                dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+            val actualRefreshToken =
+                dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
+
+            assertEquals((result as Result.Success).data, true)
+            assertEquals(expectedAccessToken, actualAccessToken)
+            assertEquals(expectedRefreshToken, actualRefreshToken)
+        }
+
+    @Test
+    fun `회원가입 (register())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(networkTokenTestData)
+                },
+            )
+
+            dataStoreManager.clearAll()
+            val result = accountRepository.register(networkRegisterTestData.toExternal()).last()
+
+            val expectedAccessToken =
+                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
+            val expectedRefreshToken =
+                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+
+            val actualAccessToken =
+                dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
+            val actualRefreshToken =
+                dataStoreManager.getStringData(DataStoreType.TokenType.REFRESH_TOKEN).first()
+
+            assertEquals((result as Result.Success).data, true)
+            assertEquals(expectedAccessToken, actualAccessToken)
+            assertEquals(expectedRefreshToken, actualRefreshToken)
+        }
 }

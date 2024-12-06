@@ -23,7 +23,6 @@ import com.team.domain.util.Result
 
 class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
     UserNetworkDataSource {
-
     override suspend fun getMyProfile(profileId: String): Result<MyProfileResponse, ErrorType> {
         val result = userNetworkApi.getMyProfile(profileId)
         return if (result.isSuccessful) {
@@ -211,9 +210,7 @@ class FakeUserNetworkDataSource(private val userNetworkApi: UserNetworkApi) :
         }
     }
 
-    override suspend fun getMyCategories(
-        profileId: String
-    ): Result<List<CategoryResponse>, ErrorType> {
+    override suspend fun getMyCategories(profileId: String): Result<List<CategoryResponse>, ErrorType> {
         val result = userNetworkApi.getMyCategories(profileId)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

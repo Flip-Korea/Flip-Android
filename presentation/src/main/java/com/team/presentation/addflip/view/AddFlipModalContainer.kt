@@ -19,14 +19,14 @@ fun PageDeleteWarningModal(
     FlipModalWrapper(
         isOpen = isModalVisible,
         onDismissRequest = onCancel,
-        onAnimationFinished = onAnimationFinished
+        onAnimationFinished = onAnimationFinished,
     ) {
         FlipModal(
             mainTitle = stringResource(id = R.string.add_flip_screen_page_delete_modal_main_title),
             itemText = stringResource(id = R.string.add_flip_screen_page_delete_modal_item_1),
             itemText2 = stringResource(id = R.string.add_flip_screen_page_delete_modal_item_2),
             onItemClick = onAccept,
-            onItem2Click = onCancel
+            onItem2Click = onCancel,
         )
     }
 }

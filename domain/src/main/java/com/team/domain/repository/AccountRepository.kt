@@ -8,7 +8,6 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
-
     fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>>
 
     /** Response Account Data is My Account * */

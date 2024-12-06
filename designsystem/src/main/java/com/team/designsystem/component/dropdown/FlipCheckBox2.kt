@@ -30,35 +30,37 @@ fun FlipCheckBox2(
     checked: Boolean,
     onClick: () -> Unit,
     enabled: Boolean = true,
-
-    ) {
+) {
     Box(
-        modifier = modifier
-            .border(
-                1.dp,
-                if (checked) {
-                    FlipTheme.colors.point
-                } else FlipTheme.colors.gray5,
-                FlipTheme.shapes.roundedCornerSmall
-            )
-            .size(24.dp)
-            .clip(FlipTheme.shapes.roundedCornerSmall)
-            .background(
-                if (checked) FlipTheme.colors.point else Color.Transparent,
-                FlipTheme.shapes.roundedCornerSmall
-            )
-            .clickable(
-                enabled = enabled,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .border(
+                    1.dp,
+                    if (checked) {
+                        FlipTheme.colors.point
+                    } else {
+                        FlipTheme.colors.gray5
+                    },
+                    FlipTheme.shapes.roundedCornerSmall,
+                )
+                .size(24.dp)
+                .clip(FlipTheme.shapes.roundedCornerSmall)
+                .background(
+                    if (checked) FlipTheme.colors.point else Color.Transparent,
+                    FlipTheme.shapes.roundedCornerSmall,
+                )
+                .clickable(
+                    enabled = enabled,
+                    onClick = onClick,
+                ),
+        contentAlignment = Alignment.Center,
     ) {
         if (checked) {
             Icon(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_check),
                 contentDescription = stringResource(id = R.string.content_desc_check),
-                tint = Color.White
+                tint = Color.White,
             )
         }
     }
@@ -67,27 +69,26 @@ fun FlipCheckBox2(
 @Preview(name = "TouchTarget O")
 @Composable
 private fun FlipCheckBox2Preview() {
-
     var checked by remember { mutableStateOf(true) }
 
     FlipCheckBox2(
-        modifier = Modifier
-            .padding(TouchTarget.padding)
-            .size(24.dp),
+        modifier =
+            Modifier
+                .padding(TouchTarget.padding)
+                .size(24.dp),
         checked = checked,
-        onClick = { checked = !checked }
+        onClick = { checked = !checked },
     )
 }
 
 @Preview(name = "TouchTarget X")
 @Composable
 private fun FlipCheckBox2Preview2() {
-
     var checked by remember { mutableStateOf(true) }
 
     FlipCheckBox2(
         modifier = Modifier.size(24.dp),
         checked = checked,
-        onClick = { checked = !checked }
+        onClick = { checked = !checked },
     )
 }

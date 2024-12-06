@@ -26,7 +26,7 @@ import com.team.presentation.common.state.ModalState
 fun AddFlipRoute(
     addFlipViewModel: AddFlipViewModel = hiltViewModel(),
     popBackStack: () -> Unit,
-    onNavigateToTempFlipBox: () -> Unit
+    onNavigateToTempFlipBox: () -> Unit,
 ) {
     val uiState by addFlipViewModel.uiState.collectAsStateWithLifecycle()
     BackHandler { addFlipViewModel.processEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
@@ -65,12 +65,14 @@ fun AddFlipRoute(
     TempPostWarningModal(
         isModalVisible = tempPostWarningModalVisible,
         onAccept = {
-            addFlipViewModel.processEvent(AddFlipContract.UiEvent.SaveTempPost(
-                title = (uiState as AddFlipContract.UiState.Content).newPostState.title,
-                contents = (uiState as AddFlipContract.UiState.Content).newPostState.contents,
-                bgColorType = (uiState as AddFlipContract.UiState.Content).newPostState.bgColorType,
-                category = (uiState as AddFlipContract.UiState.Content).newPostState.category,
-            ))
+            addFlipViewModel.processEvent(
+                AddFlipContract.UiEvent.SaveTempPost(
+                    title = (uiState as AddFlipContract.UiState.Content).newPostState.title,
+                    contents = (uiState as AddFlipContract.UiState.Content).newPostState.contents,
+                    bgColorType = (uiState as AddFlipContract.UiState.Content).newPostState.bgColorType,
+                    category = (uiState as AddFlipContract.UiState.Content).newPostState.category,
+                ),
+            )
             tempPostWarningModalVisible = false
         },
         onDiscard = {

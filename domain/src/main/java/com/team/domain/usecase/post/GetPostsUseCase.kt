@@ -5,11 +5,10 @@ import com.team.domain.repository.PostRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.domain.util.paging.FlipPagingTokens
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class GetPostsUseCase @Inject constructor(private val postRepository: PostRepository) {
-
     /**
      * 모든 Flip(post)을 네트워크를 통해서 가져오는 UseCase
      *

@@ -5,6 +5,5 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface CategoryNetworkDataSource {
-
     suspend fun getCategories(): Result<List<CategoryResponse>, ErrorType>
 }

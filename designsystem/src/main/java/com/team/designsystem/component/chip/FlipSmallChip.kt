@@ -35,33 +35,36 @@ fun FlipSmallChip(
     onClick: () -> Unit = {},
     onDelete: () -> Unit = {},
 ) {
-
     Box(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerExtraLarge)
-            .border(
-                width = 1.dp,
-                color = if (lightSolid) FlipTheme.colors.point2 else Color.Transparent,
-                shape = FlipTheme.shapes.roundedCornerExtraLarge
-            )
-            .wrapContentSize()
-            .background(
-                if (lightSolid) {
-                    FlipTheme.colors.point3
-                } else FlipTheme.colors.gray1
-            )
-            .clickableSingle { onClick() }
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerExtraLarge)
+                .border(
+                    width = 1.dp,
+                    color = if (lightSolid) FlipTheme.colors.point2 else Color.Transparent,
+                    shape = FlipTheme.shapes.roundedCornerExtraLarge,
+                )
+                .wrapContentSize()
+                .background(
+                    if (lightSolid) {
+                        FlipTheme.colors.point3
+                    } else {
+                        FlipTheme.colors.gray1
+                    },
+                )
+                .clickableSingle { onClick() },
     ) {
         Row(
-            modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    end = if (deletable) 12.dp else 20.dp,
-                    top = if (deletable) 4.5.dp else 6.dp,
-                    bottom = if (deletable) 4.5.dp else 6.dp
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = if (deletable) 12.dp else 20.dp,
+                        top = if (deletable) 4.5.dp else 6.dp,
+                        bottom = if (deletable) 4.5.dp else 6.dp,
+                    ),
             horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = text,
@@ -69,13 +72,14 @@ fun FlipSmallChip(
             )
             if (deletable) {
                 Icon(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(24.dp)
-                        .clickableSingle { onDelete() },
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .size(24.dp)
+                            .clickableSingle { onDelete() },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_delete),
                     contentDescription = stringResource(id = R.string.content_desc_delete),
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
             }
         }

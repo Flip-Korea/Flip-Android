@@ -7,7 +7,6 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface ScrapRepository {
-
     fun getScrapListPagination(
         profileId: String,
         cursor: String,

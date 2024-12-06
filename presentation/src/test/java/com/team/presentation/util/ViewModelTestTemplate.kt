@@ -14,19 +14,23 @@ class ViewModelTestTemplate {
     private val coroutineScope = CoroutineScope(UnconfinedTestDispatcher())
     private var job: Job? = null
 
-    fun launch(block: suspend () -> Unit) = runTest(coroutineScope.coroutineContext) {
-        job = coroutineScope.launch {
-            block()
+    fun launch(block: suspend () -> Unit) =
+        runTest(coroutineScope.coroutineContext) {
+            job =
+                coroutineScope.launch {
+                    block()
+                }
         }
-    }
 
-    fun `when`(event: () -> Unit) = runTest(coroutineScope.coroutineContext) {
-        event()
-        advanceTimeBy(1.seconds)
-    }
+    fun waitWhen(event: () -> Unit) =
+        runTest(coroutineScope.coroutineContext) {
+            event()
+            advanceTimeBy(1.seconds)
+        }
 
-    fun then(assertion: () -> Unit) = runTest(coroutineScope.coroutineContext) {
-        assertion()
-        job?.cancel()
-    }
+    fun then(assertion: () -> Unit) =
+        runTest(coroutineScope.coroutineContext) {
+            assertion()
+            job?.cancel()
+        }
 }

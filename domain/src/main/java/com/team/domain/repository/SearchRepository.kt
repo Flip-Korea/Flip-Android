@@ -9,7 +9,6 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
-
     fun getRecentSearchList(): Flow<List<RecentSearch>>
 
     suspend fun deleteRecentSearchById(id: Long): Boolean

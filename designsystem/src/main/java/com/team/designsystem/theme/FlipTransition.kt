@@ -22,75 +22,78 @@ data class FlipTransition(
     val fadeOut: ExitTransition = fadeOut(),
     val scaleFadeIn: EnterTransition = scaleIn(initialScale = 0.9f) + fadeIn(),
     val scaleFadeOut: ExitTransition = scaleOut(targetScale = 0.9f) + fadeOut(),
-    val dialogEnter: EnterTransition = fadeIn(spring(stiffness = Spring.StiffnessHigh)) + scaleIn(
-        initialScale = .8f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMediumLow
-        )
-    ),
-    val dialogExit: ExitTransition = fadeOut(tween(easing = EaseInBack)) + scaleOut(
-        targetScale = .8f,
-        animationSpec = tween(easing = EaseInBack)
-    ),
+    val dialogEnter: EnterTransition =
+        fadeIn(spring(stiffness = Spring.StiffnessHigh)) +
+            scaleIn(
+                initialScale = .8f,
+                animationSpec =
+                    spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMediumLow,
+                    ),
+            ),
+    val dialogExit: ExitTransition =
+        fadeOut(tween(easing = EaseInBack)) +
+            scaleOut(
+                targetScale = .8f,
+                animationSpec = tween(easing = EaseInBack),
+            ),
 ) {
-    fun enterTransition(direction: FlipTransitionDirection): EnterTransition {
-        return when(direction) {
+    fun enterTransition(direction: FlipTransitionDirection): EnterTransition =
+        when (direction) {
             FlipTransitionDirection.Left -> {
                 slideInHorizontally(
                     initialOffsetX = { -it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
             FlipTransitionDirection.Right -> {
                 slideInHorizontally(
                     initialOffsetX = { it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
             FlipTransitionDirection.Top -> {
                 slideInVertically(
                     initialOffsetY = { -it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
             FlipTransitionDirection.Bottom -> {
                 slideInVertically(
                     initialOffsetY = { it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
         }
-    }
 
-    fun exitTransition(direction: FlipTransitionDirection): ExitTransition {
-        return when(direction) {
+    fun exitTransition(direction: FlipTransitionDirection): ExitTransition =
+        when (direction) {
             FlipTransitionDirection.Left -> {
                 slideOutHorizontally(
                     targetOffsetX = { -it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
             FlipTransitionDirection.Right -> {
                 slideOutHorizontally(
                     targetOffsetX = { it },
-                    animationSpec = tween(delayMillis = Delay)
+                    animationSpec = tween(delayMillis = Delay),
                 )
             }
             FlipTransitionDirection.Top -> {
                 slideOutVertically(
                     targetOffsetY = { -it },
-                    animationSpec = tween(delayMillis = Delay)
-                )// + fadeOut()
+                    animationSpec = tween(delayMillis = Delay),
+                ) // + fadeOut()
             }
             FlipTransitionDirection.Bottom -> {
                 slideOutVertically(
                     targetOffsetY = { it },
-                    animationSpec = tween(delayMillis = Delay)
-                )// + fadeOut()
+                    animationSpec = tween(delayMillis = Delay),
+                ) // + fadeOut()
             }
         }
-    }
 }
 
 object FlipTransitionObject {
@@ -110,6 +113,8 @@ object FlipTransitionObject {
 }
 
 enum class FlipTransitionDirection {
-    Left, Right,
-    Top, Bottom
+    Left,
+    Right,
+    Top,
+    Bottom,
 }

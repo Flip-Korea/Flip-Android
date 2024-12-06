@@ -9,7 +9,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SearchNetworkApi {
-
     /** API-036 (게시글 내용 검색) * */
     @GET("/api/v1/search/posts/{search_query}")
     suspend fun searchByPost(

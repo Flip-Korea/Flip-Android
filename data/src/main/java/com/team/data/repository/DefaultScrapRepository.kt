@@ -10,26 +10,25 @@ import com.team.domain.model.scrap.NewScrap
 import com.team.domain.repository.ScrapRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
 class DefaultScrapRepository
-@Inject
-constructor(
-    private val userNetworkDataSource: UserNetworkDataSource,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-) : ScrapRepository {
-
-    override fun getScrapListPagination(
-        profileId: String,
-        cursor: String,
-        limit: Int,
-    ): Flow<Result<PostList, ErrorType>> =
-        flow {
+    @Inject
+    constructor(
+        private val userNetworkDataSource: UserNetworkDataSource,
+        @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    ) : ScrapRepository {
+        override fun getScrapListPagination(
+            profileId: String,
+            cursor: String,
+            limit: Int,
+        ): Flow<Result<PostList, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (val result = userNetworkDataSource.getScrapList(profileId, cursor, limit)) {
@@ -43,15 +42,15 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun editScrapComment(
-        profileId: String,
-        scrapId: Long,
-        scrapComment: String,
-    ): Flow<Result<Boolean, ErrorType>> =
-        flow {
+        override fun editScrapComment(
+            profileId: String,
+            scrapId: Long,
+            scrapComment: String,
+        ): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (
@@ -71,11 +70,11 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun addScrap(newScrap: NewScrap): Flow<Result<Boolean, ErrorType>> =
-        flow {
+        override fun addScrap(newScrap: NewScrap): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 val newScrapNetwork = newScrap.toNetwork()
@@ -90,11 +89,11 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun deleteScrap(scrapId: Long): Flow<Result<Boolean, ErrorType>> =
-        flow {
+        override fun deleteScrap(scrapId: Long): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (val result = userNetworkDataSource.deleteScrap(scrapId)) {
@@ -107,6 +106,6 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-}
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+    }

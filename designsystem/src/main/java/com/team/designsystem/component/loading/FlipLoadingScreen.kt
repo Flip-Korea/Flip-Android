@@ -38,29 +38,29 @@ fun FlipLoadingScreen(
     isLoading: Boolean,
     text: String,
 ) {
-
     FlipModalWrapper(isOpen = isLoading, onDismissRequest = { }, animated = false) {
         Box(
-            modifier = modifier
-                .clip(FlipTheme.shapes.roundedCornerSmall)
-                .sizeIn(minWidth = 160.dp, minHeight = 160.dp)
-                .background(FlipTheme.colors.main.copy(0.8f)),
-            contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .clip(FlipTheme.shapes.roundedCornerSmall)
+                    .sizeIn(minWidth = 160.dp, minHeight = 160.dp)
+                    .background(FlipTheme.colors.main.copy(0.8f)),
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(50.dp),
                     color = FlipTheme.colors.white,
                     strokeWidth = 3.dp,
-                    strokeCap = StrokeCap.Round
+                    strokeCap = StrokeCap.Round,
                 )
                 Text(
                     text = text,
                     style = FlipTheme.typography.body5,
-                    color = FlipTheme.colors.white
+                    color = FlipTheme.colors.white,
                 )
             }
         }
@@ -70,7 +70,6 @@ fun FlipLoadingScreen(
 @Preview(showBackground = true)
 @Composable
 private fun FlipLoadingScreenPreview() {
-
     var count by remember { mutableIntStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -83,10 +82,11 @@ private fun FlipLoadingScreenPreview() {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(
-                40.dp,
-                alignment = Alignment.CenterVertically
-            )
+            verticalArrangement =
+                Arrangement.spacedBy(
+                    40.dp,
+                    alignment = Alignment.CenterVertically,
+                ),
         ) {
             Text(text = "$count")
             Button(onClick = { count++ }) {

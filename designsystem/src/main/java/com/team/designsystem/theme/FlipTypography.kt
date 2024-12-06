@@ -39,10 +39,11 @@ fun headline8(): TextStyle {
         fontSize = 24.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
 //        letterSpacing = (-0.6).sp
     )
@@ -57,10 +58,11 @@ fun headline7(): TextStyle {
         fontSize = 24.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
 //        letterSpacing = (-0.6).sp
     )
@@ -75,10 +77,11 @@ fun headline6(): TextStyle {
         fontSize = 22.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
 //        letterSpacing = (-0.6).sp
     )
@@ -93,10 +96,11 @@ fun headline5(): TextStyle {
         fontSize = 18.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
 //        letterSpacing = (-0.6).sp
     )
@@ -111,10 +115,11 @@ fun headline4(): TextStyle {
         fontSize = 16.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -128,10 +133,11 @@ fun headline3(): TextStyle {
         fontSize = 16.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -145,10 +151,11 @@ fun headline2(): TextStyle {
         fontSize = 14.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -162,10 +169,11 @@ fun headline1(): TextStyle {
         fontSize = 14.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -179,10 +187,11 @@ fun body7(): TextStyle {
         fontSize = 18.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -196,10 +205,11 @@ fun body6(): TextStyle {
         fontSize = 16.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -213,10 +223,11 @@ fun body5(): TextStyle {
         fontSize = 14.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -230,10 +241,11 @@ fun body4Underline(): TextStyle {
         fontSize = 14.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
         textDecoration = TextDecoration.Underline,
     )
@@ -248,10 +260,11 @@ fun body3(): TextStyle {
         fontSize = 12.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -265,10 +278,11 @@ fun body2(): TextStyle {
         fontSize = 10.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }
@@ -282,10 +296,11 @@ fun body1(): TextStyle {
         fontSize = 10.sp,
         lineHeight = 1.5.em,
         letterSpacing = (-0.006).em,
-        lineHeightStyle = LineHeightStyle(
-            alignment = LineHeightStyle.Alignment.Center,
-            trim = LineHeightStyle.Trim.None
-        ),
+        lineHeightStyle =
+            LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None,
+            ),
         platformStyle = PlatformTextStyle(includeFontPadding = false),
     )
 }

@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.callbackFlow
  * @param context context of declaration location (ex. applicationContext)
  */
 class KakaoAuthManager(private val context: Context) : AuthManager {
-
     private val tag = this.javaClass.simpleName
 
     private val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -31,57 +30,58 @@ class KakaoAuthManager(private val context: Context) : AuthManager {
         }
     }
 
-    override fun signIn(): Flow<AuthUiState> = callbackFlow {
-        trySend(AuthUiState.Loading)
+    override fun signIn(): Flow<AuthUiState> =
+        callbackFlow {
+            trySend(AuthUiState.Loading)
 
-        if (AuthApiClient.instance.hasToken()) {
-            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                if (error != null) {
-                    if (error is KakaoSdkError && error.isInvalidTokenError()) {
-                        // 1. Login Required
-                        login(context)
+            if (AuthApiClient.instance.hasToken()) {
+                UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                    if (error != null) {
+                        if (error is KakaoSdkError && error.isInvalidTokenError()) {
+                            // 1. Login Required
+                            login(context)
+                        } else {
+                            // 2. another error
+                            trySend(AuthUiState.Error(ErrorType.Auth.TOKEN_ERROR))
+                            close()
+                        }
                     } else {
-                        // 2. another error
-                        trySend(AuthUiState.Error(ErrorType.Auth.TOKEN_ERROR))
-                        close()
+                        // 3. token validity check successful (renew if necessary)
+                        login(context)
                     }
-                } else {
-                    // 3. token validity check successful (renew if necessary)
-                    login(context)
                 }
+            } else {
+                // 1. Login Required
+                login(context)
             }
-        } else {
-            // 1. Login Required
-            login(context)
-        }
 
-        awaitClose {
-            Log.d(tag, "Login With Kakao Finished(maybe success or failure")
+            awaitClose {
+                Log.d(tag, "Login With Kakao Finished(maybe success or failure")
+            }
         }
-    }
 
     override suspend fun signOut() {
         UserApiClient.instance.logout { e ->
         }
     }
 
-    override suspend fun deleteAccount(): Flow<AuthUiState> = callbackFlow {
-        trySend(AuthUiState.Loading)
+    override suspend fun deleteAccount(): Flow<AuthUiState> =
+        callbackFlow {
+            trySend(AuthUiState.Loading)
 
-        UserApiClient.instance.unlink { e ->
-            if (e == null) {
-                trySend(AuthUiState.Success("success"))
-            } else {
-                trySend(AuthUiState.Error(ErrorType.Auth.DELETE_ACCOUNT_FAILED))
+            UserApiClient.instance.unlink { e ->
+                if (e == null) {
+                    trySend(AuthUiState.Success("success"))
+                } else {
+                    trySend(AuthUiState.Error(ErrorType.Auth.DELETE_ACCOUNT_FAILED))
+                }
             }
-        }
-        close()
+            close()
 
-        awaitClose {  }
-    }
+            awaitClose { }
+        }
 
     private fun ProducerScope<AuthUiState>.login(context: Context) {
-
         // Check KakaoTalk installed
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             loginWithKakaoTalk(context)

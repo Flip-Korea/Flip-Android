@@ -11,57 +11,56 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddTempPostUseCaseTest {
-
     private val tempPostRepository: TempPostRepository = mockk()
     private val addTempPostUseCase = AddTempPostUseCase(tempPostRepository)
 
     @Test
-    fun `임시저장 성공`() = runTest {
-        // Given
-        every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
-            flowOf(Result.Success(true))
+    fun `임시저장 성공`() =
+        runTest {
+            // Given
+            every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
+                flowOf(Result.Success(true))
 
-        // When
-        val result =
-            addTempPostUseCase(
+            // When
+            val result =
+                addTempPostUseCase(
                     newPostTestData.title,
                     newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
                     newPostTestData.bgColorType,
                     newPostTestData.fontStyleType,
                     newPostTestData.tags,
                     newPostTestData.categoryId,
-                )
-                .first()
+                ).first()
 
-        // Then
-        assert((result as Result.Success).data)
-    }
+            // Then
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `임시저장 실패`() = runTest {
-        // Given
-        val error = ErrorType.Network.BAD_REQUEST
-        every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
-            flowOf(Result.Error(error = error))
+    fun `임시저장 실패`() =
+        runTest {
+            // Given
+            val error = ErrorType.Network.BAD_REQUEST
+            every { tempPostRepository.addTemporaryPost(newPostTestData) } returns
+                flowOf(Result.Error(error = error))
 
-        // When
-        val result =
-            addTempPostUseCase(
+            // When
+            val result =
+                addTempPostUseCase(
                     newPostTestData.title,
                     newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
                     newPostTestData.bgColorType,
                     newPostTestData.fontStyleType,
                     newPostTestData.tags,
                     newPostTestData.categoryId,
-                )
-                .first()
+                ).first()
 
-        // Then
-        assertEquals((result as Result.Error).error, error)
-    }
+            // Then
+            assertEquals((result as Result.Error).error, error)
+        }
 }

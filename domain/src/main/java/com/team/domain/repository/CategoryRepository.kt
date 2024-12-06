@@ -6,7 +6,6 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-
     /**
      * 모든 Category를 Local DB에서 가져온다.
      *

@@ -36,51 +36,54 @@ fun BlockCheckView(
     blockedProfileId: String,
     photoUrl: String,
     blockState: BlockState,
-    onBlockClick: () -> Unit
+    onBlockClick: () -> Unit,
 ) {
-
     Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
+        modifier =
+            modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         AsyncImage(
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(87.dp)
-                .padding(bottom = 4.dp),
+            modifier =
+                Modifier
+                    .clip(CircleShape)
+                    .size(87.dp)
+                    .padding(bottom = 4.dp),
             model = photoUrl,
             contentDescription = stringResource(id = R.string.home_flip_card_content_desc_photo_url),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
         Text(
             text = "@" + blockedProfileId + stringResource(id = R.string.bottom_sheet_block_title),
             style = FlipTheme.typography.headline3,
             color = FlipTheme.colors.statusRed,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Text(
-            text = buildAnnotatedString {
-                append(stringResource(id = R.string.bottom_sheet_block_sub_title_1))
-                append(blockedProfileId)
-                append(stringResource(id = R.string.bottom_sheet_block_sub_title_2))
-                append(blockedProfileId)
-                append(stringResource(id = R.string.bottom_sheet_block_sub_title_3))
-            },
+            text =
+                buildAnnotatedString {
+                    append(stringResource(id = R.string.bottom_sheet_block_sub_title_1))
+                    append(blockedProfileId)
+                    append(stringResource(id = R.string.bottom_sheet_block_sub_title_2))
+                    append(blockedProfileId)
+                    append(stringResource(id = R.string.bottom_sheet_block_sub_title_3))
+                },
             style = FlipTheme.typography.body5,
             color = FlipTheme.colors.gray6,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         FlipMediumButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 66.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 66.dp),
             text = stringResource(id = R.string.bottom_sheet_block_btn),
             isLoading = blockState.loading,
-            onClick = onBlockClick
+            onClick = onBlockClick,
         )
     }
 }
@@ -93,7 +96,7 @@ fun BlockCheckViewPreview() {
             blockedProfileId = "profileId",
             photoUrl = "",
             blockState = BlockState(),
-            onBlockClick = { }
+            onBlockClick = { },
         )
     }
 }

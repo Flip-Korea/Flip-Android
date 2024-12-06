@@ -6,7 +6,6 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface InterestCategoryNetworkDataSource {
-
     suspend fun getMyCategories(): Result<List<CategoryResponse>, ErrorType>
 
     suspend fun updateMyCategories(categoryIds: CategoryRequest): Result<Boolean, ErrorType>

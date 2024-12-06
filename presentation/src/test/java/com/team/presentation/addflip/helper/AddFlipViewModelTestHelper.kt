@@ -45,14 +45,15 @@ class AddFlipViewModelTestHelper {
     }
 
     fun createViewModel(): AddFlipViewModel {
-        addFlipViewModel = AddFlipViewModel(
-            getCategoriesUseCase = getCategoriesUseCase,
-            addPostUseCase = addPostUseCase,
-            addTempPostUseCase = addTempPostUseCase,
-            validatePostUseCase = validatePostUseCase,
-            validateTempPostUseCase = validateTempPostUseCase,
-            validateSafeSaveUseCase = validateSafeSaveUseCase
-        )
+        addFlipViewModel =
+            AddFlipViewModel(
+                getCategoriesUseCase = getCategoriesUseCase,
+                addPostUseCase = addPostUseCase,
+                addTempPostUseCase = addTempPostUseCase,
+                validatePostUseCase = validatePostUseCase,
+                validateTempPostUseCase = validateTempPostUseCase,
+                validateSafeSaveUseCase = validateSafeSaveUseCase,
+            )
         return addFlipViewModel
     }
 
@@ -61,7 +62,7 @@ class AddFlipViewModelTestHelper {
         contents: List<String>,
         bgColorType: BackgroundColorType,
         category: Category,
-        errorBody: ErrorBody? = null
+        errorBody: ErrorBody? = null,
     ) {
         if (errorBody == null) {
             every {
@@ -69,7 +70,7 @@ class AddFlipViewModelTestHelper {
                     title = title,
                     content = contents,
                     bgColorType = bgColorType,
-                    categoryId = category.id
+                    categoryId = category.id,
                 )
             } returns flowOf(Result.Success(true))
         } else {
@@ -78,12 +79,15 @@ class AddFlipViewModelTestHelper {
                     title = title,
                     content = contents,
                     bgColorType = bgColorType,
-                    categoryId = category.id
+                    categoryId = category.id,
                 )
-            } returns flowOf(Result.Error(
-                error = ErrorType.Exception.EXCEPTION,
-                errorBody = errorBody
-            ))
+            } returns
+                flowOf(
+                    Result.Error(
+                        error = ErrorType.Exception.EXCEPTION,
+                        errorBody = errorBody,
+                    ),
+                )
         }
     }
 
@@ -91,7 +95,7 @@ class AddFlipViewModelTestHelper {
         title: String,
         contents: List<String>,
         category: Category?,
-        error: ValidationErrorType? = null
+        error: ValidationErrorType? = null,
     ) {
         if (error == null) {
             every {
@@ -104,4 +108,3 @@ class AddFlipViewModelTestHelper {
         }
     }
 }
-

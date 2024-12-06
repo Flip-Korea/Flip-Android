@@ -23,7 +23,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class CategoryNetworkApiTest {
-
     private lateinit var categoryNetworkApi: com.team.data.network.retrofit.api.CategoryNetworkApi
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
@@ -49,22 +48,23 @@ class CategoryNetworkApiTest {
     }
 
     @Test
-    fun `getCategories Call Test`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkCategoriesTestData)
-            }
-        )
+    fun `getCategories Call Test`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(networkCategoriesTestData)
+                },
+            )
 
-        val actualResponse = categoryNetworkApi.getCategories()
+            val actualResponse = categoryNetworkApi.getCategories()
 
-        val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
-        val expectedResponse = adapter.fromJson(networkCategoriesTestData)
+            val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+            val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
+            val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
-        assertNotNull(actualResponse.body())
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse!!, actualResponse.body()!!)
-    }
+            assertNotNull(actualResponse.body())
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse!!, actualResponse.body()!!)
+        }
 }

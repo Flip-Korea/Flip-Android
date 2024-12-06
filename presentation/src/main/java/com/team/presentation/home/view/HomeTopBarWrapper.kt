@@ -23,13 +23,13 @@ fun HomeTopBarWrapper(
     animatedTopBarOffset: Dp,
     content: @Composable () -> Unit,
 ) {
-
     Column(
-        modifier = modifier
-            .zIndex(1f)
-            .offset(y = animatedTopBarOffset),
+        modifier =
+            modifier
+                .zIndex(1f)
+                .offset(y = animatedTopBarOffset),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         content()
     }

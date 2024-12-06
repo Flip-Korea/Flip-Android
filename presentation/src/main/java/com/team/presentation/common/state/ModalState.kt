@@ -2,11 +2,12 @@ package com.team.presentation.common.state
 
 sealed interface ModalState {
     data object Show : ModalState
+
     data object Hide : ModalState
 }
 
 /** CompositionLocalProvider 를 이용한 Event Bus 주입 방식 */
-///**
+// /**
 // * ### 예시 코드 1
 // *
 // *     val dialogModalViewModel: DialogModalViewModel = viewModel()
@@ -41,4 +42,4 @@ sealed interface ModalState {
 // *         )
 // *     }
 // */
-//val LocalDialogModalEvent = compositionLocalOf { DialogModalState() }
+// val LocalDialogModalEvent = compositionLocalOf { DialogModalState() }

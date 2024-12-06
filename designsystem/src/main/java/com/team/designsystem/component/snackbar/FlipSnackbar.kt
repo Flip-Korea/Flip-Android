@@ -108,48 +108,51 @@ fun FlipSnackbar(
                 hostState = snackBarHostState,
             ) {
                 Snackbar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 80.dp)
-                        .heightIn(min = 61.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 80.dp)
+                            .heightIn(min = 61.dp),
                     containerColor = FlipTheme.colors.main,
                     contentColor = FlipTheme.colors.white,
                     shape = FlipTheme.shapes.roundedCornerSmall,
                     action = {
                         if (actionTextRes != null && it.visuals.actionLabel != null) {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.End)
-                                    .padding(end = 10.dp),
-                                contentAlignment = Alignment.CenterEnd
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.End)
+                                        .padding(end = 10.dp),
+                                contentAlignment = Alignment.CenterEnd,
                             ) {
                                 Text(
                                     modifier = Modifier.clickableSingleWithoutRipple { it.performAction() },
                                     text = stringResource(id = actionTextRes),
                                     style = FlipTheme.typography.headline2,
-                                    color = FlipTheme.colors.point2
+                                    color = FlipTheme.colors.point2,
                                 )
                             }
                         }
-                    }
+                    },
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         iconRes?.let { icon ->
                             Icon(
                                 modifier = Modifier.size(24.dp),
                                 imageVector = ImageVector.vectorResource(icon),
-                                contentDescription = stringResource(id = R.string.snackbar)
+                                contentDescription = stringResource(id = R.string.snackbar),
                             )
                         }
                         Text(
-                            modifier = Modifier
-                                .weight(3f)
-                                .wrapContentWidth(Alignment.Start),
+                            modifier =
+                                Modifier
+                                    .weight(3f)
+                                    .wrapContentWidth(Alignment.Start),
                             text = it.visuals.message,
                             style = FlipTheme.typography.body5,
                             color = FlipTheme.colors.white,
@@ -159,7 +162,7 @@ fun FlipSnackbar(
                     }
                 }
             }
-        }
+        },
     )
 }
 
@@ -167,21 +170,21 @@ fun FlipSnackbar(
 @Preview(showBackground = true)
 @Composable
 private fun FlipSnackbarPreview() {
-
     val coroutineScope = rememberCoroutineScope()
     var snackbarJob: Job? by remember { mutableStateOf(null) }
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val dismissSnackbarState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            if (value != SwipeToDismissBoxValue.Settled) {
-                snackbarHostState.currentSnackbarData?.dismiss()
-                true
-            } else {
-                false
-            }
-        }
-    )
+    val dismissSnackbarState =
+        rememberSwipeToDismissBoxState(
+            confirmValueChange = { value ->
+                if (value != SwipeToDismissBoxValue.Settled) {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    true
+                } else {
+                    false
+                }
+            },
+        )
 
     LaunchedEffect(dismissSnackbarState.currentValue) {
         if (dismissSnackbarState.currentValue != SwipeToDismissBoxValue.Settled) {
@@ -199,30 +202,36 @@ private fun FlipSnackbarPreview() {
                     iconRes = R.drawable.ic_outlined_setting,
                     actionTextRes = R.string.btn_follow_back,
                 )
-            }
+            },
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it),
             ) {
                 Button(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = {
                         snackbarJob?.cancel()
-                        snackbarJob = coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "네트워크 상태를 확인 해 주세요."
-                            )
-                        }
-                    }
+                        snackbarJob =
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "네트워크 상태를 확인 해 주세요.",
+                                )
+                            }
+                    },
                 ) {
                     Text(text = "Show Snackbar")
                 }
 
-                Text(modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp), text = "asdasdljalskdjlaksdjlaks")
+                Text(
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 16.dp),
+                    text = "asdasdljalskdjlaksdjlaks",
+                )
             }
         }
     }

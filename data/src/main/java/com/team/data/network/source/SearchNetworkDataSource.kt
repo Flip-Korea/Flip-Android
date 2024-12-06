@@ -7,7 +7,6 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface SearchNetworkDataSource {
-
     suspend fun searchByPost(
         searchQuery: String,
         cursor: String,

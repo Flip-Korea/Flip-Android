@@ -8,8 +8,8 @@ import com.team.domain.util.Result
 
 class CategoryNetworkDataSourceImpl(private val categoryNetworkApi: CategoryNetworkApi) :
     CategoryNetworkDataSource {
-
-    override suspend fun getCategories(): Result<List<CategoryResponse>, ErrorType> = networkCall {
-        categoryNetworkApi.getCategories()
-    }
+    override suspend fun getCategories(): Result<List<CategoryResponse>, ErrorType> =
+        networkCall {
+            categoryNetworkApi.getCategories()
+        }
 }

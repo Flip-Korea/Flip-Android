@@ -31,7 +31,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class DefaultCommentRepositoryTest {
-
     @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var postNetworkDataSource: PostNetworkDataSource
@@ -65,48 +64,51 @@ class DefaultCommentRepositoryTest {
     }
 
     @Test
-    fun `댓글 목록 페이지네이션 (getCommentsPagination())`() = runTest {
-        val pageSize = 15
+    fun `댓글 목록 페이지네이션 (getCommentsPagination())`() =
+        runTest {
+            val pageSize = 15
 
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(makeCommentListResponseTestData(1, "3", pageSize))
-            }
-        )
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(makeCommentListResponseTestData(1, "3", pageSize))
+                },
+            )
 
-        val result =
-            commentRepository.getCommentsPagination(1, "2", FlipPagingTokens.POST_PAGE_SIZE).last()
+            val result =
+                commentRepository.getCommentsPagination(1, "2", FlipPagingTokens.POST_PAGE_SIZE).last()
 
-        assertEquals(pageSize, (result as Result.Success).data.comments.size)
-    }
-
-    @Test
-    fun `댓글 추가 (addCommnet())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val postId = 1
-        val newComment =
-            NewComment(profileId = "TestProfileId", postId = postId.toLong(), comment = "테스트 댓글")
-
-        val result = commentRepository.addComment(1, newComment).last()
-
-        assert((result as Result.Success).data)
-    }
+            assertEquals(pageSize, (result as Result.Success).data.comments.size)
+        }
 
     @Test
-    fun `댓글 삭제 (deleteComment())`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `댓글 추가 (addCommnet())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
+            )
 
-        val commentId = 1
+            val postId = 1
+            val newComment =
+                NewComment(profileId = "TestProfileId", postId = postId.toLong(), comment = "테스트 댓글")
 
-        val result = commentRepository.deleteComment(commentId.toLong()).last()
+            val result = commentRepository.addComment(1, newComment).last()
 
-        assert((result as Result.Success).data)
-    }
+            assert((result as Result.Success).data)
+        }
+
+    @Test
+    fun `댓글 삭제 (deleteComment())`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val commentId = 1
+
+            val result = commentRepository.deleteComment(commentId.toLong()).last()
+
+            assert((result as Result.Success).data)
+        }
 }

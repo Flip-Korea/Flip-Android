@@ -80,9 +80,8 @@ fun EditMyCategoriesScreen(
     myCategoriesUpdateState: MyCategoriesUpdateState,
     uiEvent: (EditMyCategoriesUiEvent) -> Unit,
     updateMyCategories: (List<Category>) -> Unit,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
 ) {
-
     var speechBubbleShowed by remember { mutableStateOf(true) }
     var selectedCategoriesHeight by remember { mutableIntStateOf(0) }
     var tipStartOffset by remember { mutableStateOf(IntOffset(10, 0)) }
@@ -96,107 +95,115 @@ fun EditMyCategoriesScreen(
             SpeechBubbleView(
                 modifier = it.padding(Horizontal),
                 containerColor = FlipTheme.colors.main.copy(.9f),
-                text = stringResource(id = R.string.edit_interest_categories_speechbubble)
+                text = stringResource(id = R.string.edit_interest_categories_speechbubble),
             )
-        }
+        },
     ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .disableMultiTouch(),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .disableMultiTouch(),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
             FlipTopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 6.dp, vertical = CommonPaddingValues.TopBarVertical),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp, vertical = CommonPaddingValues.TopBarVertical),
                 title = stringResource(id = R.string.edit_interest_categories_top_bar_title),
                 onBackPress = {
                     speechBubbleShowed = false
                     onBackPress()
-                }
+                },
             )
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(ContentVertical),
-                verticalArrangement = Arrangement.spacedBy(27.dp, alignment = Alignment.Top)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(ContentVertical),
+                verticalArrangement = Arrangement.spacedBy(27.dp, alignment = Alignment.Top),
             ) {
                 TitleSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Horizontal),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(Horizontal),
                     nickname = nickname,
-                    myCategoriesSize = myCategoriesState.myCategories.size
+                    myCategoriesSize = myCategoriesState.myCategories.size,
                 )
                 SelectedCategoriesSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onSizeChanged { selectedCategoriesHeight = it.height }
-                        .onGloballyPositioned { coordinates ->
-                            val position = coordinates
-                                .positionInWindow()
-                                .round()
-                            tipStartOffset =
-                                tipStartOffset.copy(y = position.y + selectedCategoriesHeight)
-                        },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .onSizeChanged { selectedCategoriesHeight = it.height }
+                            .onGloballyPositioned { coordinates ->
+                                val position =
+                                    coordinates
+                                        .positionInWindow()
+                                        .round()
+                                tipStartOffset =
+                                    tipStartOffset.copy(y = position.y + selectedCategoriesHeight)
+                            },
                     myCategories = myCategoriesState.myCategories,
                     onChangedMyCategories = { uiEvent(EditMyCategoriesUiEvent.MoveCategory(it)) },
                     onUnSelect = { category -> uiEvent(EditMyCategoriesUiEvent.UnSelectCategory(category)) },
                 )
                 CategoriesSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Horizontal),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(Horizontal),
                     categories = myCategoriesState.exclusiveCategories,
                     onSelect = { category -> uiEvent(EditMyCategoriesUiEvent.SelectCategory(category)) },
-                    onSelectAll = { uiEvent(EditMyCategoriesUiEvent.SelectAll) }
+                    onSelectAll = { uiEvent(EditMyCategoriesUiEvent.SelectAll) },
                 )
             }
 
             FlipMediumButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Horizontal),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(Horizontal),
                 text = stringResource(id = R.string.edit_interest_categories_btn_finish),
                 onClick = {
                     updateMyCategories(myCategoriesState.myCategories)
                 },
-                isLoading = myCategoriesUpdateState.loading
+                isLoading = myCategoriesUpdateState.loading,
             )
         }
     }
-
 }
 
 @Composable
 private fun TitleSection(
     modifier: Modifier = Modifier,
     nickname: String,
-    myCategoriesSize: Int
+    myCategoriesSize: Int,
 ) {
     Text(
         modifier = modifier,
-        text = buildAnnotatedString {
-            withStyle(
-                SpanStyle(
-                    color = FlipTheme.colors.point,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append(nickname)
-            }
-            append(stringResource(id = R.string.edit_interest_categories_title_1))
-            append("\n")
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("${myCategoriesSize}개")
-            }
-            append(stringResource(id = R.string.edit_interest_categories_title_2))
-        },
+        text =
+            buildAnnotatedString {
+                withStyle(
+                    SpanStyle(
+                        color = FlipTheme.colors.point,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                ) {
+                    append(nickname)
+                }
+                append(stringResource(id = R.string.edit_interest_categories_title_1))
+                append("\n")
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("${myCategoriesSize}개")
+                }
+                append(stringResource(id = R.string.edit_interest_categories_title_2))
+            },
         style = FlipTheme.typography.headline7,
         maxLines = 2,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
     )
 }
 
@@ -207,7 +214,6 @@ private fun SelectedCategoriesSection(
     onChangedMyCategories: (List<Category>) -> Unit,
     onUnSelect: (Category) -> Unit,
 ) {
-
     var reorderedCategories by remember { mutableStateOf(emptyList<Category>()) }
     LaunchedEffect(myCategories) {
         reorderedCategories = myCategories
@@ -217,38 +223,42 @@ private fun SelectedCategoriesSection(
 
     val draggableItems by remember { derivedStateOf { reorderedCategories.size } }
     val lazyListState = rememberLazyListState()
-    val dragAndDropState = rememberDragAndDropState(
-        dragDirection = DragDirection.Horizontal,
-        lazyListState = lazyListState,
-        onMove = { fromIndex, toIndex ->
-            reorderedCategories = reorderedCategories.toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
-            onChangedMyCategories(reorderedCategories)
-        },
-        draggableItemsNum = draggableItems
-    )
+    val dragAndDropState =
+        rememberDragAndDropState(
+            dragDirection = DragDirection.Horizontal,
+            lazyListState = lazyListState,
+            onMove = { fromIndex, toIndex ->
+                reorderedCategories = reorderedCategories.toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
+                onChangedMyCategories(reorderedCategories)
+            },
+            draggableItemsNum = draggableItems,
+        )
 
     LazyRow(
         modifier = modifier.dragContainer(dragAndDropState),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Start),
         contentPadding = Horizontal,
-        state = lazyListState
+        state = lazyListState,
     ) {
         draggableItems(
             items = reorderedCategories,
             keyProvider = { index, category -> category.id },
-            dragAndDropState = dragAndDropState
+            dragAndDropState = dragAndDropState,
         ) { modifier, index, category ->
 
-            val selectedModifier = if (dragAndDropState.draggingItemIndex == index) {
-                Modifier.alpha(0.5f)
-            } else Modifier
+            val selectedModifier =
+                if (dragAndDropState.draggingItemIndex == index) {
+                    Modifier.alpha(0.5f)
+                } else {
+                    Modifier
+                }
 
             FlipMediumChip(
                 modifier = modifier.then(selectedModifier),
                 text = category.name,
                 icon = CategoryIconsMap[category.id],
-                onClick = { onUnSelect(category) }
+                onClick = { onUnSelect(category) },
             )
         }
     }
@@ -260,30 +270,31 @@ private fun CategoriesSection(
     modifier: Modifier = Modifier,
     categories: List<Category>,
     onSelectAll: () -> Unit,
-    onSelect: (Category) -> Unit
+    onSelect: (Category) -> Unit,
 ) {
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(14.dp, alignment = Alignment.Top),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentSize(Alignment.CenterStart),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .wrapContentSize(Alignment.CenterStart),
                 text = stringResource(id = R.string.edit_interest_categories_list_title_1),
                 style = FlipTheme.typography.headline1,
-                color = FlipTheme.colors.gray6
+                color = FlipTheme.colors.gray6,
             )
             Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentSize(Alignment.CenterEnd)
-                    .clickableSingle { onSelectAll() },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .wrapContentSize(Alignment.CenterEnd)
+                        .clickableSingle { onSelectAll() },
                 text = stringResource(id = R.string.edit_interest_categories_list_title_2),
                 style = FlipTheme.typography.body5,
-                color = FlipTheme.colors.point
+                color = FlipTheme.colors.point,
             )
         }
         LazyVerticalGrid(
@@ -294,14 +305,15 @@ private fun CategoriesSection(
         ) {
             items(
                 items = categories,
-                key = { it.id }
+                key = { it.id },
             ) { category ->
                 CategoryItem(
-                    modifier = Modifier
-                        .clip(FlipTheme.shapes.roundedCornerSmall)
-                        .animateItemPlacement()
-                        .clickableSingle { onSelect(category) },
-                    category = category
+                    modifier =
+                        Modifier
+                            .clip(FlipTheme.shapes.roundedCornerSmall)
+                            .animateItemPlacement()
+                            .clickableSingle { onSelect(category) },
+                    category = category,
                 )
             }
         }
@@ -311,37 +323,37 @@ private fun CategoriesSection(
 @Composable
 private fun CategoryItem(
     modifier: Modifier = Modifier,
-    category: Category
+    category: Category,
 ) {
     Box(
-        modifier = modifier
-            .width(104.dp)
-            .height(76.dp)
-            .background(FlipTheme.colors.gray1),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .width(104.dp)
+                .height(76.dp)
+                .background(FlipTheme.colors.gray1),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
             CategoryIconsMap[category.id]?.let { icon ->
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = ImageVector.vectorResource(icon),
                     contentDescription = category.name,
-                    tint = FlipTheme.colors.gray6
+                    tint = FlipTheme.colors.gray6,
                 )
             }
             Text(
                 text = category.name,
                 style = FlipTheme.typography.body5,
-                color = FlipTheme.colors.gray6
+                color = FlipTheme.colors.gray6,
             )
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -350,19 +362,21 @@ private fun EditMyCategoriesScreenPreview() {
         EditMyCategoriesScreen(
             modifier = Modifier.fillMaxSize(),
             nickname = "Miffy",
-            myCategoriesState = MyCategoriesState(
-                exclusiveCategories = CategoriesTestData.filter { !listOf(6,7,8).contains(it.id) },
-                myCategories = listOf(
-                    Category(106, "예술/문화"),
-                    Category(107, "디자인"),
-                    Category(108, "컴퓨터/IT"),
-                )
-            ),
+            myCategoriesState =
+                MyCategoriesState(
+                    exclusiveCategories = CategoriesTestData.filter { !listOf(6, 7, 8).contains(it.id) },
+                    myCategories =
+                        listOf(
+                            Category(106, "예술/문화"),
+                            Category(107, "디자인"),
+                            Category(108, "컴퓨터/IT"),
+                        ),
+                ),
             speechBubbleState = false,
             myCategoriesUpdateState = MyCategoriesUpdateState(),
             uiEvent = {},
             onBackPress = {},
-            updateMyCategories = {}
+            updateMyCategories = {},
         )
     }
 }
@@ -379,7 +393,7 @@ private fun TitleSectionPreview() {
     FlipAppTheme {
         TitleSection(
             nickname = "Miffy",
-            myCategoriesSize = 3
+            myCategoriesSize = 3,
         )
     }
 }
@@ -391,7 +405,7 @@ fun CategoriesSectionPreview() {
         modifier = Modifier.fillMaxWidth(),
         categories = CategoriesTestData,
         onSelect = {},
-        onSelectAll = {}
+        onSelectAll = {},
     )
 }
 

@@ -6,8 +6,8 @@ import com.team.domain.model.profile.DisplayProfileList
 import com.team.domain.model.profile.EditProfile
 import com.team.domain.model.profile.MyProfile
 import com.team.domain.model.profile.Profile
-import com.team.domain.model.report_block.BlockReq
-import com.team.domain.model.report_block.ReportReq
+import com.team.domain.model.reportBlock.BlockReq
+import com.team.domain.model.reportBlock.ReportReq
 import com.team.domain.usecase.category.myCategoriesTestData
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -23,7 +23,6 @@ class FakeUserRepository(
     private val hasLocalData: Boolean,
     private val isNetworkError: Boolean,
 ) : UserRepository {
-
     private val _profile: MutableStateFlow<MyProfile?> = MutableStateFlow(null)
 
     init {
@@ -71,76 +70,55 @@ class FakeUserRepository(
         }
     }
 
-    override fun getProfile(profileId: String): Flow<Result<Profile, ErrorType>> {
-        return emptyFlow()
-    }
+    override fun getProfile(profileId: String): Flow<Result<Profile, ErrorType>> = emptyFlow()
 
-    override fun updateMyCategories(categoryIds: List<Int>): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    override fun updateMyCategories(categoryIds: List<Int>): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
-    override fun reportAccount(reportReq: ReportReq): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    override fun reportAccount(reportReq: ReportReq): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
-    override fun blockAccount(blockReq: BlockReq): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    override fun blockAccount(blockReq: BlockReq): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
     override fun unblockAccount(
         profileId: String,
         blockedId: String,
-    ): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
     override fun editMyProfile(
         profileId: String,
         editProfile: EditProfile,
-    ): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
-    override fun follow(followingId: String, followerId: String): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    override fun follow(
+        followingId: String,
+        followerId: String,
+    ): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
     override fun unfollow(
         followingId: String,
         followerId: String,
-    ): Flow<Result<Boolean, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<Boolean, ErrorType>> = emptyFlow()
 
     override fun getFollowerListPagination(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<DisplayProfileList, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<DisplayProfileList, ErrorType>> = emptyFlow()
 
     override fun getFollowingListPagination(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<DisplayProfileList, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<DisplayProfileList, ErrorType>> = emptyFlow()
 
     override fun getBlockListPagination(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<BlockProfileList, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<BlockProfileList, ErrorType>> = emptyFlow()
 
     override fun getMyCommentListPagination(
         profileId: String,
         cursor: String,
         limit: Int,
-    ): Flow<Result<DisplayPostList, ErrorType>> {
-        return emptyFlow()
-    }
+    ): Flow<Result<DisplayPostList, ErrorType>> = emptyFlow()
 }

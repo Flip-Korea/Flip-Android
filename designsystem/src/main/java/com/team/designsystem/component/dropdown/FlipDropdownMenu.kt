@@ -78,7 +78,7 @@ fun FlipDropdownMenu(
         onDismissRequest = onDismissRequest,
         offset = offset,
         shape = FlipTheme.shapes.roundedCornerMedium,
-        dropShadow = DropShadowType.Shadow3
+        dropShadow = DropShadowType.Shadow3,
     ) {
         dropDownItems.forEachIndexed { index, item ->
             DropdownMenuItemCopy(
@@ -88,11 +88,11 @@ fun FlipDropdownMenu(
                         modifier = Modifier.fillMaxWidth(),
                         text = item.text,
                         style = FlipTheme.typography.body5,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 },
                 onClick = { onItemClick(item) },
-                contentPadding = PaddingValues(vertical = 13.dp)
+                contentPadding = PaddingValues(vertical = 13.dp),
             )
             if (index != dropDownItems.size - 1) {
                 HorizontalDivider(thickness = 1.dp, color = FlipTheme.colors.gray2)
@@ -116,7 +116,7 @@ fun FlipDropdownMenu2(
         onDismissRequest = onDismissRequest,
         offset = offset,
         shape = FlipTheme.shapes.roundedCornerMedium,
-        dropShadow = DropShadowType.Shadow3
+        dropShadow = DropShadowType.Shadow3,
     ) {
         dropDownItems.forEachIndexed { index, item ->
             DropdownMenuItemCopy(
@@ -126,11 +126,11 @@ fun FlipDropdownMenu2(
                         modifier = Modifier.fillMaxWidth(),
                         text = item.text,
                         style = FlipTheme.typography.body3,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
                     )
                 },
                 onClick = { onItemClick(item) },
-                contentPadding = PaddingValues(vertical = 6.dp, horizontal = 14.dp)
+                contentPadding = PaddingValues(vertical = 6.dp, horizontal = 14.dp),
             )
             if (index != dropDownItems.size - 1) {
                 HorizontalDivider(thickness = 1.dp, color = FlipTheme.colors.gray2)
@@ -140,7 +140,6 @@ fun FlipDropdownMenu2(
 }
 
 private enum class DropShadowType { Shadow1, Shadow2, Shadow3, None }
-
 
 /** Material3 DropdownMenu Copy Code **/
 @Composable
@@ -166,7 +165,7 @@ private fun DropdownMenuCopy(
     dropShadow = dropShadow,
     tonalElevation = 0.dp,
     shadowElevation = 0.dp,
-    content = content
+    content = content,
 )
 
 @Composable
@@ -190,19 +189,20 @@ private fun DropdownMenu(
     if (expandedState.currentState || expandedState.targetState) {
         val transformOriginState = remember { mutableStateOf(TransformOrigin.Center) }
         val density = LocalDensity.current
-        val popupPositionProvider = remember(offset, density) {
-            DropdownMenuPositionProvider(
-                offset,
-                density
-            ) { parentBounds, menuBounds ->
-                transformOriginState.value = calculateTransformOrigin(parentBounds, menuBounds)
+        val popupPositionProvider =
+            remember(offset, density) {
+                DropdownMenuPositionProvider(
+                    offset,
+                    density,
+                ) { parentBounds, menuBounds ->
+                    transformOriginState.value = calculateTransformOrigin(parentBounds, menuBounds)
+                }
             }
-        }
 
         Popup(
             onDismissRequest = onDismissRequest,
             popupPositionProvider = popupPositionProvider,
-            properties = properties
+            properties = properties,
         ) {
             DropdownMenuContent(
                 expandedState = expandedState,
@@ -214,7 +214,7 @@ private fun DropdownMenu(
                 dropShadow = dropShadow,
                 tonalElevation = tonalElevation,
                 shadowElevation = shadowElevation,
-                content = content
+                content = content,
             )
         }
     }
@@ -242,16 +242,17 @@ private fun DropdownMenuContent(
                 // Dismissed to expanded
                 tween(
                     durationMillis = InTransitionDuration,
-                    easing = LinearOutSlowInEasing
+                    easing = LinearOutSlowInEasing,
                 )
             } else {
                 // Expanded to dismissed.
                 tween(
                     durationMillis = 1,
-                    delayMillis = OutTransitionDuration - 1
+                    delayMillis = OutTransitionDuration - 1,
                 )
             }
-        }, label = "DropdownMenuContent-scale-animateFloat"
+        },
+        label = "DropdownMenuContent-scale-animateFloat",
     ) { expanded ->
         if (expanded) 1f else 0.8f
     }
@@ -265,37 +266,39 @@ private fun DropdownMenuContent(
                 // Expanded to dismissed.
                 tween(durationMillis = OutTransitionDuration)
             }
-        }, label = "DropdownMenuContent-alpha-animateFloat"
+        },
+        label = "DropdownMenuContent-alpha-animateFloat",
     ) { expanded ->
         if (expanded) 1f else 0f
     }
 
     Surface(
-        modifier = Modifier
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-                this.alpha = alpha
-                transformOrigin = transformOriginState.value
-            }
-            .then(
-                when (dropShadow) {
-                    DropShadowType.Shadow1 -> Modifier.dropShadow1()
-                    DropShadowType.Shadow2 -> Modifier.dropShadow2()
-                    DropShadowType.Shadow3 -> Modifier.dropShadow3()
-                    DropShadowType.None -> Modifier
-                }
-            ),
+        modifier =
+            Modifier
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    this.alpha = alpha
+                    transformOrigin = transformOriginState.value
+                }.then(
+                    when (dropShadow) {
+                        DropShadowType.Shadow1 -> Modifier.dropShadow1()
+                        DropShadowType.Shadow2 -> Modifier.dropShadow2()
+                        DropShadowType.Shadow3 -> Modifier.dropShadow3()
+                        DropShadowType.None -> Modifier
+                    },
+                ),
         shape = shape,
         color = color,
         tonalElevation = tonalElevation,
-        shadowElevation = shadowElevation
+        shadowElevation = shadowElevation,
     ) {
         Column(
-            modifier = modifier
-                .width(IntrinsicSize.Max)
-                .verticalScroll(scrollState),
-            content = content
+            modifier =
+                modifier
+                    .width(IntrinsicSize.Max)
+                    .verticalScroll(scrollState),
+            content = content,
         )
     }
 }
@@ -304,28 +307,34 @@ private fun calculateTransformOrigin(
     anchorBounds: IntRect,
     menuBounds: IntRect,
 ): TransformOrigin {
-    val pivotX = when {
-        menuBounds.left >= anchorBounds.right -> 0f
-        menuBounds.right <= anchorBounds.left -> 1f
-        menuBounds.width == 0 -> 0f
-        else -> {
-            val intersectionCenter =
-                (max(anchorBounds.left, menuBounds.left) +
-                        min(anchorBounds.right, menuBounds.right)) / 2
-            (intersectionCenter - menuBounds.left).toFloat() / menuBounds.width
+    val pivotX =
+        when {
+            menuBounds.left >= anchorBounds.right -> 0f
+            menuBounds.right <= anchorBounds.left -> 1f
+            menuBounds.width == 0 -> 0f
+            else -> {
+                val intersectionCenter =
+                    (
+                        max(anchorBounds.left, menuBounds.left) +
+                            min(anchorBounds.right, menuBounds.right)
+                    ) / 2
+                (intersectionCenter - menuBounds.left).toFloat() / menuBounds.width
+            }
         }
-    }
-    val pivotY = when {
-        menuBounds.top >= anchorBounds.bottom -> 0f
-        menuBounds.bottom <= anchorBounds.top -> 1f
-        menuBounds.height == 0 -> 0f
-        else -> {
-            val intersectionCenter =
-                (max(anchorBounds.top, menuBounds.top) +
-                        min(anchorBounds.bottom, menuBounds.bottom)) / 2
-            (intersectionCenter - menuBounds.top).toFloat() / menuBounds.height
+    val pivotY =
+        when {
+            menuBounds.top >= anchorBounds.bottom -> 0f
+            menuBounds.bottom <= anchorBounds.top -> 1f
+            menuBounds.height == 0 -> 0f
+            else -> {
+                val intersectionCenter =
+                    (
+                        max(anchorBounds.top, menuBounds.top) +
+                            min(anchorBounds.bottom, menuBounds.bottom)
+                    ) / 2
+                (intersectionCenter - menuBounds.top).toFloat() / menuBounds.height
+            }
         }
-    }
     return TransformOrigin(pivotX, pivotY)
 }
 
@@ -497,16 +506,18 @@ private object AnchorAlignmentOffsetPosition {
             menuWidth: Int,
             layoutDirection: LayoutDirection,
         ): Int {
-            val anchorAlignmentOffset = anchorAlignment.align(
-                size = 0,
-                space = anchorBounds.width,
-                layoutDirection = layoutDirection,
-            )
-            val menuAlignmentOffset = -menuAlignment.align(
-                size = 0,
-                space = menuWidth,
-                layoutDirection,
-            )
+            val anchorAlignmentOffset =
+                anchorAlignment.align(
+                    size = 0,
+                    space = anchorBounds.width,
+                    layoutDirection = layoutDirection,
+                )
+            val menuAlignmentOffset =
+                -menuAlignment.align(
+                    size = 0,
+                    space = menuWidth,
+                    layoutDirection,
+                )
             val resolvedOffset = if (layoutDirection == LayoutDirection.Ltr) offset else -offset
             return anchorBounds.left + anchorAlignmentOffset + menuAlignmentOffset + resolvedOffset
         }
@@ -527,14 +538,16 @@ private object AnchorAlignmentOffsetPosition {
             windowSize: IntSize,
             menuHeight: Int,
         ): Int {
-            val anchorAlignmentOffset = anchorAlignment.align(
-                size = 0,
-                space = anchorBounds.height,
-            )
-            val menuAlignmentOffset = -menuAlignment.align(
-                size = 0,
-                space = menuHeight,
-            )
+            val anchorAlignmentOffset =
+                anchorAlignment.align(
+                    size = 0,
+                    space = anchorBounds.height,
+                )
+            val menuAlignmentOffset =
+                -menuAlignment.align(
+                    size = 0,
+                    space = menuHeight,
+                )
             return anchorBounds.top + anchorAlignmentOffset + menuAlignmentOffset + offset
         }
     }
@@ -568,11 +581,12 @@ private object WindowAlignmentMarginPosition {
                     layoutDirection = layoutDirection,
                 )
             }
-            val x = alignment.align(
-                size = menuWidth,
-                space = windowSize.width,
-                layoutDirection = layoutDirection,
-            )
+            val x =
+                alignment.align(
+                    size = menuWidth,
+                    space = windowSize.width,
+                    layoutDirection = layoutDirection,
+                )
             return x.coerceIn(margin, windowSize.width - margin - menuWidth)
         }
     }
@@ -601,10 +615,11 @@ private object WindowAlignmentMarginPosition {
                     space = windowSize.height,
                 )
             }
-            val y = alignment.align(
-                size = menuHeight,
-                space = windowSize.height,
-            )
+            val y =
+                alignment.align(
+                    size = menuHeight,
+                    space = windowSize.height,
+                )
             return y.coerceIn(margin, windowSize.height - margin - menuHeight)
         }
     }
@@ -655,51 +670,57 @@ private data class DropdownMenuPositionProvider(
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize,
     ): IntOffset {
-        val xCandidates = listOf(
-            startToAnchorStart,
-            endToAnchorEnd,
-            if (anchorBounds.center.x < windowSize.width / 2) {
-                leftToWindowLeft
-            } else {
-                rightToWindowRight
+        val xCandidates =
+            listOf(
+                startToAnchorStart,
+                endToAnchorEnd,
+                if (anchorBounds.center.x < windowSize.width / 2) {
+                    leftToWindowLeft
+                } else {
+                    rightToWindowRight
+                },
+            ).fastMap {
+                it.position(
+                    anchorBounds = anchorBounds,
+                    windowSize = windowSize,
+                    menuWidth = popupContentSize.width,
+                    layoutDirection = layoutDirection,
+                )
             }
-        ).fastMap {
-            it.position(
-                anchorBounds = anchorBounds,
-                windowSize = windowSize,
-                menuWidth = popupContentSize.width,
-                layoutDirection = layoutDirection
-            )
-        }
-        val x = xCandidates.fastFirstOrNull {
-            it >= 0 && it + popupContentSize.width <= windowSize.width
-        } ?: xCandidates.last()
+        val x =
+            xCandidates.fastFirstOrNull {
+                it >= 0 && it + popupContentSize.width <= windowSize.width
+            } ?: xCandidates.last()
 
-        val yCandidates = listOf(
-            topToAnchorBottom,
-            bottomToAnchorTop,
-            centerToAnchorTop,
-            if (anchorBounds.center.y < windowSize.height / 2) {
-                topToWindowTop
-            } else {
-                bottomToWindowBottom
+        val yCandidates =
+            listOf(
+                topToAnchorBottom,
+                bottomToAnchorTop,
+                centerToAnchorTop,
+                if (anchorBounds.center.y < windowSize.height / 2) {
+                    topToWindowTop
+                } else {
+                    bottomToWindowBottom
+                },
+            ).fastMap {
+                it.position(
+                    anchorBounds = anchorBounds,
+                    windowSize = windowSize,
+                    menuHeight = popupContentSize.height,
+                )
             }
-        ).fastMap {
-            it.position(
-                anchorBounds = anchorBounds,
-                windowSize = windowSize,
-                menuHeight = popupContentSize.height
-            )
-        }
-        val y = yCandidates.fastFirstOrNull {
-            it >= verticalMargin &&
+        val y =
+            yCandidates.fastFirstOrNull {
+                it >= verticalMargin &&
                     it + popupContentSize.height <= windowSize.height - verticalMargin
-        } ?: yCandidates.last()
+            } ?: yCandidates.last()
 
         val menuOffset = IntOffset(x, y)
         onPositionCalculated(
-            /* anchorBounds = */anchorBounds,
-            /* menuBounds = */IntRect(offset = menuOffset, size = popupContentSize)
+            // anchorBounds =
+            anchorBounds,
+            // menuBounds =
+            IntRect(offset = menuOffset, size = popupContentSize),
         )
         return menuOffset
     }
@@ -715,21 +736,20 @@ private fun DropdownMenuItemContent(
     interactionSource: MutableInteractionSource,
 ) {
     Row(
-        modifier = modifier
-            .clickable(
-                enabled = enabled,
-                onClick = onClick,
-                interactionSource = interactionSource,
-                indication = rememberRipple(true)
-            )
-            .fillMaxWidth()
-            // Preferred min and max width used during the intrinsic measurement.
-            .sizeIn(
+        modifier =
+            modifier
+                .clickable(
+                    enabled = enabled,
+                    onClick = onClick,
+                    interactionSource = interactionSource,
+                    indication = rememberRipple(true),
+                ).fillMaxWidth()
+                // Preferred min and max width used during the intrinsic measurement.
+                .sizeIn(
 //                minWidth = DropdownMenuItemDefaultMinWidth,
-                maxWidth = DropdownMenuItemDefaultMaxWidth,
-            )
-            .padding(contentPadding),
-        verticalAlignment = Alignment.CenterVertically
+                    maxWidth = DropdownMenuItemDefaultMaxWidth,
+                ).padding(contentPadding),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.weight(1f)) {
             text()
@@ -743,10 +763,11 @@ private fun DropdownMenuItemCopy(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = PaddingValues(
-        horizontal = DropdownMenuItemHorizontalPadding,
-        vertical = 0.dp
-    ),
+    contentPadding: PaddingValues =
+        PaddingValues(
+            horizontal = DropdownMenuItemHorizontalPadding,
+            vertical = 0.dp,
+        ),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     DropdownMenuItemContent(

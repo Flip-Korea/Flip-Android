@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.team.designsystem.theme.FlipTheme
 import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
-import com.team.flip.navigation.bottom_nav.FlipBottomNavigationBar
+import com.team.flip.navigation.bottomNav.FlipBottomNavigationBar
 import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
 import com.team.presentation.editcategories.EditCategoriesRoute
@@ -29,7 +29,6 @@ fun MainNavigation(
     mainNavController: NavHostController,
     deleteToken: () -> Unit,
 ) {
-
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = mainNavController,
@@ -37,36 +36,37 @@ fun MainNavigation(
         enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
         popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
         exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
-        popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) }
+        popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
     ) {
         composable(NavigationItem.BOTTOM_NAV.name) {
-
             val bottomNavController = rememberNavController()
 
             Scaffold(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .navigationBarsPadding(),
-                bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) }
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .navigationBarsPadding(),
+                bottomBar = { FlipBottomNavigationBar(navController = bottomNavController) },
             ) { innerPadding ->
 
                 BottomNavigation(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(FlipTheme.colors.white) // Background Color of padding
-                        .padding(innerPadding),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(FlipTheme.colors.white) // Background Color of padding
+                            .padding(innerPadding),
                     bottomNavController = bottomNavController,
                     onSettingClick = {
                         mainNavController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)
                     },
                     deleteToken = deleteToken,
-                    innerPadding = innerPadding
+                    innerPadding = innerPadding,
                 )
             }
         }
 
-        //TODO 어차피 프로필 정보중에 이름만 받아오는데 인자 값으로 받아오면 안되나? argument 기능 써가지고...
+        // TODO 어차피 프로필 정보중에 이름만 받아오는데 인자 값으로 받아오면 안되나? argument 기능 써가지고...
         composable(
             route = ScreenItem.EDIT_MY_CATEGORIES.name,
             enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
@@ -74,9 +74,8 @@ fun MainNavigation(
             popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
             popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
         ) {
-
             EditCategoriesRoute(
-                popBackStack = { mainNavController.popBackStack() }
+                popBackStack = { mainNavController.popBackStack() },
             )
         }
     }

@@ -16,5 +16,4 @@ data class CommentResponse(
 
 fun List<CommentResponse>.toDomainModel(): List<Comment> = this.map { it.toDomainModel() }
 
-fun CommentResponse.toDomainModel(): Comment =
-    Comment(commentId, profileId, nickname, photoUrl, content, commentDate)
+fun CommentResponse.toDomainModel(): Comment = Comment(commentId, profileId, nickname, photoUrl, content, commentDate)

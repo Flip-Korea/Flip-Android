@@ -15,52 +15,51 @@ import com.team.domain.model.tag.TagResultList
 import com.team.domain.repository.SearchRepository
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.io.IOException
+import javax.inject.Inject
 
 class DefaultSearchRepository
-@Inject
-constructor(
-    private val searchNetworkDataSource: SearchNetworkDataSource,
-    private val recentSearchDao: RecentSearchDao,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-) : SearchRepository {
+    @Inject
+    constructor(
+        private val searchNetworkDataSource: SearchNetworkDataSource,
+        private val recentSearchDao: RecentSearchDao,
+        @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    ) : SearchRepository {
+        override fun getRecentSearchList(): Flow<List<RecentSearch>> =
+            recentSearchDao.getRecentSearchList().map { it.toDomainModel() }.catch { emit(emptyList()) }
 
-    override fun getRecentSearchList(): Flow<List<RecentSearch>> =
-        recentSearchDao.getRecentSearchList().map { it.toDomainModel() }.catch { emit(emptyList()) }
-
-    override suspend fun deleteRecentSearchById(id: Long): Boolean {
-        return try {
-            recentSearchDao.deleteById(id)
-            true
-        } catch (e: NullPointerException) {
-            false
-        } catch (e: IOException) {
-            false
+        override suspend fun deleteRecentSearchById(id: Long): Boolean {
+            return try {
+                recentSearchDao.deleteById(id)
+                true
+            } catch (e: NullPointerException) {
+                false
+            } catch (e: IOException) {
+                false
+            }
         }
-    }
 
-    override suspend fun deleteAllRecentSearch(): Boolean {
-        return try {
-            recentSearchDao.clearAll()
-            true
-        } catch (e: IOException) {
-            false
+        override suspend fun deleteAllRecentSearch(): Boolean {
+            return try {
+                recentSearchDao.clearAll()
+                true
+            } catch (e: IOException) {
+                false
+            }
         }
-    }
 
-    override fun searchByPostPagination(
-        searchQuery: String,
-        cursor: String,
-        limit: Int,
-    ): Flow<Result<PostList, ErrorType>> =
-        flow {
+        override fun searchByPostPagination(
+            searchQuery: String,
+            cursor: String,
+            limit: Int,
+        ): Flow<Result<PostList, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (
@@ -77,15 +76,15 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun searchByNicknamePagination(
-        searchQuery: String,
-        cursor: String,
-        limit: Int,
-    ): Flow<Result<DisplayProfileList, ErrorType>> =
-        flow {
+        override fun searchByNicknamePagination(
+            searchQuery: String,
+            cursor: String,
+            limit: Int,
+        ): Flow<Result<DisplayProfileList, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (
@@ -104,15 +103,15 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun searchByTagPagination(
-        searchQuery: String,
-        cursor: String,
-        limit: Int,
-    ): Flow<Result<TagResultList, ErrorType>> =
-        flow {
+        override fun searchByTagPagination(
+            searchQuery: String,
+            cursor: String,
+            limit: Int,
+        ): Flow<Result<TagResultList, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (
@@ -130,6 +129,6 @@ constructor(
                     Result.Loading -> {}
                 }
             }
-            .flowOn(ioDispatcher)
-            .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-}
+                .flowOn(ioDispatcher)
+                .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
+    }

@@ -6,11 +6,10 @@ import com.team.domain.type.PathParameterType
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.domain.util.paging.FlipPagingTokens
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class GetPostsByTypeUseCase @Inject constructor(private val postRepository: PostRepository) {
-
     /**
      * 타입 별로 Flip(post)을 가져오는 UseCase
      *

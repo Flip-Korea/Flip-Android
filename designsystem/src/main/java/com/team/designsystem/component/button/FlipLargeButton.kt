@@ -28,28 +28,29 @@ fun FlipLargeButton(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
-
     val clickableSingle = remember { ClickableSingle.get() }
 
     Button(
         onClick = { clickableSingle.onEvent(onClick) },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(78.dp)
-            .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = FlipTheme.colors.main,
-            contentColor = FlipTheme.colors.white
-        ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(78.dp)
+                .background(if (!enabled) FlipTheme.colors.gray4 else Color.Transparent),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = FlipTheme.colors.main,
+                contentColor = FlipTheme.colors.white,
+            ),
         enabled = enabled,
         shape = RectangleShape,
-        contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp)
+        contentPadding = PaddingValues(top = 15.dp, bottom = 15.dp),
     ) {
         Text(
             modifier = Modifier.fillMaxHeight(),
             text = text,
             style = FlipTheme.typography.headline3,
-            color = FlipTheme.colors.white
+            color = FlipTheme.colors.white,
         )
     }
 }
@@ -59,12 +60,13 @@ fun FlipLargeButton(
 private fun FlipLargeButtonPreview() {
     FlipAppTheme {
         FlipLargeButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = "sample",
             enabled = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -74,12 +76,13 @@ private fun FlipLargeButtonPreview() {
 private fun FlipLargeButton2Preview() {
     FlipAppTheme {
         FlipLargeButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = "sample",
             enabled = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }

@@ -9,10 +9,10 @@ import com.team.data.util.retry
 import com.team.domain.util.ErrorBody
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
-import java.io.IOException
-import java.util.concurrent.TimeoutException
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 /**
  * 모든 네트워크 호출에 사용 되는 제네릭 함수
@@ -22,7 +22,6 @@ import retrofit2.Response
  * @see ErrorType
  */
 suspend fun <T> networkCall(call: suspend () -> Response<T>): Result<T, ErrorType> {
-
     val toNetworkErrorType = { code: Int ->
         when (code) {
             400 -> ErrorType.Network.BAD_REQUEST

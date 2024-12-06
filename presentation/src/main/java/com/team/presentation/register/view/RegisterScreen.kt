@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun RegisterScreen(modifier: Modifier = Modifier) {
-
     Box(modifier = modifier.fillMaxSize()) {
         Text(modifier = Modifier.align(Alignment.Center), text = "RegisterScreen")
     }

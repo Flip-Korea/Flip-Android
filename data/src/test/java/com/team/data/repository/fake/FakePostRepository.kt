@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.flowOn
 // TODO 실제 Repository로 통합해서 테스트하기
 class FakePostRepository(private val postNetworkDataSource: PostNetworkDataSource) :
     PostRepository {
-
     private val ioDispatcher = Dispatchers.IO
 
     override fun getPostsPagination(
@@ -28,74 +27,74 @@ class FakePostRepository(private val postNetworkDataSource: PostNetworkDataSourc
         limit: Int,
     ): Flow<Result<PostList, ErrorType>> {
         return flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (val result = postNetworkDataSource.getPosts(cursor, limit)) {
-                    is Result.Success -> {
-                        val postList = result.data.toDomainModel()
-                        emit(Result.Success(postList))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (val result = postNetworkDataSource.getPosts(cursor, limit)) {
+                is Result.Success -> {
+                    val postList = result.data.toDomainModel()
+                    emit(Result.Success(postList))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
     }
 
     override fun getPostById(postId: Long): Flow<Result<Post?, ErrorType>> =
         flow<Result<Post?, ErrorType>> {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (val result = postNetworkDataSource.getPostById(postId)) {
-                    is Result.Success -> {
-                        val post = result.data.toDomainModel()
-                        emit(Result.Success(post))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (val result = postNetworkDataSource.getPostById(postId)) {
+                is Result.Success -> {
+                    val post = result.data.toDomainModel()
+                    emit(Result.Success(post))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
     override fun addPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                val newPostNetwork = newPost.toNetwork()
-                when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
-                    is Result.Success -> {
-                        emit(Result.Success(true))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            val newPostNetwork = newPost.toNetwork()
+            when (val result = postNetworkDataSource.addPost(newPostNetwork)) {
+                is Result.Success -> {
+                    emit(Result.Success(true))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
     override fun editPost(newPost: NewPost): Flow<Result<Boolean, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                val newPostNetwork = newPost.toNetwork()
-                when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
-                    is Result.Success -> {
-                        emit(Result.Success(true))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            val newPostNetwork = newPost.toNetwork()
+            when (val result = postNetworkDataSource.editPost(newPostNetwork)) {
+                is Result.Success -> {
+                    emit(Result.Success(true))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
@@ -106,38 +105,38 @@ class FakePostRepository(private val postNetworkDataSource: PostNetworkDataSourc
         limit: Int,
     ): Flow<Result<PostList, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (
-                    val result = postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)
-                ) {
-                    is Result.Success -> {
-                        val postList = result.data.toDomainModel()
-                        emit(Result.Success(postList))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (
+                val result = postNetworkDataSource.getPostsByType(type, typeId, cursor, limit)
+            ) {
+                is Result.Success -> {
+                    val postList = result.data.toDomainModel()
+                    emit(Result.Success(postList))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
     override fun deletePost(postId: Long): Flow<Result<Boolean, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (val result = postNetworkDataSource.deletePost(postId)) {
-                    is Result.Success -> {
-                        emit(Result.Success(result.data))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (val result = postNetworkDataSource.deletePost(postId)) {
+                is Result.Success -> {
+                    emit(Result.Success(result.data))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
@@ -147,41 +146,48 @@ class FakePostRepository(private val postNetworkDataSource: PostNetworkDataSourc
         limit: Int,
     ): Flow<Result<PostList, ErrorType>> =
         flow {
-                emit(Result.Loading)
+            emit(Result.Loading)
 
-                when (
-                    val result =
-                        postNetworkDataSource.getPostsByPopularUser(categoryId, cursor, limit)
-                ) {
-                    is Result.Success -> {
-                        val postList = result.data.toDomainModel()
-                        emit(Result.Success(postList))
-                    }
-                    is Result.Error -> {
-                        emit(Result.Error(errorBody = result.errorBody, error = result.error))
-                    }
-                    Result.Loading -> {}
+            when (
+                val result =
+                    postNetworkDataSource.getPostsByPopularUser(categoryId, cursor, limit)
+            ) {
+                is Result.Success -> {
+                    val postList = result.data.toDomainModel()
+                    emit(Result.Success(postList))
                 }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
+        }
             .flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-    override fun likePost(profileId: String, postId: Int): Flow<Result<Boolean, ErrorType>> = flow {
-        emit(Result.Loading)
+    override fun likePost(
+        profileId: String,
+        postId: Int,
+    ): Flow<Result<Boolean, ErrorType>> =
+        flow {
+            emit(Result.Loading)
 
-        val likeResult = LikeRequest(profileId, postId)
-        when (val result = postNetworkDataSource.likePost(likeResult)) {
-            is Result.Success -> {
-                emit(Result.Success(true))
+            val likeResult = LikeRequest(profileId, postId)
+            when (val result = postNetworkDataSource.likePost(likeResult)) {
+                is Result.Success -> {
+                    emit(Result.Success(true))
+                }
+                is Result.Error -> {
+                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                }
+                Result.Loading -> {}
             }
-            is Result.Error -> {
-                emit(Result.Error(errorBody = result.errorBody, error = result.error))
-            }
-            Result.Loading -> {}
         }
-    }
 
-    override fun unLikePost(profileId: String, postId: Int): Flow<Result<Boolean, ErrorType>> =
+    override fun unLikePost(
+        profileId: String,
+        postId: Int,
+    ): Flow<Result<Boolean, ErrorType>> =
         flow {
             emit(Result.Loading)
 

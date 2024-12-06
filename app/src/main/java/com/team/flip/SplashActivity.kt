@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
-
     private val keepOnScreen = true
     private val splashViewModel: SplashViewModel by viewModels()
 

@@ -21,11 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 /** Flip 로그인 및 회원가입을 위한 액티비티**/
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
-
     private val googleAuthManager by lazy {
         GoogleAuthManager(
             context = applicationContext,
-            credentialManager = CredentialManager.create(applicationContext)
+            credentialManager = CredentialManager.create(applicationContext),
         )
     }
 
@@ -39,23 +38,24 @@ class LoginActivity : ComponentActivity() {
 
         /** statusBarsPadding() & navigationBarsPadding() 사용하기 **/
         setContent {
-
             val navController = rememberNavController()
 
             FlipAppTheme {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(FlipTheme.colors.white)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(FlipTheme.colors.white),
                 ) {
                     LoginNavigation(
                         navController = navController,
-                        googleAuthManager, kakaoAuthManager,
+                        googleAuthManager,
+                        kakaoAuthManager,
                         onNavigateMain = {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             finish()
-                        }
+                        },
                     )
                 }
             }

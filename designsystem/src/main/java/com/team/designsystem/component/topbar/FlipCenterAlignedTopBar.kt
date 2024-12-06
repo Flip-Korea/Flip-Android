@@ -22,7 +22,8 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
 enum class FlipCenterAlignedTopBarActions {
-    BACK_PRESS, CLOSE
+    BACK_PRESS,
+    CLOSE,
 }
 
 /**
@@ -39,30 +40,36 @@ fun FlipCenterAlignedTopBar(
     title: String,
     actions: FlipCenterAlignedTopBarActions = FlipCenterAlignedTopBarActions.BACK_PRESS,
     onAction: (() -> Unit)? = null,
-    options: @Composable (RowScope.() -> Unit)? = null
+    options: @Composable (RowScope.() -> Unit)? = null,
 ) {
-
     Box(modifier = modifier) {
         if (onAction != null) {
-            val iconSize = when (actions) {
-                FlipCenterAlignedTopBarActions.BACK_PRESS -> { DpSize(24.dp, 24.dp) }
-                FlipCenterAlignedTopBarActions.CLOSE -> { DpSize(20.dp, 24.dp) }
-            }
-            val contendDesc = when(actions) {
-                FlipCenterAlignedTopBarActions.BACK_PRESS -> R.string.content_desc_arrow_back
-                FlipCenterAlignedTopBarActions.CLOSE -> R.string.content_desc_close
-            }
-            val imageVector = when(actions) {
-                FlipCenterAlignedTopBarActions.BACK_PRESS -> R.drawable.ic_arrow_back
-                FlipCenterAlignedTopBarActions.CLOSE -> R.drawable.ic_close
-            }
+            val iconSize =
+                when (actions) {
+                    FlipCenterAlignedTopBarActions.BACK_PRESS -> {
+                        DpSize(24.dp, 24.dp)
+                    }
+                    FlipCenterAlignedTopBarActions.CLOSE -> {
+                        DpSize(20.dp, 24.dp)
+                    }
+                }
+            val contendDesc =
+                when (actions) {
+                    FlipCenterAlignedTopBarActions.BACK_PRESS -> R.string.content_desc_arrow_back
+                    FlipCenterAlignedTopBarActions.CLOSE -> R.string.content_desc_close
+                }
+            val imageVector =
+                when (actions) {
+                    FlipCenterAlignedTopBarActions.BACK_PRESS -> R.drawable.ic_arrow_back
+                    FlipCenterAlignedTopBarActions.CLOSE -> R.drawable.ic_close
+                }
             FlipIconButton(
                 modifier = Modifier.align(Alignment.CenterStart),
                 imageVector = ImageVector.vectorResource(imageVector),
                 contentDescription = stringResource(id = contendDesc),
                 iconSize = iconSize,
                 onClick = onAction,
-                tint = FlipTheme.colors.main
+                tint = FlipTheme.colors.main,
             )
         }
 
@@ -70,7 +77,7 @@ fun FlipCenterAlignedTopBar(
             modifier = Modifier.align(Alignment.Center),
             text = title,
             style = FlipTheme.typography.headline4,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         if (options != null) {
@@ -78,7 +85,7 @@ fun FlipCenterAlignedTopBar(
                 modifier = Modifier.align(Alignment.CenterEnd),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                content = options
+                content = options,
             )
         }
     }
@@ -104,15 +111,15 @@ private fun Preview2() {
                     imageVector = ImageVector.vectorResource(R.drawable.ic_share_2),
                     contentDescription = null,
                     onClick = { },
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
                 FlipIconButton(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                     contentDescription = null,
                     onClick = { },
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
-            }
+            },
         )
     }
 }
@@ -129,9 +136,9 @@ private fun Preview3() {
                 Text(
                     text = "버튼 이름",
                     style = FlipTheme.typography.body6,
-                    color = FlipTheme.colors.gray6
+                    color = FlipTheme.colors.gray6,
                 )
-            }
+            },
         )
     }
 }
@@ -150,15 +157,15 @@ private fun Preview4() {
                     imageVector = ImageVector.vectorResource(R.drawable.ic_share_2),
                     contentDescription = null,
                     onClick = { },
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
                 FlipIconButton(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                     contentDescription = null,
                     onClick = { },
-                    tint = FlipTheme.colors.main
+                    tint = FlipTheme.colors.main,
                 )
-            }
+            },
         )
     }
 }

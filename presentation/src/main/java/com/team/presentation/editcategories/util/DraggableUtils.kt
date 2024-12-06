@@ -36,49 +36,50 @@ inline fun <T : Any> LazyListScope.draggableItems(
     crossinline keyProvider: (Int, T) -> Any,
     crossinline content: @Composable (Modifier, Int, T) -> Unit,
 ) {
-
     itemsIndexed(
         items = items,
-        //TODO 해당 파라미터를 적용하면 왼쪽으로 스크롤 시 이슈 발생 해서 일단 제거,
+        // TODO 해당 파라미터를 적용하면 왼쪽으로 스크롤 시 이슈 발생 해서 일단 제거,
         // 제거 하면 이슈는 사라지지만 애니메이션 적용 안됨
 //        key = { index, item -> keyProvider(index, item) },
-        contentType = { index, _ -> DraggableItem(index = index) }
+        contentType = { index, _ -> DraggableItem(index = index) },
     ) { index, item ->
 
-        val modifier = if (dragAndDropState.draggingItemIndex == index) {
-            Modifier
-                .zIndex(1f)
-                .graphicsLayer {
-                    when (dragAndDropState.dragDirection) {
-                        DragDirection.Horizontal -> {
-                            translationX = dragAndDropState.delta
-                        }
-                        DragDirection.Vertical -> {
-                            translationY = dragAndDropState.delta
+        val modifier =
+            if (dragAndDropState.draggingItemIndex == index) {
+                Modifier
+                    .zIndex(1f)
+                    .graphicsLayer {
+                        when (dragAndDropState.dragDirection) {
+                            DragDirection.Horizontal -> {
+                                translationX = dragAndDropState.delta
+                            }
+                            DragDirection.Vertical -> {
+                                translationY = dragAndDropState.delta
+                            }
                         }
                     }
-                }
-        } else {
-            Modifier
-                .animateItemPlacement()
-        }
+            } else {
+                Modifier
+                    .animateItemPlacement()
+            }
 
         content(modifier, index, item)
     }
 }
 
 fun Modifier.dragContainer(dragDropState: DragAndDropState): Modifier {
-    return this.then(pointerInput(dragDropState) {
-        detectDragGesturesAfterLongPress(
-            onDrag = { change, offset ->
-                change.consume()
-                dragDropState.onDrag(offset = offset)
-            },
-            onDragStart = { offset -> dragDropState.onDragStart(offset) },
-            onDragEnd = { dragDropState.onDragInterrupted() },
-            onDragCancel = { dragDropState.onDragInterrupted() }
-        )
-    }
+    return this.then(
+        pointerInput(dragDropState) {
+            detectDragGesturesAfterLongPress(
+                onDrag = { change, offset ->
+                    change.consume()
+                    dragDropState.onDrag(offset = offset)
+                },
+                onDragStart = { offset -> dragDropState.onDragStart(offset) },
+                onDragEnd = { dragDropState.onDragInterrupted() },
+                onDragCancel = { dragDropState.onDragInterrupted() },
+            )
+        },
     )
 }
 
@@ -87,9 +88,8 @@ fun rememberDragAndDropState(
     dragDirection: DragDirection,
     lazyListState: LazyListState,
     onMove: (Int, Int) -> Unit,
-    draggableItemsNum: Int
+    draggableItemsNum: Int,
 ): DragAndDropState {
-
     val state =
         remember(lazyListState) {
             DragAndDropState(
@@ -112,9 +112,8 @@ class DragAndDropState(
     val dragDirection: DragDirection,
     private val draggableItemsNum: Int,
     private val lazyListState: LazyListState,
-    private val onMove: (Int, Int) -> Unit
+    private val onMove: (Int, Int) -> Unit,
 ) {
-
     var draggingItemIndex: Int? by mutableStateOf(null)
 
     var delta by mutableFloatStateOf(0f)
@@ -127,10 +126,11 @@ class DragAndDropState(
         lazyListState.layoutInfo.visibleItemsInfo
             // offset 이 현재 선택한 Item 영역 내부에 있는지 확인 하고 null 이 아니면 반환
             .firstOrNull { item ->
-                val targetOffset = when(dragDirection) {
-                    DragDirection.Horizontal -> offset.x.toInt()
-                    DragDirection.Vertical -> offset.y.toInt()
-                }
+                val targetOffset =
+                    when (dragDirection) {
+                        DragDirection.Horizontal -> offset.x.toInt()
+                        DragDirection.Vertical -> offset.y.toInt()
+                    }
                 targetOffset in item.offset..(item.offset + item.size)
             }
             ?.also {
@@ -150,10 +150,11 @@ class DragAndDropState(
 
     internal fun onDrag(offset: Offset) {
         // offset 의 변화량
-        delta += when (dragDirection) {
-            DragDirection.Horizontal -> offset.x
-            DragDirection.Vertical -> offset.y
-        }
+        delta +=
+            when (dragDirection) {
+                DragDirection.Horizontal -> offset.x
+                DragDirection.Vertical -> offset.y
+            }
 
         val currentDraggingItemIndex =
             draggingItemIndex ?: return
@@ -168,8 +169,8 @@ class DragAndDropState(
         val targetItem =
             lazyListState.layoutInfo.visibleItemsInfo.find { item ->
                 middleOffset.toInt() in item.offset..item.offset + item.size &&
-                        currentDraggingItem.index != item.index &&
-                        item.contentType is DraggableItem
+                    currentDraggingItem.index != item.index &&
+                    item.contentType is DraggableItem
             }
 
         if (targetItem != null) {

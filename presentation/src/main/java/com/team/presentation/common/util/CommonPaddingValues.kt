@@ -16,10 +16,13 @@ import androidx.compose.ui.unit.dp
 internal object CommonPaddingValues {
     /** 10 dp */
     val TopBarVertical = 10.dp
+
     /** 6 dp */
     private val TopBarHorizontal = 6.dp
+
     /** 16 dp */
     val HorizontalPadding = 16.dp
+
     /**
      * TouchTarget이 포함된 요소를 사용하는 TopBar에 적용
      *
@@ -28,10 +31,12 @@ internal object CommonPaddingValues {
      * @see TopBarHorizontal
      * @see TopBarVertical
      */
-    val TopBarWithTouchTarget = PaddingValues(
-        horizontal = TopBarHorizontal,
-        vertical = TopBarVertical
-    )
+    val TopBarWithTouchTarget =
+        PaddingValues(
+            horizontal = TopBarHorizontal,
+            vertical = TopBarVertical,
+        )
+
     /**
      * 로고가 포함된 TopBar에 적용
      *
@@ -43,10 +48,11 @@ internal object CommonPaddingValues {
      *
      * bottom: [CommonPaddingValues.TopBarVertical]
      */
-    val TopBarWithLogo = PaddingValues(
-        start = 16.dp,
-        end = 7.dp,
-        top = TopBarVertical,
-        bottom = TopBarVertical
-    )
+    val TopBarWithLogo =
+        PaddingValues(
+            start = 16.dp,
+            end = 7.dp,
+            top = TopBarVertical,
+            bottom = TopBarVertical,
+        )
 }

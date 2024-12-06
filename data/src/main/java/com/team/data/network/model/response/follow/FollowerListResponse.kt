@@ -13,5 +13,4 @@ data class FollowerListResponse(
     @Json(name = "followers") val followers: List<DisplayProfileResponse>,
 )
 
-fun FollowerListResponse.toDomainModel(): DisplayProfileList =
-    DisplayProfileList(hasNext, nextCursor, followers.toDomainModel())
+fun FollowerListResponse.toDomainModel(): DisplayProfileList = DisplayProfileList(hasNext, nextCursor, followers.toDomainModel())

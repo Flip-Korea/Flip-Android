@@ -22,13 +22,14 @@ import com.team.designsystem.theme.FlipTheme
 @Composable
 fun SkeletonBox(
     size: DpSize,
-    shape: Shape = RoundedCornerShape(11.dp)
+    shape: Shape = RoundedCornerShape(11.dp),
 ) {
     Box(
-        modifier = Modifier
-            .clip(shape)
-            .size(size)
-            .background(FlipTheme.colors.gray3, shape)
+        modifier =
+            Modifier
+                .clip(shape)
+                .size(size)
+                .background(FlipTheme.colors.gray3, shape),
     )
 }
 

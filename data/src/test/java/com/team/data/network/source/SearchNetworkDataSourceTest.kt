@@ -27,7 +27,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class SearchNetworkDataSourceTest {
-
     private lateinit var searchNetworkApi: SearchNetworkApi
     private lateinit var searchNetworkDataSource: SearchNetworkDataSource
     private lateinit var server: MockWebServer
@@ -56,55 +55,58 @@ class SearchNetworkDataSourceTest {
     }
 
     @Test
-    fun `게시글 검색 (searchByPost())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
+    fun `게시글 검색 (searchByPost())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postsResponseTestData)
+                },
+            )
 
-        val expectedResponse =
-            moshi.adapter(PostListResponse::class.java).fromJson(postsResponseTestData)!!
+            val expectedResponse =
+                moshi.adapter(PostListResponse::class.java).fromJson(postsResponseTestData)!!
 
-        val actualResponse = searchNetworkDataSource.searchByPost("123", "aaa", 15)
+            val actualResponse = searchNetworkDataSource.searchByPost("123", "aaa", 15)
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
-    }
-
-    @Test
-    fun `프로필 검색 (searchByNickname())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(displayProfileListResponseTestData)
-            }
-        )
-
-        val expectedResponse =
-            moshi
-                .adapter(DisplayProfileListResponse::class.java)
-                .fromJson(displayProfileListResponseTestData)!!
-
-        val actualResponse = searchNetworkDataSource.searchByNickname("123", "aaa", 15)
-
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
-    }
+            assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        }
 
     @Test
-    fun `태그 검색 (searchByTag())`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(tagListResponseTestData)
-            }
-        )
+    fun `프로필 검색 (searchByNickname())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(displayProfileListResponseTestData)
+                },
+            )
 
-        val expectedResponse =
-            moshi.adapter(TagListResponse::class.java).fromJson(tagListResponseTestData)!!
+            val expectedResponse =
+                moshi
+                    .adapter(DisplayProfileListResponse::class.java)
+                    .fromJson(displayProfileListResponseTestData)!!
 
-        val actualResponse = searchNetworkDataSource.searchByTag("123", "aaa", 15)
+            val actualResponse = searchNetworkDataSource.searchByNickname("123", "aaa", 15)
 
-        assertEquals(expectedResponse, (actualResponse as Result.Success).data)
-    }
+            assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        }
+
+    @Test
+    fun `태그 검색 (searchByTag())`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(tagListResponseTestData)
+                },
+            )
+
+            val expectedResponse =
+                moshi.adapter(TagListResponse::class.java).fromJson(tagListResponseTestData)!!
+
+            val actualResponse = searchNetworkDataSource.searchByTag("123", "aaa", 15)
+
+            assertEquals(expectedResponse, (actualResponse as Result.Success).data)
+        }
 }

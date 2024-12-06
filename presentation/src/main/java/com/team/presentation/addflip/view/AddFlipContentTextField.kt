@@ -35,20 +35,20 @@ fun AddFlipContentTextField(
     onContentChanged: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
 ) {
-
     BasicTextField(
-        modifier = modifier
-            .heightIn(min = 200.dp, max = (200 * 2).dp)
-            .focusCleaner(focusManager)
+        modifier =
+            modifier
+                .heightIn(min = 200.dp, max = (200 * 2).dp)
+                .focusCleaner(focusManager)
 //            .focusRequester(focusRequester)
 //            .focusable()
 //            .clickable {}
-            .onFocusChanged {
-                when {
-                    it.isFocused -> onFocusChanged(it.isFocused)
-                    it.isCaptured -> onFocusChanged(it.isCaptured)
-                }
-            },
+                .onFocusChanged {
+                    when {
+                        it.isFocused -> onFocusChanged(it.isFocused)
+                        it.isCaptured -> onFocusChanged(it.isCaptured)
+                    }
+                },
         value = content,
         onValueChange = { onContentChanged(it) },
         textStyle = FlipTheme.typography.headline1,
@@ -58,7 +58,7 @@ fun AddFlipContentTextField(
 
         Box(
             modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Box(modifier = Modifier.align(Alignment.TopStart)) {
                 innerTextField()
@@ -66,7 +66,7 @@ fun AddFlipContentTextField(
                     Text(
                         text = placeholder,
                         style = FlipTheme.typography.body5,
-                        color = FlipTheme.colors.gray5
+                        color = FlipTheme.colors.gray5,
                     )
                 }
             }
@@ -77,20 +77,20 @@ fun AddFlipContentTextField(
 @Preview(showBackground = true)
 @Composable
 private fun AddFlipContentTextFieldPreview() {
-
     val (title, onTitleChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = { focusManager.clearFocus() }
-                ),
-            contentAlignment = Alignment.TopCenter
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { focusManager.clearFocus() },
+                    ),
+            contentAlignment = Alignment.TopCenter,
         ) {
             AddFlipContentTextField(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),

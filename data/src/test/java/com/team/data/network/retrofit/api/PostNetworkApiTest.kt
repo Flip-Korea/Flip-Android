@@ -36,7 +36,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class PostNetworkApiTest {
-
     private lateinit var postNetworkApi: PostNetworkApi
     private lateinit var server: MockWebServer
     private lateinit var moshi: Moshi
@@ -62,271 +61,287 @@ class PostNetworkApiTest {
     }
 
     @Test
-    fun `API-013 (모든 게시글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
-
-        val adapter = moshi.adapter(PostListResponse::class.java)
-        val expectedResponse = adapter.fromJson(postsResponseTestData)
-
-        val actualResponse = postNetworkApi.getPosts("0001", 15)
-
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-    }
-
-    @Test
-    fun `API-051 (단일 게시글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postResponseTestData)
-            }
-        )
-
-        val adapter = moshi.adapter(PostResponse::class.java)
-        val expectedResponse = adapter.fromJson(postResponseTestData)
-
-        val actualResponse = postNetworkApi.getPostById(12345)
-
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-        assertEquals(expectedResponse!!.postId, actualResponse.body()!!.postId)
-    }
-
-    @Test
-    fun `API-014 (게시글 작성)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
-
-        val requestAdapter = moshi.adapter(PostRequest::class.java)
-
-        val expectedPostRequest = requestAdapter.fromJson(postRequestTestData)!!
-        val actualResponse = postNetworkApi.addPost(expectedPostRequest)
-
-        val recordedRequest = server.takeRequest()
-
-        val actualPostRequest = requestAdapter.fromJson(recordedRequest.body.peek())
-
-        assertNotNull(actualPostRequest)
-        assertEquals(201, actualResponse.code())
-        assertEquals(expectedPostRequest, actualPostRequest)
-    }
-
-    @Test
-    fun ` API-052 (게시글 편집)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
-
-        val requestAdapter = moshi.adapter(PostRequest::class.java)
-
-        val actualResponse = postNetworkApi.editPost(requestAdapter.fromJson(postRequestTestData)!!)
-
-        assertNotNull(actualResponse)
-        assertEquals(201, actualResponse.code())
-    }
-
-    @Test
-    fun `API-015 (카테고리, 회원, 태그 별 게시글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
-
-        val adapter = moshi.adapter(PostListResponse::class.java)
-        val expectedResponse = adapter.fromJson(postsResponseTestData)
-
-        val actualResponse =
-            postNetworkApi.getPostsByType(
-                type = PathParameterType.Post.CATEGORY.asString(),
-                typeId = "1",
-                cursor = "0001",
-                limit = 15,
+    fun `API-013 (모든 게시글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postsResponseTestData)
+                },
             )
 
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-    }
+            val adapter = moshi.adapter(PostListResponse::class.java)
+            val expectedResponse = adapter.fromJson(postsResponseTestData)
+
+            val actualResponse = postNetworkApi.getPosts("0001", 15)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+        }
 
     @Test
-    fun `API-017 (게시글 삭제)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `API-051 (단일 게시글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postResponseTestData)
+                },
+            )
 
-        val actualResponse = postNetworkApi.deletePost(1)
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-    }
+            val adapter = moshi.adapter(PostResponse::class.java)
+            val expectedResponse = adapter.fromJson(postResponseTestData)
 
-    @Test
-    fun `API-021 (특정 분야(카테고리)에서 인기 플리퍼 게시글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(postsResponseTestData)
-            }
-        )
+            val actualResponse = postNetworkApi.getPostById(12345)
 
-        val adapter = moshi.adapter(PostListResponse::class.java)
-        val expectedResponse = adapter.fromJson(postsResponseTestData)
-
-        val actualResponse = postNetworkApi.getPostsByPopularUser(1, "0001", 15)
-
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-    }
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+            assertEquals(expectedResponse!!.postId, actualResponse.body()!!.postId)
+        }
 
     @Test
-    fun `API-023 (댓글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(commentResponseTestData)
-            }
-        )
+    fun `API-014 (게시글 작성)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
 
-        val adapter = moshi.adapter(CommentListResponse::class.java)
-        val expectedResponse = adapter.fromJson(commentResponseTestData)
+            val requestAdapter = moshi.adapter(PostRequest::class.java)
 
-        val actualResponse = postNetworkApi.getComments(1, "0001", 15)
+            val expectedPostRequest = requestAdapter.fromJson(postRequestTestData)!!
+            val actualResponse = postNetworkApi.addPost(expectedPostRequest)
 
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-    }
+            val recordedRequest = server.takeRequest()
 
-    @Test
-    fun `API-024 (댓글 작성)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
+            val actualPostRequest = requestAdapter.fromJson(recordedRequest.body.peek())
 
-        val requestAdapter = moshi.adapter(CommentRequest::class.java)
-        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
-
-        val actualResponse =
-            postNetworkApi.addComment(1, requestAdapter.fromJson(commentRequestTestData)!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
-
-        assertNotNull(actualResponse)
-        assertEquals(201, actualResponse.code())
-        assertEquals(expectedResponse!!.resultId, actualResponse.body()!!.resultId)
-    }
+            assertNotNull(actualPostRequest)
+            assertEquals(201, actualResponse.code())
+            assertEquals(expectedPostRequest, actualPostRequest)
+        }
 
     @Test
-    fun `API-029 (댓글 삭제(본인만))`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun ` API-052 (게시글 편집)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
 
-        val actualResponse = postNetworkApi.deleteComment(1)
+            val requestAdapter = moshi.adapter(PostRequest::class.java)
 
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-    }
+            val actualResponse = postNetworkApi.editPost(requestAdapter.fromJson(postRequestTestData)!!)
 
-    @Test
-    fun `API-027 (게시글 좋아요)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val requestAdapter = moshi.adapter(LikeRequest::class.java)
-        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
-
-        val actualResponse =
-            postNetworkApi.likePost(requestAdapter.fromJson(likePostRequestTestData)!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
-
-        assertNotNull(actualResponse)
-        assertEquals(201, actualResponse.code())
-        assertEquals(expectedResponse!!.resultId, 123)
-    }
+            assertNotNull(actualResponse)
+            assertEquals(201, actualResponse.code())
+        }
 
     @Test
-    fun `API-028 (게시글 좋아요 취소)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(201) })
+    fun `API-015 (카테고리, 회원, 태그 별 게시글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postsResponseTestData)
+                },
+            )
 
-        val requestAdapter = moshi.adapter(LikeRequest::class.java)
+            val adapter = moshi.adapter(PostListResponse::class.java)
+            val expectedResponse = adapter.fromJson(postsResponseTestData)
 
-        val actualResponse =
-            postNetworkApi.unLikePost(requestAdapter.fromJson(likePostRequestTestData)!!)
+            val actualResponse =
+                postNetworkApi.getPostsByType(
+                    type = PathParameterType.Post.CATEGORY.asString(),
+                    typeId = "1",
+                    cursor = "0001",
+                    limit = 15,
+                )
 
-        assertNotNull(actualResponse)
-        assertEquals(201, actualResponse.code())
-    }
-
-    @Test
-    fun `API-032 (임시저장 게시글 추가)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(201)
-                setBody(resultIdResponseTestData)
-            }
-        )
-
-        val requestAdapter = moshi.adapter(PostRequest::class.java)
-        val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
-
-        val actualResponse =
-            postNetworkApi.addTemporaryPost(requestAdapter.fromJson(postRequestTestData)!!)
-        val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
-
-        assertNotNull(actualResponse)
-        assertEquals(201, actualResponse.code())
-        assertEquals(expectedResponse!!.resultId, 123)
-    }
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+        }
 
     @Test
-    fun `API-033 (임시저장 게시글 삭제)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `API-017 (게시글 삭제)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-        val actualResponse = postNetworkApi.deleteTemporaryPost(1)
-
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-    }
-
-    @Test
-    fun `API-034 (임시저장 게시글 조회)`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(tempPostListResponseTestData)
-            }
-        )
-
-        val adapter = moshi.adapter(TempPostListResponse::class.java)
-        val expectedResponse = adapter.fromJson(tempPostListResponseTestData)
-
-        val actualResponse = postNetworkApi.getTemporaryPosts("0001", 15)
-
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-        assertEquals(expectedResponse, actualResponse.body()!!)
-    }
+            val actualResponse = postNetworkApi.deletePost(1)
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+        }
 
     @Test
-    fun `API-035 (임시저장 게시글 편집)`() = runTest {
-        server.enqueue(MockResponse().apply { setResponseCode(200) })
+    fun `API-021 (특정 분야(카테고리)에서 인기 플리퍼 게시글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(postsResponseTestData)
+                },
+            )
 
-        val adapter = moshi.adapter(PostRequest::class.java)
+            val adapter = moshi.adapter(PostListResponse::class.java)
+            val expectedResponse = adapter.fromJson(postsResponseTestData)
 
-        val actualResponse =
-            postNetworkApi.editTemporaryPost(1, adapter.fromJson(postRequestTestData)!!)
+            val actualResponse = postNetworkApi.getPostsByPopularUser(1, "0001", 15)
 
-        assertNotNull(actualResponse)
-        assertEquals(200, actualResponse.code())
-    }
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+        }
+
+    @Test
+    fun `API-023 (댓글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(commentResponseTestData)
+                },
+            )
+
+            val adapter = moshi.adapter(CommentListResponse::class.java)
+            val expectedResponse = adapter.fromJson(commentResponseTestData)
+
+            val actualResponse = postNetworkApi.getComments(1, "0001", 15)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+        }
+
+    @Test
+    fun `API-024 (댓글 작성)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
+            )
+
+            val requestAdapter = moshi.adapter(CommentRequest::class.java)
+            val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
+
+            val actualResponse =
+                postNetworkApi.addComment(1, requestAdapter.fromJson(commentRequestTestData)!!)
+            val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
+
+            assertNotNull(actualResponse)
+            assertEquals(201, actualResponse.code())
+            assertEquals(expectedResponse!!.resultId, actualResponse.body()!!.resultId)
+        }
+
+    @Test
+    fun `API-029 (댓글 삭제(본인만))`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val actualResponse = postNetworkApi.deleteComment(1)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+        }
+
+    @Test
+    fun `API-027 (게시글 좋아요)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
+            )
+
+            val requestAdapter = moshi.adapter(LikeRequest::class.java)
+            val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
+
+            val actualResponse =
+                postNetworkApi.likePost(requestAdapter.fromJson(likePostRequestTestData)!!)
+            val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
+
+            assertNotNull(actualResponse)
+            assertEquals(201, actualResponse.code())
+            assertEquals(expectedResponse!!.resultId, 123)
+        }
+
+    @Test
+    fun `API-028 (게시글 좋아요 취소)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(201) })
+
+            val requestAdapter = moshi.adapter(LikeRequest::class.java)
+
+            val actualResponse =
+                postNetworkApi.unLikePost(requestAdapter.fromJson(likePostRequestTestData)!!)
+
+            assertNotNull(actualResponse)
+            assertEquals(201, actualResponse.code())
+        }
+
+    @Test
+    fun `API-032 (임시저장 게시글 추가)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(201)
+                    setBody(resultIdResponseTestData)
+                },
+            )
+
+            val requestAdapter = moshi.adapter(PostRequest::class.java)
+            val responseAdapter = moshi.adapter(ResultIdResponse::class.java)
+
+            val actualResponse =
+                postNetworkApi.addTemporaryPost(requestAdapter.fromJson(postRequestTestData)!!)
+            val expectedResponse = responseAdapter.fromJson(resultIdResponseTestData)
+
+            assertNotNull(actualResponse)
+            assertEquals(201, actualResponse.code())
+            assertEquals(expectedResponse!!.resultId, 123)
+        }
+
+    @Test
+    fun `API-033 (임시저장 게시글 삭제)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val actualResponse = postNetworkApi.deleteTemporaryPost(1)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+        }
+
+    @Test
+    fun `API-034 (임시저장 게시글 조회)`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(tempPostListResponseTestData)
+                },
+            )
+
+            val adapter = moshi.adapter(TempPostListResponse::class.java)
+            val expectedResponse = adapter.fromJson(tempPostListResponseTestData)
+
+            val actualResponse = postNetworkApi.getTemporaryPosts("0001", 15)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+            assertEquals(expectedResponse, actualResponse.body()!!)
+        }
+
+    @Test
+    fun `API-035 (임시저장 게시글 편집)`() =
+        runTest {
+            server.enqueue(MockResponse().apply { setResponseCode(200) })
+
+            val adapter = moshi.adapter(PostRequest::class.java)
+
+            val actualResponse =
+                postNetworkApi.editTemporaryPost(1, adapter.fromJson(postRequestTestData)!!)
+
+            assertNotNull(actualResponse)
+            assertEquals(200, actualResponse.code())
+        }
 }

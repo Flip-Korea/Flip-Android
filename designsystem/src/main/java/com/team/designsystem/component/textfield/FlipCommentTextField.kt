@@ -49,19 +49,21 @@ private fun CommentButton(
     onComment: () -> Unit,
 ) {
     Surface(
-        modifier = modifier
-            .clip(CircleShape)
-            .clickableSingle { onComment() },
+        modifier =
+            modifier
+                .clip(CircleShape)
+                .clickableSingle { onComment() },
         shape = CircleShape,
-        color = color
+        color = color,
     ) {
         Icon(
-            modifier = Modifier
-                .size(12.dp, 15.dp)
-                .padding(horizontal = 9.dp, vertical = 8.dp),
+            modifier =
+                Modifier
+                    .size(12.dp, 15.dp)
+                    .padding(horizontal = 9.dp, vertical = 8.dp),
             imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_up),
             contentDescription = stringResource(id = R.string.content_desc_error),
-            tint = Color.White
+            tint = Color.White,
         )
     }
 }
@@ -72,40 +74,42 @@ fun FlipCommentTextField(
     text: String,
     onTextChanged: (String) -> Unit,
     focusManager: FocusManager,
-    onComment: () -> Unit
+    onComment: () -> Unit,
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
 
     BasicTextField(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerTextField)
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 47.dp)
-            .wrapContentHeight()
-            .focusCleaner(focusManager),
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerTextField)
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 47.dp)
+                .wrapContentHeight()
+                .focusCleaner(focusManager),
         value = text,
         onValueChange = onTextChanged,
         textStyle = FlipTheme.typography.body5,
         interactionSource = interactionSource,
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        cursorBrush = FlipTextFieldStyles.cursorBrushPoint
+        cursorBrush = FlipTextFieldStyles.cursorBrushPoint,
     ) { innerTextField ->
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-                .background(FlipTheme.colors.gray1)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .background(FlipTheme.colors.gray1)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
-                    .wrapContentSize(Alignment.CenterStart),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                        .wrapContentSize(Alignment.CenterStart),
             ) {
                 if (!focused && text.isEmpty()) {
                     Text(
@@ -114,19 +118,25 @@ fun FlipCommentTextField(
                         color = FlipTheme.colors.gray5,
                         textAlign = TextAlign.Start,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
                     )
-                } else { innerTextField() }
+                } else {
+                    innerTextField()
+                }
             }
 
             CommentButton(
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .size(31.dp),
-                color = if (text.isNotEmpty()) {
-                    FlipTheme.colors.point
-                } else FlipTheme.colors.gray3,
-                onComment = { if (text.isNotEmpty()) onComment() }
+                modifier =
+                    Modifier
+                        .padding(start = 15.dp)
+                        .size(31.dp),
+                color =
+                    if (text.isNotEmpty()) {
+                        FlipTheme.colors.point
+                    } else {
+                        FlipTheme.colors.gray3
+                    },
+                onComment = { if (text.isNotEmpty()) onComment() },
             )
         }
     }
@@ -135,7 +145,6 @@ fun FlipCommentTextField(
 @Preview(showBackground = true)
 @Composable
 private fun FlipCommentTextFieldPreview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
@@ -144,7 +153,7 @@ private fun FlipCommentTextFieldPreview() {
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
-            onComment = { }
+            onComment = { },
         )
     }
 }
@@ -156,7 +165,7 @@ private fun CommentButtonPreview() {
         CommentButton(
             modifier = Modifier.size(31.dp),
             color = FlipTheme.colors.point,
-            onComment = { }
+            onComment = { },
         )
     }
 }

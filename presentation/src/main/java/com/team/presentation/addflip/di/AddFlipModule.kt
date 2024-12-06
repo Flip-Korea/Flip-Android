@@ -12,7 +12,6 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 class AddFlipModule {
-
     @Provides
     @ViewModelScoped
     fun provideValidatePostUseCase(): ValidatePostUseCase = ValidatePostUseCase()

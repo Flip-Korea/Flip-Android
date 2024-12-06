@@ -32,11 +32,12 @@ class AddFlipViewModelTest : BaseTest() {
     }
 
     @Test
-    fun `카테고리 가져오기`() = runTest {
-        val viewModel = testHelper.createViewModel()
-        val categoriesState = viewModel.currentUiState as AddFlipContract.UiState.Content
-        assertEquals(categoriesState.categories, categoriesTestData)
-    }
+    fun `카테고리 가져오기`() =
+        runTest {
+            val viewModel = testHelper.createViewModel()
+            val categoriesState = viewModel.currentUiState as AddFlipContract.UiState.Content
+            assertEquals(categoriesState.categories, categoriesTestData)
+        }
 
     @Test
     fun `Flip(Post) 등록하기 성공 (onSavePost())`() {
@@ -51,11 +52,14 @@ class AddFlipViewModelTest : BaseTest() {
                 }
         }
 
-        viewModelTestTemplate.`when` {
+        viewModelTestTemplate.waitWhen {
             viewModel.processEvent(
                 AddFlipContract.UiEvent.SavePost(
-                    TITLE, CONTENTS, BG_COLOR_TYPE, CATEGORY
-                )
+                    TITLE,
+                    CONTENTS,
+                    BG_COLOR_TYPE,
+                    CATEGORY,
+                ),
             )
         }
 
@@ -73,7 +77,7 @@ class AddFlipViewModelTest : BaseTest() {
             CONTENTS,
             BG_COLOR_TYPE,
             CATEGORY,
-            ERROR_BODY
+            ERROR_BODY,
         )
 
         viewModelTestTemplate.launch {
@@ -82,18 +86,21 @@ class AddFlipViewModelTest : BaseTest() {
             }
         }
 
-        viewModelTestTemplate.`when` {
+        viewModelTestTemplate.waitWhen {
             viewModel.processEvent(
                 AddFlipContract.UiEvent.SavePost(
-                    TITLE, CONTENTS, BG_COLOR_TYPE, CATEGORY
-                )
+                    TITLE,
+                    CONTENTS,
+                    BG_COLOR_TYPE,
+                    CATEGORY,
+                ),
             )
         }
 
         viewModelTestTemplate.then {
             assertEquals(
                 expectedError,
-                UiText.DynamicString(ERROR_BODY.message)
+                UiText.DynamicString(ERROR_BODY.message),
             )
         }
     }

@@ -16,11 +16,11 @@ import javax.inject.Named
 @Module
 @InstallIn(SingletonComponent::class)
 object TestModule {
-
     @Provides
     @Named("test_db")
-    fun provideInMemoryDatabase(@ApplicationContext context: Context): FlipDatabase {
-
+    fun provideInMemoryDatabase(
+        @ApplicationContext context: Context,
+    ): FlipDatabase {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         val listTypeConverter = ListTypeConverter(moshi)

@@ -1,6 +1,5 @@
 package com.team.presentation.addflip.state
 
-import androidx.compose.runtime.Immutable
 import com.team.domain.model.category.Category
 import com.team.presentation.util.uitext.UiText
 

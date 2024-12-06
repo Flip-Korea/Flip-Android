@@ -18,17 +18,19 @@ import com.team.designsystem.theme.FlipTheme
 private fun Modifier.crop(
     horizontal: Dp = 0.dp,
     vertical: Dp = 0.dp,
-): Modifier = this.layout { measurable, constraints ->
-    val placeable = measurable.measure(constraints)
-    fun Dp.toPxInt(): Int = this.toPx().toInt()
+): Modifier =
+    this.layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
 
-    layout(
-        placeable.width - (horizontal * 2).toPxInt(),
-        placeable.height - (vertical * 2).toPxInt()
-    ) {
-        placeable.placeRelative(-horizontal.toPx().toInt(), -vertical.toPx().toInt())
+        fun Dp.toPxInt(): Int = this.toPx().toInt()
+
+        layout(
+            placeable.width - (horizontal * 2).toPxInt(),
+            placeable.height - (vertical * 2).toPxInt(),
+        ) {
+            placeable.placeRelative(-horizontal.toPx().toInt(), -vertical.toPx().toInt())
+        }
     }
-}
 
 @Composable
 fun FlipDropdownWrapper(
@@ -46,7 +48,7 @@ fun FlipDropdownWrapper(
                 .wrapContentSize()
 //                .crop(vertical = 8.dp)
                 .background(FlipTheme.colors.white),
-            offset.copy(y = offset.y + space)
+            offset.copy(y = offset.y + space),
         )
     }
 }

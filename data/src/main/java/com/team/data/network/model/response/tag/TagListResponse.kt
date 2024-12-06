@@ -12,5 +12,4 @@ data class TagListResponse(
     @Json(name = "tags") val tags: List<TagResultResponse>,
 )
 
-fun TagListResponse.toDomainModel(): TagResultList =
-    TagResultList(searchTag, hasNext, nextCursor, tags.toDomainModel())
+fun TagListResponse.toDomainModel(): TagResultList = TagResultList(searchTag, hasNext, nextCursor, tags.toDomainModel())

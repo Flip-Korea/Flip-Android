@@ -29,7 +29,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class CategoryNetworkDataSourceTest {
-
     private lateinit var categoryNetworkApi: CategoryNetworkApi
     private lateinit var categoryNetworkDataSource: CategoryNetworkDataSource
     private lateinit var server: MockWebServer
@@ -72,21 +71,22 @@ class CategoryNetworkDataSourceTest {
     }
 
     @Test
-    fun `getCategories Call Test`() = runTest {
-        server.enqueue(
-            MockResponse().apply {
-                setResponseCode(200)
-                setBody(networkCategoriesTestData)
-            }
-        )
+    fun `getCategories Call Test`() =
+        runTest {
+            server.enqueue(
+                MockResponse().apply {
+                    setResponseCode(200)
+                    setBody(networkCategoriesTestData)
+                },
+            )
 
-        val actualResponse = categoryNetworkDataSource.getCategories()
+            val actualResponse = categoryNetworkDataSource.getCategories()
 
-        val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
-        val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
-        val expectedResponse = adapter.fromJson(networkCategoriesTestData)
+            val listType = Types.newParameterizedType(List::class.java, CategoryResponse::class.java)
+            val adapter: JsonAdapter<List<CategoryResponse>> = moshi.adapter(listType)
+            val expectedResponse = adapter.fromJson(networkCategoriesTestData)
 
-        assertNotNull(actualResponse)
-        assertEquals(expectedResponse!!, (actualResponse as Result.Success).data)
-    }
+            assertNotNull(actualResponse)
+            assertEquals(expectedResponse!!, (actualResponse as Result.Success).data)
+        }
 }

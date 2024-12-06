@@ -16,18 +16,18 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddPostUseCaseTest {
-
     private val postRepository: PostRepository = mockk()
     private val addPostUseCases = AddPostUseCase(postRepository)
 
     @Test
-    fun `플립 글 추가 성공`() = runTest {
-        // Given
-        every { postRepository.addPost(newPostTestData) } returns flowOf(Result.Success(true))
+    fun `플립 글 추가 성공`() =
+        runTest {
+            // Given
+            every { postRepository.addPost(newPostTestData) } returns flowOf(Result.Success(true))
 
-        // When
-        val result =
-            addPostUseCases(
+            // When
+            val result =
+                addPostUseCases(
                     newPostTestData.title,
                     newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
                     newPostTestData.bgColorType,
@@ -35,22 +35,23 @@ class AddPostUseCaseTest {
                     newPostTestData.tags,
                     newPostTestData.categoryId!!,
                 )
-                .first()
+                    .first()
 
-        // Then
-        assert((result as Result.Success).data)
-    }
+            // Then
+            assert((result as Result.Success).data)
+        }
 
     @Test
-    fun `플립 글 추가 실패`() = runTest {
-        // Given
-        val error = ErrorType.Network.BAD_REQUEST
-        every { postRepository.addPost(newPostTestData) } returns
-            flowOf(Result.Error(error = error))
+    fun `플립 글 추가 실패`() =
+        runTest {
+            // Given
+            val error = ErrorType.Network.BAD_REQUEST
+            every { postRepository.addPost(newPostTestData) } returns
+                flowOf(Result.Error(error = error))
 
-        // When
-        val result =
-            addPostUseCases(
+            // When
+            val result =
+                addPostUseCases(
                     newPostTestData.title,
                     newPostTestData.content.split(FlipContentSeparator.SEPARATOR),
                     newPostTestData.bgColorType,
@@ -58,9 +59,9 @@ class AddPostUseCaseTest {
                     newPostTestData.tags,
                     newPostTestData.categoryId!!,
                 )
-                .first()
+                    .first()
 
-        // Then
-        assertEquals((result as Result.Error).error, error)
-    }
+            // Then
+            assertEquals((result as Result.Error).error, error)
+        }
 }

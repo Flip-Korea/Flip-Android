@@ -13,11 +13,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-
     @Provides
     @Singleton
     fun provideNetworkCheckUtil(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): NetworkCheckUtil {
         return NetworkCheckUtilImpl(context)
     }

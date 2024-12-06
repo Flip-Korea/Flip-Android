@@ -9,7 +9,6 @@ import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
-
     /**
      * Post(Flip) 리스트를 네트워크에서 페이지네이션을 통해 가져온다.
      * 1. 카테고리(전체) 및 플립(숏폼부분) 에 해당
@@ -17,7 +16,10 @@ interface PostRepository {
      * @param cursor nextCursor 즉, 다음 커서로 요청하여 다음 페이지를 불러온다.
      * @param limit 1 페이지 당 불러올 개수
      */
-    fun getPostsPagination(cursor: String?, limit: Int): Flow<Result<PostList, ErrorType>>
+    fun getPostsPagination(
+        cursor: String?,
+        limit: Int,
+    ): Flow<Result<PostList, ErrorType>>
 
     /**
      * ID 로 Post(Flip)를 가져온다.
@@ -83,7 +85,10 @@ interface PostRepository {
      * @param profileId 본인의 Profile ID
      * @param postId 좋아요를 누른 Post ID
      */
-    fun likePost(profileId: String, postId: Int): Flow<Result<Boolean, ErrorType>>
+    fun likePost(
+        profileId: String,
+        postId: Int,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * Post(Flip) 좋아요 취소 요청
@@ -91,5 +96,8 @@ interface PostRepository {
      * @param profileId 본인의 Profile ID
      * @param postId 좋아요를 누른 Post ID
      */
-    fun unLikePost(profileId: String, postId: Int): Flow<Result<Boolean, ErrorType>>
+    fun unLikePost(
+        profileId: String,
+        postId: Int,
+    ): Flow<Result<Boolean, ErrorType>>
 }

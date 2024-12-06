@@ -8,7 +8,6 @@ import com.squareup.moshi.Types
 
 @ProvidedTypeConverter
 class ListTypeConverter(private val moshi: Moshi) {
-
     // List<Int>
     @TypeConverter
     fun intListToJson(list: List<Int>?): String? {

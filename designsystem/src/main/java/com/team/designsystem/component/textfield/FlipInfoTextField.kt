@@ -59,43 +59,48 @@ fun FlipInfoTextField(
     errorMessage: String? = null,
     placeholder: String? = null,
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
 
     val placeholderEnabled = placeholder != null && !focused && text.isEmpty()
 
-    val backgroundColor = if (placeholderEnabled) {
-        FlipTheme.colors.gray1
-    } else {
-        FlipTheme.colors.white
-    }
+    val backgroundColor =
+        if (placeholderEnabled) {
+            FlipTheme.colors.gray1
+        } else {
+            FlipTheme.colors.white
+        }
 
-    val borderColor = if (placeholderEnabled) Color.Transparent else {
+    val borderColor =
+        if (placeholderEnabled) {
+            Color.Transparent
+        } else {
+            when {
+                errorMessage != null -> FlipTheme.colors.statusRed
+                valid -> FlipTheme.colors.point
+                else -> FlipTheme.colors.gray4
+            }
+        }
+    val counterColor =
         when {
             errorMessage != null -> FlipTheme.colors.statusRed
             valid -> FlipTheme.colors.point
-            else -> FlipTheme.colors.gray4
+            else -> FlipTheme.colors.gray6
         }
-    }
-    val counterColor = when {
-        errorMessage != null -> FlipTheme.colors.statusRed
-        valid -> FlipTheme.colors.point
-        else -> FlipTheme.colors.gray6
-    }
 
     Column(
         modifier = modifier.wrapContentSize(),
         verticalArrangement = Arrangement.spacedBy(6.dp, alignment = Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BasicTextField(
-            modifier = Modifier
-                .clip(FlipTheme.shapes.roundedCornerTextField)
-                .border(1.dp, borderColor, FlipTheme.shapes.roundedCornerTextField)
-                .fillMaxWidth()
-                .height(40.dp)
-                .focusCleaner(focusManager),
+            modifier =
+                Modifier
+                    .clip(FlipTheme.shapes.roundedCornerTextField)
+                    .border(1.dp, borderColor, FlipTheme.shapes.roundedCornerTextField)
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .focusCleaner(focusManager),
             value = text,
             onValueChange = onTextChanged,
             textStyle = FlipTheme.typography.body6,
@@ -105,17 +110,19 @@ fun FlipInfoTextField(
             cursorBrush = FlipTextFieldStyles.cursorBrushPoint,
         ) { innerTextField ->
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(backgroundColor)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(backgroundColor)
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .wrapContentSize(Alignment.CenterStart)
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .wrapContentSize(Alignment.CenterStart),
                 ) {
                     if (placeholderEnabled) {
                         Text(
@@ -125,7 +132,7 @@ fun FlipInfoTextField(
                             color = FlipTheme.colors.gray5,
                             textAlign = TextAlign.Start,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                     innerTextField()
@@ -133,15 +140,16 @@ fun FlipInfoTextField(
 
                 if (text.isNotEmpty()) {
                     Image(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                                onClick = { onTextChanged("") }
-                            ),
+                        modifier =
+                            Modifier
+                                .size(24.dp)
+                                .clickable(
+                                    interactionSource = interactionSource,
+                                    indication = null,
+                                    onClick = { onTextChanged("") },
+                                ),
                         imageVector = ImageVector.vectorResource(R.drawable.ic_tf_remove),
-                        contentDescription = stringResource(id = R.string.content_desc_tf_remove)
+                        contentDescription = stringResource(id = R.string.content_desc_tf_remove),
                     )
                 }
             }
@@ -152,7 +160,7 @@ fun FlipInfoTextField(
                 text = text,
                 errorMessage = errorMessage,
                 maxLength = maxLength,
-                counterColor = counterColor
+                counterColor = counterColor,
             )
         }
     }
@@ -167,45 +175,49 @@ private fun BottomSection(
     counterColor: Color,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
     ) {
         if (errorMessage != null) {
             Row(
-                modifier = Modifier
-                    .weight(3f)
-                    .wrapContentSize(Alignment.CenterStart),
+                modifier =
+                    Modifier
+                        .weight(3f)
+                        .wrapContentSize(Alignment.CenterStart),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     modifier = Modifier.size(16.dp, 14.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_warning),
-                    contentDescription = stringResource(id = R.string.content_desc_error)
+                    contentDescription = stringResource(id = R.string.content_desc_error),
                 )
                 Text(
                     text = errorMessage,
                     style = FlipTheme.typography.body3,
-                    color = FlipTheme.colors.statusRed
+                    color = FlipTheme.colors.statusRed,
                 )
             }
         }
         Text(
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentSize(Alignment.CenterEnd),
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = counterColor)) {
-                    append(text.length.toString())
-                }
-                withStyle(style = SpanStyle(letterSpacing = 2.sp)) {
-                    append("/")
-                }
-                append(maxLength.toString())
-            },
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .wrapContentSize(Alignment.CenterEnd),
+            text =
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = counterColor)) {
+                        append(text.length.toString())
+                    }
+                    withStyle(style = SpanStyle(letterSpacing = 2.sp)) {
+                        append("/")
+                    }
+                    append(maxLength.toString())
+                },
             style = FlipTheme.typography.body3,
-            color = FlipTheme.colors.gray6
+            color = FlipTheme.colors.gray6,
         )
     }
 }
@@ -213,21 +225,21 @@ private fun BottomSection(
 @Preview(name = "placeholder", showBackground = true)
 @Composable
 private fun FlipInfoTextFieldPreview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         FlipInfoTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
             valid = false,
-            placeholder = "placeholder"
+            placeholder = "placeholder",
         )
     }
 }
@@ -235,21 +247,21 @@ private fun FlipInfoTextFieldPreview() {
 @Preview(name = "default", showBackground = true)
 @Composable
 private fun FlipInfoTextField1Preview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         FlipInfoTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
             valid = false,
-            placeholder = null
+            placeholder = null,
         )
     }
 }
@@ -257,22 +269,22 @@ private fun FlipInfoTextField1Preview() {
 @Preview(name = "error", showBackground = true)
 @Composable
 private fun FlipInfoTextField2Preview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         FlipInfoTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
             valid = false,
             errorMessage = "Error Helper Text",
-            placeholder = null
+            placeholder = null,
         )
     }
 }
@@ -280,21 +292,21 @@ private fun FlipInfoTextField2Preview() {
 @Preview(name = "valid", showBackground = true)
 @Composable
 private fun FlipInfoTextField3Preview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         FlipInfoTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
             valid = true,
-            placeholder = null
+            placeholder = null,
         )
     }
 }
@@ -302,22 +314,22 @@ private fun FlipInfoTextField3Preview() {
 @Preview(name = "valid & error both", showBackground = true)
 @Composable
 private fun FlipInfoTextField4Preview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
         FlipInfoTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
             valid = true,
             errorMessage = "Error Helper Text",
-            placeholder = null
+            placeholder = null,
         )
     }
 }
@@ -325,7 +337,6 @@ private fun FlipInfoTextField4Preview() {
 @Preview(name = "dynamic", showBackground = true)
 @Composable
 private fun FlipInfoTextField5Preview() {
-
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
@@ -335,16 +346,17 @@ private fun FlipInfoTextField5Preview() {
     FlipAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             FlipInfoTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 text = text,
                 onTextChanged = onTextChanged,
                 focusManager = focusManager,
                 maxLength = 10,
                 valid = valid,
                 errorMessage = errorMessage,
-                placeholder = "5자 이상 10자 이하로 작성."
+                placeholder = "5자 이상 10자 이하로 작성.",
             )
 
             Button(
@@ -353,7 +365,7 @@ private fun FlipInfoTextField5Preview() {
                     val result = fakeValidation(text)
                     valid = result.first
                     errorMessage = result.second
-                }
+                },
             ) {
                 Text(text = "validation")
             }

@@ -12,7 +12,6 @@ class FakeCategoryRepository(
     private val hasLocalData: Boolean,
     private val isNetworkError: Boolean,
 ) : CategoryRepository {
-
     private val categories = MutableStateFlow(emptyList<Category>())
 
     override fun getCategoriesFromLocal(): Flow<List<Category>> = categories

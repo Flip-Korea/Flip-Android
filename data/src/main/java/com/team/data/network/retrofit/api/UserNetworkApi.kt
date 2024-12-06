@@ -27,10 +27,11 @@ import retrofit2.http.Query
 
 /** applied Interceptor & Authentication * */
 interface UserNetworkApi {
-
     /** API-007 (사용자 프로필 조회) * */
     @GET("/api/v1/profile/{profile_id}")
-    suspend fun getProfile(@Path("profile_id") profileId: String): Response<ProfileResponse>
+    suspend fun getProfile(
+        @Path("profile_id") profileId: String,
+    ): Response<ProfileResponse>
 
     /** API-011 (관심분야 카테고리 선택, 초기 설정 시에만 사용) * */
     @POST("/api/v1/profile/{profile_id}/category")
@@ -57,19 +58,27 @@ interface UserNetworkApi {
 
     /** API-030 (스크랩 추가) * */
     @POST("/api/v1/post/scrap")
-    suspend fun addScrap(@Body scrapRequest: ScrapRequest): Response<ResultIdResponse>
+    suspend fun addScrap(
+        @Body scrapRequest: ScrapRequest,
+    ): Response<ResultIdResponse>
 
     /** API-031 (스크랩 삭제) * */
     @DELETE("/api/v1/post/scrap/{scrap_id}")
-    suspend fun deleteScrap(@Path("scrap_id") scrapId: Long): Response<Unit>
+    suspend fun deleteScrap(
+        @Path("scrap_id") scrapId: Long,
+    ): Response<Unit>
 
     /** API-018 (계정 신고) * */
     @POST("/api/v1/profile/report")
-    suspend fun reportAccount(@Body reportRequest: ReportRequest): Response<Unit>
+    suspend fun reportAccount(
+        @Body reportRequest: ReportRequest,
+    ): Response<Unit>
 
     /** API-019 (계정 차단) * */
     @POST("/api/v1/profile/block")
-    suspend fun blockAccount(@Body blockRequest: BlockRequest): Response<Unit>
+    suspend fun blockAccount(
+        @Body blockRequest: BlockRequest,
+    ): Response<Unit>
 
     /** API-020 (계정 차단 해제) * */
     @DELETE("/api/v1/profile/{profile_id}/block/{blocked_id}")
@@ -87,11 +96,15 @@ interface UserNetworkApi {
 
     /** API-039 (팔로우) * */
     @POST("/api/v1/profile/follow")
-    suspend fun follow(@Body followRequest: FollowRequest): Response<Unit>
+    suspend fun follow(
+        @Body followRequest: FollowRequest,
+    ): Response<Unit>
 
     /** API-040 (언팔로우) * */
     @POST("/api/v1/profile/unfollow")
-    suspend fun unfollow(@Body followRequest: FollowRequest): Response<Unit>
+    suspend fun unfollow(
+        @Body followRequest: FollowRequest,
+    ): Response<Unit>
 
     /** API-041 (팔로워 목록 조회) * */
     @GET("/api/v1/profile/{profile_id}/follower")
@@ -128,10 +141,12 @@ interface UserNetworkApi {
     /** API-050(임시) (사용자 관심분야 카테고리 조회) * */
     @GET("/api/v1/profile/{profile_id}/category")
     suspend fun getMyCategories(
-        @Path("profile_id") profileId: String
+        @Path("profile_id") profileId: String,
     ): Response<List<CategoryResponse>>
 
     /** API-049 (본인 프로필 조회) * */
     @GET("/api/v1/profile/my/{profile_id}")
-    suspend fun getMyProfile(@Path("profile_id") profileId: String): Response<MyProfileResponse>
+    suspend fun getMyProfile(
+        @Path("profile_id") profileId: String,
+    ): Response<MyProfileResponse>
 }

@@ -76,7 +76,6 @@ fun TempFlipBoxScreen(
     isModalVisible: Boolean,
     onBackPress: () -> Unit,
 ) {
-
     var selectedTempPost by rememberSaveable { mutableStateOf(listOf<TempPost>()) }
     var selectMode by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(!selectMode) {
@@ -97,7 +96,8 @@ fun TempFlipBoxScreen(
         FlipModal(
             modalStyle = FlipModalStyle.MEDIUM,
             mainTitle = stringResource(id = R.string.temp_flip_box_screen_modal_title),
-            subTitle = stringResource(id = R.string.temp_flip_box_screen_modal_sub_title_1) +
+            subTitle =
+                stringResource(id = R.string.temp_flip_box_screen_modal_sub_title_1) +
                     " ${selectedTempPost.size}" +
                     stringResource(id = R.string.temp_flip_box_screen_modal_sub_title_2),
             itemText = stringResource(id = R.string.temp_flip_box_screen_modal_action_1),
@@ -106,7 +106,7 @@ fun TempFlipBoxScreen(
                 uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete(selectedTempPost.map { it.tempPostId }))
                 isOpen = false
             },
-            onItem2Click = { isOpen = false }
+            onItem2Click = { isOpen = false },
         )
     }
 
@@ -114,17 +114,18 @@ fun TempFlipBoxScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             FlipCenterAlignedTopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(CommonPaddingValues.TopBarWithTouchTarget),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 title = stringResource(id = R.string.temp_flip_box_screen_topbar_title),
                 onAction = onBackPress,
                 options = {
                     FlipTextButton(
                         text = stringResource(id = R.string.temp_flip_box_screen_topbar_btn),
-                        onClick = { selectMode = !selectMode }
+                        onClick = { selectMode = !selectMode },
                     )
-                }
+                },
             )
         },
         bottomBar = {
@@ -135,30 +136,32 @@ fun TempFlipBoxScreen(
                     onClick = {
                         uiEvent(TempFlipBoxContract.UiEvent.OnTempPostsDelete())
                     },
-                    enabled = selectedTempPost.isNotEmpty()
+                    enabled = selectedTempPost.isNotEmpty(),
                 )
             }
         },
-        containerColor = FlipTheme.colors.white
+        containerColor = FlipTheme.colors.white,
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(top = 4.dp, start = 16.dp, end = 16.dp)) {
             when (uiState) {
                 TempFlipBoxContract.UiState.Idle -> {
                     TempFlipBoxSkeletonScreen(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxWidth(),
-                        itemCount = SKELETON_ITEM_COUNT
+                        modifier =
+                            Modifier
+                                .padding(innerPadding)
+                                .fillMaxWidth(),
+                        itemCount = SKELETON_ITEM_COUNT,
                     )
                 }
 
                 TempFlipBoxContract.UiState.Loading -> {
                     TempFlipBoxSkeletonScreen(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxWidth(),
-                        itemCount = SKELETON_ITEM_COUNT
+                        modifier =
+                            Modifier
+                                .padding(innerPadding)
+                                .fillMaxWidth(),
+                        itemCount = SKELETON_ITEM_COUNT,
                     )
                 }
 
@@ -166,7 +169,7 @@ fun TempFlipBoxScreen(
                     FlipErrorScreen(
                         modifier = Modifier.padding(innerPadding),
                         errorMessage = uiState.error,
-                        onRetry = { }
+                        onRetry = { },
                     )
                 }
 
@@ -178,13 +181,14 @@ fun TempFlipBoxScreen(
                         selectMode = selectMode,
                         innerPadding = innerPadding,
                         onSelect = { tempPost, selected ->
-                            selectedTempPost = selectedTempPost
-                                .toMutableList()
-                                .apply { if (selected) add(tempPost) else remove(tempPost) }
+                            selectedTempPost =
+                                selectedTempPost
+                                    .toMutableList()
+                                    .apply { if (selected) add(tempPost) else remove(tempPost) }
                         },
                         onOpenCard = { tempPost ->
-                            //TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
-                        }
+                            // TODO: 공통적으로 사용되는 플립 화면으로 연결(아직 개발 안 됨)
+                        },
                     )
                 }
             }
@@ -211,15 +215,15 @@ private fun TempPostsSection(
     selectedTempPosts: List<TempPost>,
     innerPadding: PaddingValues,
     onSelect: (TempPost, Boolean) -> Unit,
-    onOpenCard: (TempPost) -> Unit
+    onOpenCard: (TempPost) -> Unit,
 ) {
-
     Box(Modifier.fillMaxSize()) {
         Column(
-            modifier = modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top)
+            modifier =
+                modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.Top),
         ) {
             TopToolBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -234,7 +238,7 @@ private fun TempPostsSection(
                     selectMode = selectMode,
                     selectedTempPosts = selectedTempPosts,
                     onSelect = onSelect,
-                    onOpenCard = onOpenCard
+                    onOpenCard = onOpenCard,
                 )
             }
         }
@@ -261,21 +265,23 @@ private fun TopToolBar(
 ) {
     Row(modifier = modifier) {
         Text(
-            text = buildAnnotatedString {
-                append("${stringResource(id = R.string.temp_flip_box_screen_card_sub_1)} ")
-                withStyle(SpanStyle(color = FlipTheme.colors.main)) {
-                    append((if (selectMode) selectedTempPostsSize else tempPostsSize).toString())
-                }
-                append(stringResource(id = R.string.temp_flip_box_screen_card_sub_2))
-                if (selectMode) {
-                    append(" ${stringResource(id = R.string.temp_flip_box_screen_card_sub_3)}")
-                }
-            },
+            text =
+                buildAnnotatedString {
+                    append("${stringResource(id = R.string.temp_flip_box_screen_card_sub_1)} ")
+                    withStyle(SpanStyle(color = FlipTheme.colors.main)) {
+                        append((if (selectMode) selectedTempPostsSize else tempPostsSize).toString())
+                    }
+                    append(stringResource(id = R.string.temp_flip_box_screen_card_sub_2))
+                    if (selectMode) {
+                        append(" ${stringResource(id = R.string.temp_flip_box_screen_card_sub_3)}")
+                    }
+                },
             style = FlipTheme.typography.headline1,
             color = FlipTheme.colors.gray5,
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentWidth(Alignment.Start),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .wrapContentWidth(Alignment.Start),
         )
     }
 }
@@ -296,9 +302,8 @@ private fun TempPostList(
     selectMode: Boolean,
     selectedTempPosts: List<TempPost>,
     onSelect: (TempPost, Boolean) -> Unit,
-    onOpenCard: (TempPost) -> Unit
+    onOpenCard: (TempPost) -> Unit,
 ) {
-
     var selectedTempPostIds by rememberSaveable { mutableStateOf(listOf<Long>()) }
     LaunchedEffect(selectedTempPosts) {
         selectedTempPostIds = selectedTempPosts.map { it.tempPostId }
@@ -308,11 +313,11 @@ private fun TempPostList(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.Top),
-        contentPadding = PaddingValues(bottom = 8.dp)
+        contentPadding = PaddingValues(bottom = 8.dp),
     ) {
         items(
             count = tempPostPaging.itemCount,
-            key = tempPostPaging.itemKey { it.tempPostId }
+            key = tempPostPaging.itemKey { it.tempPostId },
         ) { idx ->
             val tempPost = tempPostPaging[idx]
             tempPost?.let {
@@ -324,7 +329,7 @@ private fun TempPostList(
                     selectMode = selectMode,
                     selected = selected,
                     onSelect = { onSelect(tempPost, !selected) },
-                    onOpenCard = { onOpenCard(tempPost) }
+                    onOpenCard = { onOpenCard(tempPost) },
                 )
             }
         }
@@ -344,7 +349,7 @@ private fun TempPostList(
                 tempPostPaging.isEndOfPaginationReached() -> {
                     Text(
                         text = "총 \$Total 개",
-                        color = Color.Green
+                        color = Color.Green,
                     )
                 }
             }
@@ -357,18 +362,18 @@ private fun TempPostListEmptyScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically),
     ) {
         Text(
             text = stringResource(id = R.string.temp_flip_box_screen_empty_title_1),
             style = FlipTheme.typography.headline4,
-            color = FlipTheme.colors.gray5
+            color = FlipTheme.colors.gray5,
         )
         Text(
             text = stringResource(id = R.string.temp_flip_box_screen_empty_title_2),
             style = FlipTheme.typography.body5,
             color = FlipTheme.colors.gray5,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -393,27 +398,31 @@ private fun TempPostCard(
     onOpenCard: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .clip(FlipTheme.shapes.roundedCornerSmall)
-            .background(bgColorType.asColor())
-            .padding(16.dp)
-            .clickableSingleWithoutRipple {
-                if (selectMode) onSelect()
-                else onOpenCard()
-            },
+        modifier =
+            modifier
+                .clip(FlipTheme.shapes.roundedCornerSmall)
+                .background(bgColorType.asColor())
+                .padding(16.dp)
+                .clickableSingleWithoutRipple {
+                    if (selectMode) {
+                        onSelect()
+                    } else {
+                        onOpenCard()
+                    }
+                },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 text = title.ifEmpty { stringResource(id = R.string.temp_flip_box_screen_card_title_placeholder) },
                 style = FlipTheme.typography.headline2,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Text(text = postAt, style = FlipTheme.typography.body3, color = FlipTheme.colors.gray5)
         }
@@ -428,25 +437,26 @@ private fun TempPostCard(
 private fun SelectButton(
     modifier: Modifier = Modifier,
     selected: Boolean,
-    onSelect: () -> Unit
+    onSelect: () -> Unit,
 ) {
     val backgroundColor = if (selected) FlipTheme.colors.main else Color.White
     val borderColor = if (selected) FlipTheme.colors.main else FlipTheme.colors.gray5
 
     Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .size(23.dp)
-            .background(backgroundColor)
-            .border(1.dp, borderColor, CircleShape)
-            .clickableSingleWithoutRipple { onSelect() }
+        modifier =
+            modifier
+                .clip(CircleShape)
+                .size(23.dp)
+                .background(backgroundColor)
+                .border(1.dp, borderColor, CircleShape)
+                .clickableSingleWithoutRipple { onSelect() },
     ) {
         if (selected) {
             Icon(
                 modifier = Modifier.align(Alignment.Center),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_check),
                 contentDescription = stringResource(id = R.string.temp_flip_box_screen_content_desc_card_sub_btn),
-                tint = Color.White
+                tint = Color.White,
             )
         }
     }
@@ -465,7 +475,7 @@ private fun TempPostCardPreview() {
             selectMode = false,
             selected = false,
             onSelect = { },
-            onOpenCard = { }
+            onOpenCard = { },
         )
     }
 }
@@ -483,7 +493,7 @@ private fun TempPostCardPreview2() {
             selectMode = true,
             selected = selected,
             onSelect = { selected = !selected },
-            onOpenCard = { }
+            onOpenCard = { },
         )
     }
 }
@@ -501,7 +511,7 @@ private fun TempPostCardPreview3() {
             selectMode = true,
             selected = selected,
             onSelect = { selected = !selected },
-            onOpenCard = { }
+            onOpenCard = { },
         )
     }
 }
@@ -517,7 +527,7 @@ private fun TempPostListPreview() {
             selectMode = true,
             selectedTempPosts = emptyList(),
             onSelect = { tempPost, select -> },
-            onOpenCard = { }
+            onOpenCard = { },
         )
     }
 }
@@ -534,7 +544,7 @@ private fun TempFlipBoxScreenPreview() {
             uiState = TempFlipBoxContract.UiState.Idle,
             uiEvent = { },
             isModalVisible = false,
-            onBackPress = { }
+            onBackPress = { },
         )
     }
 }
@@ -551,7 +561,7 @@ private fun TempFlipBoxEmptyScreenPreview() {
             uiState = TempFlipBoxContract.UiState.Idle,
             uiEvent = { },
             isModalVisible = false,
-            onBackPress = { }
+            onBackPress = { },
         )
     }
 }
@@ -568,25 +578,26 @@ private fun TempFlipBoxScreenPreview2() {
             uiState = TempFlipBoxContract.UiState.Loading,
             uiEvent = { },
             isModalVisible = false,
-            onBackPress = { }
+            onBackPress = { },
         )
     }
 }
 
-private val tempPostPagingTestData = flowOf(
-    PagingData.from(
-        List(15) {
-            TempPost(
-                it.toLong(),
-                "테스트 Title #$it",
-                "",
-                BackgroundColorType.entries.random(),
-                FontStyleType.NORMAL,
-                1,
-                "일상",
-                emptyList(),
-                "2024-08-28 17:19:17"
-            )
-        }
+private val tempPostPagingTestData =
+    flowOf(
+        PagingData.from(
+            List(15) {
+                TempPost(
+                    it.toLong(),
+                    "테스트 Title #$it",
+                    "",
+                    BackgroundColorType.entries.random(),
+                    FontStyleType.NORMAL,
+                    1,
+                    "일상",
+                    emptyList(),
+                    "2024-08-28 17:19:17",
+                )
+            },
+        ),
     )
-)

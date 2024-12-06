@@ -20,7 +20,7 @@ internal fun getPostListTestData(count: Int = 15): PostList {
                 commentCnt = 10,
                 scraped = false,
                 bgColorType = BackgroundColorType.RED,
-            )
+            ),
         )
     }
 
@@ -42,7 +42,7 @@ internal fun getPostsTestData(count: Int = 15): List<Post> {
                 commentCnt = 10,
                 scraped = false,
                 bgColorType = BackgroundColorType.BLUE,
-            )
+            ),
         )
     }
 

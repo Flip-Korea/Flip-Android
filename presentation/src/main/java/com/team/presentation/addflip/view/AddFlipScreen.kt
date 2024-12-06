@@ -73,8 +73,8 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 import com.team.presentation.addflip.state.AddFlipContract
-import com.team.presentation.addflip.state.PostSaveState
 import com.team.presentation.addflip.state.NewPostState
+import com.team.presentation.addflip.state.PostSaveState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.util.CategoryIconsMap
@@ -97,27 +97,29 @@ fun AddFlipScreen(
     var enabledSaveButton by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures {
-                    focusManager.clearFocus()
-                    isShowMoreClicked = false
-                }
-                detectDragGestures(
-                    onDrag = { _, _ ->
+        modifier =
+            modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures {
                         focusManager.clearFocus()
                         isShowMoreClicked = false
                     }
-                )
-            },
+                    detectDragGestures(
+                        onDrag = { _, _ ->
+                            focusManager.clearFocus()
+                            isShowMoreClicked = false
+                        },
+                    )
+                },
         topBar = {
             TopBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(CommonPaddingValues.TopBarWithTouchTarget),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 onNavigateToTempFlipBox = onNavigateToTempFlipBox,
-                onBackPressed = { onUiEvent(AddFlipContract.UiEvent.SafeNavigateBack) }
+                onBackPressed = { onUiEvent(AddFlipContract.UiEvent.SafeNavigateBack) },
             )
         },
         bottomBar = {
@@ -131,9 +133,9 @@ fun AddFlipScreen(
                             contents = uiState.newPostState.contents,
                             bgColorType = uiState.newPostState.bgColorType,
                             category = uiState.newPostState.category,
-                        )
+                        ),
                     )
-                }
+                },
             )
         },
         containerColor = FlipTheme.colors.white,
@@ -145,10 +147,11 @@ fun AddFlipScreen(
                 }
 
                 ContentScreen(
-                    modifier = Modifier
-                        .consumeWindowInsets(innerPadding)
-                        .padding(innerPadding)
-                        .imePadding(),
+                    modifier =
+                        Modifier
+                            .consumeWindowInsets(innerPadding)
+                            .padding(innerPadding)
+                            .imePadding(),
                     pageDelete = pageDelete,
                     focusManager = focusManager,
                     isShowMoreClicked = isShowMoreClicked,
@@ -156,7 +159,7 @@ fun AddFlipScreen(
                     newPostState = uiState.newPostState,
                     postSaveState = uiState.postSaveState,
                     categories = uiState.categories,
-                    onUiEvent = onUiEvent
+                    onUiEvent = onUiEvent,
                 )
             }
 
@@ -195,8 +198,8 @@ private fun ContentScreen(
             contents.getOrNull(
                 pagerState.currentPage.coerceIn(
                     0,
-                    contents.lastIndex
-                )
+                    contents.lastIndex,
+                ),
             )?.length ?: 0
         }
 
@@ -254,30 +257,33 @@ private fun ContentScreen(
                 item {
                     /** 카테고리 선택 바 */
                     SelectCategoryBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                         selectedCategory = newPostState.category,
                         onClick = { showCategoryBottomSheet = true },
                     )
 
                     /** 제목 입력 텍스트필드 */
                     AddFlipTitleTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 17.dp)
-                            .padding(horizontal = CommonPaddingValues.HorizontalPadding),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 17.dp)
+                                .padding(horizontal = CommonPaddingValues.HorizontalPadding),
                         title = newPostState.title,
                         onTitleChanged = { onUiEvent(AddFlipContract.UiEvent.OnTitleChanged(it)) },
                         placeholder =
-                        stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
+                            stringResource(id = R.string.add_flip_screen_title_tf_placeholder),
                     )
 
                     /** 본문 입력 영역 */
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         /** 본문 입력 텍스트 필드 */
@@ -293,9 +299,10 @@ private fun ContentScreen(
 
                         /** 페이지 카운터, 페이지 추가&삭제 버튼 */
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(PAGE_COUNTER_BAR_PADDING),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(PAGE_COUNTER_BAR_PADDING),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -345,12 +352,13 @@ private fun ContentScreen(
 
                     /** 배경 컬러 설정 바 */
                     SettingBackgroundColorBar(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = CommonPaddingValues.HorizontalPadding,
-                                vertical = 28.dp,
-                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = CommonPaddingValues.HorizontalPadding,
+                                    vertical = 28.dp,
+                                ),
                         selectedColor = newPostState.bgColorType,
                         isShowMoreClicked = isShowMoreClicked,
                         showMore = showMore,
@@ -377,27 +385,31 @@ private fun SelectCategoryBar(
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .clip(CATEGORY_BAR_SHAPE)
-            .fillMaxWidth()
-            .border(1.dp, FlipTheme.colors.gray5, CATEGORY_BAR_SHAPE)
-            .clickableSingle { onClick() },
+        modifier =
+            modifier
+                .clip(CATEGORY_BAR_SHAPE)
+                .fillMaxWidth()
+                .border(1.dp, FlipTheme.colors.gray5, CATEGORY_BAR_SHAPE)
+                .clickableSingle { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(calculateCategoryBarInnerPadding(selectedCategory)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(calculateCategoryBarInnerPadding(selectedCategory)),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (selectedCategory == null) {
                 Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .wrapContentWidth(align = Alignment.Start),
-                    text = stringResource(
-                        id = R.string.add_flip_screen_select_category_bar_placeholder
-                    ),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .wrapContentWidth(align = Alignment.Start),
+                    text =
+                        stringResource(
+                            id = R.string.add_flip_screen_select_category_bar_placeholder,
+                        ),
                     style = FlipTheme.typography.body5,
                     color = FlipTheme.colors.gray5,
                     maxLines = 1,
@@ -421,13 +433,14 @@ private fun SelectCategoryBar(
             }
 
             Icon(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(align = Alignment.End)
-                    .size(7.dp, 14.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .wrapContentWidth(align = Alignment.End)
+                        .size(7.dp, 14.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription =
-                stringResource(id = R.string.add_flip_screen_content_desc_select_category),
+                    stringResource(id = R.string.add_flip_screen_content_desc_select_category),
                 tint = FlipTheme.colors.gray7,
             )
         }
@@ -455,10 +468,11 @@ private fun AddFlipContentSection(
         verticalAlignment = Alignment.Top,
     ) { page ->
         AddFlipContentTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .flipGradient(color = newPostState.bgColorType.asColor())
-                .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .flipGradient(color = newPostState.bgColorType.asColor())
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
             focusManager = focusManager,
             placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
             content = contents[page],
@@ -472,12 +486,17 @@ private fun AddFlipContentSection(
 
 /** 페이지 카운터 */
 @Composable
-private fun PageCounter(modifier: Modifier = Modifier, currentPage: Int, currentMaxPage: Int) {
+private fun PageCounter(
+    modifier: Modifier = Modifier,
+    currentPage: Int,
+    currentMaxPage: Int,
+) {
     Text(
-        text = buildAnnotatedString {
-            withStyle(SpanStyle(color = FlipTheme.colors.point)) { append("$currentPage") }
-            append("/$currentMaxPage")
-        },
+        text =
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = FlipTheme.colors.point)) { append("$currentPage") }
+                append("/$currentMaxPage")
+            },
         style = FlipTheme.typography.body3,
         color = FlipTheme.colors.gray6,
     )
@@ -499,7 +518,7 @@ private fun PageAddDeleteButton(
                     modifier = Modifier.size(18.dp),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_plus_small),
                     contentDescription =
-                    stringResource(id = R.string.add_flip_screen_content_desc_add_content),
+                        stringResource(id = R.string.add_flip_screen_content_desc_add_content),
                     tint = FlipTheme.colors.gray4,
                 )
                 Text(
@@ -511,23 +530,24 @@ private fun PageAddDeleteButton(
         }
 
         Spacer(
-            modifier = Modifier
-                .padding(vertical = 7.dp)
-                .size(width = 8.dp, height = 13.5.dp)
+            modifier =
+                Modifier
+                    .padding(vertical = 7.dp)
+                    .size(width = 8.dp, height = 13.5.dp),
         )
 
         if (isDeletable) {
             Icon(
                 modifier =
-                Modifier
-                    .clip(CircleShape)
-                    .background(FlipTheme.colors.gray2)
-                    .clickableSingle { onDelete() }
-                    .padding(7.dp)
-                    .size(12.dp, 13.5.dp),
+                    Modifier
+                        .clip(CircleShape)
+                        .background(FlipTheme.colors.gray2)
+                        .clickableSingle { onDelete() }
+                        .padding(7.dp)
+                        .size(12.dp, 13.5.dp),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_trash),
                 contentDescription =
-                stringResource(id = R.string.add_flip_screen_content_desc_delete),
+                    stringResource(id = R.string.add_flip_screen_content_desc_delete),
             )
         }
     }
@@ -550,9 +570,9 @@ private fun SelectCategoryBottomSheet(
     ) { bottomSheetModifier ->
         SelectCategoryBottomSheetContent(
             modifier =
-            bottomSheetModifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
+                bottomSheetModifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 89.dp),
             categories = categories,
             onSelect = { category ->
                 onSelect(category)
@@ -583,7 +603,7 @@ private fun SelectCategoryBottomSheetContent(
                 modifier = Modifier.size(24.dp),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_outlined_setting),
                 contentDescription =
-                stringResource(id = R.string.add_flip_screen_content_desc_select_category),
+                    stringResource(id = R.string.add_flip_screen_content_desc_select_category),
                 tint = FlipTheme.colors.main,
             )
             Text(
@@ -648,9 +668,10 @@ private fun TopBar(
         title = stringResource(id = R.string.add_flip_screen_topbar_title),
         options = {
             Text(
-                modifier = Modifier
-                    .clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
-                    .padding(10.dp),
+                modifier =
+                    Modifier
+                        .clickableSingleWithoutRipple { onNavigateToTempFlipBox() }
+                        .padding(10.dp),
                 text = stringResource(id = R.string.add_flip_screen_topbar_btn),
                 style = FlipTheme.typography.body6,
                 color = FlipTheme.colors.gray5,
@@ -674,7 +695,10 @@ private fun BottomBar(
 }
 
 @Composable
-fun IsContentSavable(uiState: AddFlipContract.UiState.Content, block: () -> Unit) {
+fun IsContentSavable(
+    uiState: AddFlipContract.UiState.Content,
+    block: () -> Unit,
+) {
     LaunchedEffect(uiState.newPostState) {
         val title = uiState.newPostState.title
         val contents = uiState.newPostState.contents
@@ -695,16 +719,18 @@ private const val MAX_PAGE = 3
 /** 플립 작성 시 권장하는 글자 수 */
 private const val MAX_LETTER_LIMIT = 300f
 private val CATEGORY_BAR_SHAPE = RoundedCornerShape(50.dp)
+
 private fun calculateCategoryBarInnerPadding(selectedCategory: Category?): PaddingValues =
     PaddingValues(
         horizontal = 20.dp,
         vertical = if (selectedCategory == null) 8.dp else 6.dp,
     )
 
-private val PAGE_COUNTER_BAR_PADDING = PaddingValues(
-    horizontal = CommonPaddingValues.HorizontalPadding,
-    vertical = 10.dp,
-)
+private val PAGE_COUNTER_BAR_PADDING =
+    PaddingValues(
+        horizontal = CommonPaddingValues.HorizontalPadding,
+        vertical = 10.dp,
+    )
 
 private fun List<String>.add(newPageIndex: Int): List<String> =
     this.toMutableList().apply {
@@ -717,6 +743,7 @@ private fun List<String>.remove(currentPage: Int): List<String> =
     }
 
 private fun Int.addPage(): Int = (this + 1).coerceAtMost(MAX_PAGE)
+
 private fun Int.minusPage(): Int = (this - 1).coerceAtLeast(0)
 
 @Preview

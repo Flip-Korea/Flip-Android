@@ -22,35 +22,40 @@ import com.team.designsystem.theme.FlipLightColors
 @Composable
 fun FlipPagesProgressBar(
     currentPage: Int,
-    maxPage: Int = 3
+    maxPage: Int = 3,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(2.dp)
-            .drawWithContent {
-                val cornerRadius = 2.dp.toPx()
-                val barSpace = 5.dp.toPx()
-                val barWidth = (this.size.width - barSpace * (maxPage - 1)) / maxPage
-                val barHeight = 2.dp.toPx()
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .drawWithContent {
+                    val cornerRadius = 2.dp.toPx()
+                    val barSpace = 5.dp.toPx()
+                    val barWidth = (this.size.width - barSpace * (maxPage - 1)) / maxPage
+                    val barHeight = 2.dp.toPx()
 
-                repeat(maxPage) { idx ->
+                    repeat(maxPage) { idx ->
 
-                    val color = if (idx <= currentPage) {
-                        FlipLightColors.gray7
-                    } else { FlipLightColors.gray2 }
+                        val color =
+                            if (idx <= currentPage) {
+                                FlipLightColors.gray7
+                            } else {
+                                FlipLightColors.gray2
+                            }
 
-                    drawRoundRect(
-                        color = color,
-                        cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                        size = Size(
-                            width = barWidth,
-                            height = barHeight
-                        ),
-                        topLeft = Offset((barWidth + barSpace) * idx, 0f)
-                    )
-                }
-            }
+                        drawRoundRect(
+                            color = color,
+                            cornerRadius = CornerRadius(cornerRadius, cornerRadius),
+                            size =
+                                Size(
+                                    width = barWidth,
+                                    height = barHeight,
+                                ),
+                            topLeft = Offset((barWidth + barSpace) * idx, 0f),
+                        )
+                    }
+                },
     )
 }
 
@@ -65,6 +70,6 @@ private fun PagesProgressBarPreview() {
 private fun PagesProgressBarPreview2() {
     FlipPagesProgressBar(
         currentPage = 2,
-        maxPage = 5
+        maxPage = 5,
     )
 }

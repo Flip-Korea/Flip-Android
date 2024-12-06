@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
  * Used in SocialLogin(Google, Kakao)
  */
 interface AuthManager {
-
     fun signIn(): Flow<AuthUiState>
 
     suspend fun signOut()

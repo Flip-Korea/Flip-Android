@@ -29,25 +29,24 @@ fun TempFlipBoxSkeletonScreen(
     modifier: Modifier = Modifier,
     itemCount: Int,
 ) {
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(13.dp, alignment = Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         Box(
-            modifier = Modifier
-                .align(Alignment.Start)
-                .clip(RoundedCornerShape(11.dp))
-                .size(36.dp, 18.dp)
-                .shimmerEffect()
-                .background(FlipTheme.colors.gray3)
+            modifier =
+                Modifier
+                    .align(Alignment.Start)
+                    .clip(RoundedCornerShape(11.dp))
+                    .size(36.dp, 18.dp)
+                    .shimmerEffect()
+                    .background(FlipTheme.colors.gray3),
         )
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             CardSectionList(itemCount)
         }
@@ -60,7 +59,7 @@ private fun CardSectionList(itemCount: Int) {
         CardSection(
             modifier = Modifier.fillMaxWidth(),
             containerColor = FlipTheme.colors.gray1,
-            contentColor = FlipTheme.colors.gray3
+            contentColor = FlipTheme.colors.gray3,
         )
     }
 }
@@ -69,32 +68,35 @@ private fun CardSectionList(itemCount: Int) {
 private fun CardSection(
     modifier: Modifier = Modifier,
     containerColor: Color,
-    contentColor: Color
+    contentColor: Color,
 ) {
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(4.dp))
-            .background(containerColor)
-            .shimmerEffect()
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(containerColor)
+                .shimmerEffect(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .clip(RoundedCornerShape(11.dp))
-                    .size(194.dp, 18.dp)
-                    .background(contentColor)
+                modifier =
+                    Modifier
+                        .align(Alignment.Start)
+                        .clip(RoundedCornerShape(11.dp))
+                        .size(194.dp, 18.dp)
+                        .background(contentColor),
             )
             Box(
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .clip(RoundedCornerShape(11.dp))
-                    .size(60.dp, 18.dp)
-                    .background(contentColor)
+                modifier =
+                    Modifier
+                        .align(Alignment.Start)
+                        .clip(RoundedCornerShape(11.dp))
+                        .size(60.dp, 18.dp)
+                        .background(contentColor),
             )
         }
     }

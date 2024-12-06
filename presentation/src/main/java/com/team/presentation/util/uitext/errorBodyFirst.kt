@@ -8,10 +8,10 @@ import com.team.domain.util.ErrorType
  * ##### 주의사항:
  * [ErrorBody.errors]는 제외 된 상태
  */
-//TODO: 더 다양한 처리가 가능하게끔 리팩토링 필요
+// TODO: 더 다양한 처리가 가능하게끔 리팩토링 필요
 fun errorBodyFirst(
     errorBody: ErrorBody?,
-    error: ErrorType
+    error: ErrorType,
 ): UiText {
     return errorBody?.let { errBody ->
         UiText.DynamicString(errBody.message)

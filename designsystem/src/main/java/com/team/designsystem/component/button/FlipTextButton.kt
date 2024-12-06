@@ -24,7 +24,7 @@ fun FlipTextButton(
             modifier = Modifier.padding(10.dp),
             text = text,
             style = FlipTheme.typography.body4Underline,
-            color = FlipTheme.colors.gray5
+            color = FlipTheme.colors.gray5,
         )
     }
 }
@@ -35,11 +35,12 @@ private fun FlipTextButtonPreview() {
     FlipAppTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             FlipTextButton(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 16.dp),
                 text = "sample",
-                onClick = {}
+                onClick = {},
             )
         }
     }

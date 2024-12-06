@@ -7,7 +7,6 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
 interface AccountNetworkDataSource {
-
     suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType>
 
     suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType>
