@@ -1,12 +1,26 @@
 root = true
 
 [*]
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
+end_of_line=lf
+insert_final_newline=true
+trim_trailing_whitespace=true
 
 [*.{kt,kts}]
+# 후행 쉼표 허용
 ij_kotlin_allow_trailing_comma=true
 ij_kotlin_allow_trailing_comma_on_call_site=true
 ktlint_function_naming_ignore_when_annotated_with=Composable, Test
-ktlint_standard_annotation = disabled
+ktlint_standard_annotation=disabled
+# 속성 명명 규칙
+ktlint_standard_property-naming=disabled
+# 파일 이름 (파스칼 케이스)
+ktlint_standard_filename=disabled
+# 파일 이름 (파스칼 케이스)
+ktlint_standard_filename=disabled
+# 쉼표 앞에 공백이 있어야 함
+ktlint_standard_comma-spacing=enabled
+# Kdoc, Comment, EOL
+ktlint_standard_no-single-line-block-comment=disabled
+ktlint_standard_kdoc-wrapping=disabled
+ktlint_standard_no-consecutive-comments=disabled
+ktlint_standard_value-parameter-comment=disabled

@@ -37,7 +37,7 @@ ktlint {
 }
 
 dependencies {
-    ktlintRuleset(libs.slack.compose.lint.checks)
+    ktlintRuleset(libs.ktlint.compose.rules)
 }
 
 buildscript {
