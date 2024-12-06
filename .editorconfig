@@ -15,8 +15,6 @@ ktlint_standard_annotation=disabled
 ktlint_standard_property-naming=disabled
 # 파일 이름 (파스칼 케이스)
 ktlint_standard_filename=disabled
-# 파일 이름 (파스칼 케이스)
-ktlint_standard_filename=disabled
 # 쉼표 앞에 공백이 있어야 함
 ktlint_standard_comma-spacing=enabled
 # Kdoc, Comment, EOL

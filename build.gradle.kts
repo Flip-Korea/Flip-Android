@@ -17,7 +17,7 @@ allprojects {
 }
 
 ktlint {
-    version.set("0.47.1")
+    version.set("1.5.0")
     verbose.set(true)
     outputToConsole.set(true)
     coloredOutput.set(true)
