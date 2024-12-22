@@ -1,15 +1,17 @@
 package com.team.presentation.register.view
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun RegisterScreen(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize()) {
-        Text(modifier = Modifier.align(Alignment.Center), text = "RegisterScreen")
-    }
+    // a. 서비스 이용약관 동의 화면
+    // b. 회원가입 1, 2, 3 단계
+    // c. 가입 완료 화면
+}
+
+@Preview
+@Composable
+private fun RegisterScreenPreview() {
 }
