@@ -22,7 +22,11 @@ android {
         testInstrumentationRunner = "com.team.presentation.TestRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", gradleLocalProperties(rootDir).getProperty("GOOGLE_WEB_CLIENT_ID"))
+        buildConfigField(
+            "String",
+            "GOOGLE_WEB_CLIENT_ID",
+            gradleLocalProperties(rootDir).getProperty("GOOGLE_WEB_CLIENT_ID"),
+        )
     }
 
     testOptions {

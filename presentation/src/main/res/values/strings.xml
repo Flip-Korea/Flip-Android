@@ -202,6 +202,12 @@
     <string name="terms_of_service_screen_agreement_all_items_2">(선택 정보 포함)</string>
     <string name="terms_of_service_screen_agreement_btn">동의하고 가입하기</string>
 
+    <string name="terms_of_service_screen_input_name_btn">다음</string>
+
+    <string name="terms_of_service_screen_input_id_btn">다음</string>
+
+    <string name="terms_of_service_screen_input_photo_btn">사진 등록하기</string>
+
     <!-- Register Screen ContentDescription -->
     <string name="terms_of_service_screen_content_desc_agreement_all_items">보기</string>
 </resources>

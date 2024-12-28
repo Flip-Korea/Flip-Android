@@ -40,4 +40,8 @@ enum class AgreementItem(
         } else {
             FlipLightColors.statusBlue.toArgbInt()
         }
+
+    companion object {
+        val allItems: List<AgreementItem> = AgreementItem.entries.map { it }
+    }
 }

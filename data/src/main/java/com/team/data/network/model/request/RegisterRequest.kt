@@ -7,10 +7,7 @@ import com.team.domain.model.account.RegisterProfile
 
 @JsonClass(generateAdapter = true)
 data class RegisterRequest(
-    //    val _email: String,
-    //    val _phone_num: String,
     @Json(name = "account_id") val accountId: String,
-    @Json(name = "categories") val categories: List<Int>,
     @Json(name = "name") val name: String,
     @Json(name = "profile") val profile: ProfileRequest,
 )
@@ -22,12 +19,12 @@ data class ProfileRequest(
     @Json(name = "profile_id") val profileId: String,
 )
 
-fun RegisterProfile.toNetwork(): ProfileRequest = ProfileRequest(profileId = profileId, nickname = nickname, photoUrl = photoUrl)
+fun RegisterProfile.toNetwork(): ProfileRequest =
+    ProfileRequest(profileId = profileId, nickname = nickname, photoUrl = photoUrl)
 
 fun Register.toNetwork(): RegisterRequest =
     RegisterRequest(
         accountId = accountId,
-        categories = categories,
-        name = name,
+        name = accountName,
         profile = profile.toNetwork(),
     )

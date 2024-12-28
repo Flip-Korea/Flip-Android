@@ -31,7 +31,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipIconButton
-import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.utils.clickableSingleWithoutRipple
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
@@ -40,10 +39,12 @@ import com.team.presentation.R
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.state.RegisterContract
 
+/** 회원가입 단계 1 (서비스 이용약관) */
 @Composable
 fun TermsOfServiceScreen(
     modifier: Modifier = Modifier,
-    state: RegisterContract.UiState,
+    agreementItems: List<AgreementItem>,
+    agreementItemChecks: List<Boolean>,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
     var checkedAllItems by rememberSaveable { mutableStateOf(false) }
@@ -71,19 +72,14 @@ fun TermsOfServiceScreen(
         )
         // 약관 동의 항목들 (회원가입 단계 동안 반복되는 부분)
         AgreementItems(
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(horizontal = HORIZONTAL_PADDING_WITH_TOUCH_TARGET),
-            agreementItems = state.agreementItems,
+            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING_WITH_TOUCH_TARGET),
+            agreementItems = agreementItems,
+            agreementItemChecks = agreementItemChecks,
             checkedAllItems = checkedAllItems,
-            onAllCheckClicked = { checkedAllItems = !checkedAllItems },
-        )
-        // 버튼 (회원가입 단계 동안 반복되는 부분)
-        FlipMediumButton(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = HORIZONTAL_PADDING),
-            text = stringResource(id = R.string.terms_of_service_screen_agreement_btn),
-            onClick = { onUiEvent(RegisterContract.UiEvent.AgreementAndRegister) },
+            onCheckAllItems = { checkedAllItems = !checkedAllItems },
+            onItemClick = { index ->
+                onUiEvent(RegisterContract.UiEvent.OnToggleAgreementItem(index))
+            },
         )
     }
 }
@@ -110,8 +106,10 @@ private fun Title(modifier: Modifier = Modifier) {
 private fun AgreementItems(
     modifier: Modifier = Modifier,
     agreementItems: List<AgreementItem>,
+    agreementItemChecks: List<Boolean>,
     checkedAllItems: Boolean,
-    onAllCheckClicked: () -> Unit,
+    onCheckAllItems: () -> Unit,
+    onItemClick: (Int) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -120,16 +118,15 @@ private fun AgreementItems(
         AgreementAllItems(
             modifier = Modifier.fillMaxWidth(),
             checked = checkedAllItems,
-            onClick = onAllCheckClicked,
+            onClick = onCheckAllItems,
         )
         Spacer(Modifier.height(30.dp))
-        agreementItems.forEach { agreementItem ->
-            var isClicked by rememberSaveable { mutableStateOf(false) }
+        agreementItems.forEachIndexed { index, agreementClickableItem ->
             AgreementItem(
                 modifier = Modifier,
-                agreementItem = agreementItem,
-                isClicked = isClicked,
-                onClick = { isClicked = !isClicked },
+                agreementItem = agreementClickableItem,
+                isClicked = agreementItemChecks[index],
+                onClick = { onItemClick(index) },
                 onOptionClicked = {
                     // TODO: 보기 클릭 시 웹뷰로 약관 내용 표시
                 },
@@ -243,7 +240,7 @@ private fun AgreementItemDetail(
 
 private val HORIZONTAL_PADDING = 16.dp
 private val HORIZONTAL_PADDING_WITH_TOUCH_TARGET = 10.dp
-private val SCREEN_TOP_PADDING = 65.dp
+private val SCREEN_TOP_PADDING = 11.dp
 private val SCREEN_BOTTOM_PADDING = 47.dp
 
 @Preview(showBackground = true)
@@ -273,11 +270,21 @@ private fun AgreementItemsPreview() {
         mutableStateOf(false)
     }
 
+    var agreementItemChecks by remember {
+        mutableStateOf(AgreementItemChecksTestData)
+    }
+
     FlipAppTheme {
         AgreementItems(
-            agreementItems = AgreementItem.entries.map { it },
+            agreementItems = AgreementItemsTestData,
+            agreementItemChecks = agreementItemChecks,
             checkedAllItems = checkedAllItems,
-            onAllCheckClicked = { checkedAllItems = !checkedAllItems },
+            onCheckAllItems = { checkedAllItems = !checkedAllItems },
+            onItemClick = { index ->
+                val mutableChecks = agreementItemChecks.toMutableList()
+                mutableChecks[index] = !mutableChecks[index]
+                agreementItemChecks = mutableChecks
+            },
         )
     }
 }
@@ -287,16 +294,12 @@ private fun AgreementItemsPreview() {
 private fun TermsOfServiceScreenPreview() {
     FlipAppTheme {
         TermsOfServiceScreen(
-            state = UiStateTestData,
+            agreementItems = AgreementItemsTestData,
+            agreementItemChecks = AgreementItemChecksTestData,
             onUiEvent = { },
         )
     }
 }
 
-private val UiStateTestData =
-    RegisterContract.UiState(
-        agreementItems =
-            AgreementItem.entries.map {
-                it
-            },
-    )
+private val AgreementItemsTestData = AgreementItem.allItems
+private val AgreementItemChecksTestData = List(AgreementItemsTestData.size) { false }
