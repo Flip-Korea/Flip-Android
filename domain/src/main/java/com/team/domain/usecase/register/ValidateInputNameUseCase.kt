@@ -11,6 +11,11 @@ class ValidateInputNameUseCase {
         }
         return ValidationResult.Error(ValidationErrorType.Register.NAME_INVALID)
     }
+
+    companion object {
+        const val MIN_LENGTH = 2
+        const val MAX_LENGTH = 12
+    }
 }
 
 // 정규 표현식: 한글([가-힣]) 및 영문([a-zA-Z])만 허용
