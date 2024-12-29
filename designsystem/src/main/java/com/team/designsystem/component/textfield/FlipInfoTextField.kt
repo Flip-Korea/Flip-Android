@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +63,10 @@ fun FlipInfoTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
 
-    val placeholderEnabled = placeholder != null && !focused && text.isEmpty()
+    val placeholderEnabled by rememberSaveable(focused, text) { mutableStateOf(text.isEmpty()) }
+    val bottomSectionEnabled by rememberSaveable(focused, text) {
+        mutableStateOf(focused || text.isNotEmpty())
+    }
 
     val backgroundColor =
         if (placeholderEnabled) {
@@ -155,7 +159,7 @@ fun FlipInfoTextField(
             }
         }
 
-        if (!placeholderEnabled) {
+        if (bottomSectionEnabled) {
             BottomSection(
                 text = text,
                 errorMessage = errorMessage,
@@ -375,9 +379,8 @@ private fun FlipInfoTextField5Preview() {
     }
 }
 
-private fun fakeValidation(text: String): Pair<Boolean, String?> {
-    return when (text.length) {
+private fun fakeValidation(text: String): Pair<Boolean, String?> =
+    when (text.length) {
         in 5..10 -> Pair(true, null)
         else -> Pair(false, "5자 이상 10자 이하로 작성해주세요.")
     }
-}
