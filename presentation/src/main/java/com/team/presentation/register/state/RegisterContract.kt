@@ -4,7 +4,7 @@ import com.team.presentation.common.util.BaseUiEffect
 import com.team.presentation.common.util.BaseUiEvent
 import com.team.presentation.common.util.BaseUiState
 import com.team.presentation.register.AgreementItem
-import com.team.presentation.register.model.ComposeRegister
+import com.team.presentation.register.RegisterScreenPage
 
 class RegisterContract {
     sealed class UiState : BaseUiState {
@@ -17,7 +17,8 @@ class RegisterContract {
         data class Success(
             val agreementItems: List<AgreementItem> = emptyList(),
             val agreementItemChecks: List<Boolean> = emptyList(),
-            val register: ComposeRegister = ComposeRegister(),
+            val inputNameState: InputNameState = InputNameState(),
+//            val register: ComposeRegister = ComposeRegister(),
         ) : UiState()
     }
 
@@ -29,7 +30,19 @@ class RegisterContract {
         data class OnToggleAgreementItem(
             val agreementItemIndex: Int,
         ) : UiEvent()
+
+        data class RequestToNextPage(
+            val currentRegisterScreenPage: RegisterScreenPage,
+        ) : UiEvent()
+
+        data class OnNameChanged(
+            val name: String,
+        ) : UiEvent()
     }
 
-    sealed class UiEffect : BaseUiEffect
+    sealed class UiEffect : BaseUiEffect {
+        data object BackPress : UiEffect()
+
+        data object GoToNextPage : UiEffect()
+    }
 }

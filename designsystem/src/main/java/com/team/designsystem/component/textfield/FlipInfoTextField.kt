@@ -63,7 +63,9 @@ fun FlipInfoTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
 
-    val placeholderEnabled by rememberSaveable(focused, text) { mutableStateOf(text.isEmpty()) }
+    val placeholderEnabled by rememberSaveable(focused, text) {
+        mutableStateOf(!focused && text.isEmpty())
+    }
     val bottomSectionEnabled by rememberSaveable(focused, text) {
         mutableStateOf(focused || text.isNotEmpty())
     }

@@ -20,7 +20,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,26 +35,21 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
+import com.team.presentation.register.RegisterScreenPage.Companion.REGISTER_SCREEN_PAGES
 import com.team.presentation.register.findByOrder
+import com.team.presentation.register.state.InputNameState
 import com.team.presentation.register.state.RegisterContract
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /** 회원가입 화면 */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RegisterScreen(
+fun RegisterScreenTemp(
     modifier: Modifier = Modifier,
     uiState: RegisterContract.UiState,
+    pagerState: PagerState,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
-    // a. 서비스 이용약관 동의 화면
-    // b. 회원가입 1, 2, 3 단계
-    // c. 가입 완료 화면
-
-    val scope = rememberCoroutineScope()
     var topBarTitle by rememberSaveable { mutableStateOf("") }
-    val pagerState = rememberPagerState { REGISTER_SCREEN_PAGES.size }
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
     when (uiState) {
@@ -63,7 +57,7 @@ fun RegisterScreen(
         RegisterContract.UiState.Loading -> TODO()
         is RegisterContract.UiState.Success -> {
             Scaffold(
-                modifier = modifier,
+                modifier = modifier.fillMaxSize(),
                 topBar = {
                     TopBar(
                         title = topBarTitle,
@@ -81,12 +75,18 @@ fun RegisterScreen(
                             id = REGISTER_SCREEN_PAGES[currentPage].buttonTitle,
                         ),
                     bottomBarEnabled = uiState.agreementItemChecks.all { it },
-                    bottomBarClick = { pagerState.animateScrollToPage(scope, 1) },
+                    bottomBarClick = {
+                        // TODO: 현재 페이지 로직 실행 후 다음 단계로 넘어갈 수 있는지 확인
+                        val currentScreenPage = REGISTER_SCREEN_PAGES[currentPage]
+                        onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentScreenPage))
+                    },
                 ) {
                     PagerScreens(
+                        modifier = Modifier.fillMaxSize(),
                         pagerState = pagerState,
                         agreementItems = uiState.agreementItems,
                         agreementItemChecks = uiState.agreementItemChecks,
+                        inputNameState = uiState.inputNameState,
                         onUiEvent = onUiEvent,
                     )
                 }
@@ -103,6 +103,7 @@ private fun PagerScreens(
     pagerState: PagerState,
     agreementItems: List<AgreementItem>,
     agreementItemChecks: List<Boolean>,
+    inputNameState: InputNameState,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
     HorizontalPager(
@@ -120,9 +121,18 @@ private fun PagerScreens(
                 )
 
             RegisterScreenPage.INPUT_NAME -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "INPUT_NAME")
-                }
+                InputNameScreen(
+                    modifier =
+                        Modifier.fillMaxSize().padding(
+                            top = SCREEN_TOP_PADDING,
+                            start = SCREEN_HORIZONTAL_PADDING,
+                            end = SCREEN_HORIZONTAL_PADDING,
+                        ),
+                    currentStep = 1,
+                    totalSteps = REGISTER_SCREEN_PAGES.size,
+                    inputNameState = inputNameState,
+                    onUiEvent = onUiEvent,
+                )
             }
 
             RegisterScreenPage.INPUT_ID -> {
@@ -188,9 +198,9 @@ fun BottomBar(
             modifier
                 .fillMaxWidth()
                 .padding(
-                    start = HORIZONTAL_PADDING,
-                    end = HORIZONTAL_PADDING,
-                    bottom = BOTTOM_PADDING,
+                    start = SCREEN_HORIZONTAL_PADDING,
+                    end = SCREEN_HORIZONTAL_PADDING,
+                    bottom = SCREEN_BOTTOM_PADDING,
                 ),
         text = title,
         onClick = onClick,
@@ -214,33 +224,17 @@ fun TopBar(
     )
 }
 
-private val HORIZONTAL_PADDING = 16.dp
-private val BOTTOM_PADDING = 26.dp
-private val REGISTER_SCREEN_PAGES =
-    listOf(
-        RegisterScreenPage.TERMS_OF_SERVICE,
-        RegisterScreenPage.INPUT_NAME,
-        RegisterScreenPage.INPUT_ID,
-        RegisterScreenPage.INPUT_PHOTO,
-    )
+private val SCREEN_HORIZONTAL_PADDING = 16.dp
+private val SCREEN_TOP_PADDING = 16.dp
+private val SCREEN_BOTTOM_PADDING = 26.dp
 
 @OptIn(ExperimentalFoundationApi::class)
-private fun PagerState.animateScrollToPage(
-    scope: CoroutineScope,
-    step: Int,
-) {
-    scope.launch {
-        this@animateScrollToPage.animateScrollToPage(
-            this@animateScrollToPage.currentPage + step,
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun RegisterScreenPreview() {
     FlipAppTheme {
-        RegisterScreen(
+        RegisterScreenTemp(
+            pagerState = rememberPagerState { AgreementItem.allItems.size },
             uiState = UiStateTestData,
             onUiEvent = { },
         )
