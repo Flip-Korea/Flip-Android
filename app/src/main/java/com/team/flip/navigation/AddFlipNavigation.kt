@@ -18,15 +18,23 @@ fun NavGraphBuilder.addFlipNavigation(
     onNavigateToTempFlipBox: () -> Unit,
 ) {
     navigation(
-        route = NavigationItem.ADD_FLIP_NAV.name,
-        startDestination = ScreenItem.ADD_FLIP.name,
+        route = NavigationItem.AddFlipNav.name,
+        startDestination = ScreenItem.AddFlip.name,
     ) {
         composable(
-            route = ScreenItem.ADD_FLIP.name,
-            enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom) },
+            route = ScreenItem.AddFlip.name,
+            enterTransition = {
+                FlipTransitionObject.enterTransition(
+                    FlipTransitionDirection.Bottom,
+                )
+            },
             exitTransition = { exitTransition(currentRoute) },
             popEnterTransition = { popEnterTransition(currentRoute) },
-            popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom) },
+            popExitTransition = {
+                FlipTransitionObject.exitTransition(
+                    FlipTransitionDirection.Bottom,
+                )
+            },
         ) {
             AddFlipRoute(
                 popBackStack = popBackStack,
@@ -35,10 +43,18 @@ fun NavGraphBuilder.addFlipNavigation(
         }
 
         composable(
-            route = ScreenItem.TEMP_FLIP_BOX.name,
-            enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
+            route = ScreenItem.TempFlipBox.name,
+            enterTransition = {
+                FlipTransitionObject.enterTransition(
+                    FlipTransitionDirection.Right,
+                )
+            },
             exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
-            popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
+            popExitTransition = {
+                FlipTransitionObject.exitTransition(
+                    FlipTransitionDirection.Right,
+                )
+            },
         ) {
             TempFlipBoxRoute(
                 onBackPress = popBackStack,
@@ -49,14 +65,20 @@ fun NavGraphBuilder.addFlipNavigation(
 
 private val popEnterTransition: (String) -> EnterTransition = {
     when (it) {
-        ScreenItem.ADD_FLIP.name -> FlipTransitionObject.enterTransition(FlipTransitionDirection.Left)
+        ScreenItem.AddFlip.name ->
+            FlipTransitionObject.enterTransition(
+                FlipTransitionDirection.Left,
+            )
         else -> FlipTransitionObject.enterTransition(FlipTransitionDirection.Bottom)
     }
 }
 
 private val exitTransition: (String) -> ExitTransition = {
     when (it) {
-        ScreenItem.TEMP_FLIP_BOX.name -> FlipTransitionObject.exitTransition(FlipTransitionDirection.Left)
+        ScreenItem.TempFlipBox.name ->
+            FlipTransitionObject.exitTransition(
+                FlipTransitionDirection.Left,
+            )
         else -> FlipTransitionObject.exitTransition(FlipTransitionDirection.Bottom)
     }
 }

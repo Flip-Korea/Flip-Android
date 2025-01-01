@@ -31,9 +31,9 @@ fun LoginNavigation(
     NavHost(
         modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
         navController = navController,
-        startDestination = ScreenItem.LOGIN.name,
+        startDestination = ScreenItem.Login.name,
     ) {
-        composable(ScreenItem.LOGIN.name) {
+        composable(ScreenItem.Login.name) {
             val loginViewModel: LoginViewModel = hiltViewModel()
             val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
 
@@ -43,7 +43,7 @@ fun LoginNavigation(
                         onNavigateMain()
                     }
                     if (!loginState.accountExists!!) {
-                        navController.navigate(NavigationItem.REGISTER_NAV.name)
+                        navController.navigate(NavigationItem.RegisterNav.name)
                     }
                 }
             }

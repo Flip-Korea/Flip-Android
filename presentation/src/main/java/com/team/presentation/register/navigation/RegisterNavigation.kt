@@ -1,11 +1,9 @@
 package com.team.presentation.register.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -18,17 +16,16 @@ import com.team.presentation.register.RegisterScreenPage.Companion.REGISTER_SCRE
 import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.register.view.RegisterScreenTemp
 import com.team.presentation.register.viewmodel.RegisterViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.team.presentation.util.sharedViewModel
 
 fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
     navigation(
-        route = NavigationItem.REGISTER_NAV.name,
-        startDestination = ScreenItem.REGISTER.name,
+        route = NavigationItem.RegisterNav.name,
+        startDestination = ScreenItem.Register.name,
     ) {
         @OptIn(ExperimentalFoundationApi::class)
-        composable(ScreenItem.REGISTER.name) {
-            val registerViewModel: RegisterViewModel = hiltViewModel()
+        composable(ScreenItem.Register.name) {
+            val registerViewModel = it.sharedViewModel<RegisterViewModel>(navController)
             val uiState by registerViewModel.uiState.collectAsStateWithLifecycle()
             val pagerState = rememberPagerState { REGISTER_SCREEN_PAGES.size }
             val scope = rememberCoroutineScope()
@@ -40,7 +37,6 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                     }
 
                     RegisterContract.UiEffect.GoToNextPage -> {
-                        pagerState.animateScrollToPage(scope, 1)
                     }
                 }
             }
@@ -51,17 +47,5 @@ fun NavGraphBuilder.registerNavigation(navController: NavHostController) {
                 onUiEvent = registerViewModel::processEvent,
             )
         }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-private fun PagerState.animateScrollToPage(
-    scope: CoroutineScope,
-    step: Int,
-) {
-    scope.launch {
-        this@animateScrollToPage.animateScrollToPage(
-            this@animateScrollToPage.currentPage + step,
-        )
     }
 }

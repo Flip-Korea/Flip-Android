@@ -16,13 +16,29 @@ sealed class BottomNavItem(
     @StringRes val title: Int,
     @DrawableRes val icon: Int,
 ) {
-    data object Home : BottomNavItem(ScreenItem.HOME.name, R.string.bottom_nav_home, R.drawable.ic_bottom_nav_home)
+    data object Home : BottomNavItem(
+        ScreenItem.Home.name,
+        R.string.bottom_nav_home,
+        R.drawable.ic_bottom_nav_home,
+    )
 
-    data object Flip : BottomNavItem(ScreenItem.FLIP.name, R.string.bottom_nav_flip, R.drawable.ic_bottom_nav_flip)
+    data object Flip : BottomNavItem(
+        ScreenItem.Flip.name,
+        R.string.bottom_nav_flip,
+        R.drawable.ic_bottom_nav_flip,
+    )
 
-    data object AddFlip : BottomNavItem(ScreenItem.ADD_FLIP.name, R.string.bottom_nav_add_flip, R.drawable.ic_bottom_nav_add_flip)
+    data object AddFlip : BottomNavItem(
+        ScreenItem.AddFlip.name,
+        R.string.bottom_nav_add_flip,
+        R.drawable.ic_bottom_nav_add_flip,
+    )
 
-    data object Profile : BottomNavItem(ScreenItem.PROFILE.name, R.string.bottom_nav_profile, R.drawable.ic_bottom_nav_profile)
+    data object Profile : BottomNavItem(
+        ScreenItem.Profile.name,
+        R.string.bottom_nav_profile,
+        R.drawable.ic_bottom_nav_profile,
+    )
 }
 
 val bottomNavItems =

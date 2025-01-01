@@ -144,7 +144,7 @@ private fun onItemClickWithOptions(
     navController.navigate(route) {
         navController.graph.startDestinationRoute?.let {
             // 첫번째 화면만 스택에 쌓이게 -> 백버튼 클릭 시 첫번째 화면으로 감
-            if (route != ScreenItem.ADD_FLIP.name) {
+            if (route != ScreenItem.AddFlip.name) {
                 popUpTo(it) { saveState = true }
             }
         }

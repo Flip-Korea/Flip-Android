@@ -32,13 +32,13 @@ fun MainNavigation(
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = mainNavController,
-        startDestination = NavigationItem.BOTTOM_NAV.name,
+        startDestination = NavigationItem.BottomNav.name,
         enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
         popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Left) },
         exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
         popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
     ) {
-        composable(NavigationItem.BOTTOM_NAV.name) {
+        composable(NavigationItem.BottomNav.name) {
             val bottomNavController = rememberNavController()
 
             Scaffold(
@@ -58,7 +58,7 @@ fun MainNavigation(
                             .padding(innerPadding),
                     bottomNavController = bottomNavController,
                     onSettingClick = {
-                        mainNavController.navigate(ScreenItem.EDIT_MY_CATEGORIES.name)
+                        mainNavController.navigate(ScreenItem.EditMyCategories.name)
                     },
                     deleteToken = deleteToken,
                     innerPadding = innerPadding,
@@ -68,11 +68,23 @@ fun MainNavigation(
 
         // TODO 어차피 프로필 정보중에 이름만 받아오는데 인자 값으로 받아오면 안되나? argument 기능 써가지고...
         composable(
-            route = ScreenItem.EDIT_MY_CATEGORIES.name,
-            enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
+            route = ScreenItem.EditMyCategories.name,
+            enterTransition = {
+                FlipTransitionObject.enterTransition(
+                    FlipTransitionDirection.Right,
+                )
+            },
             exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
-            popEnterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
-            popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
+            popEnterTransition = {
+                FlipTransitionObject.enterTransition(
+                    FlipTransitionDirection.Right,
+                )
+            },
+            popExitTransition = {
+                FlipTransitionObject.exitTransition(
+                    FlipTransitionDirection.Right,
+                )
+            },
         ) {
             EditCategoriesRoute(
                 popBackStack = { mainNavController.popBackStack() },
