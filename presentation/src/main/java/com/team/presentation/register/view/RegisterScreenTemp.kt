@@ -35,11 +35,12 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
-import com.team.presentation.register.RegisterScreenPage.Companion.REGISTER_SCREEN_PAGES
+import com.team.presentation.register.RegisterScreenPage.Companion.RegisterScreenPages
 import com.team.presentation.register.findByOrder
 import com.team.presentation.register.state.InputNameState
 import com.team.presentation.register.state.RegisterContract
 
+@Deprecated("임시 코드")
 /** 회원가입 화면 */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,45 +53,45 @@ fun RegisterScreenTemp(
     var topBarTitle by rememberSaveable { mutableStateOf("") }
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
-    when (uiState) {
-        is RegisterContract.UiState.Error -> TODO()
-        RegisterContract.UiState.Loading -> TODO()
-        is RegisterContract.UiState.Success -> {
-            Scaffold(
-                modifier = modifier.fillMaxSize(),
-                topBar = {
-                    TopBar(
-                        title = topBarTitle,
-                        onBackPress = { },
-                    )
-                },
-            ) { innerPadding ->
-                RegisterScreenFrame(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                    bottomBarTitle =
-                        stringResource(
-                            id = REGISTER_SCREEN_PAGES[currentPage].buttonTitle,
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopBar(
+                title = topBarTitle,
+                onBackPress = { },
+            )
+        },
+    ) { innerPadding ->
+        RegisterScreenFrame(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            bottomBarTitle =
+                stringResource(
+                    id = RegisterScreenPages[currentPage].buttonTitle,
+                ),
+            bottomBarEnabled = uiState.agreementItemChecks.all { it },
+            bottomBarClick = {
+                // TODO: 현재 페이지 로직 실행 후 다음 단계로 넘어갈 수 있는지 확인
+                val currentScreenPage =
+                    RegisterScreenPages[
+                        (currentPage + 1).coerceIn(
+                            0,
+                            RegisterScreenPage.entries.size,
                         ),
-                    bottomBarEnabled = uiState.agreementItemChecks.all { it },
-                    bottomBarClick = {
-                        // TODO: 현재 페이지 로직 실행 후 다음 단계로 넘어갈 수 있는지 확인
-                        val currentScreenPage = REGISTER_SCREEN_PAGES[currentPage]
-                        onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentScreenPage))
-                    },
-                ) {
-                    PagerScreens(
-                        modifier = Modifier.fillMaxSize(),
-                        pagerState = pagerState,
-                        agreementItems = uiState.agreementItems,
-                        agreementItemChecks = uiState.agreementItemChecks,
-                        inputNameState = uiState.inputNameState,
-                        onUiEvent = onUiEvent,
-                    )
-                }
-            }
+                    ]
+                onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentScreenPage))
+            },
+        ) {
+            PagerScreens(
+                modifier = Modifier.fillMaxSize(),
+                pagerState = pagerState,
+                agreementItems = uiState.agreementItems,
+                agreementItemChecks = uiState.agreementItemChecks,
+                inputNameState = uiState.inputNameState,
+                onUiEvent = onUiEvent,
+            )
         }
     }
 }
@@ -111,8 +112,8 @@ private fun PagerScreens(
         state = pagerState,
         userScrollEnabled = false,
     ) { page ->
-        when (REGISTER_SCREEN_PAGES.findByOrder(page)) {
-            RegisterScreenPage.TERMS_OF_SERVICE ->
+        when (RegisterScreenPages.findByOrder(page)) {
+            RegisterScreenPage.TermsOfService ->
                 TermsOfServiceScreen(
                     modifier = Modifier.fillMaxSize(),
                     agreementItems = agreementItems,
@@ -120,7 +121,7 @@ private fun PagerScreens(
                     onUiEvent = onUiEvent,
                 )
 
-            RegisterScreenPage.INPUT_NAME -> {
+            RegisterScreenPage.InputName -> {
                 InputNameScreen(
                     modifier =
                         Modifier.fillMaxSize().padding(
@@ -129,19 +130,19 @@ private fun PagerScreens(
                             end = SCREEN_HORIZONTAL_PADDING,
                         ),
                     currentStep = 1,
-                    totalSteps = REGISTER_SCREEN_PAGES.size,
+                    totalSteps = RegisterScreenPages.size,
                     inputNameState = inputNameState,
                     onUiEvent = onUiEvent,
                 )
             }
 
-            RegisterScreenPage.INPUT_ID -> {
+            RegisterScreenPage.InputID -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "INPUT_ID")
                 }
             }
 
-            RegisterScreenPage.INPUT_PHOTO -> {
+            RegisterScreenPage.InputPhoto -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "INPUT_PHOTO")
                 }
@@ -155,7 +156,7 @@ private fun PagerScreens(
 }
 
 @Composable
-fun RegisterScreenFrame(
+private fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     bottomBarTitle: String,
     bottomBarEnabled: Boolean,
@@ -187,7 +188,7 @@ fun RegisterScreenFrame(
 }
 
 @Composable
-fun BottomBar(
+private fun BottomBar(
     modifier: Modifier = Modifier,
     title: String,
     enabled: Boolean,
@@ -209,7 +210,7 @@ fun BottomBar(
 }
 
 @Composable
-fun TopBar(
+private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
     onBackPress: () -> Unit,
@@ -242,7 +243,7 @@ private fun RegisterScreenPreview() {
 }
 
 private val UiStateTestData =
-    RegisterContract.UiState.Success(
+    RegisterContract.UiState(
         agreementItems = AgreementItem.allItems,
         agreementItemChecks = List(AgreementItem.allItems.size) { true },
     )

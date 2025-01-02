@@ -189,9 +189,9 @@
     <string name="keyboard_toolbar_btn_done">완료</string>
 
     <!-- Register Screen -->
-    <string name="terms_of_service_screen_title_1">Flip 서비스 이용약관</string>
-    <string name="terms_of_service_screen_title_2">에</string>
-    <string name="terms_of_service_screen_title_3">동의해주세요.</string>
+    <string name="terms_of_service_screen_title_1">Flip 서비스 이용을 위해</string>
+    <string name="terms_of_service_screen_title_2">이용약관</string>
+    <string name="terms_of_service_screen_title_3">에 동의해주세요</string>
     <string name="terms_of_service_screen_agreement_item_age">만 14세 이상</string>
     <string name="terms_of_service_screen_agreement_item_service">서비스 이용약관 동의</string>
     <string name="terms_of_service_screen_agreement_item_personal_information">개인정보 수집 및 이용 동의</string>

@@ -9,22 +9,22 @@ enum class AgreementItem(
     private val isEssential: Boolean,
     val isRequireDetail: Boolean,
 ) {
-    AGE(
+    Age(
         R.string.terms_of_service_screen_agreement_item_age,
         true,
         false,
     ),
-    TERMS_OF_SERVICE(
+    TermsOfService(
         R.string.terms_of_service_screen_agreement_item_service,
         true,
         true,
     ),
-    COLLECT_PERSONAL_INFORMATION(
+    CollectPersonalInformation(
         R.string.terms_of_service_screen_agreement_item_personal_information,
         true,
         true,
     ),
-    RECEIVE_AD_TYPE_INFORMATION(R.string.terms_of_service_screen_agreement_item_ad, false, false),
+    ReceiveAdTypeInformation(R.string.terms_of_service_screen_agreement_item_ad, false, false),
     ;
 
     fun getEssentialText(): Int =

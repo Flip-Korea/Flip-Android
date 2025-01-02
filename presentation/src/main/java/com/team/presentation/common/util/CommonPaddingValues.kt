@@ -18,7 +18,7 @@ internal object CommonPaddingValues {
     val TopBarVertical = 10.dp
 
     /** 6 dp */
-    private val TopBarHorizontal = 6.dp
+    val TopBarHorizontalWithTouchTarget = 6.dp
 
     /** 16 dp */
     val HorizontalPadding = 16.dp
@@ -28,19 +28,19 @@ internal object CommonPaddingValues {
      *
      * horizontal: TopBarHorizontalPadding
      * vertical: TopBarVerticalPadding
-     * @see TopBarHorizontal
+     * @see TopBarHorizontalWithTouchTarget
      * @see TopBarVertical
      */
     val TopBarWithTouchTarget =
         PaddingValues(
-            horizontal = TopBarHorizontal,
+            horizontal = TopBarHorizontalWithTouchTarget,
             vertical = TopBarVertical,
         )
 
     /**
      * 로고가 포함된 TopBar에 적용
      *
-     * start: [CommonPaddingValues.TopBarHorizontal]
+     * start: [CommonPaddingValues.TopBarHorizontalWithTouchTarget]
      *
      * end: 7 dp
      *

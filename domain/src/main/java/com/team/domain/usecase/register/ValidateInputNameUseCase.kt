@@ -6,7 +6,7 @@ import com.team.domain.util.validation.ValidationResult
 class ValidateInputNameUseCase {
     operator fun invoke(name: String): ValidationResult {
         val regexResult = KOREA_ENGLISH_REGEX.matches(name)
-        if (name.length in 2..12 && regexResult) {
+        if (name.length in MIN_LENGTH..MAX_LENGTH && regexResult) {
             return ValidationResult.Success
         }
         return ValidationResult.Error(ValidationErrorType.Register.NAME_INVALID)

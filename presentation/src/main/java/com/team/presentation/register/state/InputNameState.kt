@@ -5,5 +5,5 @@ import com.team.presentation.util.uitext.UiText
 data class InputNameState(
     val name: String = "",
     val loading: Boolean = false,
-    val error: UiText? = null
+    val error: UiText? = null,
 )

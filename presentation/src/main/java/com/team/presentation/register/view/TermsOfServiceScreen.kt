@@ -1,11 +1,11 @@
 package com.team.presentation.register.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,36 +45,25 @@ fun TermsOfServiceScreen(
     agreementItemChecks: List<Boolean>,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
-    var checkedAllItems by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(checkedAllItems) {
-        if (checkedAllItems) {
-            onUiEvent(RegisterContract.UiEvent.CheckAll)
-        } else {
-            onUiEvent(RegisterContract.UiEvent.UnCheckAll)
-        }
-    }
-
     Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .padding(top = SCREEN_TOP_PADDING, bottom = SCREEN_BOTTOM_PADDING),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {
         // 헤더 타이틀 (회원가입 단계 동안 반복되는 부분)
-        Title(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = HORIZONTAL_PADDING),
-        )
+        Title(Modifier.fillMaxWidth())
         // 약관 동의 항목들 (회원가입 단계 동안 반복되는 부분)
         AgreementItems(
-            modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING_WITH_TOUCH_TARGET),
+            modifier = Modifier.fillMaxWidth(),
             agreementItems = agreementItems,
             agreementItemChecks = agreementItemChecks,
-            checkedAllItems = checkedAllItems,
-            onCheckAllItems = { checkedAllItems = !checkedAllItems },
+            checkedAllItems = agreementItemChecks.all { it },
+            onCheckAllItems = {
+                if (agreementItemChecks.all { it }) {
+                    onUiEvent(RegisterContract.UiEvent.UnCheckAll)
+                } else {
+                    onUiEvent(RegisterContract.UiEvent.CheckAll)
+                }
+            },
             onItemClick = { index ->
                 onUiEvent(RegisterContract.UiEvent.OnToggleAgreementItem(index))
             },
@@ -90,11 +77,11 @@ private fun Title(modifier: Modifier = Modifier) {
         modifier = modifier,
         text =
             buildAnnotatedString {
-                withStyle(SpanStyle(fontWeight = FlipTheme.typography.headline8.fontWeight)) {
-                    append(stringResource(id = R.string.terms_of_service_screen_title_1))
-                }
-                append(stringResource(id = R.string.terms_of_service_screen_title_2))
+                append(stringResource(id = R.string.terms_of_service_screen_title_1))
                 append("\n")
+                withStyle(SpanStyle(fontWeight = FlipTheme.typography.headline8.fontWeight)) {
+                    append(stringResource(id = R.string.terms_of_service_screen_title_2))
+                }
                 append(stringResource(id = R.string.terms_of_service_screen_title_3))
             },
         style = FlipTheme.typography.headline7,
@@ -120,10 +107,10 @@ private fun AgreementItems(
             checked = checkedAllItems,
             onClick = onCheckAllItems,
         )
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.fillMaxWidth().height(30.dp))
         agreementItems.forEachIndexed { index, agreementClickableItem ->
             AgreementItem(
-                modifier = Modifier,
+                modifier = Modifier.padding(start = 4.dp),
                 agreementItem = agreementClickableItem,
                 isClicked = agreementItemChecks[index],
                 onClick = { onItemClick(index) },
@@ -169,8 +156,12 @@ fun AgreementAllItems(
     Row(
         modifier =
             modifier
-                .padding(start = 8.dp)
-                .clickableSingleWithoutRipple { onClick() },
+                .background(FlipTheme.colors.gray1, FlipTheme.shapes.roundedCornerSmall)
+                .padding(
+                    start = 14.dp,
+                    top = 20.dp,
+                    bottom = 20.dp,
+                ).clickableSingleWithoutRipple { onClick() },
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -238,11 +229,6 @@ private fun AgreementItemDetail(
     )
 }
 
-private val HORIZONTAL_PADDING = 16.dp
-private val HORIZONTAL_PADDING_WITH_TOUCH_TARGET = 10.dp
-private val SCREEN_TOP_PADDING = 11.dp
-private val SCREEN_BOTTOM_PADDING = 47.dp
-
 @Preview(showBackground = true)
 @Composable
 private fun TitlePreview() {
@@ -256,7 +242,7 @@ private fun TitlePreview() {
 private fun TermsOfServiceItemPreview() {
     FlipAppTheme {
         AgreementItem(
-            agreementItem = AgreementItem.AGE,
+            agreementItem = AgreementItem.Age,
             isClicked = true,
             onClick = { },
         )

@@ -5,21 +5,22 @@ import com.team.presentation.R
 
 enum class RegisterScreenPage(
     val order: Int,
+    val route: String,
     @StringRes val buttonTitle: Int,
 ) {
-    TERMS_OF_SERVICE(0, R.string.terms_of_service_screen_agreement_btn),
-    INPUT_NAME(1, R.string.terms_of_service_screen_input_name_btn),
-    INPUT_ID(2, R.string.terms_of_service_screen_input_id_btn),
-    INPUT_PHOTO(3, R.string.terms_of_service_screen_input_photo_btn),
+    TermsOfService(0, "terms_of_service", R.string.terms_of_service_screen_agreement_btn),
+    InputName(1, "input_name", R.string.terms_of_service_screen_input_name_btn),
+    InputID(2, "input_id", R.string.terms_of_service_screen_input_id_btn),
+    InputPhoto(3, "input_photo", R.string.terms_of_service_screen_input_photo_btn),
     ;
 
     companion object {
-        val REGISTER_SCREEN_PAGES =
+        val RegisterScreenPages =
             listOf(
-                TERMS_OF_SERVICE,
-                INPUT_NAME,
-                INPUT_ID,
-                INPUT_PHOTO,
+                TermsOfService,
+                InputName,
+                InputID,
+                InputPhoto,
             )
     }
 }
