@@ -49,15 +49,32 @@ import com.team.designsystem.component.utils.focusCleaner
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+sealed interface InfoTextFieldState {
+    data object Idle : InfoTextFieldState
+
+    data object Valid : InfoTextFieldState
+
+    data class Invalid(
+        val errorMessage: String,
+    ) : InfoTextFieldState
+}
+
+/**
+ * 정보를 입력 받는 텍스트필드, 회원가입 단계에서 사용된다.
+ *
+ * @param text 입력 값
+ * @param onTextChanged 입력 값 변경 시
+ * @param focusManager [FocusManager]
+ * @param maxLength 텍스트필드 제한 길이
+ */
 @Composable
 fun FlipInfoTextField(
     modifier: Modifier = Modifier,
+    infoTextFieldState: InfoTextFieldState,
     text: String,
     onTextChanged: (String) -> Unit,
     focusManager: FocusManager,
     maxLength: Int,
-    valid: Boolean,
-    errorMessage: String? = null,
     placeholder: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -65,9 +82,6 @@ fun FlipInfoTextField(
 
     val placeholderEnabled by rememberSaveable(focused, text) {
         mutableStateOf(!focused && text.isEmpty())
-    }
-    val bottomSectionEnabled by rememberSaveable(focused, text) {
-        mutableStateOf(focused || text.isNotEmpty())
     }
 
     val backgroundColor =
@@ -81,17 +95,17 @@ fun FlipInfoTextField(
         if (placeholderEnabled) {
             Color.Transparent
         } else {
-            when {
-                errorMessage != null -> FlipTheme.colors.statusRed
-                valid -> FlipTheme.colors.point
-                else -> FlipTheme.colors.gray4
+            when (infoTextFieldState) {
+                InfoTextFieldState.Idle -> FlipTheme.colors.gray4
+                InfoTextFieldState.Valid -> FlipTheme.colors.point
+                is InfoTextFieldState.Invalid -> FlipTheme.colors.statusRed
             }
         }
     val counterColor =
-        when {
-            errorMessage != null -> FlipTheme.colors.statusRed
-            valid -> FlipTheme.colors.point
-            else -> FlipTheme.colors.gray6
+        when (infoTextFieldState) {
+            InfoTextFieldState.Idle -> FlipTheme.colors.gray4
+            InfoTextFieldState.Valid -> FlipTheme.colors.point
+            is InfoTextFieldState.Invalid -> FlipTheme.colors.statusRed
         }
 
     Column(
@@ -161,22 +175,20 @@ fun FlipInfoTextField(
             }
         }
 
-        if (bottomSectionEnabled) {
-            BottomSection(
-                text = text,
-                errorMessage = errorMessage,
-                maxLength = maxLength,
-                counterColor = counterColor,
-            )
-        }
+        BottomSection(
+            infoTextFieldState = infoTextFieldState,
+            text = text,
+            maxLength = maxLength,
+            counterColor = counterColor,
+        )
     }
 }
 
 @Composable
 private fun BottomSection(
     modifier: Modifier = Modifier,
+    infoTextFieldState: InfoTextFieldState,
     text: String,
-    errorMessage: String? = null,
     maxLength: Int,
     counterColor: Color,
 ) {
@@ -186,7 +198,7 @@ private fun BottomSection(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min),
     ) {
-        if (errorMessage != null) {
+        if (infoTextFieldState is InfoTextFieldState.Invalid) {
             Row(
                 modifier =
                     Modifier
@@ -201,7 +213,7 @@ private fun BottomSection(
                     contentDescription = stringResource(id = R.string.content_desc_error),
                 )
                 Text(
-                    text = errorMessage,
+                    text = infoTextFieldState.errorMessage,
                     style = FlipTheme.typography.body3,
                     color = FlipTheme.colors.statusRed,
                 )
@@ -240,11 +252,11 @@ private fun FlipInfoTextFieldPreview() {
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            infoTextFieldState = InfoTextFieldState.Idle,
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
-            valid = false,
             placeholder = "placeholder",
         )
     }
@@ -262,11 +274,11 @@ private fun FlipInfoTextField1Preview() {
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            infoTextFieldState = InfoTextFieldState.Idle,
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
-            valid = false,
             placeholder = null,
         )
     }
@@ -284,12 +296,11 @@ private fun FlipInfoTextField2Preview() {
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            infoTextFieldState = InfoTextFieldState.Invalid("Error Helper Text"),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
-            valid = false,
-            errorMessage = "Error Helper Text",
             placeholder = null,
         )
     }
@@ -307,34 +318,11 @@ private fun FlipInfoTextField3Preview() {
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
+            infoTextFieldState = InfoTextFieldState.Valid,
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
             maxLength = 30,
-            valid = true,
-            placeholder = null,
-        )
-    }
-}
-
-@Preview(name = "valid & error both", showBackground = true)
-@Composable
-private fun FlipInfoTextField4Preview() {
-    val (text, onTextChanged) = remember { mutableStateOf("") }
-    val focusManager = LocalFocusManager.current
-
-    FlipAppTheme {
-        FlipInfoTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            text = text,
-            onTextChanged = onTextChanged,
-            focusManager = focusManager,
-            maxLength = 30,
-            valid = true,
-            errorMessage = "Error Helper Text",
             placeholder = null,
         )
     }
@@ -346,8 +334,9 @@ private fun FlipInfoTextField5Preview() {
     val (text, onTextChanged) = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
-    var valid by remember { mutableStateOf(false) }
-    var errorMessage: String? by remember { mutableStateOf(null) }
+    var infoTextFieldState: InfoTextFieldState by remember {
+        mutableStateOf(InfoTextFieldState.Idle)
+    }
 
     FlipAppTheme {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -356,21 +345,18 @@ private fun FlipInfoTextField5Preview() {
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
+                infoTextFieldState = infoTextFieldState,
                 text = text,
                 onTextChanged = onTextChanged,
                 focusManager = focusManager,
                 maxLength = 10,
-                valid = valid,
-                errorMessage = errorMessage,
                 placeholder = "5자 이상 10자 이하로 작성.",
             )
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    val result = fakeValidation(text)
-                    valid = result.first
-                    errorMessage = result.second
+                    infoTextFieldState = fakeValidation(text)
                 },
             ) {
                 Text(text = "validation")
@@ -381,8 +367,8 @@ private fun FlipInfoTextField5Preview() {
     }
 }
 
-private fun fakeValidation(text: String): Pair<Boolean, String?> =
+private fun fakeValidation(text: String): InfoTextFieldState =
     when (text.length) {
-        in 5..10 -> Pair(true, null)
-        else -> Pair(false, "5자 이상 10자 이하로 작성해주세요.")
+        in 5..10 -> InfoTextFieldState.Valid
+        else -> InfoTextFieldState.Invalid("5자 이상 10자 이하로 작성해주세요.")
     }
