@@ -57,9 +57,8 @@ fun InputNameScreen(
                     }
                     append(stringResource(id = R.string.terms_of_service_screen_input_name_title_3))
                 },
-            subTitle = stringResource(id = R.string.terms_of_service_screen_input_name_sub_title),
         )
-        Spacer(modifier = Modifier.height(44.dp))
+        Spacer(modifier = Modifier.height(64.dp))
         FlipInfoTextField(
             infoTextFieldState = inputNameState.inputNameValidState.toInfoTextFieldState(),
             text = inputNameState.name,

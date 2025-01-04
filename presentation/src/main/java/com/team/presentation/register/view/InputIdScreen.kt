@@ -59,7 +59,7 @@ fun InputIdScreen(
                     append(stringResource(id = R.string.terms_of_service_screen_input_id_title_3))
                 },
         )
-        Spacer(modifier = Modifier.height(44.dp))
+        Spacer(modifier = Modifier.height(64.dp))
         FlipInfoTextField(
             infoTextFieldState = inputIdState.inputIdValidState.toInfoTextFieldState(),
             text = inputIdState.id,

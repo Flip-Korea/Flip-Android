@@ -40,23 +40,12 @@ fun RegisterProgressView(
 fun RegisterTitleView(
     modifier: Modifier = Modifier,
     mainTitle: AnnotatedString,
-    subTitle: String? = null,
 ) {
-    Column(
+    Text(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = mainTitle,
-            style = FlipTheme.typography.headline7,
-        )
-        subTitle?.let {
-            Text(
-                text = subTitle,
-                style = FlipTheme.typography.body3,
-            )
-        }
-    }
+        text = mainTitle,
+        style = FlipTheme.typography.headline7,
+    )
 }
 
 private const val SLASH = "/"
@@ -82,7 +71,6 @@ private fun RegisterTitleViewPreview() {
                 }
                 append(stringResource(id = R.string.terms_of_service_screen_input_name_title_3))
             },
-            subTitle = stringResource(id = R.string.terms_of_service_screen_input_name_sub_title),
         )
     }
 }
