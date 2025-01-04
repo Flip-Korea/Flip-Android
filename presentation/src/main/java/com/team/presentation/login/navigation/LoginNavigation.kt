@@ -19,7 +19,6 @@ import com.team.presentation.login.util.GoogleAuthManager
 import com.team.presentation.login.util.KakaoAuthManager
 import com.team.presentation.login.view.LoginScreen
 import com.team.presentation.login.viewmodel.LoginViewModel
-import com.team.presentation.register.navigation.registerNavigation
 
 @Composable
 fun LoginNavigation(
@@ -65,6 +64,6 @@ fun LoginNavigation(
             )
         }
 
-        registerNavigation(navController)
+//        registerNavigation(navController)
     }
 }
