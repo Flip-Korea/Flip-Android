@@ -86,6 +86,7 @@ fun RegisterNavigation(
 
         composable(route = RegisterScreenPage.InputName.route) {
             InputNameScreen(
+                modifier = Modifier.fillMaxSize().padding(ContentPaddingValues),
                 currentStep = 1,
                 totalSteps = 3,
                 inputNameState = uiState.inputNameState,

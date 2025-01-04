@@ -5,7 +5,7 @@ import com.team.domain.util.validation.ValidationResult
 
 class ValidateInputNameUseCase {
     operator fun invoke(name: String): ValidationResult {
-        val regexResult = KOREA_ENGLISH_REGEX.matches(name)
+        val regexResult = FlipNameRegex.matches(name)
         if (name.length in MIN_LENGTH..MAX_LENGTH && regexResult) {
             return ValidationResult.Success
         }
@@ -19,4 +19,4 @@ class ValidateInputNameUseCase {
 }
 
 // 정규 표현식: 한글([가-힣]) 및 영문([a-zA-Z])만 허용
-private val KOREA_ENGLISH_REGEX = "^[가-힣a-zA-Z]+$".toRegex()
+private val FlipNameRegex = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]{2,12}\$".toRegex()

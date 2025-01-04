@@ -49,12 +49,16 @@ import com.team.designsystem.component.utils.focusCleaner
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 
+/** 정보를 입력 받는 텍스트 필드 사용 시 명확한 상태 제어를 위해 사용 */
 sealed interface InfoTextFieldState {
+    /** 기본 상태 */
     data object Idle : InfoTextFieldState
 
+    /** 유효한 상태 (정상적인 상황, 유효성 검사 후 유효성이 확인 되었을 때) */
     data object Valid : InfoTextFieldState
 
-    data class Invalid(
+    /** 에러 상태 */
+    data class Error(
         val errorMessage: String,
     ) : InfoTextFieldState
 }
@@ -98,14 +102,14 @@ fun FlipInfoTextField(
             when (infoTextFieldState) {
                 InfoTextFieldState.Idle -> FlipTheme.colors.gray4
                 InfoTextFieldState.Valid -> FlipTheme.colors.point
-                is InfoTextFieldState.Invalid -> FlipTheme.colors.statusRed
+                is InfoTextFieldState.Error -> FlipTheme.colors.statusRed
             }
         }
     val counterColor =
         when (infoTextFieldState) {
             InfoTextFieldState.Idle -> FlipTheme.colors.gray4
             InfoTextFieldState.Valid -> FlipTheme.colors.point
-            is InfoTextFieldState.Invalid -> FlipTheme.colors.statusRed
+            is InfoTextFieldState.Error -> FlipTheme.colors.statusRed
         }
 
     Column(
@@ -198,7 +202,7 @@ private fun BottomSection(
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min),
     ) {
-        if (infoTextFieldState is InfoTextFieldState.Invalid) {
+        if (infoTextFieldState is InfoTextFieldState.Error) {
             Row(
                 modifier =
                     Modifier
@@ -296,7 +300,7 @@ private fun FlipInfoTextField2Preview() {
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-            infoTextFieldState = InfoTextFieldState.Invalid("Error Helper Text"),
+            infoTextFieldState = InfoTextFieldState.Error("Error Helper Text"),
             text = text,
             onTextChanged = onTextChanged,
             focusManager = focusManager,
@@ -370,5 +374,5 @@ private fun FlipInfoTextField5Preview() {
 private fun fakeValidation(text: String): InfoTextFieldState =
     when (text.length) {
         in 5..10 -> InfoTextFieldState.Valid
-        else -> InfoTextFieldState.Invalid("5자 이상 10자 이하로 작성해주세요.")
+        else -> InfoTextFieldState.Error("5자 이상 10자 이하로 작성해주세요.")
     }

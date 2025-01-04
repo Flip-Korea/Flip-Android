@@ -188,6 +188,9 @@
     <!-- Keyboard Toolbar -->
     <string name="keyboard_toolbar_btn_done">완료</string>
 
+    <!-- Register Screen (Common) -->
+    <string name="register_screen_common_input_retry">다시 시도해 주세요.</string>
+
     <!-- Register Screen -->
     <string name="terms_of_service_screen_title_1">Flip 서비스 이용을 위해</string>
     <string name="terms_of_service_screen_title_2">이용약관</string>

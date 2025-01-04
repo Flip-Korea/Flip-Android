@@ -10,6 +10,7 @@ import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.common.util.FlipBaseViewModel
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
+import com.team.presentation.register.state.InputNameValidState
 import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
@@ -47,16 +48,18 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onNameChanged(name: String) {
+        val inputNameState = currentUiState.inputNameState.copy(name = name)
         val updatedInputNameState =
             when (val validationResult = validateRegisterUseCases.validateInputNameUseCase(name)) {
                 is ValidationResult.Error -> {
-                    currentUiState
-                        .inputNameState
-                        .copy(error = validationResult.error.asUiText())
+                    inputNameState.copy(
+                        inputNameValidState =
+                            InputNameValidState.Invalid(validationResult.error.asUiText()),
+                    )
                 }
 
                 ValidationResult.Success -> {
-                    currentUiState.inputNameState.copy(name = name)
+                    inputNameState.copy(inputNameValidState = InputNameValidState.Valid)
                 }
             }
         updateState { currentUiState.copy(inputNameState = updatedInputNameState) }

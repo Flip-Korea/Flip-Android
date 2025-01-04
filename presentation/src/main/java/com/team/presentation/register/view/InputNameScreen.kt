@@ -14,12 +14,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.textfield.FlipInfoTextField
+import com.team.designsystem.component.textfield.InfoTextFieldState
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.usecase.register.ValidateInputNameUseCase
 import com.team.presentation.R
 import com.team.presentation.register.state.InputNameState
+import com.team.presentation.register.state.InputNameValidState
 import com.team.presentation.register.state.RegisterContract
+import com.team.presentation.util.uitext.UiText
 
 @Composable
 fun InputNameScreen(
@@ -56,23 +59,37 @@ fun InputNameScreen(
                 },
             subTitle = stringResource(id = R.string.terms_of_service_screen_input_name_sub_title),
         )
-        Spacer(modifier = Modifier.height(36.dp))
+        Spacer(modifier = Modifier.height(44.dp))
         FlipInfoTextField(
+            infoTextFieldState = inputNameState.inputNameValidState.toInfoTextFieldState(),
             text = inputNameState.name,
             onTextChanged = {
                 onUiEvent(RegisterContract.UiEvent.OnNameChanged(it))
             },
             focusManager = focusManager,
             maxLength = ValidateInputNameUseCase.MAX_LENGTH,
-            valid = inputNameState.error != null,
             placeholder =
                 stringResource(
                     id = R.string.terms_of_service_screen_input_name_placeholder,
                 ),
-            errorMessage = inputNameState.error?.asString(),
         )
     }
 }
+
+@Composable
+private fun InputNameValidState.toInfoTextFieldState(): InfoTextFieldState =
+    when (this) {
+        InputNameValidState.Idle -> InfoTextFieldState.Idle
+        is InputNameValidState.Invalid -> {
+            val defaultError =
+                UiText
+                    .StringResource(R.string.register_screen_common_input_retry)
+                    .asString()
+            InfoTextFieldState.Error(this.error?.asString() ?: defaultError)
+        }
+
+        InputNameValidState.Valid -> InfoTextFieldState.Valid
+    }
 
 @Preview(showBackground = true)
 @Composable
