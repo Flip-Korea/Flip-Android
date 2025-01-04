@@ -10,6 +10,7 @@ import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.common.util.FlipBaseViewModel
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
+import com.team.presentation.register.state.InputIdValidState
 import com.team.presentation.register.state.InputNameValidState
 import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.util.uitext.UiText
@@ -44,7 +45,27 @@ class RegisterViewModel @Inject constructor(
             is RegisterContract.UiEvent.RequestToNextPage -> requestToNextPage(event.currentPage)
 
             is RegisterContract.UiEvent.OnNameChanged -> onNameChanged(event.name)
+
+            is RegisterContract.UiEvent.OnIdChanged -> onIdChanged(event.id)
         }
+    }
+
+    private fun onIdChanged(id: String) {
+        val inputIdState = currentUiState.inputIdState.copy(id = id)
+        val updatedInputIdState =
+            when (val validationResult = validateRegisterUseCases.validateInputIdUseCase(id)) {
+                is ValidationResult.Error -> {
+                    inputIdState.copy(
+                        inputIdValidState =
+                            InputIdValidState.Invalid(validationResult.error.asUiText()),
+                    )
+                }
+
+                ValidationResult.Success -> {
+                    inputIdState.copy(inputIdValidState = InputIdValidState.Valid)
+                }
+            }
+        updateState { currentUiState.copy(inputIdState = updatedInputIdState) }
     }
 
     private fun onNameChanged(name: String) {
@@ -72,10 +93,11 @@ class RegisterViewModel @Inject constructor(
             }
 
             RegisterScreenPage.InputName -> {
-                validateInputName()
+                sendEffect { RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputID) }
             }
 
-            RegisterScreenPage.InputID -> TODO()
+            RegisterScreenPage.InputID -> {
+            }
             RegisterScreenPage.InputPhoto -> TODO()
             null -> {
                 viewModelScope.launch {
@@ -83,9 +105,6 @@ class RegisterViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun validateInputName() {
     }
 
     private fun checkAllAgreementItems(value: Boolean) {

@@ -40,7 +40,7 @@ fun RegisterProgressView(
 fun RegisterTitleView(
     modifier: Modifier = Modifier,
     mainTitle: AnnotatedString,
-    subTitle: String,
+    subTitle: String? = null,
 ) {
     Column(
         modifier = modifier,
@@ -50,10 +50,12 @@ fun RegisterTitleView(
             text = mainTitle,
             style = FlipTheme.typography.headline7,
         )
-        Text(
-            text = subTitle,
-            style = FlipTheme.typography.body3,
-        )
+        subTitle?.let {
+            Text(
+                text = subTitle,
+                style = FlipTheme.typography.body3,
+            )
+        }
     }
 }
 

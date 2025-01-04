@@ -33,4 +33,8 @@ fun ValidationErrorType.asUiText(): UiText =
         ValidationErrorType.Register.NAME_INVALID -> {
             UiText.StringResource(R.string.validation_error_register_name_invalid)
         }
+
+        ValidationErrorType.Register.ID_INVALID -> {
+            UiText.StringResource(R.string.validation_error_register_id_invalid)
+        }
     }

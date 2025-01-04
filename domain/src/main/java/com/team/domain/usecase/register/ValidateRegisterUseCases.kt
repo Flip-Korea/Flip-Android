@@ -2,7 +2,8 @@ package com.team.domain.usecase.register
 
 import javax.inject.Inject
 
+/** 회원가입 시 유효성 검사 UseCases */
 class ValidateRegisterUseCases @Inject constructor(
     val validateInputNameUseCase: ValidateInputNameUseCase,
-    // TODO: 다른 UseCase 들 모아 놓을 예정
+    val validateInputIdUseCase: ValidateInputIdUseCase,
 )

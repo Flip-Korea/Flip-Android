@@ -23,6 +23,5 @@ class ValidateTempPostUseCase {
 fun tempPostCondition(
     title: String,
     contents: List<String>,
-): Boolean {
-    return title.isNotEmpty() || contents.joinToString(FlipContentSeparator.SEPARATOR).isNotEmpty()
-}
+): Boolean =
+    title.isNotEmpty() || contents.joinToString(FlipContentSeparator.SEPARATOR).isNotEmpty()

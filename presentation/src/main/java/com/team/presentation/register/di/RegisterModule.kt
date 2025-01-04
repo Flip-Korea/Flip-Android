@@ -1,5 +1,6 @@
 package com.team.presentation.register.di
 
+import com.team.domain.usecase.register.ValidateInputIdUseCase
 import com.team.domain.usecase.register.ValidateInputNameUseCase
 import com.team.domain.usecase.register.ValidateRegisterUseCases
 import dagger.Module
@@ -17,10 +18,16 @@ class RegisterModule {
 
     @Provides
     @ViewModelScoped
+    fun provideValidateInputIdUseCase(): ValidateInputIdUseCase = ValidateInputIdUseCase()
+
+    @Provides
+    @ViewModelScoped
     fun provideValidateRegisterUseCases(
         validateInputNameUseCase: ValidateInputNameUseCase,
+        validateInputIdUseCase: ValidateInputIdUseCase,
     ): ValidateRegisterUseCases =
         ValidateRegisterUseCases(
             validateInputNameUseCase = validateInputNameUseCase,
+            validateInputIdUseCase = validateInputIdUseCase,
         )
 }

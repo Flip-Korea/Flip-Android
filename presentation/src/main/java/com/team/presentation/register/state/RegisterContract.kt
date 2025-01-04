@@ -11,6 +11,7 @@ class RegisterContract {
         val agreementItems: List<AgreementItem> = emptyList(),
         val agreementItemChecks: List<Boolean> = emptyList(),
         val inputNameState: InputNameState = InputNameState(),
+        val inputIdState: InputIdState = InputIdState(),
 //            val registerDataInfo:
 //            val register: ComposeRegister = ComposeRegister(),
     ) : BaseUiState
@@ -30,6 +31,10 @@ class RegisterContract {
 
         data class OnNameChanged(
             val name: String,
+        ) : UiEvent()
+
+        data class OnIdChanged(
+            val id: String,
         ) : UiEvent()
     }
 

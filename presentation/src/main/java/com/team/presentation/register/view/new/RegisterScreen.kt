@@ -18,6 +18,7 @@ import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.RegisterContract
+import com.team.presentation.register.view.InputIdScreen
 import com.team.presentation.register.view.InputNameScreen
 import com.team.presentation.register.view.TermsOfServiceScreen
 import com.team.presentation.util.composable.copy
@@ -90,6 +91,16 @@ fun RegisterNavigation(
                 currentStep = 1,
                 totalSteps = 3,
                 inputNameState = uiState.inputNameState,
+                onUiEvent = onUiEvent,
+            )
+        }
+
+        composable(route = RegisterScreenPage.InputID.route) {
+            InputIdScreen(
+                modifier = Modifier.fillMaxSize().padding(ContentPaddingValues),
+                currentStep = 2,
+                totalSteps = 3,
+                inputIdState = uiState.inputIdState,
                 onUiEvent = onUiEvent,
             )
         }

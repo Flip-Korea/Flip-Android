@@ -3,6 +3,7 @@ package com.team.domain.usecase.register
 import com.team.domain.util.validation.ValidationErrorType
 import com.team.domain.util.validation.ValidationResult
 
+/** 회원가입 시 이름 입력 유효성 검사 UseCase */
 class ValidateInputNameUseCase {
     operator fun invoke(name: String): ValidationResult {
         val regexResult = FlipNameRegex.matches(name)
