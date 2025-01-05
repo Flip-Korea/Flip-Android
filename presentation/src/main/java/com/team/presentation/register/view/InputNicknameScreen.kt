@@ -17,19 +17,19 @@ import com.team.designsystem.component.textfield.FlipInfoTextField
 import com.team.designsystem.component.textfield.InfoTextFieldState
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
-import com.team.domain.usecase.register.ValidateInputNameUseCase
+import com.team.domain.usecase.register.ValidateInputNicknameUseCase
 import com.team.presentation.R
-import com.team.presentation.register.state.InputNameState
-import com.team.presentation.register.state.InputNameValidState
+import com.team.presentation.register.state.InputNicknameState
+import com.team.presentation.register.state.InputNicknameValidState
 import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.util.uitext.UiText
 
 @Composable
-fun InputNameScreen(
+fun InputNicknameScreen(
     modifier: Modifier = Modifier,
     currentStep: Int,
     totalSteps: Int,
-    inputNameState: InputNameState,
+    inputNicknameState: InputNicknameState,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -46,40 +46,48 @@ fun InputNameScreen(
         RegisterTitleView(
             mainTitle =
                 buildAnnotatedString {
-                    append(stringResource(id = R.string.terms_of_service_screen_input_name_title_1))
+                    append(
+                        stringResource(
+                            id = R.string.terms_of_service_screen_input_nickname_title_1,
+                        ),
+                    )
                     append("\n")
                     withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
                         append(
                             stringResource(
-                                id = R.string.terms_of_service_screen_input_name_title_2,
+                                id = R.string.terms_of_service_screen_input_nickname_title_2,
                             ),
                         )
                     }
-                    append(stringResource(id = R.string.terms_of_service_screen_input_name_title_3))
+                    append(
+                        stringResource(
+                            id = R.string.terms_of_service_screen_input_nickname_title_3,
+                        ),
+                    )
                 },
         )
         Spacer(modifier = Modifier.height(64.dp))
         FlipInfoTextField(
-            infoTextFieldState = inputNameState.inputNameValidState.toInfoTextFieldState(),
-            text = inputNameState.name,
+            infoTextFieldState = inputNicknameState.inputNicknameValidState.toInfoTextFieldState(),
+            text = inputNicknameState.name,
             onTextChanged = {
-                onUiEvent(RegisterContract.UiEvent.OnNameChanged(it))
+                onUiEvent(RegisterContract.UiEvent.OnNicknameChanged(it))
             },
             focusManager = focusManager,
-            maxLength = ValidateInputNameUseCase.MAX_LENGTH,
+            maxLength = ValidateInputNicknameUseCase.MAX_LENGTH,
             placeholder =
                 stringResource(
-                    id = R.string.terms_of_service_screen_input_name_placeholder,
+                    id = R.string.terms_of_service_screen_input_nickname_placeholder,
                 ),
         )
     }
 }
 
 @Composable
-private fun InputNameValidState.toInfoTextFieldState(): InfoTextFieldState =
+private fun InputNicknameValidState.toInfoTextFieldState(): InfoTextFieldState =
     when (this) {
-        InputNameValidState.Idle -> InfoTextFieldState.Idle
-        is InputNameValidState.Invalid -> {
+        InputNicknameValidState.Idle -> InfoTextFieldState.Idle
+        is InputNicknameValidState.Invalid -> {
             val defaultError =
                 UiText
                     .StringResource(R.string.register_screen_common_input_retry)
@@ -87,17 +95,17 @@ private fun InputNameValidState.toInfoTextFieldState(): InfoTextFieldState =
             InfoTextFieldState.Error(this.error?.asString() ?: defaultError)
         }
 
-        InputNameValidState.Valid -> InfoTextFieldState.Valid
+        InputNicknameValidState.Valid -> InfoTextFieldState.Valid
     }
 
 @Preview(showBackground = true)
 @Composable
-private fun InputNameScreenPreview() {
+private fun InputNicknameScreenPreview() {
     FlipAppTheme {
-        InputNameScreen(
+        InputNicknameScreen(
             currentStep = 1,
             totalSteps = 3,
-            inputNameState = InputNameState(),
+            inputNicknameState = InputNicknameState(),
             onUiEvent = { },
         )
     }

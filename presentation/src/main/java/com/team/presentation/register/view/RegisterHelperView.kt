@@ -1,7 +1,5 @@
 package com.team.presentation.register.view
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,7 +9,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.R
@@ -63,14 +60,27 @@ private fun RegisterProgressViewPreview() {
 private fun RegisterTitleViewPreview() {
     FlipAppTheme {
         RegisterTitleView(
-            mainTitle = buildAnnotatedString {
-                append(stringResource(id = R.string.terms_of_service_screen_input_name_title_1))
-                append("\n")
-                withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
-                    append(stringResource(id = R.string.terms_of_service_screen_input_name_title_2))
-                }
-                append(stringResource(id = R.string.terms_of_service_screen_input_name_title_3))
-            },
+            mainTitle =
+                buildAnnotatedString {
+                    append(
+                        stringResource(
+                            id = R.string.terms_of_service_screen_input_nickname_title_1,
+                        ),
+                    )
+                    append("\n")
+                    withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
+                        append(
+                            stringResource(
+                                id = R.string.terms_of_service_screen_input_nickname_title_2,
+                            ),
+                        )
+                    }
+                    append(
+                        stringResource(
+                            id = R.string.terms_of_service_screen_input_nickname_title_3,
+                        ),
+                    )
+                },
         )
     }
 }

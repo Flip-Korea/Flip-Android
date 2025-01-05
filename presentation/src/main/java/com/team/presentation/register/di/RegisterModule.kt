@@ -1,7 +1,7 @@
 package com.team.presentation.register.di
 
 import com.team.domain.usecase.register.ValidateInputIdUseCase
-import com.team.domain.usecase.register.ValidateInputNameUseCase
+import com.team.domain.usecase.register.ValidateInputNicknameUseCase
 import com.team.domain.usecase.register.ValidateRegisterUseCases
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 class RegisterModule {
     @Provides
     @ViewModelScoped
-    fun provideValidateInputNameUseCase(): ValidateInputNameUseCase = ValidateInputNameUseCase()
+    fun provideValidateInputNameUseCase(): ValidateInputNicknameUseCase =
+        ValidateInputNicknameUseCase()
 
     @Provides
     @ViewModelScoped
@@ -23,11 +24,11 @@ class RegisterModule {
     @Provides
     @ViewModelScoped
     fun provideValidateRegisterUseCases(
-        validateInputNameUseCase: ValidateInputNameUseCase,
+        validateInputNicknameUseCase: ValidateInputNicknameUseCase,
         validateInputIdUseCase: ValidateInputIdUseCase,
     ): ValidateRegisterUseCases =
         ValidateRegisterUseCases(
-            validateInputNameUseCase = validateInputNameUseCase,
+            validateInputNicknameUseCase = validateInputNicknameUseCase,
             validateInputIdUseCase = validateInputIdUseCase,
         )
 }

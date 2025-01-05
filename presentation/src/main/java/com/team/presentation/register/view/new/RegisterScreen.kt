@@ -4,13 +4,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTransitionDirection
@@ -19,7 +22,7 @@ import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.register.view.InputIdScreen
-import com.team.presentation.register.view.InputNameScreen
+import com.team.presentation.register.view.InputNicknameScreen
 import com.team.presentation.register.view.TermsOfServiceScreen
 import com.team.presentation.util.composable.copy
 
@@ -31,15 +34,16 @@ fun RegisterScreen(
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
     onBackPress: () -> Unit,
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentPage = navBackStackEntry?.destination?.route?.toRegisterScreenPage()
+
     RegisterScreenFrame(
         topBarTitle = "",
-        bottomBarTitle = "동의",
-        bottomBarEnabled = true,
-        onBottomBarClick = {
-            val currentPage =
-                navController.currentDestination?.route?.toRegisterScreenPage()
-            onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentPage))
-        },
+        bottomBarTitle =
+            stringResource(currentPage?.buttonTitle ?: RegisterScreenPage.defaultButtonTitle),
+        bottomBarEnabled = uiState.agreementItemChecks.all { it },
+        isLoading = uiState.loading,
+        onBottomBarClick = { onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentPage)) },
         onBackPress = onBackPress,
     ) { bottomBarHeightDp ->
         RegisterNavigation(
@@ -85,19 +89,25 @@ fun RegisterNavigation(
             )
         }
 
-        composable(route = RegisterScreenPage.InputName.route) {
-            InputNameScreen(
-                modifier = Modifier.fillMaxSize().padding(ContentPaddingValues),
+        composable(route = RegisterScreenPage.InputNickname.route) {
+            InputNicknameScreen(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(ContentPaddingValues),
                 currentStep = 1,
                 totalSteps = 3,
-                inputNameState = uiState.inputNameState,
+                inputNicknameState = uiState.inputNicknameState,
                 onUiEvent = onUiEvent,
             )
         }
 
         composable(route = RegisterScreenPage.InputID.route) {
             InputIdScreen(
-                modifier = Modifier.fillMaxSize().padding(ContentPaddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(ContentPaddingValues),
                 currentStep = 2,
                 totalSteps = 3,
                 inputIdState = uiState.inputIdState,
@@ -119,7 +129,7 @@ private val ContentPaddingValues =
 private fun String?.toRegisterScreenPage(): RegisterScreenPage? =
     when (this) {
         RegisterScreenPage.TermsOfService.route -> RegisterScreenPage.TermsOfService
-        RegisterScreenPage.InputName.route -> RegisterScreenPage.InputName
+        RegisterScreenPage.InputNickname.route -> RegisterScreenPage.InputNickname
         RegisterScreenPage.InputID.route -> RegisterScreenPage.InputID
         RegisterScreenPage.InputPhoto.route -> RegisterScreenPage.InputPhoto
         else -> null

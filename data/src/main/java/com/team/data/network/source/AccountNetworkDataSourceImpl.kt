@@ -9,16 +9,17 @@ import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetworkApi) :
-    AccountNetworkDataSource {
+class AccountNetworkDataSourceImpl(
+    private val accountNetworkApi: AccountNetworkApi,
+) : AccountNetworkDataSource {
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> =
         networkCall {
             accountNetworkApi.getUserAccount(accessToken)
         }
 
-    override suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType> =
+    override suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.checkDuplicateName(nickname)
+            accountNetworkApi.validateNickname(nickname)
         }
 
     override suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType> =
@@ -31,7 +32,9 @@ class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetwork
             accountNetworkApi.login(accountId)
         }
 
-    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> =
+    override suspend fun register(
+        networkRegister: RegisterRequest,
+    ): Result<TokenResponse, ErrorType> =
         networkCall {
             accountNetworkApi.register(networkRegister)
         }

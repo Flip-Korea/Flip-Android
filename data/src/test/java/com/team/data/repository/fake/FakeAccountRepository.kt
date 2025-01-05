@@ -50,11 +50,10 @@ class FakeAccountRepository(
             } catch (e: Exception) {
                 emit(Result.Error(ErrorType.Exception.EXCEPTION))
             }
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
 
-    override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
-        return flow {
+    override fun getUserAccount(): Flow<Result<Account, ErrorType>> =
+        flow {
             emit(Result.Loading)
 
             val accessToken =
@@ -95,16 +94,14 @@ class FakeAccountRepository(
                     Result.Loading -> {}
                 }
             } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
 
-    override fun checkDuplicateName(nickname: String): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+    override fun validateNickname(nickname: String): Flow<Result<Boolean, ErrorType>> =
+        flow {
             emit(Result.Loading)
 
-            when (val result = accountNetworkDataSource.checkDuplicateName(nickname)) {
+            when (val result = accountNetworkDataSource.validateNickname(nickname)) {
                 is Result.Success -> {
                     emit(Result.Success(result.data))
                 }
@@ -113,13 +110,11 @@ class FakeAccountRepository(
                 }
                 Result.Loading -> {}
             }
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
 
-    override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+    override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> =
+        flow {
             emit(Result.Loading)
 
             when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
@@ -131,16 +126,14 @@ class FakeAccountRepository(
                 }
                 Result.Loading -> {}
             }
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
 
     override fun login(
         loginPlatformType: SocialLoginPlatform,
         accountId: String,
-    ): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+    ): Flow<Result<Boolean, ErrorType>> =
+        flow {
             emit(Result.Loading)
 
             val accountIdResult = loginPlatformType.asString() + accountId
@@ -155,13 +148,11 @@ class FakeAccountRepository(
                 }
                 Result.Loading -> {}
             }
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
 
-    override fun register(register: Register): Flow<Result<Boolean, ErrorType>> {
-        return flow {
+    override fun register(register: Register): Flow<Result<Boolean, ErrorType>> =
+        flow {
             emit(Result.Loading)
 
             when (val result = accountNetworkDataSource.register(register.toNetwork())) {
@@ -174,10 +165,8 @@ class FakeAccountRepository(
                 }
                 Result.Loading -> {}
             }
-        }
-            .flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
             .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-    }
 
     private suspend fun saveTokens(
         accessToken: String,

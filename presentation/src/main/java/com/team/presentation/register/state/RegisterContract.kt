@@ -8,9 +8,10 @@ import com.team.presentation.register.RegisterScreenPage
 
 class RegisterContract {
     data class UiState(
+        val loading: Boolean = false,
         val agreementItems: List<AgreementItem> = emptyList(),
         val agreementItemChecks: List<Boolean> = emptyList(),
-        val inputNameState: InputNameState = InputNameState(),
+        val inputNicknameState: InputNicknameState = InputNicknameState(),
         val inputIdState: InputIdState = InputIdState(),
 //            val registerDataInfo:
 //            val register: ComposeRegister = ComposeRegister(),
@@ -29,8 +30,8 @@ class RegisterContract {
             val currentPage: RegisterScreenPage?,
         ) : UiEvent()
 
-        data class OnNameChanged(
-            val name: String,
+        data class OnNicknameChanged(
+            val nickname: String,
         ) : UiEvent()
 
         data class OnIdChanged(

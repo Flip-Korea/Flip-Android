@@ -9,7 +9,7 @@ import com.team.domain.util.Result
 interface AccountNetworkDataSource {
     suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType>
 
-    suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType>
+    suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType>
 
     suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType>
 

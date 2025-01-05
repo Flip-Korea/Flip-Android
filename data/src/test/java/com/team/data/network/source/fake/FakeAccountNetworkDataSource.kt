@@ -8,8 +8,9 @@ import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetworkApi) :
-    AccountNetworkDataSource {
+class FakeAccountNetworkDataSource(
+    private val accountNetworkApi: AccountNetworkApi,
+) : AccountNetworkDataSource {
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> {
         val result = accountNetworkApi.getUserAccount(accessToken)
         return if (result.isSuccessful) {
@@ -19,8 +20,8 @@ class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetwork
         }
     }
 
-    override suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType> {
-        val result = accountNetworkApi.checkDuplicateName(nickname)
+    override suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType> {
+        val result = accountNetworkApi.validateNickname(nickname)
         return if (result.isSuccessful) {
             when (result.code()) {
                 200 -> {
@@ -80,7 +81,9 @@ class FakeAccountNetworkDataSource(private val accountNetworkApi: AccountNetwork
         }
     }
 
-    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> {
+    override suspend fun register(
+        networkRegister: RegisterRequest,
+    ): Result<TokenResponse, ErrorType> {
         val result = accountNetworkApi.register(networkRegister)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)

@@ -80,6 +80,7 @@ fun FlipInfoTextField(
     focusManager: FocusManager,
     maxLength: Int,
     placeholder: String? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focused = interactionSource.collectIsFocusedAsState().value
@@ -142,6 +143,10 @@ fun FlipInfoTextField(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                if (!placeholderEnabled) {
+                    leadingIcon?.let { leadingIcon() }
+                }
+
                 Box(
                     modifier =
                         Modifier

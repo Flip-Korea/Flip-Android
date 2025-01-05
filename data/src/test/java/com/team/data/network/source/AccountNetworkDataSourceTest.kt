@@ -39,7 +39,8 @@ class AccountNetworkDataSourceTest {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         authNetworkApi =
-            Retrofit.Builder()
+            Retrofit
+                .Builder()
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(server.url("/"))
                 .build()
@@ -73,12 +74,12 @@ class AccountNetworkDataSourceTest {
         }
 
     @Test
-    fun `checkDuplicateName Call Test`() =
+    fun `validateName Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val response = accountNetworkDataSource.checkDuplicateName("testNickname")
+            val response = accountNetworkDataSource.validateNickname("testNickname")
             assertEquals(true, (response as Result.Success).data)
         }
 
@@ -100,12 +101,11 @@ class AccountNetworkDataSourceTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
             val mockResponseToObject = adapter.fromJson(mockResponse)
 
@@ -128,12 +128,11 @@ class AccountNetworkDataSourceTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
             val mockResponseToObject = adapter.fromJson(mockResponse)
 
@@ -156,12 +155,11 @@ class AccountNetworkDataSourceTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
             val mockResponseToObject = adapter.fromJson(mockResponse)
 

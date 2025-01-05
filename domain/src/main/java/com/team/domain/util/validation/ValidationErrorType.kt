@@ -20,7 +20,7 @@ sealed interface ValidationErrorType {
     }
 
     enum class Register : ValidationErrorType {
-        NAME_INVALID,
+        NICKNAME_INVALID,
         ID_INVALID,
     }
 }

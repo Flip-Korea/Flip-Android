@@ -16,9 +16,9 @@ interface AccountRepository {
     /**
      * 응답 설명
      * 1. Success(true): 닉네임 사용가능
-     * 2. Error: (409, Conflict): 닉네임 이미 사용중 (400, Bad Request): 닉네임 형식 오류*
+     * 2. Error: (400, Bad Request): 닉네임 유효성 검사 실패
      */
-    fun checkDuplicateName(nickname: String): Flow<Result<Boolean, ErrorType>>
+    fun validateNickname(nickname: String): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 응답 설명

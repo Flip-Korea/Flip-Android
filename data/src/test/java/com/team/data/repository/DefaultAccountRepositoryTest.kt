@@ -133,31 +133,31 @@ class DefaultAccountRepositoryTest {
         }
 
     @Test
-    fun `이름 중복 체크 실패 (checkDuplicateName())`() =
+    fun `이름 유효성 검사 실패 (validateNickname())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.checkDuplicateName("honggd").last()
+            val result = accountRepository.validateNickname("honggd").last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
 
     @Test
-    fun `이름 중복 체크 실패(409, Conflict) (checkDuplicateName())`() =
+    fun `이름 유효성 검사 실패(409, Conflict) (validateNickname())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.checkDuplicateName("honggd").last()
+            val result = accountRepository.validateNickname("honggd").last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
 
     @Test
-    fun `이름 중복 체크 성공 (checkDuplicateName())`() =
+    fun `이름 유효성 검사 성공 (validateNickname())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val result = accountRepository.checkDuplicateName("honggd").last()
+            val result = accountRepository.validateNickname("honggd").last()
 
             assertEquals((result as Result.Success).data, true)
         }
@@ -206,9 +206,17 @@ class DefaultAccountRepositoryTest {
             val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
 
             val expectedAccessToken =
-                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
+                moshi
+                    .adapter(
+                        TokenResponse::class.java,
+                    ).fromJson(networkTokenTestData)!!
+                    .accessToken
             val expectedRefreshToken =
-                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+                moshi
+                    .adapter(
+                        TokenResponse::class.java,
+                    ).fromJson(networkTokenTestData)!!
+                    .refreshToken
 
             val actualAccessToken =
                 dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()
@@ -234,9 +242,17 @@ class DefaultAccountRepositoryTest {
             val result = accountRepository.register(networkRegisterTestData.toExternal()).last()
 
             val expectedAccessToken =
-                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.accessToken
+                moshi
+                    .adapter(
+                        TokenResponse::class.java,
+                    ).fromJson(networkTokenTestData)!!
+                    .accessToken
             val expectedRefreshToken =
-                moshi.adapter(TokenResponse::class.java).fromJson(networkTokenTestData)!!.refreshToken
+                moshi
+                    .adapter(
+                        TokenResponse::class.java,
+                    ).fromJson(networkTokenTestData)!!
+                    .refreshToken
 
             val actualAccessToken =
                 dataStoreManager.getStringData(DataStoreType.TokenType.ACCESS_TOKEN).first()

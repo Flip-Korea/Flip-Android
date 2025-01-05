@@ -191,6 +191,7 @@
 
     <!-- Register Screen (Common) -->
     <string name="register_screen_common_input_retry">다시 시도해 주세요.</string>
+    <string name="register_screen_common_btn_title">다음</string>
 
     <!-- Register Screen -->
     <string name="terms_of_service_screen_title_1">Flip 서비스 이용을 위해</string>
@@ -207,12 +208,12 @@
     <string name="terms_of_service_screen_agreement_all_items_2">(선택 정보 포함)</string>
     <string name="terms_of_service_screen_agreement_btn">동의하고 가입하기</string>
 
-    <string name="terms_of_service_screen_input_name_btn">다음</string>
-    <string name="terms_of_service_screen_input_name_title_1">플립에서 사용할</string>
-    <string name="terms_of_service_screen_input_name_title_2">이름</string>
-    <string name="terms_of_service_screen_input_name_title_3">을 입력해주세요</string>
-    <string name="terms_of_service_screen_input_name_sub_title">프로필에서 자유롭게 변경할 수 있으니 부담없이 작성해주세요.</string>
-    <string name="terms_of_service_screen_input_name_placeholder">2~12자리 한글 및 영문 입력</string>
+    <string name="terms_of_service_screen_input_nickname_btn">다음</string>
+    <string name="terms_of_service_screen_input_nickname_title_1">플립에서 사용할</string>
+    <string name="terms_of_service_screen_input_nickname_title_2">이름</string>
+    <string name="terms_of_service_screen_input_nickname_title_3">을 입력해주세요</string>
+    <string name="terms_of_service_screen_input_nickname_sub_title">프로필에서 자유롭게 변경할 수 있으니 부담없이 작성해주세요.</string>
+    <string name="terms_of_service_screen_input_nickname_placeholder">2~12자리 한글 및 영문 입력</string>
     <string name="terms_of_service_screen_input_id_title_1">플립에서 사용할</string>
     <string name="terms_of_service_screen_input_id_title_2">아이디</string>
     <string name="terms_of_service_screen_input_id_title_3">를 입력해주세요</string>

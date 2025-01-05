@@ -19,9 +19,9 @@ interface AccountNetworkApi {
         @Header("Authorization") accessToken: String,
     ): Response<AccountResponse>
 
-    /** API-002 (이름 중복 확인) * */
-    @HEAD("/api/v1/account/check-duplicate/nickname/{nickname}")
-    suspend fun checkDuplicateName(
+    /** API-002 (닉네임 유효성 검사) * */
+    @GET("/api/v1/validations/nickname/{nickname}")
+    suspend fun validateNickname(
         @Path("nickname") nickname: String,
     ): Response<Void>
 

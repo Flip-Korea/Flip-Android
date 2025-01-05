@@ -56,6 +56,7 @@ fun RegisterScreenFrame(
     topBarTitle: String,
     bottomBarTitle: String,
     bottomBarEnabled: Boolean,
+    isLoading: Boolean,
     onBottomBarClick: () -> Unit,
     onBackPress: () -> Unit,
     content: @Composable (bottomBarHeightDp: Dp) -> Unit,
@@ -90,6 +91,7 @@ fun RegisterScreenFrame(
                         }.align(Alignment.BottomCenter),
                 title = bottomBarTitle,
                 enabled = bottomBarEnabled,
+                isLoading = isLoading,
                 onClick = onBottomBarClick,
             )
         }
@@ -118,6 +120,7 @@ private fun BottomBar(
     modifier: Modifier = Modifier,
     title: String,
     enabled: Boolean,
+    isLoading: Boolean,
     onClick: () -> Unit,
 ) {
     FlipMediumButton(
@@ -132,6 +135,7 @@ private fun BottomBar(
         text = title,
         onClick = onClick,
         enabled = enabled,
+        isLoading = isLoading
     )
 }
 
@@ -147,6 +151,7 @@ private fun RegisterScreenFramePreview() {
             topBarTitle = "TopBarTitle",
             bottomBarTitle = "BottomBarTitle",
             bottomBarEnabled = true,
+            isLoading = false,
             onBottomBarClick = { },
             onBackPress = { },
         ) { bottomHeightDp ->

@@ -34,7 +34,8 @@ class AccountNetworkApiTest {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         accountNetworkApi =
-            Retrofit.Builder()
+            Retrofit
+                .Builder()
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(server.url("/"))
                 .build()
@@ -69,16 +70,16 @@ class AccountNetworkApiTest {
         }
 
     @Test
-    fun `checkDuplicateName Call Test`() =
+    fun `validateNickname Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
-            val response = accountNetworkApi.checkDuplicateName("testNickname")
+            val response = accountNetworkApi.validateNickname("testNickname")
             assertEquals(200, response.code())
 
             // 409 Conflict
             server.enqueue(MockResponse().apply { setResponseCode(409) })
-            val response2 = accountNetworkApi.checkDuplicateName("testNickname")
+            val response2 = accountNetworkApi.validateNickname("testNickname")
             assertEquals(409, response2.code())
         }
 
@@ -104,13 +105,15 @@ class AccountNetworkApiTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
             val mockResponseToObject = adapter.fromJson(mockResponse)
 
             server.enqueue(
@@ -133,13 +136,15 @@ class AccountNetworkApiTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
             val mockResponseToObject = adapter.fromJson(mockResponse)
 
             server.enqueue(
@@ -162,13 +167,15 @@ class AccountNetworkApiTest {
             // Mock Data
             val mockResponse =
                 """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
+                {
+                    "access_token": "aaa.bbb.ccc",
+                    "refresh_token": "aaa.bbb.ccc"
+                }
+                """.trimIndent()
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
             val mockResponseToObject = adapter.fromJson(mockResponse)
 
             server.enqueue(

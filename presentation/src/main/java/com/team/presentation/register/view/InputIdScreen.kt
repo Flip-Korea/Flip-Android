@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -18,7 +19,6 @@ import com.team.designsystem.component.textfield.InfoTextFieldState
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.usecase.register.ValidateInputIdUseCase
-import com.team.domain.usecase.register.ValidateInputNameUseCase
 import com.team.presentation.R
 import com.team.presentation.register.state.InputIdState
 import com.team.presentation.register.state.InputIdValidState
@@ -72,6 +72,9 @@ fun InputIdScreen(
                 stringResource(
                     id = R.string.terms_of_service_screen_input_id_placeholder,
                 ),
+            leadingIcon = {
+                Text(text = EmailPrefix, style = FlipTheme.typography.body6)
+            },
         )
     }
 }
@@ -90,6 +93,8 @@ private fun InputIdValidState.toInfoTextFieldState(): InfoTextFieldState =
 
         InputIdValidState.Valid -> InfoTextFieldState.Valid
     }
+
+private const val EmailPrefix = "@ "
 
 @Preview(showBackground = true)
 @Composable
