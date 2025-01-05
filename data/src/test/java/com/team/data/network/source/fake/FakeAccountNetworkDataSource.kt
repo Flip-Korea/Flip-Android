@@ -46,8 +46,8 @@ class FakeAccountNetworkDataSource(
         }
     }
 
-    override suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType> {
-        val result = accountNetworkApi.checkDuplicateProfileId(profileId)
+    override suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType> {
+        val result = accountNetworkApi.validateProfileId(profileId)
         return if (result.isSuccessful) {
             when (result.code()) {
                 200 -> {

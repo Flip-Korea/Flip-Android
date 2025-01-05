@@ -2,6 +2,7 @@ package com.team.presentation.register.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.team.domain.usecase.account.GetNicknameValidationResultUseCase
+import com.team.domain.usecase.account.GetProfileIdValidationResultUseCase
 import com.team.domain.usecase.register.ValidateRegisterUseCases
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val validateRegisterUseCases: ValidateRegisterUseCases,
     private val getNicknameValidationResultUseCase: GetNicknameValidationResultUseCase,
+    private val getProfileIdValidationResultUseCase: GetProfileIdValidationResultUseCase,
 ) : FlipBaseViewModel<
         RegisterContract.UiState,
         RegisterContract.UiEvent,
@@ -112,6 +114,7 @@ class RegisterViewModel @Inject constructor(
             }
 
             RegisterScreenPage.InputID -> {
+                validateId(currentUiState.inputIdState.id)
             }
 
             RegisterScreenPage.InputPhoto -> TODO()
@@ -121,6 +124,41 @@ class RegisterViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun validateId(profileId: String) {
+        val inputIdState = currentUiState.inputIdState
+        getProfileIdValidationResultUseCase(profileId)
+            .onEach { result ->
+                when (result) {
+                    is Result.Error -> {
+                        val updatedInputIdState =
+                            inputIdState.copy(
+                                inputIdValidState =
+                                    InputIdValidState.Invalid(
+                                        result.errorBodyFirst(),
+                                    ),
+                            )
+                        updateState {
+                            currentUiState.copy(
+                                loading = false,
+                                inputIdState = updatedInputIdState,
+                            )
+                        }
+                    }
+                    Result.Loading -> {
+                        updateState {
+                            currentUiState.copy(loading = true)
+                        }
+                    }
+                    is Result.Success -> {
+                        updateState { currentUiState.copy(loading = false) }
+                        sendEffect {
+                            RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputPhoto)
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun validateNickname(nickname: String) {

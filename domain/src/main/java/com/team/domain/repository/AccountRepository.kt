@@ -25,7 +25,7 @@ interface AccountRepository {
      * 1. Success(true): ProfileId 사용가능
      * 2. Error: (409, Conflict): ProfileId 이미 사용중 (400, Bad Request): ProfileId 형식 오류*
      */
-    fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>>
+    fun validateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 응답 설명

@@ -22,9 +22,9 @@ class AccountNetworkDataSourceImpl(
             accountNetworkApi.validateNickname(nickname)
         }
 
-    override suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType> =
+    override suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.checkDuplicateProfileId(profileId)
+            accountNetworkApi.validateProfileId(profileId)
         }
 
     override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =

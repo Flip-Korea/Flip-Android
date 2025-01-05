@@ -1,8 +1,10 @@
 package com.team.presentation.register.view.new
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -70,9 +72,7 @@ fun RegisterNavigation(
         startDestination = RegisterScreenPage.TermsOfService.route,
         enterTransition = { FlipTransitionObject.enterTransition(FlipTransitionDirection.Right) },
         popEnterTransition = {
-            FlipTransitionObject.enterTransition(
-                FlipTransitionDirection.Left,
-            )
+            FlipTransitionObject.enterTransition(FlipTransitionDirection.Left)
         },
         exitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Left) },
         popExitTransition = { FlipTransitionObject.exitTransition(FlipTransitionDirection.Right) },
@@ -113,6 +113,12 @@ fun RegisterNavigation(
                 inputIdState = uiState.inputIdState,
                 onUiEvent = onUiEvent,
             )
+        }
+
+        composable(route = RegisterScreenPage.InputPhoto.route) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(text = "Select Photo")
+            }
         }
     }
 }

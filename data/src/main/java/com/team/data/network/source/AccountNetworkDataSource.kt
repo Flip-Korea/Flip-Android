@@ -11,7 +11,7 @@ interface AccountNetworkDataSource {
 
     suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType>
 
-    suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType>
+    suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType>
 
     suspend fun login(accountId: String): Result<TokenResponse, ErrorType>
 

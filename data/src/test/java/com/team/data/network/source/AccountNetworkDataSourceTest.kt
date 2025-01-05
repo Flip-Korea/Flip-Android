@@ -84,12 +84,12 @@ class AccountNetworkDataSourceTest {
         }
 
     @Test
-    fun `checkDuplicateProfileId Call Test`() =
+    fun `validateProfileId Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val response = accountNetworkDataSource.checkDuplicateProfileId("testProfileId")
+            val response = accountNetworkDataSource.validateProfileId("testProfileId")
             assertEquals(true, (response as Result.Success).data)
         }
 

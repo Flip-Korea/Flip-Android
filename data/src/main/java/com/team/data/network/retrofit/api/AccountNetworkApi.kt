@@ -6,7 +6,6 @@ import com.team.data.network.model.response.account.AccountResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.HEAD
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -25,10 +24,10 @@ interface AccountNetworkApi {
         @Path("nickname") nickname: String,
     ): Response<Void>
 
-    /** API-003 (ID 중복 확인) * */
-    @HEAD("/api/v1/account/check-duplicate/id/{id}")
-    suspend fun checkDuplicateProfileId(
-        @Path("id") profileId: String,
+    /** API-003 (ID 유효성 검사) * */
+    @GET("/api/v1/validations/user-id/{userId}")
+    suspend fun validateProfileId(
+        @Path("userId") profileId: String,
     ): Response<Void>
 
     /**

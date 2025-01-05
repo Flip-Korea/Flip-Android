@@ -116,11 +116,11 @@ class DefaultAccountRepository
             }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-        override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> =
+        override fun validateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> =
             flow {
                 emit(Result.Loading)
 
-                when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
+                when (val result = accountNetworkDataSource.validateProfileId(profileId)) {
                     is Result.Success -> {
                         emit(Result.Success(result.data))
                     }

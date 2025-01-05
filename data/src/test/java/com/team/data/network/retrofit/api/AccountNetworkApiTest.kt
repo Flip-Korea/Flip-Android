@@ -84,16 +84,16 @@ class AccountNetworkApiTest {
         }
 
     @Test
-    fun `checkDuplicateProfileId Call Test`() =
+    fun `validateProfileId Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
-            val response = accountNetworkApi.checkDuplicateProfileId("testAccountId")
+            val response = accountNetworkApi.validateProfileId("testAccountId")
             assertEquals(200, response.code())
 
             // 409 Conflict
             server.enqueue(MockResponse().apply { setResponseCode(409) })
-            val response2 = accountNetworkApi.checkDuplicateProfileId("testAccountId")
+            val response2 = accountNetworkApi.validateProfileId("testAccountId")
             assertEquals(409, response2.code())
         }
 

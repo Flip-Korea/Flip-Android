@@ -163,31 +163,31 @@ class DefaultAccountRepositoryTest {
         }
 
     @Test
-    fun `ProfileId 중복 체크 실패 (checkDuplicateProfileId())`() =
+    fun `ProfileId 유효성 검사 실패 (validateProfileId())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+            val result = accountRepository.validateProfileId("testProfileId").last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
 
     @Test
-    fun `ProfileId 중복 체크 실패(409, Conflict) (checkDuplicateProfileId())`() =
+    fun `ProfileId 유효성 검사 실패(409, Conflict) (validateProfileId())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+            val result = accountRepository.validateProfileId("testProfileId").last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
 
     @Test
-    fun `ProfileId 중복 체크 성공(200, OK) (checkDuplicateProfileId())`() =
+    fun `ProfileId 유효성 검사 성공(200, OK) (validateProfileId())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val result = accountRepository.checkDuplicateProfileId("testProfileId").last()
+            val result = accountRepository.validateProfileId("testProfileId").last()
 
             assertEquals((result as Result.Success).data, true)
         }
