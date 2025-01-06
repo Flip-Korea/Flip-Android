@@ -2,6 +2,8 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
 import com.team.data.network.retrofit.api.AccountNetworkApi
@@ -79,7 +81,8 @@ class AccountNetworkDataSourceTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val response = accountNetworkDataSource.validateNickname("testNickname")
+            val nicknameValidationRequest = NicknameValidationRequest("testNickname")
+            val response = accountNetworkDataSource.validateNickname(nicknameValidationRequest)
             assertEquals(true, (response as Result.Success).data)
         }
 
@@ -89,7 +92,8 @@ class AccountNetworkDataSourceTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val response = accountNetworkDataSource.validateProfileId("testProfileId")
+            val profileIdValidationRequest = ProfileIdValidationRequest("testProfileId")
+            val response = accountNetworkDataSource.validateProfileId(profileIdValidationRequest)
             assertEquals(true, (response as Result.Success).data)
         }
 

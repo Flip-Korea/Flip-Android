@@ -1,5 +1,7 @@
 package com.team.data.network.retrofit.api
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
@@ -19,15 +21,15 @@ interface AccountNetworkApi {
     ): Response<AccountResponse>
 
     /** API-002 (닉네임 유효성 검사) * */
-    @GET("/api/v1/validations/nickname/{nickname}")
+    @POST("/api/v1/validations/nickname")
     suspend fun validateNickname(
-        @Path("nickname") nickname: String,
+        @Body nicknameValidationRequest: NicknameValidationRequest,
     ): Response<Void>
 
     /** API-003 (ID 유효성 검사) * */
-    @GET("/api/v1/validations/user-id/{userId}")
+    @POST("/api/v1/validations/user-id")
     suspend fun validateProfileId(
-        @Path("userId") profileId: String,
+        @Body profileIdValidationRequest: ProfileIdValidationRequest,
     ): Response<Void>
 
     /**

@@ -4,11 +4,15 @@ import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.toDomainModel
 import com.team.data.network.model.request.toNetwork
+import com.team.data.network.model.request.toNicknameValidationRequest
+import com.team.data.network.model.request.toProfileIdValidationRequest
 import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.DataStoreManager
 import com.team.domain.model.account.Account
+import com.team.domain.model.account.NicknameValidation
+import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.model.account.Register
 import com.team.domain.repository.AccountRepository
 import com.team.domain.type.DataStoreType
@@ -91,42 +95,62 @@ class DefaultAccountRepository
 
                             emit(Result.Success(account))
                         }
+
                         is Result.Error -> {
                             emit(Result.Error(errorBody = result.errorBody, error = result.error))
                         }
+
                         Result.Loading -> {}
                     }
                 } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
             }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-        override fun validateNickname(nickname: String): Flow<Result<Boolean, ErrorType>> =
+        override fun validateNickname(
+            nicknameValidation: NicknameValidation,
+        ): Flow<Result<Boolean, ErrorType>> =
             flow {
                 emit(Result.Loading)
 
-                when (val result = accountNetworkDataSource.validateNickname(nickname)) {
+                val nicknameValidationRequest = nicknameValidation.toNicknameValidationRequest()
+                when (
+                    val result =
+                        accountNetworkDataSource.validateNickname(
+                            nicknameValidationRequest,
+                        )
+                ) {
                     is Result.Success -> {
                         emit(Result.Success(result.data))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
             }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
 
-        override fun validateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> =
+        override fun validateProfileId(
+            profileIdValidation: ProfileIdValidation,
+        ): Flow<Result<Boolean, ErrorType>> =
             flow {
                 emit(Result.Loading)
 
-                when (val result = accountNetworkDataSource.validateProfileId(profileId)) {
+                val profileIdValidationRequest = profileIdValidation.toProfileIdValidationRequest()
+                when (
+                    val result =
+                        accountNetworkDataSource.validateProfileId(profileIdValidationRequest)
+                ) {
                     is Result.Success -> {
                         emit(Result.Success(result.data))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
             }.flowOn(ioDispatcher)
@@ -146,9 +170,11 @@ class DefaultAccountRepository
                         saveTokens(result.data.accessToken, result.data.refreshToken)
                         emit(Result.Success(true))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
             }.flowOn(ioDispatcher)
@@ -163,9 +189,11 @@ class DefaultAccountRepository
                         saveTokens(result.data.accessToken, result.data.refreshToken)
                         emit(Result.Success(true))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
             }.flowOn(ioDispatcher)

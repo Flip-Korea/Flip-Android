@@ -1,5 +1,7 @@
 package com.team.data.network.source.fake
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
@@ -20,13 +22,16 @@ class FakeAccountNetworkDataSource(
         }
     }
 
-    override suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType> {
-        val result = accountNetworkApi.validateNickname(nickname)
+    override suspend fun validateNickname(
+        nicknameValidationRequest: NicknameValidationRequest,
+    ): Result<Boolean, ErrorType> {
+        val result = accountNetworkApi.validateNickname(nicknameValidationRequest)
         return if (result.isSuccessful) {
             when (result.code()) {
                 200 -> {
                     Result.Success(true)
                 }
+
                 else -> {
                     Result.Success(true)
                 }
@@ -36,9 +41,11 @@ class FakeAccountNetworkDataSource(
                 400 -> {
                     Result.Error(ErrorType.Network.BAD_REQUEST)
                 }
+
                 404 -> {
                     Result.Error(ErrorType.Network.NOT_FOUND)
                 }
+
                 else -> {
                     Result.Error(ErrorType.Network.UNEXPECTED)
                 }
@@ -46,13 +53,16 @@ class FakeAccountNetworkDataSource(
         }
     }
 
-    override suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType> {
-        val result = accountNetworkApi.validateProfileId(profileId)
+    override suspend fun validateProfileId(
+        profileIdValidationRequest: ProfileIdValidationRequest,
+    ): Result<Boolean, ErrorType> {
+        val result = accountNetworkApi.validateProfileId(profileIdValidationRequest)
         return if (result.isSuccessful) {
             when (result.code()) {
                 200 -> {
                     Result.Success(true)
                 }
+
                 else -> {
                     Result.Success(true)
                 }
@@ -62,9 +72,11 @@ class FakeAccountNetworkDataSource(
                 400 -> {
                     Result.Error(ErrorType.Network.BAD_REQUEST)
                 }
+
                 404 -> {
                     Result.Error(ErrorType.Network.NOT_FOUND)
                 }
+
                 else -> {
                     Result.Error(ErrorType.Network.UNEXPECTED)
                 }

@@ -1,6 +1,8 @@
 package com.team.domain.repository
 
 import com.team.domain.model.account.Account
+import com.team.domain.model.account.NicknameValidation
+import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.model.account.Register
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
@@ -18,14 +20,16 @@ interface AccountRepository {
      * 1. Success(true): 닉네임 사용가능
      * 2. Error: (400, Bad Request): 닉네임 유효성 검사 실패
      */
-    fun validateNickname(nickname: String): Flow<Result<Boolean, ErrorType>>
+    fun validateNickname(nicknameValidation: NicknameValidation): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 응답 설명
      * 1. Success(true): ProfileId 사용가능
-     * 2. Error: (409, Conflict): ProfileId 이미 사용중 (400, Bad Request): ProfileId 형식 오류*
+     * 2. Error: (400, Bad Request): ID 유효성 검사 실패
      */
-    fun validateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>>
+    fun validateProfileId(
+        profileIdValidation: ProfileIdValidation,
+    ): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 응답 설명

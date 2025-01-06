@@ -1,5 +1,7 @@
 package com.team.data.network.source
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
@@ -9,9 +11,13 @@ import com.team.domain.util.Result
 interface AccountNetworkDataSource {
     suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType>
 
-    suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType>
+    suspend fun validateNickname(
+        nicknameValidationRequest: NicknameValidationRequest,
+    ): Result<Boolean, ErrorType>
 
-    suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType>
+    suspend fun validateProfileId(
+        profileIdValidationRequest: ProfileIdValidationRequest,
+    ): Result<Boolean, ErrorType>
 
     suspend fun login(accountId: String): Result<TokenResponse, ErrorType>
 

@@ -18,6 +18,8 @@ import com.team.data.network.testdoubles.networkRegisterTestData
 import com.team.data.network.testdoubles.networkTokenTestData
 import com.team.data.network.testdoubles.toExternal
 import com.team.data.repository.fake.FakeAccountRepository
+import com.team.domain.model.account.NicknameValidation
+import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
@@ -137,7 +139,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.validateNickname("honggd").last()
+            val nicknameValidation = NicknameValidation("honggd")
+            val result = accountRepository.validateNickname(nicknameValidation).last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
@@ -147,7 +150,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.validateNickname("honggd").last()
+            val nicknameValidation = NicknameValidation("honggd")
+            val result = accountRepository.validateNickname(nicknameValidation).last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
@@ -157,7 +161,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val result = accountRepository.validateNickname("honggd").last()
+            val nicknameValidation = NicknameValidation("honggd")
+            val result = accountRepository.validateNickname(nicknameValidation).last()
 
             assertEquals((result as Result.Success).data, true)
         }
@@ -167,7 +172,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.validateProfileId("testProfileId").last()
+            val profileIdValidation = ProfileIdValidation("testProfileId")
+            val result = accountRepository.validateProfileId(profileIdValidation).last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
@@ -177,7 +183,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
 
-            val result = accountRepository.validateProfileId("testProfileId").last()
+            val profileIdValidation = ProfileIdValidation("testProfileId")
+            val result = accountRepository.validateProfileId(profileIdValidation).last()
 
             assertEquals((result as Result.Error).error, ErrorType.Network.NOT_FOUND)
         }
@@ -187,7 +194,8 @@ class DefaultAccountRepositoryTest {
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(200) })
 
-            val result = accountRepository.validateProfileId("testProfileId").last()
+            val profileIdValidation = ProfileIdValidation("testProfileId")
+            val result = accountRepository.validateProfileId(profileIdValidation).last()
 
             assertEquals((result as Result.Success).data, true)
         }

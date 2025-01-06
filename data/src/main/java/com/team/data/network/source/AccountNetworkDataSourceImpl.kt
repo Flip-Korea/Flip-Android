@@ -1,5 +1,7 @@
 package com.team.data.network.source
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
@@ -17,14 +19,18 @@ class AccountNetworkDataSourceImpl(
             accountNetworkApi.getUserAccount(accessToken)
         }
 
-    override suspend fun validateNickname(nickname: String): Result<Boolean, ErrorType> =
+    override suspend fun validateNickname(
+        nicknameValidationRequest: NicknameValidationRequest,
+    ): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.validateNickname(nickname)
+            accountNetworkApi.validateNickname(nicknameValidationRequest)
         }
 
-    override suspend fun validateProfileId(profileId: String): Result<Boolean, ErrorType> =
+    override suspend fun validateProfileId(
+        profileIdValidationRequest: ProfileIdValidationRequest,
+    ): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.validateProfileId(profileId)
+            accountNetworkApi.validateProfileId(profileIdValidationRequest)
         }
 
     override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =

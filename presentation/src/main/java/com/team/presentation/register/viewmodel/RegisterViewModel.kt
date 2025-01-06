@@ -1,6 +1,8 @@
 package com.team.presentation.register.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.team.domain.model.account.NicknameValidationFactory
+import com.team.domain.model.account.ProfileIdValidationFactory
 import com.team.domain.usecase.account.GetNicknameValidationResultUseCase
 import com.team.domain.usecase.account.GetProfileIdValidationResultUseCase
 import com.team.domain.usecase.register.ValidateRegisterUseCases
@@ -30,6 +32,8 @@ class RegisterViewModel @Inject constructor(
     private val validateRegisterUseCases: ValidateRegisterUseCases,
     private val getNicknameValidationResultUseCase: GetNicknameValidationResultUseCase,
     private val getProfileIdValidationResultUseCase: GetProfileIdValidationResultUseCase,
+    private val nicknameValidationFactory: NicknameValidationFactory,
+    private val profileIdValidationFactory: ProfileIdValidationFactory,
 ) : FlipBaseViewModel<
         RegisterContract.UiState,
         RegisterContract.UiEvent,
@@ -128,7 +132,8 @@ class RegisterViewModel @Inject constructor(
 
     private fun validateId(profileId: String) {
         val inputIdState = currentUiState.inputIdState
-        getProfileIdValidationResultUseCase(profileId)
+        val profileIdValidation = profileIdValidationFactory.create(profileId)
+        getProfileIdValidationResultUseCase(profileIdValidation)
             .onEach { result ->
                 when (result) {
                     is Result.Error -> {
@@ -146,11 +151,13 @@ class RegisterViewModel @Inject constructor(
                             )
                         }
                     }
+
                     Result.Loading -> {
                         updateState {
                             currentUiState.copy(loading = true)
                         }
                     }
+
                     is Result.Success -> {
                         updateState { currentUiState.copy(loading = false) }
                         sendEffect {
@@ -163,7 +170,8 @@ class RegisterViewModel @Inject constructor(
 
     private fun validateNickname(nickname: String) {
         val inputNameState = currentUiState.inputNicknameState
-        getNicknameValidationResultUseCase(nickname)
+        val nicknameValidation = nicknameValidationFactory.create(nickname)
+        getNicknameValidationResultUseCase(nicknameValidation)
             .onEach { result ->
                 when (result) {
                     is Result.Error -> {
