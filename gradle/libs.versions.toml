@@ -43,6 +43,7 @@ paging = "3.3.2"
 ktlint = "12.1.2"
 ktlintComposeRules = "0.4.19"
 lottie = "6.6.2"
+dotlottie = "0.4.1"
 
 [libraries]
 # add
@@ -127,6 +128,7 @@ ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref =
 ktlint-compose-rules = { module = "io.nlopez.compose.rules:ktlint", version.ref = "ktlintComposeRules" }
 # Lottie
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
+dotlottie = { module = "com.github.LottieFiles:dotlottie-android", version.ref = "dotlottie" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

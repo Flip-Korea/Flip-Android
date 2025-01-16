@@ -143,6 +143,7 @@ dependencies {
 
     // Lottie
     implementation(libs.lottie.compose)
+    implementation(libs.dotlottie)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
