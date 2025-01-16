@@ -43,7 +43,7 @@ paging = "3.3.2"
 ktlint = "12.1.2"
 ktlintComposeRules = "0.4.19"
 lottie = "6.6.2"
-dotlottie = "0.4.1"
+dotlottie = "0.6.2"
 
 [libraries]
 # add
