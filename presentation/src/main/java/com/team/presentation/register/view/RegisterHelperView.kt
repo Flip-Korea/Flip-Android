@@ -64,20 +64,20 @@ private fun RegisterTitleViewPreview() {
                 buildAnnotatedString {
                     append(
                         stringResource(
-                            id = R.string.terms_of_service_screen_input_nickname_title_1,
+                            id = R.string.register_screen_input_nickname_title_1,
                         ),
                     )
                     append("\n")
                     withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
                         append(
                             stringResource(
-                                id = R.string.terms_of_service_screen_input_nickname_title_2,
+                                id = R.string.register_screen_input_nickname_title_2,
                             ),
                         )
                     }
                     append(
                         stringResource(
-                            id = R.string.terms_of_service_screen_input_nickname_title_3,
+                            id = R.string.register_screen_input_nickname_title_3,
                         ),
                     )
                 },

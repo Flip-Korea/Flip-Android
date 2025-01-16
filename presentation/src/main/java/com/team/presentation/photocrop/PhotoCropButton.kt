@@ -20,7 +20,7 @@ import com.team.designsystem.theme.FlipTheme
 /**
  * PhotoCropScreen 을 위한 버튼
  *
- * @see PhotoCropScreen
+ * @see PhotoCropper
  */
 @Composable
 fun PhotoCropButton(

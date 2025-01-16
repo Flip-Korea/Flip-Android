@@ -1,6 +1,7 @@
 package com.team.presentation.register.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.team.data.di.DefaultDispatcher
 import com.team.domain.model.account.NicknameValidationFactory
 import com.team.domain.model.account.ProfileIdValidationFactory
 import com.team.domain.usecase.account.GetNicknameValidationResultUseCase
@@ -9,6 +10,7 @@ import com.team.domain.usecase.register.ValidateRegisterUseCases
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.domain.util.validation.ValidationResult
+import com.team.presentation.common.image.FlipImage
 import com.team.presentation.common.snackbar.SnackbarAction
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
@@ -22,6 +24,7 @@ import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -29,6 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
     private val validateRegisterUseCases: ValidateRegisterUseCases,
     private val getNicknameValidationResultUseCase: GetNicknameValidationResultUseCase,
     private val getProfileIdValidationResultUseCase: GetProfileIdValidationResultUseCase,
@@ -59,6 +63,19 @@ class RegisterViewModel @Inject constructor(
             is RegisterContract.UiEvent.OnNicknameChanged -> onNameChanged(event.nickname)
 
             is RegisterContract.UiEvent.OnIdChanged -> onIdChanged(event.id)
+
+            is RegisterContract.UiEvent.OnImageChanged -> onImageChanged(event.image)
+        }
+    }
+
+    private fun onImageChanged(image: FlipImage) {
+        viewModelScope.launch(defaultDispatcher) {
+            val imageBitmap = image.imageBitmap
+            val updatedInputImageState =
+                currentUiState.inputImageState.copy(imageBitmap = imageBitmap)
+            updateState {
+                currentUiState.copy(inputImageState = updatedInputImageState)
+            }
         }
     }
 
@@ -121,7 +138,11 @@ class RegisterViewModel @Inject constructor(
                 validateId(currentUiState.inputIdState.id)
             }
 
-            RegisterScreenPage.InputPhoto -> TODO()
+            RegisterScreenPage.InputImage -> {
+                // TODO: 1. 이미지 aws에 업로드 후 이미지 주소 받아오기
+                //       2. 회원가입 마무리
+            }
+
             null -> {
                 viewModelScope.launch {
                     showSnackbar(message = ErrorType.Exception.EXCEPTION.asUiText())
@@ -161,7 +182,7 @@ class RegisterViewModel @Inject constructor(
                     is Result.Success -> {
                         updateState { currentUiState.copy(loading = false) }
                         sendEffect {
-                            RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputPhoto)
+                            RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputImage)
                         }
                     }
                 }

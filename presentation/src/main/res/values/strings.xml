@@ -194,35 +194,40 @@
     <string name="register_screen_common_btn_title">다음</string>
 
     <!-- Register Screen -->
-    <string name="terms_of_service_screen_title_1">Flip 서비스 이용을 위해</string>
-    <string name="terms_of_service_screen_title_2">이용약관</string>
-    <string name="terms_of_service_screen_title_3">에 동의해주세요</string>
-    <string name="terms_of_service_screen_agreement_item_age">만 14세 이상</string>
-    <string name="terms_of_service_screen_agreement_item_service">서비스 이용약관 동의</string>
-    <string name="terms_of_service_screen_agreement_item_personal_information">개인정보 수집 및 이용 동의</string>
-    <string name="terms_of_service_screen_agreement_item_ad">광고성 정보 수신 동의</string>
-    <string name="terms_of_service_screen_agreement_item_essential">[필수]</string>
-    <string name="terms_of_service_screen_agreement_item_not_essential">[선택]</string>
-    <string name="terms_of_service_screen_agreement_item_detail">보기</string>
-    <string name="terms_of_service_screen_agreement_all_items_1">약관 전체 동의</string>
-    <string name="terms_of_service_screen_agreement_all_items_2">(선택 정보 포함)</string>
-    <string name="terms_of_service_screen_agreement_btn">동의하고 가입하기</string>
+    <string name="register_screen_terms_of_service_title_1">Flip 서비스 이용을 위해</string>
+    <string name="register_screen_terms_of_service_title_2">이용약관</string>
+    <string name="register_screen_terms_of_service_title_3">에 동의해주세요</string>
+    <string name="register_screen_terms_of_service_agreement_item_age">만 14세 이상</string>
+    <string name="register_screen_terms_of_service_agreement_item_service">서비스 이용약관 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_personal_information">개인정보 수집 및 이용 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_ad">광고성 정보 수신 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_essential">[필수]</string>
+    <string name="register_screen_terms_of_service_agreement_item_not_essential">[선택]</string>
+    <string name="register_screen_terms_of_service_agreement_item_detail">보기</string>
+    <string name="register_screen_terms_of_service_agreement_all_items_1">약관 전체 동의</string>
+    <string name="register_screen_terms_of_service_agreement_all_items_2">(선택 정보 포함)</string>
+    <string name="register_screen_terms_of_service_agreement_btn">동의하고 가입하기</string>
 
-    <string name="terms_of_service_screen_input_nickname_btn">다음</string>
-    <string name="terms_of_service_screen_input_nickname_title_1">플립에서 사용할</string>
-    <string name="terms_of_service_screen_input_nickname_title_2">이름</string>
-    <string name="terms_of_service_screen_input_nickname_title_3">을 입력해주세요</string>
-    <string name="terms_of_service_screen_input_nickname_sub_title">프로필에서 자유롭게 변경할 수 있으니 부담없이 작성해주세요.</string>
-    <string name="terms_of_service_screen_input_nickname_placeholder">2~12자리 한글 및 영문 입력</string>
-    <string name="terms_of_service_screen_input_id_title_1">플립에서 사용할</string>
-    <string name="terms_of_service_screen_input_id_title_2">아이디</string>
-    <string name="terms_of_service_screen_input_id_title_3">를 입력해주세요</string>
-    <string name="terms_of_service_screen_input_id_placeholder">\@ 영문 또는 . _ 입력, 최대 16글자</string>
+    <string name="register_screen_input_nickname_btn">다음</string>
+    <string name="register_screen_input_nickname_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_nickname_title_2">이름</string>
+    <string name="register_screen_input_nickname_title_3">을 입력해주세요</string>
+    <string name="register_screen_input_nickname_sub_title">프로필에서 자유롭게 변경할 수 있으니 부담없이 작성해주세요.</string>
+    <string name="register_screen_input_nickname_placeholder">2~12자리 한글 및 영문 입력</string>
 
-    <string name="terms_of_service_screen_input_id_btn">다음</string>
+    <string name="register_screen_input_id_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_id_title_2">아이디</string>
+    <string name="register_screen_input_id_title_3">를 입력해주세요</string>
+    <string name="register_screen_input_id_placeholder">\@ 영문 또는 . _ 입력, 최대 16글자</string>
+    <string name="register_screen_input_id_btn">다음</string>
 
-    <string name="terms_of_service_screen_input_photo_btn">사진 등록하기</string>
+    <string name="register_screen_input_photo_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_photo_title_2">프로필 사진</string>
+    <string name="register_screen_input_photo_title_3">을 등록해주세요</string>
+    <string name="register_screen_input_image_btn">사진 등록하기</string>
+    <string name="register_screen_input_image_btn_2">다음에 할래요</string>
 
     <!-- Register Screen ContentDescription -->
-    <string name="terms_of_service_screen_content_desc_agreement_all_items">보기</string>
+    <string name="register_screen_content_desc_agreement_all_items">보기</string>
+    <string name="register_screen_content_desc_input_photo_btn">사진 등록하기</string>
 </resources>

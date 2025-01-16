@@ -24,9 +24,13 @@ import kotlin.math.max
  * 2. Failure: 실패 시 errorMessage 문자열을 포함 (nullable)
  */
 sealed interface CropImageResult {
-    data class Success(val imageBitmap: ImageBitmap) : CropImageResult
+    data class Success(
+        val imageBitmap: ImageBitmap,
+    ) : CropImageResult
 
-    data class Failure(val errorMessage: String? = null) : CropImageResult
+    data class Failure(
+        val errorMessage: String? = null,
+    ) : CropImageResult
 }
 
 /**
@@ -50,8 +54,8 @@ fun cropImage(
     viewWidth: Int,
     viewHeight: Int,
     offsetChanged: Offset,
-): CropImageResult {
-    return if (imageBitmap == null) {
+): CropImageResult =
+    if (imageBitmap == null) {
         CropImageResult.Failure("다른 사진으로 시도 해 주세요.")
     } else {
         val imageWidth = imageBitmap.width
@@ -85,10 +89,25 @@ fun cropImage(
         )
         CropImageResult.Success(croppedImage)
     }
-}
 
 /**
  * Uri 를 Bitmap(ImageBitmap)으로 변환 시켜준다.
+ *
+ * 시간이 걸리는 작업일 수 있으므로 코루틴 사용 권장
+ *
+ * ```
+ * /** 사용 예시 */
+ *     LaunchedEffect(selectedImageUri) {
+ *         selectedImageUri?.let { image ->
+ *             val imageBitmapDeferred =
+ *                 coroutineScope.async(Dispatchers.IO) {
+ *                     uriToBitmap(context, image)
+ *                 }
+ *             imageBitmap = imageBitmapDeferred.await()
+ *         }
+ *     }
+ * ```
+ *
  * @param imageUri 이미지의 Uri
  *
  * @return ImageBitmap(nullable)
@@ -101,7 +120,8 @@ suspend fun uriToBitmap(
 
     val loader = ImageLoader(context)
     val request =
-        ImageRequest.Builder(context)
+        ImageRequest
+            .Builder(context)
             .data(imageUri)
             .allowHardware(false)
             .build()

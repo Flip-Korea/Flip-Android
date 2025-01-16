@@ -51,7 +51,7 @@ import kotlinx.coroutines.async
  * @see uriToBitmap
  */
 @Composable
-fun PhotoCropScreen(
+fun PhotoCropper(
     modifier: Modifier = Modifier,
     selectedImageUri: Uri?,
     onCancel: () -> Unit,
@@ -81,6 +81,7 @@ fun PhotoCropScreen(
                 )
         }
 
+    // TODO: 나중에 비즈니스 로직으로 분리 예정
     LaunchedEffect(selectedImageUri) {
         selectedImageUri?.let { image ->
             val imageBitmapDeferred =

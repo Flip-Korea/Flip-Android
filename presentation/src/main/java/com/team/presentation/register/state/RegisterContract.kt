@@ -1,5 +1,6 @@
 package com.team.presentation.register.state
 
+import com.team.presentation.common.image.FlipImage
 import com.team.presentation.common.util.BaseUiEffect
 import com.team.presentation.common.util.BaseUiEvent
 import com.team.presentation.common.util.BaseUiState
@@ -13,6 +14,7 @@ class RegisterContract {
         val agreementItemChecks: List<Boolean> = emptyList(),
         val inputNicknameState: InputNicknameState = InputNicknameState(),
         val inputIdState: InputIdState = InputIdState(),
+        val inputImageState: InputImageState = InputImageState(),
 //            val registerDataInfo:
 //            val register: ComposeRegister = ComposeRegister(),
     ) : BaseUiState
@@ -36,6 +38,10 @@ class RegisterContract {
 
         data class OnIdChanged(
             val id: String,
+        ) : UiEvent()
+
+        data class OnImageChanged(
+            val image: FlipImage,
         ) : UiEvent()
     }
 

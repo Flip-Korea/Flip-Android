@@ -77,12 +77,12 @@ private fun Title(modifier: Modifier = Modifier) {
         modifier = modifier,
         text =
             buildAnnotatedString {
-                append(stringResource(id = R.string.terms_of_service_screen_title_1))
+                append(stringResource(id = R.string.register_screen_terms_of_service_title_1))
                 append("\n")
                 withStyle(SpanStyle(fontWeight = FlipTheme.typography.headline8.fontWeight)) {
-                    append(stringResource(id = R.string.terms_of_service_screen_title_2))
+                    append(stringResource(id = R.string.register_screen_terms_of_service_title_2))
                 }
-                append(stringResource(id = R.string.terms_of_service_screen_title_3))
+                append(stringResource(id = R.string.register_screen_terms_of_service_title_3))
             },
         style = FlipTheme.typography.headline7,
         textAlign = TextAlign.Start,
@@ -140,14 +140,14 @@ fun AgreementAllItems(
             append(
                 "${
                     stringResource(
-                        id = R.string.terms_of_service_screen_agreement_all_items_1,
+                        id = R.string.register_screen_terms_of_service_agreement_all_items_1,
                     )
                 } ",
             )
             withStyle(FlipTheme.typography.body6.toSpanStyle()) {
                 append(
                     stringResource(
-                        id = R.string.terms_of_service_screen_agreement_all_items_2,
+                        id = R.string.register_screen_terms_of_service_agreement_all_items_2,
                     ),
                 )
             }
@@ -170,7 +170,7 @@ fun AgreementAllItems(
             imageVector = ImageVector.vectorResource(id = checkedIconRes),
             contentDescription =
                 stringResource(
-                    id = R.string.terms_of_service_screen_content_desc_agreement_all_items,
+                    id = R.string.register_screen_content_desc_agreement_all_items,
                 ),
         )
         Text(
@@ -222,7 +222,7 @@ private fun AgreementItemDetail(
 ) {
     Text(
         modifier = modifier.clickableSingleWithoutRipple { onClick() },
-        text = stringResource(id = R.string.terms_of_service_screen_agreement_item_detail),
+        text = stringResource(id = R.string.register_screen_terms_of_service_agreement_item_detail),
         style = FlipTheme.typography.body4Underline,
         color = FlipTheme.colors.gray4,
         maxLines = 1,

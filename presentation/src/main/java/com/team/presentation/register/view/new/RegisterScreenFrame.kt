@@ -2,6 +2,7 @@ package com.team.presentation.register.view.new
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.topbar.FlipTopBar
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.presentation.common.util.CommonPaddingValues
+import com.team.presentation.register.RegisterScreenPage
 
 /**
  * 회원가입 화면에서 공통적으로 사용하는 프레임
@@ -43,9 +45,11 @@ import com.team.presentation.common.util.CommonPaddingValues
  * }
  * ```
  *
+ * @param currentPage 현재 회원가입 페이지
  * @param topBarTitle 탑바 타이틀
  * @param bottomBarTitle 바텀 버튼 타이틀
  * @param bottomBarEnabled 바텀 버튼 활성화 여부
+ * @param isLoading 현재 회원가입 페이지 로딩 여부
  * @param onBottomBarClick 바텀 버튼 클릭 시
  * @param onBackPress 뒤로가기 클릭 시 (탑바 뒤로가기 버튼 클릭 시)
  * @param content 회원가입 컨텐츠 (UI)
@@ -53,12 +57,14 @@ import com.team.presentation.common.util.CommonPaddingValues
 @Composable
 fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
+    currentPage: RegisterScreenPage?,
     topBarTitle: String,
     bottomBarTitle: String,
     bottomBarEnabled: Boolean,
     isLoading: Boolean,
     onBottomBarClick: () -> Unit,
     onBackPress: () -> Unit,
+    option: @Composable (() -> Unit)? = null,
     content: @Composable (bottomBarHeightDp: Dp) -> Unit,
 ) {
     var bottomBarHeightDp by remember { mutableStateOf(0.dp) }
@@ -81,19 +87,22 @@ fun RegisterScreenFrame(
                     .padding(innerPadding),
         ) {
             content(bottomBarHeightDp)
-            BottomBar(
-                modifier =
-                    Modifier
-                        .onSizeChanged {
-                            with(density) {
-                                bottomBarHeightDp = it.height.toDp()
-                            }
-                        }.align(Alignment.BottomCenter),
-                title = bottomBarTitle,
-                enabled = bottomBarEnabled,
-                isLoading = isLoading,
-                onClick = onBottomBarClick,
-            )
+            if (currentPage != null && RegisterScreenPage.routes.contains(currentPage.route)) {
+                BottomBarWithOption(
+                    modifier =
+                        Modifier
+                            .onSizeChanged {
+                                with(density) {
+                                    bottomBarHeightDp = it.height.toDp()
+                                }
+                            }.align(Alignment.BottomCenter),
+                    title = bottomBarTitle,
+                    enabled = bottomBarEnabled,
+                    isLoading = isLoading,
+                    onClick = onBottomBarClick,
+                    option = option,
+                )
+            }
         }
     }
 }
@@ -116,6 +125,33 @@ private fun TopBar(
 }
 
 @Composable
+private fun BottomBarWithOption(
+    modifier: Modifier = Modifier,
+    title: String,
+    enabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit,
+    option: @Composable (() -> Unit)? = null,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        BottomBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = title,
+            enabled = enabled,
+            isLoading = isLoading,
+            onClick = onClick,
+        )
+        if (option != null) {
+            option()
+        }
+    }
+}
+
+@Composable
 private fun BottomBar(
     modifier: Modifier = Modifier,
     title: String,
@@ -135,7 +171,7 @@ private fun BottomBar(
         text = title,
         onClick = onClick,
         enabled = enabled,
-        isLoading = isLoading
+        isLoading = isLoading,
     )
 }
 
@@ -148,6 +184,7 @@ private val SCREEN_BOTTOM_PADDING = 26.dp
 private fun RegisterScreenFramePreview() {
     FlipAppTheme {
         RegisterScreenFrame(
+            currentPage = RegisterScreenPage.TermsOfService,
             topBarTitle = "TopBarTitle",
             bottomBarTitle = "BottomBarTitle",
             bottomBarEnabled = true,

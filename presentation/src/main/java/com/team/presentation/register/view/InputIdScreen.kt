@@ -47,16 +47,16 @@ fun InputIdScreen(
         RegisterTitleView(
             mainTitle =
                 buildAnnotatedString {
-                    append(stringResource(id = R.string.terms_of_service_screen_input_id_title_1))
+                    append(stringResource(id = R.string.register_screen_input_id_title_1))
                     append("\n")
                     withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
                         append(
                             stringResource(
-                                id = R.string.terms_of_service_screen_input_id_title_2,
+                                id = R.string.register_screen_input_id_title_2,
                             ),
                         )
                     }
-                    append(stringResource(id = R.string.terms_of_service_screen_input_id_title_3))
+                    append(stringResource(id = R.string.register_screen_input_id_title_3))
                 },
         )
         Spacer(modifier = Modifier.height(64.dp))
@@ -70,7 +70,7 @@ fun InputIdScreen(
             maxLength = ValidateInputIdUseCase.MAX_LENGTH,
             placeholder =
                 stringResource(
-                    id = R.string.terms_of_service_screen_input_id_placeholder,
+                    id = R.string.register_screen_input_id_placeholder,
                 ),
             leadingIcon = {
                 Text(text = EmailPrefix, style = FlipTheme.typography.body6)
