@@ -54,9 +54,7 @@ class RegisterViewModel @Inject constructor(
             RegisterContract.UiEvent.CheckAll -> checkAllAgreementItems(true)
             RegisterContract.UiEvent.UnCheckAll -> checkAllAgreementItems(false)
             is RegisterContract.UiEvent.OnToggleAgreementItem ->
-                onToggleAgreementItem(
-                    event.agreementItemIndex,
-                )
+                onToggleAgreementItem(event.agreementItemIndex)
 
             is RegisterContract.UiEvent.RequestToNextPage -> requestToNextPage(event.currentPage)
 
@@ -70,9 +68,8 @@ class RegisterViewModel @Inject constructor(
 
     private fun onImageChanged(image: FlipImage) {
         viewModelScope.launch(defaultDispatcher) {
-            val imageBitmap = image.imageBitmap
             val updatedInputImageState =
-                currentUiState.inputImageState.copy(imageBitmap = imageBitmap)
+                currentUiState.inputImageState.copy(image = image)
             updateState {
                 currentUiState.copy(inputImageState = updatedInputImageState)
             }
@@ -139,8 +136,11 @@ class RegisterViewModel @Inject constructor(
             }
 
             RegisterScreenPage.InputImage -> {
-                // TODO: 1. 이미지 aws에 업로드 후 이미지 주소 받아오기
-                //       2. 회원가입 마무리
+                validateImage(currentUiState.inputImageState.image)
+            }
+
+            RegisterScreenPage.Finish -> {
+                // TODO 회원가입 완료시키기
             }
 
             null -> {
@@ -149,6 +149,16 @@ class RegisterViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun validateImage(image: FlipImage?) {
+        if (image == null) {
+            sendEffect {
+                RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.Finish)
+            }
+            return
+        }
+        // TODO 이미지 업로드 후 주소 반환받기
     }
 
     private fun validateId(profileId: String) {
@@ -164,23 +174,25 @@ class RegisterViewModel @Inject constructor(
                                     InputIdValidState.Invalid(
                                         result.errorBodyFirst(),
                                     ),
+                                loading = false,
                             )
                         updateState {
-                            currentUiState.copy(
-                                loading = false,
-                                inputIdState = updatedInputIdState,
-                            )
+                            currentUiState.copy(inputIdState = updatedInputIdState)
                         }
                     }
 
                     Result.Loading -> {
+                        val updatedInputIdState = inputIdState.copy(loading = true)
                         updateState {
-                            currentUiState.copy(loading = true)
+                            currentUiState.copy(inputIdState = updatedInputIdState)
                         }
                     }
 
                     is Result.Success -> {
-                        updateState { currentUiState.copy(loading = false) }
+                        val updatedInputIdState = inputIdState.copy(loading = false)
+                        updateState {
+                            currentUiState.copy(inputIdState = updatedInputIdState)
+                        }
                         sendEffect {
                             RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputImage)
                         }
@@ -200,21 +212,27 @@ class RegisterViewModel @Inject constructor(
                             inputNameState.copy(
                                 inputNicknameValidState =
                                     InputNicknameValidState.Invalid(result.errorBodyFirst()),
+                                loading = false,
                             )
                         updateState {
                             currentUiState.copy(
-                                loading = false,
                                 inputNicknameState = updatedInputNameState,
                             )
                         }
                     }
 
                     Result.Loading -> {
-                        updateState { currentUiState.copy(loading = true) }
+                        val updatedInputNameState = inputNameState.copy(loading = true)
+                        updateState {
+                            currentUiState.copy(inputNicknameState = updatedInputNameState)
+                        }
                     }
 
                     is Result.Success -> {
-                        updateState { currentUiState.copy(loading = false) }
+                        val updatedInputNameState = inputNameState.copy(loading = false)
+                        updateState {
+                            currentUiState.copy(inputNicknameState = updatedInputNameState)
+                        }
                         sendEffect {
                             RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.InputID)
                         }

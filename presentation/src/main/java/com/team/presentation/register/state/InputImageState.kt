@@ -1,7 +1,8 @@
 package com.team.presentation.register.state
 
-import androidx.compose.ui.graphics.ImageBitmap
+import com.team.presentation.common.image.FlipImage
 
 data class InputImageState(
-    val imageBitmap: ImageBitmap? = null,
+    val image: FlipImage? = null,
+    val loading: Boolean = false,
 )

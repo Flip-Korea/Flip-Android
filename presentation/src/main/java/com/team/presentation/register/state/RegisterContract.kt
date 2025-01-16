@@ -9,7 +9,7 @@ import com.team.presentation.register.RegisterScreenPage
 
 class RegisterContract {
     data class UiState(
-        val loading: Boolean = false,
+//        val loading: Boolean = false,
         val agreementItems: List<AgreementItem> = emptyList(),
         val agreementItemChecks: List<Boolean> = emptyList(),
         val inputNicknameState: InputNicknameState = InputNicknameState(),

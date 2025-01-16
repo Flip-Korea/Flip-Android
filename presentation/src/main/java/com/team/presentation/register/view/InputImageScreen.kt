@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -25,11 +26,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.component.utils.clickableSingle
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.R
+import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.InputImageState
+import com.team.presentation.register.state.RegisterContract
 
 @Composable
 fun InputImageScreen(
@@ -38,54 +42,83 @@ fun InputImageScreen(
     totalSteps: Int,
     inputImageState: InputImageState,
     openPhotoCropper: () -> Unit,
+    onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
     Column(
         modifier = modifier.zIndex(1f),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        RegisterProgressView(
-            modifier = Modifier.fillMaxWidth(),
-            currentStep = currentStep,
-            totalSteps = totalSteps,
-        )
-        RegisterTitleView(
-            mainTitle =
-                buildAnnotatedString {
-                    append(
-                        stringResource(id = R.string.register_screen_input_photo_title_1),
-                    )
-                    append("\n")
-                    withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            RegisterProgressView(
+                modifier = Modifier.fillMaxWidth(),
+                currentStep = currentStep,
+                totalSteps = totalSteps,
+            )
+            RegisterTitleView(
+                mainTitle =
+                    buildAnnotatedString {
                         append(
-                            stringResource(
-                                id = R.string.register_screen_input_photo_title_2,
-                            ),
+                            stringResource(id = R.string.register_screen_input_photo_title_1),
                         )
-                    }
-                    append(
-                        stringResource(id = R.string.register_screen_input_photo_title_3),
+                        append("\n")
+                        withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
+                            append(
+                                stringResource(
+                                    id = R.string.register_screen_input_photo_title_2,
+                                ),
+                            )
+                        }
+                        append(
+                            stringResource(id = R.string.register_screen_input_photo_title_3),
+                        )
+                    },
+            )
+            Spacer(modifier = Modifier.height(94.dp))
+            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                if (inputImageState.image != null) {
+                    SelectedImage(
+                        modifier =
+                            Modifier
+                                .clip(CircleShape)
+                                .size(ImageSize)
+                                .clickableSingle { openPhotoCropper() },
+                        image = inputImageState.image.imageBitmap,
                     )
-                },
-        )
-        Spacer(modifier = Modifier.height(94.dp))
-        Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            if (inputImageState.imageBitmap != null) {
-                SelectedImage(
-                    modifier =
-                        Modifier
-                            .clip(CircleShape)
-                            .size(ImageSize)
-                            .clickableSingle { openPhotoCropper() },
-                    image = inputImageState.imageBitmap,
-                )
-            } else {
-                SelectImageButton(
-                    modifier = Modifier.size(ImageSize),
-                    image = R.drawable.ic_camera,
-                    onClick = { openPhotoCropper() },
-                )
+                } else {
+                    SelectImageButton(
+                        modifier = Modifier.size(ImageSize),
+                        image = R.drawable.ic_camera,
+                        onClick = { openPhotoCropper() },
+                    )
+                }
             }
         }
+
+        RegisterScreenBottomBar(
+            title = stringResource(id = R.string.register_screen_input_image_btn),
+            enabled = inputImageState.image != null,
+            isLoading = inputImageState.loading,
+            onClick = {
+                onUiEvent(
+                    RegisterContract.UiEvent.RequestToNextPage(RegisterScreenPage.InputImage),
+                )
+            },
+            option = {
+                FlipTextButton(
+                    text = stringResource(id = R.string.register_screen_input_image_btn_2),
+                    onClick = {
+                        onUiEvent(
+                            RegisterContract.UiEvent.RequestToNextPage(
+                                RegisterScreenPage.InputImage,
+                            ),
+                        )
+                    },
+                )
+            },
+        )
     }
 }
 
@@ -145,10 +178,12 @@ private fun SelectImageButtonPreview() {
 private fun InputImageScreenPreview() {
     FlipAppTheme {
         InputImageScreen(
+            modifier = Modifier.fillMaxSize(),
             currentStep = 3,
             totalSteps = 3,
             inputImageState = InputImageState(),
             openPhotoCropper = { },
+            onUiEvent = { },
         )
     }
 }

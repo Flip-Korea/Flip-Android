@@ -1,4 +1,4 @@
-package com.team.presentation.register.view.new
+package com.team.presentation.register.view
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,30 +6,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.team.designsystem.component.button.FlipTextButton
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
-import com.team.presentation.R
 import com.team.presentation.common.image.FlipImageFactory
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.RegisterContract
-import com.team.presentation.register.view.ImageCropScreen
-import com.team.presentation.register.view.InputIdScreen
-import com.team.presentation.register.view.InputImageScreen
-import com.team.presentation.register.view.InputNicknameScreen
-import com.team.presentation.register.view.TermsOfServiceScreen
-import com.team.presentation.util.composable.copy
 
 @Composable
 fun RegisterScreen(
@@ -45,27 +35,11 @@ fun RegisterScreen(
     RegisterScreenFrame(
         currentPage = currentPage,
         topBarTitle = "",
-        bottomBarTitle =
-            stringResource(currentPage?.buttonTitle ?: RegisterScreenPage.defaultButtonTitle),
-        bottomBarEnabled = uiState.agreementItemChecks.all { it },
-        isLoading = uiState.loading,
-        onBottomBarClick = { onUiEvent(RegisterContract.UiEvent.RequestToNextPage(currentPage)) },
         onBackPress = onBackPress,
-        option = {
-            if (currentPage?.buttonTitle != null && currentPage == RegisterScreenPage.InputImage) {
-                FlipTextButton(
-                    text = stringResource(id = R.string.register_screen_input_image_btn_2),
-                    onClick = {
-                        // TODO: 다음에 할래요 클릭 시 -> 프로필 사진 없는 채로 회원가입 완료
-                    },
-                )
-            }
-        },
-    ) { bottomBarHeightDp ->
+    ) {
         RegisterNavigation(
             modifier = Modifier.fillMaxSize(),
             navController = navController,
-            bottomBarHeightDp = bottomBarHeightDp,
             uiState = uiState,
             onUiEvent = onUiEvent,
         )
@@ -76,7 +50,6 @@ fun RegisterScreen(
 fun RegisterNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    bottomBarHeightDp: Dp,
     uiState: RegisterContract.UiState,
     onUiEvent: (RegisterContract.UiEvent) -> Unit,
 ) {
@@ -96,7 +69,7 @@ fun RegisterNavigation(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(ContentPaddingValues.copy(bottom = bottomBarHeightDp)),
+                        .padding(ContentPaddingValues),
                 agreementItems = uiState.agreementItems,
                 agreementItemChecks = uiState.agreementItemChecks,
                 onUiEvent = onUiEvent,
@@ -139,6 +112,7 @@ fun RegisterNavigation(
                 totalSteps = 3,
                 inputImageState = uiState.inputImageState,
                 openPhotoCropper = { navController.navigate(SelectImageRoute) },
+                onUiEvent = onUiEvent,
             )
         }
 
@@ -153,9 +127,14 @@ fun RegisterNavigation(
                 },
             )
         }
+
+        composable(route = RegisterScreenPage.Finish.route) {
+            RegisterFinishScreen()
+        }
     }
 }
 
+private val SCREEN_BOTTOM_PADDING = 26.dp
 private val ContentTopPadding = 24.dp
 private val ContentHorizontalPadding = 16.dp
 private val ContentPaddingValues =
@@ -163,6 +142,7 @@ private val ContentPaddingValues =
         top = ContentTopPadding,
         start = ContentHorizontalPadding,
         end = ContentHorizontalPadding,
+        bottom = SCREEN_BOTTOM_PADDING,
     )
 private const val SelectImageRoute = "select_image_route"
 

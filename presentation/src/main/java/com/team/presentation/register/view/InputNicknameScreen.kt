@@ -3,6 +3,7 @@ package com.team.presentation.register.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.usecase.register.ValidateInputNicknameUseCase
 import com.team.presentation.R
+import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.InputNicknameState
 import com.team.presentation.register.state.InputNicknameValidState
 import com.team.presentation.register.state.RegisterContract
@@ -36,49 +38,67 @@ fun InputNicknameScreen(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        RegisterProgressView(
-            modifier = Modifier.fillMaxWidth(),
-            currentStep = currentStep,
-            totalSteps = totalSteps,
-        )
-        RegisterTitleView(
-            mainTitle =
-                buildAnnotatedString {
-                    append(
-                        stringResource(
-                            id = R.string.register_screen_input_nickname_title_1,
-                        ),
-                    )
-                    append("\n")
-                    withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            RegisterProgressView(
+                modifier = Modifier.fillMaxWidth(),
+                currentStep = currentStep,
+                totalSteps = totalSteps,
+            )
+            RegisterTitleView(
+                mainTitle =
+                    buildAnnotatedString {
                         append(
                             stringResource(
-                                id = R.string.register_screen_input_nickname_title_2,
+                                id = R.string.register_screen_input_nickname_title_1,
                             ),
                         )
-                    }
-                    append(
-                        stringResource(
-                            id = R.string.register_screen_input_nickname_title_3,
-                        ),
-                    )
+                        append("\n")
+                        withStyle(FlipTheme.typography.headline8.toSpanStyle()) {
+                            append(
+                                stringResource(
+                                    id = R.string.register_screen_input_nickname_title_2,
+                                ),
+                            )
+                        }
+                        append(
+                            stringResource(
+                                id = R.string.register_screen_input_nickname_title_3,
+                            ),
+                        )
+                    },
+            )
+            Spacer(modifier = Modifier.height(64.dp))
+            FlipInfoTextField(
+                infoTextFieldState =
+                    inputNicknameState.inputNicknameValidState
+                        .toInfoTextFieldState(),
+                text = inputNicknameState.name,
+                onTextChanged = {
+                    onUiEvent(RegisterContract.UiEvent.OnNicknameChanged(it))
                 },
-        )
-        Spacer(modifier = Modifier.height(64.dp))
-        FlipInfoTextField(
-            infoTextFieldState = inputNicknameState.inputNicknameValidState.toInfoTextFieldState(),
-            text = inputNicknameState.name,
-            onTextChanged = {
-                onUiEvent(RegisterContract.UiEvent.OnNicknameChanged(it))
+                focusManager = focusManager,
+                maxLength = ValidateInputNicknameUseCase.MAX_LENGTH,
+                placeholder =
+                    stringResource(
+                        id = R.string.register_screen_input_nickname_placeholder,
+                    ),
+            )
+        }
+
+        RegisterScreenBottomBar(
+            title = stringResource(id = R.string.register_screen_input_nickname_btn),
+            enabled = true,
+            isLoading = inputNicknameState.loading,
+            onClick = {
+                onUiEvent(
+                    RegisterContract.UiEvent.RequestToNextPage(RegisterScreenPage.InputNickname),
+                )
             },
-            focusManager = focusManager,
-            maxLength = ValidateInputNicknameUseCase.MAX_LENGTH,
-            placeholder =
-                stringResource(
-                    id = R.string.register_screen_input_nickname_placeholder,
-                ),
         )
     }
 }
@@ -103,6 +123,7 @@ private fun InputNicknameValidState.toInfoTextFieldState(): InfoTextFieldState =
 private fun InputNicknameScreenPreview() {
     FlipAppTheme {
         InputNicknameScreen(
+            modifier = Modifier.fillMaxSize(),
             currentStep = 1,
             totalSteps = 3,
             inputNicknameState = InputNicknameState(),

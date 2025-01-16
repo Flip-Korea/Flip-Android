@@ -14,5 +14,6 @@ sealed interface InputNicknameValidState {
 
 data class InputNicknameState(
     val name: String = "",
+    val loading: Boolean = false,
     val inputNicknameValidState: InputNicknameValidState = InputNicknameValidState.Idle,
 )

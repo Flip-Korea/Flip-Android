@@ -20,6 +20,7 @@ import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.usecase.register.ValidateInputIdUseCase
 import com.team.presentation.R
+import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.InputIdState
 import com.team.presentation.register.state.InputIdValidState
 import com.team.presentation.register.state.RegisterContract
@@ -37,15 +38,19 @@ fun InputIdScreen(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        RegisterProgressView(
-            modifier = Modifier.fillMaxWidth(),
-            currentStep = currentStep,
-            totalSteps = totalSteps,
-        )
-        RegisterTitleView(
-            mainTitle =
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            RegisterProgressView(
+                modifier = Modifier.fillMaxWidth(),
+                currentStep = currentStep,
+                totalSteps = totalSteps,
+            )
+            RegisterTitleView(
+                mainTitle =
                 buildAnnotatedString {
                     append(stringResource(id = R.string.register_screen_input_id_title_1))
                     append("\n")
@@ -58,22 +63,34 @@ fun InputIdScreen(
                     }
                     append(stringResource(id = R.string.register_screen_input_id_title_3))
                 },
-        )
-        Spacer(modifier = Modifier.height(64.dp))
-        FlipInfoTextField(
-            infoTextFieldState = inputIdState.inputIdValidState.toInfoTextFieldState(),
-            text = inputIdState.id,
-            onTextChanged = {
-                onUiEvent(RegisterContract.UiEvent.OnIdChanged(it))
-            },
-            focusManager = focusManager,
-            maxLength = ValidateInputIdUseCase.MAX_LENGTH,
-            placeholder =
+            )
+            Spacer(modifier = Modifier.height(64.dp))
+            FlipInfoTextField(
+                infoTextFieldState = inputIdState.inputIdValidState.toInfoTextFieldState(),
+                text = inputIdState.id,
+                onTextChanged = {
+                    onUiEvent(RegisterContract.UiEvent.OnIdChanged(it))
+                },
+                focusManager = focusManager,
+                maxLength = ValidateInputIdUseCase.MAX_LENGTH,
+                placeholder =
                 stringResource(
                     id = R.string.register_screen_input_id_placeholder,
                 ),
-            leadingIcon = {
-                Text(text = EmailPrefix, style = FlipTheme.typography.body6)
+                leadingIcon = {
+                    Text(text = EmailPrefix, style = FlipTheme.typography.body6)
+                },
+            )
+        }
+
+        RegisterScreenBottomBar(
+            title = stringResource(id = R.string.register_screen_input_id_btn),
+            enabled = true,
+            isLoading = inputIdState.loading,
+            onClick = {
+                onUiEvent(
+                    RegisterContract.UiEvent.RequestToNextPage(RegisterScreenPage.InputID)
+                )
             },
         )
     }

@@ -1,9 +1,8 @@
-package com.team.presentation.register.view.new
+package com.team.presentation.register.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,16 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.topbar.FlipTopBar
@@ -59,17 +51,9 @@ fun RegisterScreenFrame(
     modifier: Modifier = Modifier,
     currentPage: RegisterScreenPage?,
     topBarTitle: String,
-    bottomBarTitle: String,
-    bottomBarEnabled: Boolean,
-    isLoading: Boolean,
-    onBottomBarClick: () -> Unit,
     onBackPress: () -> Unit,
-    option: @Composable (() -> Unit)? = null,
-    content: @Composable (bottomBarHeightDp: Dp) -> Unit,
+    content: @Composable () -> Unit,
 ) {
-    var bottomBarHeightDp by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -86,23 +70,7 @@ fun RegisterScreenFrame(
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
-            content(bottomBarHeightDp)
-            if (currentPage != null && RegisterScreenPage.routes.contains(currentPage.route)) {
-                BottomBarWithOption(
-                    modifier =
-                        Modifier
-                            .onSizeChanged {
-                                with(density) {
-                                    bottomBarHeightDp = it.height.toDp()
-                                }
-                            }.align(Alignment.BottomCenter),
-                    title = bottomBarTitle,
-                    enabled = bottomBarEnabled,
-                    isLoading = isLoading,
-                    onClick = onBottomBarClick,
-                    option = option,
-                )
-            }
+            content()
         }
     }
 }
@@ -124,8 +92,17 @@ private fun TopBar(
     )
 }
 
+/**
+ * 회원가입 화면에서 공통적으로 사용하는 바텀 바(버튼)
+ *
+ * @param title 버튼 타이틀
+ * @param enabled 버튼 활성화 여부
+ * @param isLoading 기능 로딩 여부
+ * @param onClick 버튼 클릭 시
+ * @param option 버튼 하단에 위치할 Slot API
+ */
 @Composable
-private fun BottomBarWithOption(
+fun RegisterScreenBottomBar(
     modifier: Modifier = Modifier,
     title: String,
     enabled: Boolean,
@@ -138,12 +115,12 @@ private fun BottomBarWithOption(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        BottomBar(
+        FlipMediumButton(
             modifier = Modifier.fillMaxWidth(),
-            title = title,
+            text = title,
+            onClick = onClick,
             enabled = enabled,
             isLoading = isLoading,
-            onClick = onClick,
         )
         if (option != null) {
             option()
@@ -151,32 +128,7 @@ private fun BottomBarWithOption(
     }
 }
 
-@Composable
-private fun BottomBar(
-    modifier: Modifier = Modifier,
-    title: String,
-    enabled: Boolean,
-    isLoading: Boolean,
-    onClick: () -> Unit,
-) {
-    FlipMediumButton(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    start = SCREEN_HORIZONTAL_PADDING,
-                    end = SCREEN_HORIZONTAL_PADDING,
-                    bottom = SCREEN_BOTTOM_PADDING,
-                ),
-        text = title,
-        onClick = onClick,
-        enabled = enabled,
-        isLoading = isLoading,
-    )
-}
-
 private val SCREEN_HORIZONTAL_PADDING = 16.dp
-private val SCREEN_TOP_PADDING = 16.dp
 private val SCREEN_BOTTOM_PADDING = 26.dp
 
 @Preview
@@ -186,21 +138,14 @@ private fun RegisterScreenFramePreview() {
         RegisterScreenFrame(
             currentPage = RegisterScreenPage.TermsOfService,
             topBarTitle = "TopBarTitle",
-            bottomBarTitle = "BottomBarTitle",
-            bottomBarEnabled = true,
-            isLoading = false,
-            onBottomBarClick = { },
             onBackPress = { },
-        ) { bottomHeightDp ->
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 items(100) {
                     Text(modifier = Modifier.fillMaxWidth(), text = "$it")
-                }
-                item {
-                    Spacer(modifier = Modifier.height(bottomHeightDp))
                 }
             }
         }

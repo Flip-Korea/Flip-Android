@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.designsystem.util.toColor
 import com.team.presentation.R
 import com.team.presentation.register.AgreementItem
+import com.team.presentation.register.RegisterScreenPage
 import com.team.presentation.register.state.RegisterContract
 
 /** 회원가입 단계 1 (서비스 이용약관) */
@@ -47,25 +49,41 @@ fun TermsOfServiceScreen(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(28.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        // 헤더 타이틀 (회원가입 단계 동안 반복되는 부분)
-        Title(Modifier.fillMaxWidth())
-        // 약관 동의 항목들 (회원가입 단계 동안 반복되는 부분)
-        AgreementItems(
-            modifier = Modifier.fillMaxWidth(),
-            agreementItems = agreementItems,
-            agreementItemChecks = agreementItemChecks,
-            checkedAllItems = agreementItemChecks.all { it },
-            onCheckAllItems = {
-                if (agreementItemChecks.all { it }) {
-                    onUiEvent(RegisterContract.UiEvent.UnCheckAll)
-                } else {
-                    onUiEvent(RegisterContract.UiEvent.CheckAll)
-                }
-            },
-            onItemClick = { index ->
-                onUiEvent(RegisterContract.UiEvent.OnToggleAgreementItem(index))
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.spacedBy(28.dp),
+        ) {
+            // 헤더 타이틀 (회원가입 단계 동안 반복되는 부분)
+            Title(Modifier.fillMaxWidth())
+            // 약관 동의 항목들 (회원가입 단계 동안 반복되는 부분)
+            AgreementItems(
+                modifier = Modifier.fillMaxWidth(),
+                agreementItems = agreementItems,
+                agreementItemChecks = agreementItemChecks,
+                checkedAllItems = agreementItemChecks.all { it },
+                onCheckAllItems = {
+                    if (agreementItemChecks.all { it }) {
+                        onUiEvent(RegisterContract.UiEvent.UnCheckAll)
+                    } else {
+                        onUiEvent(RegisterContract.UiEvent.CheckAll)
+                    }
+                },
+                onItemClick = { index ->
+                    onUiEvent(RegisterContract.UiEvent.OnToggleAgreementItem(index))
+                },
+            )
+        }
+
+        RegisterScreenBottomBar(
+            title = stringResource(id = R.string.register_screen_terms_of_service_agreement_btn),
+            enabled = agreementItemChecks.all { it },
+            isLoading = false,
+            onClick = {
+                onUiEvent(
+                    RegisterContract.UiEvent.RequestToNextPage(RegisterScreenPage.TermsOfService),
+                )
             },
         )
     }
@@ -107,7 +125,11 @@ private fun AgreementItems(
             checked = checkedAllItems,
             onClick = onCheckAllItems,
         )
-        Spacer(Modifier.fillMaxWidth().height(30.dp))
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(30.dp),
+        )
         agreementItems.forEachIndexed { index, agreementClickableItem ->
             AgreementItem(
                 modifier = Modifier.padding(start = 4.dp),
@@ -280,6 +302,7 @@ private fun AgreementItemsPreview() {
 private fun TermsOfServiceScreenPreview() {
     FlipAppTheme {
         TermsOfServiceScreen(
+            modifier = Modifier.fillMaxSize(),
             agreementItems = AgreementItemsTestData,
             agreementItemChecks = AgreementItemChecksTestData,
             onUiEvent = { },
