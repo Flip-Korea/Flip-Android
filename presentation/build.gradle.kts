@@ -142,7 +142,7 @@ dependencies {
     testImplementation(libs.androidx.paging.common)
 
     // Lottie
-    implementation(libs.lottie)
+    implementation(libs.lottie.compose)
 
     // Local tests: JUnit, Coroutines Test, Android runner, Mockito
     implementation(libs.androidx.test.runner)
