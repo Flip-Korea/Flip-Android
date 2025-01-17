@@ -2,13 +2,15 @@ package com.team.presentation.register.model
 
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
+import com.team.domain.type.SocialLoginPlatform
 
 data class ComposeRegister(
-    val accountId: String,
-    val accountName: String,
+    val socialLoginPlatform: SocialLoginPlatform,
+    val oauthId: String,
     val profile: ComposeRegisterProfile,
+    val adsAgree: Boolean,
 ) {
-    constructor() : this("", "", ComposeRegisterProfile())
+    constructor() : this(SocialLoginPlatform.Google, "", ComposeRegisterProfile(), false)
 }
 
 data class ComposeRegisterProfile(
@@ -20,7 +22,12 @@ data class ComposeRegisterProfile(
 }
 
 fun Register.toComposeModel(): ComposeRegister =
-    ComposeRegister(accountId, accountName, profile.toComposeModel())
+    ComposeRegister(
+        socialLoginPlatform,
+        oauthId,
+        profile.toComposeModel(),
+        adsAgree,
+    )
 
 fun RegisterProfile.toComposeModel(): ComposeRegisterProfile =
-    ComposeRegisterProfile(profileId, nickname, photoUrl)
+    ComposeRegisterProfile(userId, nickname, photoUrl)

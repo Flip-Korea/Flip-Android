@@ -102,21 +102,13 @@ class AccountNetworkDataSourceTest {
     @Test
     fun `login Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-                {
-                    "access_token": "aaa.bbb.ccc",
-                    "refresh_token": "aaa.bbb.ccc"
-                }
-                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -129,21 +121,13 @@ class AccountNetworkDataSourceTest {
     @Test
     fun `register Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-                {
-                    "access_token": "aaa.bbb.ccc",
-                    "refresh_token": "aaa.bbb.ccc"
-                }
-                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -156,21 +140,13 @@ class AccountNetworkDataSourceTest {
     @Test
     fun `tokenRefresh Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-                {
-                    "access_token": "aaa.bbb.ccc",
-                    "refresh_token": "aaa.bbb.ccc"
-                }
-                """.trimIndent()
             val adapter = moshi.adapter(TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -179,4 +155,14 @@ class AccountNetworkDataSourceTest {
             assertNotNull(response)
             assertEquals(mockResponseToObject, (response as Result.Success).data)
         }
+
+    companion object {
+        private val TokenResponseTestData =
+            """
+            {
+                "accessToken": "aaa.bbb.ccc",
+                "refreshToken": "aaa.bbb.ccc"
+            }
+            """.trimIndent()
+    }
 }

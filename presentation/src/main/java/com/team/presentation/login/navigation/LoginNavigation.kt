@@ -52,10 +52,10 @@ fun LoginNavigation(
                 onLoginClick = { socialLoginPlatform ->
                     val authManager =
                         when (socialLoginPlatform) {
-                            SocialLoginPlatform.GOOGLE -> {
+                            SocialLoginPlatform.Google -> {
                                 googleAuthManager
                             }
-                            SocialLoginPlatform.KAKAO -> {
+                            SocialLoginPlatform.Kakao -> {
                                 kakaoAuthManager
                             }
                         }

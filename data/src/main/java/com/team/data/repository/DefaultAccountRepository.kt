@@ -17,7 +17,6 @@ import com.team.domain.model.account.Register
 import com.team.domain.repository.AccountRepository
 import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
-import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
@@ -163,7 +162,7 @@ class DefaultAccountRepository
             flow {
                 emit(Result.Loading)
 
-                val accountIdResult = loginPlatformType.asString() + accountId
+                val accountIdResult = loginPlatformType.provider + accountId
 
                 when (val result = accountNetworkDataSource.login(accountIdResult)) {
                     is Result.Success -> {

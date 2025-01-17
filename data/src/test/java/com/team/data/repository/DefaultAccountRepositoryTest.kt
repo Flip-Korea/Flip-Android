@@ -211,7 +211,7 @@ class DefaultAccountRepositoryTest {
             )
 
             dataStoreManager.clearAll()
-            val result = accountRepository.login(SocialLoginPlatform.KAKAO, "12345").last()
+            val result = accountRepository.login(SocialLoginPlatform.Kakao, "12345").last()
 
             val expectedAccessToken =
                 moshi

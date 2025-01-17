@@ -4,22 +4,29 @@ import com.team.data.network.model.request.ProfileRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
+import com.team.domain.type.SocialLoginPlatform
 
-fun ProfileRequest.toExternal(): RegisterProfile = RegisterProfile(profileId, nickname, photoUrl)
+fun ProfileRequest.toExternal(): RegisterProfile = RegisterProfile(userId, nickname, photoUrl)
 
 fun RegisterRequest.toExternal(): Register =
     Register(
-        accountId = accountId,
-        accountName = name,
+        socialLoginPlatform = provider,
+        oauthId = oauthId,
         profile = profile.toExternal(),
+        adsAgree = adsAgree,
     )
 
 val networkRegisterTestData =
     RegisterRequest(
-        accountId = "kakao123test",
-        name = "testName",
+        provider = SocialLoginPlatform.Google,
+        oauthId = "oauth123",
         profile =
-            ProfileRequest(profileId = "honggd", nickname = "testNickName", photoUrl = "test.com"),
+            ProfileRequest(
+                userId = "user123",
+                nickname = "nickname123",
+                photoUrl = "https://flip-storage-server.com/11",
+            ),
+        adsAgree = true,
     )
 
 val networkAccountJsonTestData =

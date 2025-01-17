@@ -6,6 +6,7 @@ import com.team.domain.model.account.NicknameValidationFactory
 import com.team.domain.model.account.ProfileIdValidationFactory
 import com.team.domain.usecase.account.GetNicknameValidationResultUseCase
 import com.team.domain.usecase.account.GetProfileIdValidationResultUseCase
+import com.team.domain.usecase.register.RegisterUseCase
 import com.team.domain.usecase.register.ValidateRegisterUseCases
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
@@ -38,6 +39,7 @@ class RegisterViewModel @Inject constructor(
     private val getProfileIdValidationResultUseCase: GetProfileIdValidationResultUseCase,
     private val nicknameValidationFactory: NicknameValidationFactory,
     private val profileIdValidationFactory: ProfileIdValidationFactory,
+    private val registerUseCase: RegisterUseCase,
 ) : FlipBaseViewModel<
         RegisterContract.UiState,
         RegisterContract.UiEvent,
@@ -140,7 +142,7 @@ class RegisterViewModel @Inject constructor(
             }
 
             RegisterScreenPage.Finish -> {
-                // TODO 회원가입 완료시키기
+                finishRegister()
             }
 
             null -> {
@@ -151,6 +153,15 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    private fun finishRegister() {
+//        registerUseCase()
+        // TODO 회원가입 마무리 전에 로그인 및 계정 조회 부터 해결하기
+    }
+
+//    private fun getRegisterData(): Register {
+//        val
+//    }
+
     private fun validateImage(image: FlipImage?) {
         if (image == null) {
             sendEffect {
@@ -158,6 +169,7 @@ class RegisterViewModel @Inject constructor(
             }
             return
         }
+        return
         // TODO 이미지 업로드 후 주소 반환받기
     }
 

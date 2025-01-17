@@ -227,6 +227,9 @@
     <string name="register_screen_input_image_btn">사진 등록하기</string>
     <string name="register_screen_input_image_btn_2">다음에 할래요</string>
 
+    <string name="register_screen_finish_title">가입을 환영합니다!</string>
+    <string name="register_screen_finish_sub_title">플립에서 다양한 분야의 글을\n부담없이 읽고, 적어보세요.</string>
+
     <!-- Register Screen ContentDescription -->
     <string name="register_screen_content_desc_agreement_all_items">보기</string>
     <string name="register_screen_content_desc_input_photo_btn">사진 등록하기</string>

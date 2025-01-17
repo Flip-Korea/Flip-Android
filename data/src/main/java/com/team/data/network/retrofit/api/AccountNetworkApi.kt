@@ -43,7 +43,7 @@ interface AccountNetworkApi {
     ): Response<TokenResponse>
 
     /** API-005 (회원가입) * */
-    @POST("/api/v1/auth/register")
+    @POST("/api/v1/accounts")
     suspend fun register(
         @Body registerRequest: RegisterRequest,
     ): Response<TokenResponse>
