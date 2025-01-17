@@ -4,16 +4,19 @@ import com.team.data.di.IODispatcher
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.local.entity.profile.toDomainModel
 import com.team.data.network.model.request.toNetwork
+import com.team.data.network.model.request.toNicknameValidationRequest
+import com.team.data.network.model.request.toProfileIdValidationRequest
 import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.model.response.profile.toEntity
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.domain.DataStoreManager
 import com.team.domain.model.account.Account
+import com.team.domain.model.account.NicknameValidation
+import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.model.account.Register
 import com.team.domain.repository.AccountRepository
 import com.team.domain.type.DataStoreType
 import com.team.domain.type.SocialLoginPlatform
-import com.team.domain.type.asString
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.CoroutineDispatcher
@@ -53,11 +56,10 @@ class DefaultAccountRepository
                 } catch (e: Exception) {
                     emit(Result.Error(ErrorType.Exception.EXCEPTION))
                 }
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
 
-        override fun getUserAccount(): Flow<Result<Account, ErrorType>> {
-            return flow {
+        override fun getUserAccount(): Flow<Result<Account, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 val accessToken =
@@ -92,79 +94,93 @@ class DefaultAccountRepository
 
                             emit(Result.Success(account))
                         }
+
                         is Result.Error -> {
                             emit(Result.Error(errorBody = result.errorBody, error = result.error))
                         }
+
                         Result.Loading -> {}
                     }
                 } ?: emit(Result.Error(ErrorType.Token.NOT_FOUND))
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-        }
 
-        override fun checkDuplicateName(nickname: String): Flow<Result<Boolean, ErrorType>> {
-            return flow {
+        override fun validateNickname(
+            nicknameValidation: NicknameValidation,
+        ): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
-                when (val result = accountNetworkDataSource.checkDuplicateName(nickname)) {
+                val nicknameValidationRequest = nicknameValidation.toNicknameValidationRequest()
+                when (
+                    val result =
+                        accountNetworkDataSource.validateNickname(
+                            nicknameValidationRequest,
+                        )
+                ) {
                     is Result.Success -> {
                         emit(Result.Success(result.data))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-        }
 
-        override fun checkDuplicateProfileId(profileId: String): Flow<Result<Boolean, ErrorType>> {
-            return flow {
+        override fun validateProfileId(
+            profileIdValidation: ProfileIdValidation,
+        ): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
-                when (val result = accountNetworkDataSource.checkDuplicateProfileId(profileId)) {
+                val profileIdValidationRequest = profileIdValidation.toProfileIdValidationRequest()
+                when (
+                    val result =
+                        accountNetworkDataSource.validateProfileId(profileIdValidationRequest)
+                ) {
                     is Result.Success -> {
                         emit(Result.Success(result.data))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-        }
 
         override fun login(
             loginPlatformType: SocialLoginPlatform,
             accountId: String,
-        ): Flow<Result<Boolean, ErrorType>> {
-            return flow {
+        ): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
-                val accountIdResult = loginPlatformType.asString() + accountId
+                val accountIdResult = loginPlatformType.provider + accountId
 
                 when (val result = accountNetworkDataSource.login(accountIdResult)) {
                     is Result.Success -> {
                         saveTokens(result.data.accessToken, result.data.refreshToken)
                         emit(Result.Success(true))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-        }
 
-        override fun register(register: Register): Flow<Result<Boolean, ErrorType>> {
-            return flow {
+        override fun register(register: Register): Flow<Result<Boolean, ErrorType>> =
+            flow {
                 emit(Result.Loading)
 
                 when (val result = accountNetworkDataSource.register(register.toNetwork())) {
@@ -172,15 +188,15 @@ class DefaultAccountRepository
                         saveTokens(result.data.accessToken, result.data.refreshToken)
                         emit(Result.Success(true))
                     }
+
                     is Result.Error -> {
                         emit(Result.Error(errorBody = result.errorBody, error = result.error))
                     }
+
                     Result.Loading -> {}
                 }
-            }
-                .flowOn(ioDispatcher)
+            }.flowOn(ioDispatcher)
                 .catch { emit(Result.Error(ErrorType.Exception.EXCEPTION)) }
-        }
 
         private suspend fun saveTokens(
             accessToken: String,

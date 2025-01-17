@@ -58,7 +58,7 @@ fun PhotoCropExample() {
 
         Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
             if (croppedImage == null) {
-                PhotoCropScreen(
+                PhotoCropper(
                     selectedImageUri = selectedImageUri,
                     onCancel = { showToast(context, "취소") },
                     onCrop = {

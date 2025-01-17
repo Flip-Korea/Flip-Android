@@ -3,8 +3,7 @@ package com.team.data.network.testdoubles
 val networkTokenTestData =
     """
     {
-      "access_token": "aaa.aaa.ttt",
-      "refresh_token": "rrr.rrr.ttt"
+      "accessToken": "aaa.aaa.ttt",
+      "refreshToken": "rrr.rrr.ttt"
     }
-"""
-        .trimIndent()
+    """.trimIndent()

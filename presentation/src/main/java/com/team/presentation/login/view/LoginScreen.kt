@@ -84,8 +84,8 @@ fun LoginScreen(
             loginPlatforms =
                 remember {
                     listOf(
-                        Pair(SocialLoginPlatform.KAKAO, R.drawable.ic_login_kakao),
-                        Pair(SocialLoginPlatform.GOOGLE, R.drawable.ic_login_google),
+                        Pair(SocialLoginPlatform.Kakao, R.drawable.ic_login_kakao),
+                        Pair(SocialLoginPlatform.Google, R.drawable.ic_login_google),
                     )
                 },
             onLoginClick = { onLoginClick(it) },

@@ -44,15 +44,16 @@ class AddFlipViewModel @Inject constructor(
         }
     }
 
-    override fun createInitialState(): AddFlipContract.UiState {
-        return AddFlipContract.UiState.Content()
-    }
+    override fun createInitialState(): AddFlipContract.UiState = AddFlipContract.UiState.Content()
 
     override suspend fun handleEvent(event: AddFlipContract.UiEvent) {
         when (event) {
             is AddFlipContract.UiEvent.OnTitleChanged -> onTitleChanged(event.title)
             is AddFlipContract.UiEvent.OnContentsChanged -> onContentsChanged(event.contents)
-            is AddFlipContract.UiEvent.OnBackgroundColorChanged -> onBackgroundChanged(event.bgColorType)
+            is AddFlipContract.UiEvent.OnBackgroundColorChanged ->
+                onBackgroundChanged(
+                    event.bgColorType,
+                )
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
             is AddFlipContract.UiEvent.SaveTempPost -> {
@@ -98,7 +99,7 @@ class AddFlipViewModel @Inject constructor(
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
-                            showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                            showSnackbar(result.errorBodyFirst())
                         }
 
                         is Result.Success -> {
@@ -159,7 +160,7 @@ class AddFlipViewModel @Inject constructor(
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
-                            showSnackbar(errorBodyFirst(result.errorBody, result.error))
+                            showSnackbar(result.errorBodyFirst())
                         }
 
                         Result.Loading -> {
@@ -190,8 +191,8 @@ class AddFlipViewModel @Inject constructor(
     private fun validationTempPostForSave(
         title: String,
         contents: List<String>,
-    ): Boolean {
-        return when (val validationResult = validateTempPostUseCase(title, contents)) {
+    ): Boolean =
+        when (val validationResult = validateTempPostUseCase(title, contents)) {
             is ValidationResult.Error -> {
                 viewModelScope.launch {
                     showSnackbar(message = validationResult.error.asUiText())
@@ -201,7 +202,6 @@ class AddFlipViewModel @Inject constructor(
 
             ValidationResult.Success -> true
         }
-    }
 
     private fun showPageDeleteWarningModal(complete: Boolean) {
         if (complete) {

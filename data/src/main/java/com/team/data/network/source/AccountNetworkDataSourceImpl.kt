@@ -1,5 +1,7 @@
 package com.team.data.network.source
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
@@ -9,21 +11,26 @@ import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 
-class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetworkApi) :
-    AccountNetworkDataSource {
+class AccountNetworkDataSourceImpl(
+    private val accountNetworkApi: AccountNetworkApi,
+) : AccountNetworkDataSource {
     override suspend fun getUserAccount(accessToken: String): Result<AccountResponse, ErrorType> =
         networkCall {
             accountNetworkApi.getUserAccount(accessToken)
         }
 
-    override suspend fun checkDuplicateName(nickname: String): Result<Boolean, ErrorType> =
+    override suspend fun validateNickname(
+        nicknameValidationRequest: NicknameValidationRequest,
+    ): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.checkDuplicateName(nickname)
+            accountNetworkApi.validateNickname(nicknameValidationRequest)
         }
 
-    override suspend fun checkDuplicateProfileId(profileId: String): Result<Boolean, ErrorType> =
+    override suspend fun validateProfileId(
+        profileIdValidationRequest: ProfileIdValidationRequest,
+    ): Result<Boolean, ErrorType> =
         networkCallWithoutResponse {
-            accountNetworkApi.checkDuplicateProfileId(profileId)
+            accountNetworkApi.validateProfileId(profileIdValidationRequest)
         }
 
     override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =
@@ -31,7 +38,9 @@ class AccountNetworkDataSourceImpl(private val accountNetworkApi: AccountNetwork
             accountNetworkApi.login(accountId)
         }
 
-    override suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType> =
+    override suspend fun register(
+        networkRegister: RegisterRequest,
+    ): Result<TokenResponse, ErrorType> =
         networkCall {
             accountNetworkApi.register(networkRegister)
         }

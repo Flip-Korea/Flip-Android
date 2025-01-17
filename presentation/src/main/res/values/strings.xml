@@ -47,6 +47,8 @@
     <string name="validation_error_post_content_too_long">내용이 너무 깁니다.</string>
     <string name="validation_error_post_category_is_null">카테고리를 선택 해 주세요.</string>
     <string name="validation_error_temp_post_empty_title_and_content">제목, 내용이 전부 비어있습니다.</string>
+    <string name="validation_error_register_name_invalid">2~12자리 한글 및 영문을 입력해주세요.</string>
+    <string name="validation_error_register_id_invalid">\@영문 또는 . _ 입력, 최대 16글자를 입력해주세요.</string>
 
     <!-- ReportType -->
     <string name="report_dont_Like">마음에 들지 않음</string>
@@ -186,4 +188,49 @@
 
     <!-- Keyboard Toolbar -->
     <string name="keyboard_toolbar_btn_done">완료</string>
+
+    <!-- Register Screen (Common) -->
+    <string name="register_screen_common_input_retry">다시 시도해 주세요.</string>
+    <string name="register_screen_common_btn_title">다음</string>
+
+    <!-- Register Screen -->
+    <string name="register_screen_terms_of_service_title_1">Flip 서비스 이용을 위해</string>
+    <string name="register_screen_terms_of_service_title_2">이용약관</string>
+    <string name="register_screen_terms_of_service_title_3">에 동의해주세요</string>
+    <string name="register_screen_terms_of_service_agreement_item_age">만 14세 이상</string>
+    <string name="register_screen_terms_of_service_agreement_item_service">서비스 이용약관 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_personal_information">개인정보 수집 및 이용 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_ad">광고성 정보 수신 동의</string>
+    <string name="register_screen_terms_of_service_agreement_item_essential">[필수]</string>
+    <string name="register_screen_terms_of_service_agreement_item_not_essential">[선택]</string>
+    <string name="register_screen_terms_of_service_agreement_item_detail">보기</string>
+    <string name="register_screen_terms_of_service_agreement_all_items_1">약관 전체 동의</string>
+    <string name="register_screen_terms_of_service_agreement_all_items_2">(선택 정보 포함)</string>
+    <string name="register_screen_terms_of_service_agreement_btn">동의하고 가입하기</string>
+
+    <string name="register_screen_input_nickname_btn">다음</string>
+    <string name="register_screen_input_nickname_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_nickname_title_2">이름</string>
+    <string name="register_screen_input_nickname_title_3">을 입력해주세요</string>
+    <string name="register_screen_input_nickname_sub_title">프로필에서 자유롭게 변경할 수 있으니 부담없이 작성해주세요.</string>
+    <string name="register_screen_input_nickname_placeholder">2~12자리 한글 및 영문 입력</string>
+
+    <string name="register_screen_input_id_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_id_title_2">아이디</string>
+    <string name="register_screen_input_id_title_3">를 입력해주세요</string>
+    <string name="register_screen_input_id_placeholder">\@ 영문 또는 . _ 입력, 최대 16글자</string>
+    <string name="register_screen_input_id_btn">다음</string>
+
+    <string name="register_screen_input_photo_title_1">플립에서 사용할</string>
+    <string name="register_screen_input_photo_title_2">프로필 사진</string>
+    <string name="register_screen_input_photo_title_3">을 등록해주세요</string>
+    <string name="register_screen_input_image_btn">사진 등록하기</string>
+    <string name="register_screen_input_image_btn_2">다음에 할래요</string>
+
+    <string name="register_screen_finish_title">가입을 환영합니다!</string>
+    <string name="register_screen_finish_sub_title">플립에서 다양한 분야의 글을\n부담없이 읽고, 적어보세요.</string>
+
+    <!-- Register Screen ContentDescription -->
+    <string name="register_screen_content_desc_agreement_all_items">보기</string>
+    <string name="register_screen_content_desc_input_photo_btn">사진 등록하기</string>
 </resources>

@@ -29,15 +29,16 @@ class TempFlipBoxViewModel @Inject constructor(
     private val tempPostUseCases: TempPostUseCases,
 ) : FlipBaseViewModel<TempFlipBoxContract.UiState, TempFlipBoxContract.UiEvent, TempFlipBoxContract.UiEffect>() {
     val tempPostPaging =
-        tempPostUseCases.getTempPostsPaginationUseCase()
+        tempPostUseCases
+            .getTempPostsPaginationUseCase()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(3_000),
                 initialValue = PagingData.empty(),
-            )
-            .cachedIn(viewModelScope)
+            ).cachedIn(viewModelScope)
 
-    override fun createInitialState(): TempFlipBoxContract.UiState = TempFlipBoxContract.UiState.Idle
+    override fun createInitialState(): TempFlipBoxContract.UiState =
+        TempFlipBoxContract.UiState.Idle
 
     override suspend fun handleEvent(event: TempFlipBoxContract.UiEvent) {
         when (event) {
@@ -70,27 +71,31 @@ class TempFlipBoxViewModel @Inject constructor(
         var results = emptyList<Pair<Boolean, UiText>>()
 
         viewModelScope.launch {
-            tempPostIds.map { tempPostId ->
-                async {
-                    tempPostUseCases.deleteTempPostUseCase(tempPostId).onEach { result ->
-                        when (result) {
-                            Result.Loading -> {}
-                            is Result.Error -> {
-                                results =
-                                    results.toMutableList().apply {
-                                        add(Pair(false, errorBodyFirst(result.errorBody, result.error)))
+            tempPostIds
+                .map { tempPostId ->
+                    async {
+                        tempPostUseCases
+                            .deleteTempPostUseCase(tempPostId)
+                            .onEach { result ->
+                                when (result) {
+                                    Result.Loading -> {}
+                                    is Result.Error -> {
+                                        results =
+                                            results.toMutableList().apply {
+                                                add(Pair(false, result.errorBodyFirst()))
+                                            }
                                     }
-                            }
 
-                            is Result.Success -> {
-                                results =
-                                    results.toMutableList()
-                                        .apply { add(Pair(true, UiText.DynamicString(""))) }
-                            }
-                        }
-                    }.launchIn(this)
-                }
-            }.awaitAll()
+                                    is Result.Success -> {
+                                        results =
+                                            results
+                                                .toMutableList()
+                                                .apply { add(Pair(true, UiText.DynamicString(""))) }
+                                    }
+                                }
+                            }.launchIn(this)
+                    }
+                }.awaitAll()
 
             val filteredResult: List<Pair<Boolean, UiText>> = results.filter { !it.first }
 

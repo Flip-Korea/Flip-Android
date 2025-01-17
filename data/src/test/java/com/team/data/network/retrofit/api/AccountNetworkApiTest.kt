@@ -2,6 +2,8 @@ package com.team.data.network.retrofit.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.response.account.AccountResponse
 import com.team.data.network.testdoubles.networkAccountJsonTestData
 import com.team.data.network.testdoubles.networkRegisterTestData
@@ -34,7 +36,8 @@ class AccountNetworkApiTest {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
         accountNetworkApi =
-            Retrofit.Builder()
+            Retrofit
+                .Builder()
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .baseUrl(server.url("/"))
                 .build()
@@ -69,30 +72,34 @@ class AccountNetworkApiTest {
         }
 
     @Test
-    fun `checkDuplicateName Call Test`() =
+    fun `validateNickname Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
-            val response = accountNetworkApi.checkDuplicateName("testNickname")
+            val response =
+                accountNetworkApi.validateNickname(NicknameValidationRequest("testNickname"))
             assertEquals(200, response.code())
 
             // 409 Conflict
             server.enqueue(MockResponse().apply { setResponseCode(409) })
-            val response2 = accountNetworkApi.checkDuplicateName("testNickname")
+            val response2 =
+                accountNetworkApi.validateNickname(NicknameValidationRequest("testNickname"))
             assertEquals(409, response2.code())
         }
 
     @Test
-    fun `checkDuplicateProfileId Call Test`() =
+    fun `validateProfileId Call Test`() =
         runTest {
             // 200 OK
             server.enqueue(MockResponse().apply { setResponseCode(200) })
-            val response = accountNetworkApi.checkDuplicateProfileId("testAccountId")
+            val response =
+                accountNetworkApi.validateProfileId(ProfileIdValidationRequest("testAccountId"))
             assertEquals(200, response.code())
 
             // 409 Conflict
             server.enqueue(MockResponse().apply { setResponseCode(409) })
-            val response2 = accountNetworkApi.checkDuplicateProfileId("testAccountId")
+            val response2 =
+                accountNetworkApi.validateProfileId(ProfileIdValidationRequest("testAccountId"))
             assertEquals(409, response2.code())
         }
 
@@ -101,22 +108,16 @@ class AccountNetworkApiTest {
     @Test
     fun `login Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -130,22 +131,16 @@ class AccountNetworkApiTest {
     @Test
     fun `register Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -159,22 +154,16 @@ class AccountNetworkApiTest {
     @Test
     fun `tokenRefresh Call Test`() =
         runTest {
-            // Mock Data
-            val mockResponse =
-                """
-            {
-                "access_token": "aaa.bbb.ccc",
-                "refresh_token": "aaa.bbb.ccc"
-            }
-        """
-                    .trimIndent()
-            val adapter = moshi.adapter(com.team.data.network.model.response.TokenResponse::class.java)
-            val mockResponseToObject = adapter.fromJson(mockResponse)
+            val adapter =
+                moshi.adapter(
+                    com.team.data.network.model.response.TokenResponse::class.java,
+                )
+            val mockResponseToObject = adapter.fromJson(TokenResponseTestData)
 
             server.enqueue(
                 MockResponse().apply {
                     setResponseCode(200)
-                    setBody(mockResponse)
+                    setBody(TokenResponseTestData)
                 },
             )
 
@@ -184,4 +173,14 @@ class AccountNetworkApiTest {
             assertEquals(200, realResponse.code())
             assertEquals(mockResponseToObject, realResponse.body()!!)
         }
+
+    companion object {
+        private val TokenResponseTestData =
+            """
+            {
+                "accessToken": "aaa.bbb.ccc",
+                "refreshToken": "aaa.bbb.ccc"
+            }
+            """.trimIndent()
+    }
 }

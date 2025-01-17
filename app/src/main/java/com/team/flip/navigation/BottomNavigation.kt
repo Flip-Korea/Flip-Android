@@ -27,35 +27,40 @@ fun BottomNavigation(
     onSettingClick: () -> Unit,
     deleteToken: () -> Unit,
 ) {
-    val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route ?: ""
+    val currentRoute =
+        bottomNavController
+            .currentBackStackEntryAsState()
+            .value
+            ?.destination
+            ?.route ?: ""
 
     NavHost(
         modifier = modifier.fillMaxSize(),
         navController = bottomNavController,
-        startDestination = ScreenItem.HOME.name,
+        startDestination = ScreenItem.Home.name,
         enterTransition = { EnterTransition.None },
         popEnterTransition = { popEnterTransition(currentRoute) },
         exitTransition = { exitTransition(currentRoute) },
         popExitTransition = { ExitTransition.None },
     ) {
-        composable(route = ScreenItem.HOME.name) {
+        composable(route = ScreenItem.Home.name) {
             HomeRoute(
                 innerPadding = innerPadding,
                 onSettingClick = onSettingClick,
             )
         }
 
-        composable(route = ScreenItem.FLIP.name) {
+        composable(route = ScreenItem.Flip.name) {
             FlipRoute()
         }
 
         addFlipNavigation(
             currentRoute = currentRoute,
             popBackStack = { bottomNavController.popBackStack() },
-            onNavigateToTempFlipBox = { bottomNavController.navigate(ScreenItem.TEMP_FLIP_BOX.name) },
+            onNavigateToTempFlipBox = { bottomNavController.navigate(ScreenItem.TempFlipBox.name) },
         )
 
-        composable(route = ScreenItem.PROFILE.name) {
+        composable(route = ScreenItem.Profile.name) {
             ProfileScreen(
                 deleteToken = deleteToken,
             )
@@ -65,14 +70,14 @@ fun BottomNavigation(
 
 private val popEnterTransition: (String) -> EnterTransition = {
     when (it) {
-        ScreenItem.ADD_FLIP.name -> FlipTransitionObject.scaleFadeIn
+        ScreenItem.AddFlip.name -> FlipTransitionObject.scaleFadeIn
         else -> EnterTransition.None
     }
 }
 
 private val exitTransition: (String) -> ExitTransition = {
     when (it) {
-        ScreenItem.ADD_FLIP.name -> FlipTransitionObject.scaleFadeOut
+        ScreenItem.AddFlip.name -> FlipTransitionObject.scaleFadeOut
         else -> ExitTransition.None
     }
 }

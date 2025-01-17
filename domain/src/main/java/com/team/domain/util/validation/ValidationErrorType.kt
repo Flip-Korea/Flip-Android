@@ -18,4 +18,9 @@ sealed interface ValidationErrorType {
     enum class TempPost : ValidationErrorType {
         EMPTY_TITLE_AND_CONTENT,
     }
+
+    enum class Register : ValidationErrorType {
+        NICKNAME_INVALID,
+        ID_INVALID,
+    }
 }

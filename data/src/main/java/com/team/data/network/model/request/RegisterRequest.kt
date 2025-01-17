@@ -4,30 +4,42 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
+import com.team.domain.type.SocialLoginPlatform
+
+// {
+//    "provider" : "kakao",
+//    "oauthId" : "oauth123",
+//    "ads_agree" : true,
+//    "profile" : {
+//    "userId" : "user123",
+//    "nickname" : "nickname123",
+//    "photoUrl" : "https://flip-storage-server.com/11"
+// }
+// }
 
 @JsonClass(generateAdapter = true)
 data class RegisterRequest(
-    //    val _email: String,
-    //    val _phone_num: String,
-    @Json(name = "account_id") val accountId: String,
-    @Json(name = "categories") val categories: List<Int>,
-    @Json(name = "name") val name: String,
-    @Json(name = "profile") val profile: ProfileRequest,
+    /** google, kakao, naver, apple 중 하나여야 함 */
+    val provider: SocialLoginPlatform,
+    val oauthId: String,
+    @Json(name = "ads_agree") val adsAgree: Boolean,
+    val profile: ProfileRequest,
 )
 
 @JsonClass(generateAdapter = true)
 data class ProfileRequest(
-    @Json(name = "nickname") val nickname: String,
-    @Json(name = "photo_url") val photoUrl: String,
-    @Json(name = "profile_id") val profileId: String,
+    val userId: String,
+    val nickname: String,
+    val photoUrl: String,
 )
 
-fun RegisterProfile.toNetwork(): ProfileRequest = ProfileRequest(profileId = profileId, nickname = nickname, photoUrl = photoUrl)
+fun RegisterProfile.toNetwork(): ProfileRequest =
+    ProfileRequest(userId = userId, nickname = nickname, photoUrl = photoUrl)
 
 fun Register.toNetwork(): RegisterRequest =
     RegisterRequest(
-        accountId = accountId,
-        categories = categories,
-        name = name,
+        provider = socialLoginPlatform,
+        oauthId = oauthId,
         profile = profile.toNetwork(),
+        adsAgree = adsAgree,
     )

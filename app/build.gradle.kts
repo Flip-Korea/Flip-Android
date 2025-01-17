@@ -30,7 +30,11 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", properties.getProperty("KAKAO_NATIVE_APP_KEY"))
+        buildConfigField(
+            "String",
+            "KAKAO_NATIVE_APP_KEY",
+            properties.getProperty("KAKAO_NATIVE_APP_KEY"),
+        )
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = "KAKAO_NATIVE_APP_KEY"
     }
 
@@ -79,8 +83,8 @@ android {
     }
 }
 
+// TODO: app 모듈은 feature 모듈에만 의존할 것 (필요시 designsystem 모듈까지만)
 dependencies {
-
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":presentation"))

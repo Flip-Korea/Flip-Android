@@ -1,12 +1,13 @@
 package com.team.data.network.retrofit.api
 
+import com.team.data.network.model.request.NicknameValidationRequest
+import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
 import com.team.data.network.model.response.TokenResponse
 import com.team.data.network.model.response.account.AccountResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.HEAD
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -19,16 +20,16 @@ interface AccountNetworkApi {
         @Header("Authorization") accessToken: String,
     ): Response<AccountResponse>
 
-    /** API-002 (이름 중복 확인) * */
-    @HEAD("/api/v1/account/check-duplicate/nickname/{nickname}")
-    suspend fun checkDuplicateName(
-        @Path("nickname") nickname: String,
+    /** API-002 (닉네임 유효성 검사) * */
+    @POST("/api/v1/validations/nickname")
+    suspend fun validateNickname(
+        @Body nicknameValidationRequest: NicknameValidationRequest,
     ): Response<Void>
 
-    /** API-003 (ID 중복 확인) * */
-    @HEAD("/api/v1/account/check-duplicate/id/{id}")
-    suspend fun checkDuplicateProfileId(
-        @Path("id") profileId: String,
+    /** API-003 (ID 유효성 검사) * */
+    @POST("/api/v1/validations/user-id")
+    suspend fun validateProfileId(
+        @Body profileIdValidationRequest: ProfileIdValidationRequest,
     ): Response<Void>
 
     /**
@@ -42,7 +43,7 @@ interface AccountNetworkApi {
     ): Response<TokenResponse>
 
     /** API-005 (회원가입) * */
-    @POST("/api/v1/auth/register")
+    @POST("/api/v1/accounts")
     suspend fun register(
         @Body registerRequest: RegisterRequest,
     ): Response<TokenResponse>
