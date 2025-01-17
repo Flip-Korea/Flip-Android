@@ -1,5 +1,6 @@
 package com.team.data.network.source
 
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
@@ -19,7 +20,7 @@ interface AccountNetworkDataSource {
         profileIdValidationRequest: ProfileIdValidationRequest,
     ): Result<Boolean, ErrorType>
 
-    suspend fun login(accountId: String): Result<TokenResponse, ErrorType>
+    suspend fun login(loginRequest: LoginRequest): Result<TokenResponse, ErrorType>
 
     suspend fun register(networkRegister: RegisterRequest): Result<TokenResponse, ErrorType>
 

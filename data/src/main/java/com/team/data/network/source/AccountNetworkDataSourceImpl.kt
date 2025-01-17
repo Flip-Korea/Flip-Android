@@ -1,5 +1,6 @@
 package com.team.data.network.source
 
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
@@ -33,9 +34,9 @@ class AccountNetworkDataSourceImpl(
             accountNetworkApi.validateProfileId(profileIdValidationRequest)
         }
 
-    override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> =
+    override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse, ErrorType> =
         networkCall {
-            accountNetworkApi.login(accountId)
+            accountNetworkApi.login(loginRequest)
         }
 
     override suspend fun register(

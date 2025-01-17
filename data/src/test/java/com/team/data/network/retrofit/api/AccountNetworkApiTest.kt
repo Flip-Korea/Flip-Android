@@ -2,11 +2,13 @@ package com.team.data.network.retrofit.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.response.account.AccountResponse
 import com.team.data.network.testdoubles.networkAccountJsonTestData
 import com.team.data.network.testdoubles.networkRegisterTestData
+import com.team.domain.type.SocialLoginPlatform
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -121,7 +123,8 @@ class AccountNetworkApiTest {
                 },
             )
 
-            val response = accountNetworkApi.login("kakao123test")
+            val loginRequest = LoginRequest(SocialLoginPlatform.Kakao, "kakao123test")
+            val response = accountNetworkApi.login(loginRequest)
 
             assertNotNull(response.body())
             assertEquals(200, response.code())

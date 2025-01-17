@@ -1,5 +1,6 @@
 package com.team.data.network.source.fake
 
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
@@ -84,8 +85,8 @@ class FakeAccountNetworkDataSource(
         }
     }
 
-    override suspend fun login(accountId: String): Result<TokenResponse, ErrorType> {
-        val result = accountNetworkApi.login(accountId)
+    override suspend fun login(loginRequest: LoginRequest): Result<TokenResponse, ErrorType> {
+        val result = accountNetworkApi.login(loginRequest)
         return if (result.isSuccessful) {
             Result.Success(result.body()!!)
         } else {

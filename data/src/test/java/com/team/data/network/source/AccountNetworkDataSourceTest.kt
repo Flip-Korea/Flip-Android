@@ -2,6 +2,7 @@ package com.team.data.network.source
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.response.TokenResponse
@@ -10,6 +11,7 @@ import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.source.fake.FakeAccountNetworkDataSource
 import com.team.data.network.testdoubles.networkAccountJsonTestData
 import com.team.data.network.testdoubles.networkRegisterTestData
+import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -112,7 +114,8 @@ class AccountNetworkDataSourceTest {
                 },
             )
 
-            val response = accountNetworkDataSource.login("kakao123test")
+            val loginRequest = LoginRequest(SocialLoginPlatform.Kakao, "kakao123test")
+            val response = accountNetworkDataSource.login(loginRequest)
 
             assertNotNull(response)
             assertEquals(mockResponseToObject, (response as Result.Success).data)
