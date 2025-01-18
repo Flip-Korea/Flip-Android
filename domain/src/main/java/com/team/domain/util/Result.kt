@@ -8,7 +8,9 @@ typealias BaseError = Error
  * 2. When used in Repository: Use 'Loading()'
  */
 sealed interface Result<out T, out E : BaseError> {
-    data class Success<out T, out E : BaseError>(val data: T) : Result<T, E>
+    data class Success<out T, out E : BaseError>(
+        val data: T,
+    ) : Result<T, E>
 
     /**
      * error: Flip 커스텀 에러 타입
@@ -21,7 +23,7 @@ sealed interface Result<out T, out E : BaseError> {
      */
     data class Error<out T, out E : BaseError>(
         val error: E,
-        val message: String? = null,
+        val httpStatusCode: Int? = null,
         val errorBody: ErrorBody? = null,
     ) : Result<T, E>
 

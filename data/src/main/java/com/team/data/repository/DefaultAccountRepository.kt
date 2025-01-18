@@ -84,7 +84,13 @@ class DefaultAccountRepository @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    emit(Result.Error(errorBody = result.errorBody, error = result.error))
+                    emit(
+                        Result.Error(
+                            errorBody = result.errorBody,
+                            error = result.error,
+                            httpStatusCode = result.httpStatusCode,
+                        ),
+                    )
                 }
 
                 Result.Loading -> {}

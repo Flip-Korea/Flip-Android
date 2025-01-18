@@ -7,17 +7,22 @@ import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.usecase.login.LoginUseCase
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
+import com.team.presentation.NavigationItem
 import com.team.presentation.login.state.AuthUiState
 import com.team.presentation.login.state.LoginState
 import com.team.presentation.login.util.AuthManager
+import com.team.presentation.util.uitext.UiText
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +31,12 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
+
+    private val _errorEffect = Channel<UiText>()
+    val errorEffect = _errorEffect.receiveAsFlow()
+
+    private val _navigateEffect = Channel<NavigationItem>()
+    val navigateEffect = _navigateEffect.receiveAsFlow()
 
     fun login(
         socialLoginPlatform: SocialLoginPlatform,
@@ -40,14 +51,11 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is AuthUiState.Error -> {
-                        _loginState.update {
-                            it.copy(
-                                loading = false,
-                                error =
-                                    authUiState.errorType?.asUiText()
-                                        ?: ErrorType.Network.UNEXPECTED.asUiText(),
-                            )
-                        }
+                        _loginState.update { it.copy(loading = false) }
+                        val error =
+                            authUiState.errorType?.asUiText()
+                                ?: ErrorType.Network.UNEXPECTED.asUiText()
+                        _errorEffect.send(error)
                     }
 
                     is AuthUiState.Success -> {
@@ -71,24 +79,30 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        _loginState.update {
-                            it.copy(
-                                loading = false,
-                                error = result.errorBodyFirst(),
-                            )
-                        }
+                        _loginState.update { it.copy(loading = false) }
+                        processSignInError(result)
                     }
 
                     is Result.Success -> {
                         _loginState.update {
                             it.copy(
                                 loading = false,
-                                error = null,
                                 accountExists = result.data,
                             )
                         }
                     }
                 }
             }.launchIn(viewModelScope)
+    }
+
+    private suspend fun processSignInError(result: Result.Error<Boolean, ErrorType>) {
+        if (result.httpStatusCode != null &&
+            result.httpStatusCode == HttpURLConnection.HTTP_NOT_FOUND
+        ) {
+            _navigateEffect.send(NavigationItem.RegisterNav)
+            return
+        }
+
+        _errorEffect.send(result.errorBodyFirst())
     }
 }
