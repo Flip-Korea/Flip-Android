@@ -1,20 +1,14 @@
 package com.team.domain.repository
 
-import com.team.domain.model.account.Account
+import com.team.domain.model.account.Login
 import com.team.domain.model.account.NicknameValidation
 import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.model.account.Register
-import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
-    fun changeProfile(profileId: String): Flow<Result<Boolean, ErrorType>>
-
-    /** Response Account Data is My Account * */
-    fun getUserAccount(): Flow<Result<Account, ErrorType>>
-
     /**
      * 응답 설명
      * 1. Success(true): 닉네임 사용가능
@@ -36,10 +30,7 @@ interface AccountRepository {
      * 1. Success(true): 로그인 성공
      * 2. Error: (404, Not Found): 계정을 찾을 수 없음, 회원가입 진행 (403, Forbidden): 정지된 계정 혹은 접근 불가*
      */
-    fun login(
-        loginPlatformType: SocialLoginPlatform,
-        accountId: String,
-    ): Flow<Result<Boolean, ErrorType>>
+    fun login(login: Login): Flow<Result<Boolean, ErrorType>>
 
     /**
      * 응답 설명

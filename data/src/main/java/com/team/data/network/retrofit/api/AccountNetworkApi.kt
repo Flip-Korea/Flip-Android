@@ -1,5 +1,6 @@
 package com.team.data.network.retrofit.api
 
+import com.team.data.network.model.request.LoginRequest
 import com.team.data.network.model.request.NicknameValidationRequest
 import com.team.data.network.model.request.ProfileIdValidationRequest
 import com.team.data.network.model.request.RegisterRequest
@@ -10,7 +11,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 /** Account API */
 interface AccountNetworkApi {
@@ -37,9 +37,9 @@ interface AccountNetworkApi {
      *
      * 첫 로그인 화면에서만 호출*
      */
-    @GET("/api/v1/auth/login/{account_id}")
+    @POST("/api/v1/login")
     suspend fun login(
-        @Path("account_id") accountId: String,
+        @Body loginRequest: LoginRequest,
     ): Response<TokenResponse>
 
     /** API-005 (회원가입) * */

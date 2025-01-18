@@ -30,11 +30,14 @@ import javax.inject.Inject
     application = HiltTestApplication::class,
 )
 class DefaultDataStoreManagerTest {
-    @get:Rule(order = 1) var hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @Inject lateinit var defaultDataStore: DataStoreManager
+    @Inject
+    lateinit var defaultDataStore: DataStoreManager
 
     @Before
     fun setUp() {

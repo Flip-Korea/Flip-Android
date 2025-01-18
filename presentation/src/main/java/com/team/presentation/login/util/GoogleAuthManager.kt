@@ -38,11 +38,13 @@ class GoogleAuthManager(
             emit(AuthUiState.Loading)
 
             val googleIdOption: GetSignInWithGoogleOption =
-                GetSignInWithGoogleOption.Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                GetSignInWithGoogleOption
+                    .Builder(BuildConfig.GOOGLE_WEB_CLIENT_ID)
                     .build()
 
             val request: GetCredentialRequest =
-                GetCredentialRequest.Builder()
+                GetCredentialRequest
+                    .Builder()
                     .addCredentialOption(googleIdOption)
                     .build()
 
@@ -55,7 +57,9 @@ class GoogleAuthManager(
 
                 when (val credential = result.credential) {
                     is CustomCredential -> {
-                        if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                        if (credential.type ==
+                            GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                        ) {
                             try {
                                 val googleIdTokenCredential =
                                     GoogleIdTokenCredential

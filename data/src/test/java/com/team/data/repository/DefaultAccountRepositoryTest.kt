@@ -8,16 +8,14 @@ import com.team.data.datastore.fake.FakeDataStoreManager
 import com.team.data.local.FlipDatabase
 import com.team.data.local.dao.MyProfileDao
 import com.team.data.network.model.response.TokenResponse
-import com.team.data.network.model.response.account.AccountResponse
-import com.team.data.network.model.response.account.toDomainModel
 import com.team.data.network.retrofit.api.AccountNetworkApi
 import com.team.data.network.source.AccountNetworkDataSource
 import com.team.data.network.source.fake.FakeAccountNetworkDataSource
-import com.team.data.network.testdoubles.networkAccountJsonTestData
 import com.team.data.network.testdoubles.networkRegisterTestData
 import com.team.data.network.testdoubles.networkTokenTestData
 import com.team.data.network.testdoubles.toExternal
 import com.team.data.repository.fake.FakeAccountRepository
+import com.team.domain.model.account.Login
 import com.team.domain.model.account.NicknameValidation
 import com.team.domain.model.account.ProfileIdValidation
 import com.team.domain.type.DataStoreType
@@ -101,40 +99,6 @@ class DefaultAccountRepositoryTest {
     }
 
     @Test
-    fun `사용자 계정 불러오기(accessToken 없는 경우) (getUserAccount())`() =
-        runTest {
-            val result = accountRepository.getUserAccount().last()
-
-            assertEquals((result as Result.Error).error, ErrorType.Token.NOT_FOUND)
-        }
-
-    @Test
-    fun `사용자 계정 불러오기(accessToken 있는 경우) (getUserAccount())`() =
-        runTest {
-            server.enqueue(
-                MockResponse().apply {
-                    setResponseCode(200)
-                    setBody(networkAccountJsonTestData)
-                },
-            )
-
-            dataStoreManager.saveData(DataStoreType.TokenType.ACCESS_TOKEN, "aaa.bbb.ccc")
-            val result = accountRepository.getUserAccount().last()
-
-            val actualData =
-                moshi
-                    .adapter(AccountResponse::class.java)
-                    .fromJson(networkAccountJsonTestData)!!
-                    .toDomainModel((result as Result.Success).data.profiles)
-
-            val expectedCurrentProfileId =
-                dataStoreManager.getStringData(DataStoreType.AccountType.CURRENT_PROFILE_ID).first()
-
-            assertEquals(result.data, actualData)
-            assertEquals(expectedCurrentProfileId, actualData.profiles[0].profileId)
-        }
-
-    @Test
     fun `이름 유효성 검사 실패 (validateNickname())`() =
         runTest {
             server.enqueue(MockResponse().apply { setResponseCode(404) })
@@ -211,7 +175,8 @@ class DefaultAccountRepositoryTest {
             )
 
             dataStoreManager.clearAll()
-            val result = accountRepository.login(SocialLoginPlatform.Kakao, "12345").last()
+            val login = Login(SocialLoginPlatform.Kakao, "12345")
+            val result = accountRepository.login(login).last()
 
             val expectedAccessToken =
                 moshi

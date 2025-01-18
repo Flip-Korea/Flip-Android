@@ -128,7 +128,12 @@ class HomeViewModelTest {
             // Given
             val expectedErrorBody = ErrorBody(code = "", errors = null, message = "error")
             every { getPostsUseCase(null) } returns
-                flowOf(Result.Error(error = ErrorType.Network.NOT_FOUND, errorBody = expectedErrorBody))
+                flowOf(
+                    Result.Error(
+                        error = ErrorType.Network.NOT_FOUND,
+                        errorBody = expectedErrorBody,
+                    ),
+                )
 
             homeViewModel =
                 HomeViewModel(

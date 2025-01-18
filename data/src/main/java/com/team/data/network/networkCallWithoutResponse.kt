@@ -24,7 +24,9 @@ import java.util.concurrent.TimeoutException
  * @see ErrorType
  * @see networkCall
  */
-suspend fun <T> networkCallWithoutResponse(call: suspend () -> Response<T>): Result<Boolean, ErrorType> {
+suspend fun <T> networkCallWithoutResponse(
+    call: suspend () -> Response<T>,
+): Result<Boolean, ErrorType> {
     val toNetworkErrorType = { code: Int ->
         when (code) {
             400 -> ErrorType.Network.BAD_REQUEST
@@ -51,21 +53,25 @@ suspend fun <T> networkCallWithoutResponse(call: suspend () -> Response<T>): Res
             val adapter = moshi.adapter(ErrorBody::class.java)
             val errorBody =
                 response.errorBody()?.source()?.let { source -> adapter.fromJson(source) }
-            Result.Error(error = toNetworkErrorType(response.code()), errorBody = errorBody)
+            Result.Error(
+                error = toNetworkErrorType(response.code()),
+                httpStatusCode = response.code(),
+                errorBody = errorBody,
+            )
         }
     } catch (e: HttpException) {
-        return Result.Error(error = toNetworkErrorType(e.code()), message = e.message())
+        return Result.Error(error = toNetworkErrorType(e.code()), httpStatusCode = e.code())
     } catch (e: IOException) {
-        return Result.Error(error = ErrorType.Exception.IO, message = e.localizedMessage)
+        return Result.Error(error = ErrorType.Exception.IO)
     } catch (e: JsonDataException) {
-        return Result.Error(ErrorType.Exception.JSON_DATA, message = e.localizedMessage)
+        return Result.Error(ErrorType.Exception.JSON_DATA)
     } catch (e: JsonEncodingException) {
-        return Result.Error(ErrorType.Exception.JSON_ENCODING, message = e.localizedMessage)
+        return Result.Error(ErrorType.Exception.JSON_ENCODING)
     } catch (e: MalformedJsonException) {
-        return Result.Error(ErrorType.Exception.MALFORMED_JSON, message = e.localizedMessage)
+        return Result.Error(ErrorType.Exception.MALFORMED_JSON)
     } catch (e: TimeoutException) {
-        return Result.Error(ErrorType.Exception.TIMEOUT, message = e.localizedMessage)
+        return Result.Error(ErrorType.Exception.TIMEOUT)
     } catch (e: Exception) {
-        return Result.Error(ErrorType.Exception.EXCEPTION, message = e.localizedMessage)
+        return Result.Error(ErrorType.Exception.EXCEPTION)
     }
 }
