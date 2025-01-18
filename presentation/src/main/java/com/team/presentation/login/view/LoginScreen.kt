@@ -49,7 +49,7 @@ fun LoginScreen(
     loginState: LoginState,
     onLoginClick: (SocialLoginPlatform) -> Unit,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier) {
         Image(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(id = R.drawable.img_login_bg),
@@ -184,7 +184,7 @@ private fun BottomSection(
 fun LoginScreenPreview() {
     FlipAppTheme {
         LoginScreen(
-            loginState = LoginState(loading = true),
+            loginState = LoginState(loading = false),
             onLoginClick = { },
         )
     }

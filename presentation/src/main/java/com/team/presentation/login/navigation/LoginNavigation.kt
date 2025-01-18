@@ -1,6 +1,5 @@
 package com.team.presentation.login.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.team.designsystem.theme.FlipTheme
 import com.team.domain.type.SocialLoginPlatform
 import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
@@ -20,6 +18,7 @@ import com.team.presentation.login.view.LoginScreen
 
 @Composable
 fun LoginNavigation(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     googleAuthManager: GoogleAuthManager,
     kakaoAuthManager: KakaoAuthManager,
@@ -28,7 +27,7 @@ fun LoginNavigation(
     onNavigateMain: () -> Unit,
 ) {
     NavHost(
-        modifier = Modifier.fillMaxSize().background(FlipTheme.colors.white),
+        modifier = modifier,
         navController = navController,
         startDestination = ScreenItem.Login.name,
     ) {
@@ -45,6 +44,7 @@ fun LoginNavigation(
             }
 
             LoginScreen(
+                modifier = Modifier.fillMaxSize(),
                 loginState = loginState,
                 onLoginClick = { socialLoginPlatform ->
                     val authManager =

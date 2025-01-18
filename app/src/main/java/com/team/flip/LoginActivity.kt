@@ -6,7 +6,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.CredentialManager
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,13 +58,14 @@ class LoginActivity : ComponentActivity() {
 
             FlipAppTheme {
                 LoginNavigation(
+                    modifier = Modifier.fillMaxSize(),
                     navController = navController,
                     googleAuthManager = googleAuthManager,
                     kakaoAuthManager = kakaoAuthManager,
                     loginState = loginState,
                     login = loginViewModel::login,
                     onNavigateMain = {
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     },
