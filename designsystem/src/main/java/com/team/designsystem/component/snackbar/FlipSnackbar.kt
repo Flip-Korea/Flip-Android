@@ -111,7 +111,7 @@ fun FlipSnackbar(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, bottom = 80.dp)
+                            .padding(16.dp)
                             .heightIn(min = 61.dp),
                     containerColor = FlipTheme.colors.main,
                     contentColor = FlipTheme.colors.white,

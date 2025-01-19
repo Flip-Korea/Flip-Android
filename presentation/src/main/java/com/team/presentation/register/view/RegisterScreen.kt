@@ -1,5 +1,6 @@
 package com.team.presentation.register.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.team.designsystem.theme.FlipAppTheme
+import com.team.designsystem.theme.FlipTheme
 import com.team.designsystem.theme.FlipTransitionDirection
 import com.team.designsystem.theme.FlipTransitionObject
 import com.team.presentation.common.image.FlipImageFactory
@@ -33,12 +35,16 @@ fun RegisterScreen(
     val currentPage = navBackStackEntry?.destination?.route?.toRegisterScreenPage()
 
     RegisterScreenFrame(
+        modifier = modifier,
         currentPage = currentPage,
         topBarTitle = "",
         onBackPress = onBackPress,
     ) {
         RegisterNavigation(
-            modifier = Modifier.fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(FlipTheme.colors.white),
             navController = navController,
             uiState = uiState,
             onUiEvent = onUiEvent,
