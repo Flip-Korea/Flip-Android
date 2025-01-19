@@ -13,6 +13,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +56,10 @@ fun RegisterScreenFrame(
     onBackPress: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val topBarEnabled by remember(currentPage) {
+        mutableStateOf(currentPage != null)
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -63,6 +70,7 @@ fun RegisterScreenFrame(
                         .background(FlipTheme.colors.white)
                         .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 title = topBarTitle,
+                enabled = topBarEnabled,
                 onBackPress = onBackPress,
             )
         },
@@ -83,6 +91,7 @@ fun RegisterScreenFrame(
 private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
+    enabled: Boolean,
     onBackPress: () -> Unit,
 ) {
     FlipTopBar(
@@ -91,7 +100,7 @@ private fun TopBar(
                 .fillMaxWidth()
                 .heightIn(min = 44.dp),
         title = title,
-        onBackPress = onBackPress,
+        onBackPress = if (enabled) onBackPress else null,
     )
 }
 
@@ -130,9 +139,6 @@ fun RegisterScreenBottomBar(
         }
     }
 }
-
-private val SCREEN_HORIZONTAL_PADDING = 16.dp
-private val SCREEN_BOTTOM_PADDING = 26.dp
 
 @Preview
 @Composable

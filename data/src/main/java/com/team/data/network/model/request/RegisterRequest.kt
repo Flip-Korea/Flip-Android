@@ -30,7 +30,7 @@ data class RegisterRequest(
 data class ProfileRequest(
     val userId: String,
     val nickname: String,
-    val photoUrl: String,
+    @Json(name = "imageUrl") val photoUrl: String? = null,
 )
 
 fun RegisterProfile.toNetwork(): ProfileRequest =

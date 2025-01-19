@@ -1,13 +1,14 @@
 package com.team.flip
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,23 +18,22 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.team.designsystem.component.snackbar.FlipSnackbar
 import com.team.designsystem.theme.FlipAppTheme
 import com.team.designsystem.theme.FlipTheme
 import com.team.domain.DataStoreManager
+import com.team.domain.type.DataStoreType
+import com.team.flip.navigation.MainNavigation
 import com.team.presentation.common.snackbar.ObserveAsEvents
 import com.team.presentation.common.snackbar.SnackbarController
-import com.team.presentation.register.state.RegisterContract
-import com.team.presentation.register.view.RegisterScreen
-import com.team.presentation.register.viewmodel.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,11 +52,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
-            val coroutineScope = rememberCoroutineScope()
-
             val mainNavController = rememberNavController()
 
             /** 스낵바 */
+            val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
             val dismissSnackbarState =
                 rememberSwipeToDismissBoxState(
@@ -112,55 +111,27 @@ class MainActivity : ComponentActivity() {
                     containerColor = FlipTheme.colors.white,
                 ) { innerPadding ->
                     // TODO: 회원가입 테스트를 위한 임시코드
-                    val navController = rememberNavController()
-                    val viewModel = hiltViewModel<RegisterViewModel>()
-                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-                    ObserveAsEvents(flow = viewModel.effect) { effect ->
-                        when (effect) {
-                            RegisterContract.UiEffect.BackPress -> {
-                                navController.popBackStack()
+                    MainNavigation(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(FlipTheme.colors.white),
+                        mainNavController = mainNavController,
+                        deleteToken = {
+                            // TODO 임시 테스트용 코드이므로 반드시 삭제할 것
+                            lifecycleScope.launch {
+                                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                                    tokenDataStore.deleteData(DataStoreType.TokenType.ACCESS_TOKEN)
+                                    tokenDataStore.deleteData(DataStoreType.TokenType.REFRESH_TOKEN)
+                                    tokenDataStore.clearAll()
+                                }
                             }
 
-                            is RegisterContract.UiEffect.NavigateTo -> {
-                                navController.navigate(route = effect.destination.route)
-                            }
-                        }
-                    }
-
-                    RegisterScreen(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
-                        navController = navController,
-                        uiState = uiState,
-                        onUiEvent = viewModel::processEvent,
-                        onBackPress = {
-                            if (navController.previousBackStackEntry != null) {
-                                navController.popBackStack()
-                            }
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         },
                     )
-
-//                    MainNavigation(
-//                        modifier =
-//                            Modifier
-//                                .fillMaxSize()
-//                                .background(FlipTheme.colors.white),
-//                        mainNavController = mainNavController,
-//                        deleteToken = {
-//                            // TODO 임시 테스트용 코드이므로 반드시 삭제할 것
-//                            lifecycleScope.launch {
-//                                repeatOnLifecycle(Lifecycle.State.RESUMED) {
-//                                    tokenDataStore.deleteData(DataStoreType.TokenType.ACCESS_TOKEN)
-//                                    tokenDataStore.deleteData(DataStoreType.TokenType.REFRESH_TOKEN)
-//                                    tokenDataStore.clearAll()
-//                                }
-//                            }
-//
-//                            val intent = Intent(this, LoginActivity::class.java)
-//                            startActivity(intent)
-//                            finish()
-//                        },
-//                    )
                 }
             }
         }

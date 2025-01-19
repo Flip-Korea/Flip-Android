@@ -2,8 +2,12 @@ package com.team.presentation.register.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.team.data.di.DefaultDispatcher
+import com.team.domain.model.account.Login
 import com.team.domain.model.account.NicknameValidationFactory
 import com.team.domain.model.account.ProfileIdValidationFactory
+import com.team.domain.model.account.Register
+import com.team.domain.model.account.RegisterProfile
+import com.team.domain.type.SocialLoginPlatform
 import com.team.domain.usecase.account.GetNicknameValidationResultUseCase
 import com.team.domain.usecase.account.GetProfileIdValidationResultUseCase
 import com.team.domain.usecase.register.RegisterUseCase
@@ -12,9 +16,6 @@ import com.team.domain.util.ErrorType
 import com.team.domain.util.Result
 import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.common.image.FlipImage
-import com.team.presentation.common.snackbar.SnackbarAction
-import com.team.presentation.common.snackbar.SnackbarController
-import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.common.util.FlipBaseViewModel
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
@@ -22,7 +23,7 @@ import com.team.presentation.register.state.InputAgreementsState
 import com.team.presentation.register.state.InputIdValidState
 import com.team.presentation.register.state.InputNicknameValidState
 import com.team.presentation.register.state.RegisterContract
-import com.team.presentation.util.uitext.UiText
+import com.team.presentation.register.state.isAdsAgree
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -68,6 +69,28 @@ class RegisterViewModel @Inject constructor(
             is RegisterContract.UiEvent.OnIdChanged -> onIdChanged(event.id)
 
             is RegisterContract.UiEvent.OnImageChanged -> onImageChanged(event.image)
+
+            is RegisterContract.UiEvent.SetPreviousLogin ->
+                setPreviousLoginState(event.socialLoginPlatform, event.oauthId)
+        }
+    }
+
+    private fun setPreviousLoginState(
+        socialLoginPlatform: SocialLoginPlatform?,
+        oauthId: String?,
+    ) {
+        viewModelScope.launch {
+            if (socialLoginPlatform == null || oauthId == null) {
+                sendEffect {
+                    RegisterContract.UiEffect.ShowToast(ErrorType.Auth.LOGIN_RETRY.asUiText())
+                }
+                return@launch
+            }
+            val login = Login(socialLoginPlatform, oauthId)
+            val updatedPreviousLoginState = currentUiState.previousLoginState.copy(login = login)
+            updateState {
+                currentUiState.copy(previousLoginState = updatedPreviousLoginState)
+            }
         }
     }
 
@@ -149,21 +172,70 @@ class RegisterViewModel @Inject constructor(
             }
 
             null -> {
-                viewModelScope.launch {
-                    showSnackbar(message = ErrorType.Exception.EXCEPTION.asUiText())
+                sendEffect {
+                    RegisterContract.UiEffect.ShowToast(ErrorType.Exception.EXCEPTION.asUiText())
                 }
             }
         }
     }
 
     private fun finishRegister() {
-//        registerUseCase()
-        // TODO 회원가입 마무리 전에 로그인 및 계정 조회 부터 해결하기
+        viewModelScope.launch {
+            val register = getRegisterData()
+            if (register == null) {
+                sendEffect {
+                    RegisterContract.UiEffect.ShowToast(ErrorType.Auth.LOGIN_RETRY.asUiText())
+                }
+                return@launch
+            }
+
+            registerUseCase(register)
+                .onEach { result ->
+                    when (result) {
+                        Result.Loading -> {
+                            updateState {
+                                currentUiState.copy(registerFinishLoading = true)
+                            }
+                        }
+
+                        is Result.Error -> {
+                            updateState {
+                                currentUiState.copy(registerFinishLoading = false)
+                            }
+                            sendEffect {
+                                RegisterContract.UiEffect.ShowToast(result.errorBodyFirst())
+                            }
+                        }
+
+                        is Result.Success -> {
+                            updateState {
+                                currentUiState.copy(registerFinishLoading = true)
+                            }
+                            sendEffect {
+                                RegisterContract.UiEffect.NavigateToMain
+                            }
+                        }
+                    }
+                }.launchIn(this)
+        }
     }
 
-//    private fun getRegisterData(): Register {
-//        val
-//    }
+    private fun getRegisterData(): Register? =
+        if (currentUiState.previousLoginState.login == null) {
+            null
+        } else {
+            Register(
+                socialLoginPlatform = currentUiState.previousLoginState.login!!.provider,
+                oauthId = currentUiState.previousLoginState.login!!.oauthId,
+                adsAgree = currentUiState.inputAgreementsState.isAdsAgree(),
+                profile =
+                    RegisterProfile(
+                        userId = currentUiState.inputIdState.id,
+                        nickname = currentUiState.inputNicknameState.name,
+                        photoUrl = "", // 업로드 된 이미지 주소
+                    ),
+            )
+        }
 
     private fun validateImage(image: FlipImage?) {
         if (image == null) {
@@ -281,12 +353,5 @@ class RegisterViewModel @Inject constructor(
         updateState {
             currentUiState.copy(inputAgreementsState = updatedInputAgreementsState)
         }
-    }
-
-    private suspend fun showSnackbar(
-        message: UiText,
-        action: SnackbarAction? = null,
-    ) {
-        SnackbarController.sendEvent(event = SnackbarEvent(message = message, action = action))
     }
 }

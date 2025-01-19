@@ -134,7 +134,14 @@ fun RegisterNavigation(
         }
 
         composable(route = RegisterScreenPage.Finish.route) {
-            RegisterFinishScreen()
+            RegisterFinishScreen(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(ContentPaddingValues),
+                registerFinishLoading = uiState.registerFinishLoading,
+                onUiEvent = onUiEvent,
+            )
         }
     }
 }
@@ -176,4 +183,3 @@ private fun RegisterScreenPreview() {
 }
 
 private val AgreementItemsTestData = AgreementItem.allItems.associateWith { false }
-private val AgreementItemChecksTestData = List(AgreementItemsTestData.size) { false }

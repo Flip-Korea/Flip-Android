@@ -44,10 +44,19 @@ fun ErrorType.asUiText(): UiText =
         ErrorType.Network.UNAUTHORIZED -> UiText.StringResource(R.string.error_network_unauthorized)
         ErrorType.Network.FORBIDDEN -> UiText.StringResource(R.string.error_network_forbidden)
         ErrorType.Network.NOT_FOUND -> UiText.StringResource(R.string.error_network_not_found)
-        ErrorType.Network.INTERNAL_SERVER_ERROR -> UiText.StringResource(R.string.error_network_internal_server)
-        ErrorType.Network.UNEXPECTED_SERVER -> UiText.StringResource(R.string.error_network_unexpected_server)
+        ErrorType.Network.INTERNAL_SERVER_ERROR ->
+            UiText.StringResource(
+                R.string.error_network_internal_server,
+            )
+        ErrorType.Network.UNEXPECTED_SERVER ->
+            UiText.StringResource(
+                R.string.error_network_unexpected_server,
+            )
         ErrorType.Network.UNEXPECTED -> UiText.StringResource(R.string.error_network_unexpected)
-        ErrorType.Network.INTERNET_CONNECTION -> UiText.StringResource(R.string.error_network_internet_connection)
+        ErrorType.Network.INTERNET_CONNECTION ->
+            UiText.StringResource(
+                R.string.error_network_internet_connection,
+            )
 
         /** Local */
         ErrorType.Local.EMPTY -> UiText.StringResource(R.string.error_local_empty)
@@ -97,5 +106,10 @@ fun ErrorType.asUiText(): UiText =
         ErrorType.Auth.UNEXPECTED ->
             UiText.StringResource(
                 R.string.error_auth_unexpected,
+            )
+
+        ErrorType.Auth.LOGIN_RETRY ->
+            UiText.StringResource(
+                R.string.error_auth_login_retry,
             )
     }

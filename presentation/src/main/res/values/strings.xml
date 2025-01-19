@@ -39,6 +39,7 @@
     <string name="error_auth_cancelled">작업이 취소되었습니다.</string>
     <string name="error_auth_delete_acocunt_failed">계정 삭제에 실패 했습니다.</string>
     <string name="error_auth_user_not_found">사용자를 찾을 수 없습니다.</string>
+    <string name="error_auth_login_retry">로그인을 다시 시도해 주세요.</string>
     <string name="error_auth_unexpected">알 수 없는 오류</string>
 
     <!-- ValidationErrorType -->
@@ -229,6 +230,7 @@
 
     <string name="register_screen_finish_title">가입을 환영합니다!</string>
     <string name="register_screen_finish_sub_title">플립에서 다양한 분야의 글을\n부담없이 읽고, 적어보세요.</string>
+    <string name="register_screen_finish_btn">플립 시작하기</string>
 
     <!-- Register Screen ContentDescription -->
     <string name="register_screen_content_desc_agreement_all_items">보기</string>
