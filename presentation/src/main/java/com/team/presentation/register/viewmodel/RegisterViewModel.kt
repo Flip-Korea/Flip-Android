@@ -18,6 +18,7 @@ import com.team.presentation.common.snackbar.SnackbarEvent
 import com.team.presentation.common.util.FlipBaseViewModel
 import com.team.presentation.register.AgreementItem
 import com.team.presentation.register.RegisterScreenPage
+import com.team.presentation.register.state.InputAgreementsState
 import com.team.presentation.register.state.InputIdValidState
 import com.team.presentation.register.state.InputNicknameValidState
 import com.team.presentation.register.state.RegisterContract
@@ -47,8 +48,10 @@ class RegisterViewModel @Inject constructor(
     >() {
     override fun createInitialState(): RegisterContract.UiState =
         RegisterContract.UiState(
-            agreementItems = AgreementItem.allItems,
-            agreementItemChecks = List(AgreementItem.allItems.size) { false },
+            inputAgreementsState =
+                InputAgreementsState(
+                    agreementCheckItems = AgreementItem.allCheckItems,
+                ),
         )
 
     override suspend fun handleEvent(event: RegisterContract.UiEvent) {
@@ -56,7 +59,7 @@ class RegisterViewModel @Inject constructor(
             RegisterContract.UiEvent.CheckAll -> checkAllAgreementItems(true)
             RegisterContract.UiEvent.UnCheckAll -> checkAllAgreementItems(false)
             is RegisterContract.UiEvent.OnToggleAgreementItem ->
-                onToggleAgreementItem(event.agreementItemIndex)
+                onToggleAgreementItem(event.agreementItem)
 
             is RegisterContract.UiEvent.RequestToNextPage -> requestToNextPage(event.currentPage)
 
@@ -254,19 +257,29 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun checkAllAgreementItems(value: Boolean) {
-        val agreementItemChecks = currentUiState.agreementItemChecks.toMutableList()
-        val mappedAgreementItemChecks = agreementItemChecks.map { value }
+        val updatedAgreementCheckItems =
+            currentUiState.inputAgreementsState.agreementCheckItems
+                .map { it.key }
+                .associateWith { value }
+        val updatedInputAgreementsState =
+            currentUiState.inputAgreementsState.copy(
+                agreementCheckItems = updatedAgreementCheckItems,
+            )
         updateState {
-            currentUiState
-                .copy(agreementItemChecks = mappedAgreementItemChecks.toList())
+            currentUiState.copy(inputAgreementsState = updatedInputAgreementsState)
         }
     }
 
-    private fun onToggleAgreementItem(itemIndex: Int) {
-        val agreementItemChecks = currentUiState.agreementItemChecks.toMutableList()
-        agreementItemChecks[itemIndex] = !agreementItemChecks[itemIndex]
+    private fun onToggleAgreementItem(item: AgreementItem) {
+        val updatedAgreementCheckItems =
+            currentUiState.inputAgreementsState.agreementCheckItems.toMutableMap()
+        updatedAgreementCheckItems[item] = !updatedAgreementCheckItems[item]!!
+        val updatedInputAgreementsState =
+            currentUiState.inputAgreementsState.copy(
+                agreementCheckItems = updatedAgreementCheckItems,
+            )
         updateState {
-            currentUiState.copy(agreementItemChecks = agreementItemChecks.toList())
+            currentUiState.copy(inputAgreementsState = updatedInputAgreementsState)
         }
     }
 

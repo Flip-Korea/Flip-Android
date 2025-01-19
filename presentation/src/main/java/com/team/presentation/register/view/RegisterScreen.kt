@@ -70,8 +70,7 @@ fun RegisterNavigation(
                     Modifier
                         .fillMaxSize()
                         .padding(ContentPaddingValues),
-                agreementItems = uiState.agreementItems,
-                agreementItemChecks = uiState.agreementItemChecks,
+                inputAgreementsState = uiState.inputAgreementsState,
                 onUiEvent = onUiEvent,
             )
         }
@@ -163,15 +162,12 @@ private fun RegisterScreenPreview() {
         RegisterScreen(
             navController = navController,
             uiState =
-                RegisterContract.UiState(
-                    agreementItems = AgreementItemsTestData,
-                    agreementItemChecks = AgreementItemChecksTestData,
-                ),
+                RegisterContract.UiState(),
             onUiEvent = { },
             onBackPress = { },
         )
     }
 }
 
-private val AgreementItemsTestData = AgreementItem.allItems
+private val AgreementItemsTestData = AgreementItem.allItems.associateWith { false }
 private val AgreementItemChecksTestData = List(AgreementItemsTestData.size) { false }

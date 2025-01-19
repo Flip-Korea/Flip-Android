@@ -9,9 +9,7 @@ import com.team.presentation.register.RegisterScreenPage
 
 class RegisterContract {
     data class UiState(
-//        val loading: Boolean = false,
-        val agreementItems: List<AgreementItem> = emptyList(),
-        val agreementItemChecks: List<Boolean> = emptyList(),
+        val inputAgreementsState: InputAgreementsState = InputAgreementsState(),
         val inputNicknameState: InputNicknameState = InputNicknameState(),
         val inputIdState: InputIdState = InputIdState(),
         val inputImageState: InputImageState = InputImageState(),
@@ -25,7 +23,7 @@ class RegisterContract {
         data object UnCheckAll : UiEvent()
 
         data class OnToggleAgreementItem(
-            val agreementItemIndex: Int,
+            val agreementItem: AgreementItem,
         ) : UiEvent()
 
         data class RequestToNextPage(
