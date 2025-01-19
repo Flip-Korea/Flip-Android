@@ -244,6 +244,9 @@ class RegisterViewModel @Inject constructor(
             }
             return
         }
+        sendEffect {
+            RegisterContract.UiEffect.NavigateTo(RegisterScreenPage.Finish)
+        }
         return
         // TODO 이미지 업로드 후 주소 반환받기
     }

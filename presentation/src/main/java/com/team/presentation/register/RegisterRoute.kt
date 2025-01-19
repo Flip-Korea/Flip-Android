@@ -1,7 +1,11 @@
 package com.team.presentation.register
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.team.designsystem.theme.FlipTheme
 import com.team.domain.type.SocialLoginPlatform
 import com.team.presentation.common.snackbar.ObserveAsEvents
 import com.team.presentation.register.state.RegisterContract
@@ -54,7 +59,11 @@ fun RegisterRoute(
     }
 
     RegisterScreen(
-        modifier = Modifier.fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(FlipTheme.colors.white)
+                .windowInsetsPadding(WindowInsets.systemBars),
         navController = navController,
         uiState = uiState,
         onUiEvent = viewModel::processEvent,
