@@ -1,6 +1,5 @@
 package com.team.presentation.register.view
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -82,6 +81,7 @@ fun RegisterScreenFrame(
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
+            contentAlignment = Alignment.Center,
         ) {
             content()
         }
@@ -95,21 +95,14 @@ private fun TopBar(
     enabled: Boolean,
     onBackPress: () -> Unit,
 ) {
-    AnimatedVisibility(
-        modifier = Modifier.fillMaxWidth(),
-        visible = enabled,
-        enter = FlipTheme.transition.fadeIn,
-        exit = FlipTheme.transition.fadeOut,
-    ) {
-        FlipTopBar(
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 44.dp),
-            title = title,
-            onBackPress = onBackPress,
-        )
-    }
+    FlipTopBar(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = 44.dp),
+        title = title,
+        onBackPress = if (enabled) onBackPress else null,
+    )
 }
 
 /**

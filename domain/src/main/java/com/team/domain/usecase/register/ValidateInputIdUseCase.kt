@@ -14,10 +14,16 @@ class ValidateInputIdUseCase {
     }
 
     companion object {
-        const val MIN_LENGTH = 2
+        const val MIN_LENGTH = 4
         const val MAX_LENGTH = 16
     }
 }
 
-// 정규 표현식: 영문, 허용 문자 (., _) 만 허용
-private val FlipIdRegex = "^[a-zA-Z._]+\$".toRegex()
+/**
+ * 정규 표현식 설명:
+ * 1. 영문(대소문자 구분 X)
+ * 2. 숫자
+ * 3. 허용 문자 (., _)
+ * 4. 길이 제한 4 ~ 16 ([ValidateInputIdUseCase.MIN_LENGTH], [ValidateInputIdUseCase.MAX_LENGTH])
+ */
+private val FlipIdRegex = "^[a-zA-Z0-9._]{4,16}$".toRegex()

@@ -1,6 +1,5 @@
 package com.team.presentation.register.view
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,9 +37,6 @@ fun RegisterFinishScreen(
 ) {
     // TODO 로딩 후 회원가입 완료시 체크 표시 후 완료 처리
     var buttonEnabled by rememberSaveable { mutableStateOf(true) }
-
-    // 마지막 화면이므로 뒤로가기 방지
-    BackHandler { }
 
     Column(
         modifier = modifier,
@@ -93,7 +89,7 @@ private fun CheckAnimatedIcon(
         modifier = modifier,
         source = DotLottieSource.Url(FlipLottieIcon.CHECK),
         autoplay = true,
-        speed = 0.5f,
+        speed = 0.7f,
         useFrameInterpolation = true,
         playMode = Mode.FORWARD,
         eventListeners =

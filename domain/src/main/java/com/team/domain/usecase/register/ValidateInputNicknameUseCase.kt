@@ -19,5 +19,12 @@ class ValidateInputNicknameUseCase {
     }
 }
 
-// 정규 표현식: 한글([가-힣]) 및 영문([a-zA-Z])만 허용
-private val FlipNicknameRegex = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]{2,12}\$".toRegex()
+/**
+ * 정규 표현식:
+ * 1. 한글
+ * 2. 영문 (대소문자 구분 X)
+ * 3. 숫자
+ * 4. 공백
+ * 5. 길이 제한 2 ~ 16 ([ValidateInputNicknameUseCase.MIN_LENGTH], [ValidateInputNicknameUseCase.MAX_LENGTH])
+ */
+private val FlipNicknameRegex = "^[가-힣a-zA-Z0-9 ]{2,12}$".toRegex()
