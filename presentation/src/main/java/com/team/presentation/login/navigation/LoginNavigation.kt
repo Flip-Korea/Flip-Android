@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.team.domain.type.SocialLoginPlatform
+import com.team.domain.type.toSocialLoginPlatform
 import com.team.presentation.NavigationItem
 import com.team.presentation.ScreenItem
 import com.team.presentation.common.snackbar.ObserveAsEvents
@@ -46,7 +46,7 @@ fun LoginNavigation(
 
             ObserveAsEvents(flow = loginViewModel.navigateEffect) { route ->
                 navController.navigate(
-                    "${route.name}/${loginState.loginInfo?.provider?.provider}/${loginState.loginInfo?.oauthId}",
+                    "${route.name}/${loginState.loginInfo?.provider?.providerName}/${loginState.loginInfo?.oauthId}",
                 )
             }
 
@@ -85,13 +85,6 @@ fun LoginNavigation(
         }
     }
 }
-
-private fun String.toSocialLoginPlatform(): SocialLoginPlatform? =
-    when (this) {
-        SocialLoginPlatform.Google.provider -> SocialLoginPlatform.Google
-        SocialLoginPlatform.Kakao.provider -> SocialLoginPlatform.Kakao
-        else -> null
-    }
 
 private const val CurrentLoginPlatform = "currentLoginPlatform"
 private const val CurrentOAuthId = "currentOAuthId"

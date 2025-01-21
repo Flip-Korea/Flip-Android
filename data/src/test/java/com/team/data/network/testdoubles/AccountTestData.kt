@@ -5,12 +5,13 @@ import com.team.data.network.model.request.RegisterRequest
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
 import com.team.domain.type.SocialLoginPlatform
+import com.team.domain.type.toSocialLoginPlatform
 
 fun ProfileRequest.toExternal(): RegisterProfile = RegisterProfile(userId, nickname, photoUrl)
 
 fun RegisterRequest.toExternal(): Register =
     Register(
-        socialLoginPlatform = provider,
+        socialLoginPlatform = provider.toSocialLoginPlatform() ?: SocialLoginPlatform.Google,
         oauthId = oauthId,
         profile = profile.toExternal(),
         adsAgree = adsAgree,
@@ -18,7 +19,7 @@ fun RegisterRequest.toExternal(): Register =
 
 val networkRegisterTestData =
     RegisterRequest(
-        provider = SocialLoginPlatform.Google,
+        provider = SocialLoginPlatform.Google.providerName,
         oauthId = "oauth123",
         profile =
             ProfileRequest(

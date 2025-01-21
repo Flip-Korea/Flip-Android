@@ -14,3 +14,9 @@ fun <T> Result.Error<T, ErrorType>.errorBodyFirst(): UiText =
     errorBody?.let { errBody ->
         UiText.DynamicString(errBody.message)
     } ?: error.asUiText()
+
+fun <T> Result.Error<T, ErrorType>.errorBodyReasonFirst(): UiText =
+    errorBody?.let { errBody ->
+        val reason = errBody.errors?.first()?.reason ?: return this.errorBodyFirst()
+        UiText.DynamicString(reason)
+    } ?: error.asUiText()

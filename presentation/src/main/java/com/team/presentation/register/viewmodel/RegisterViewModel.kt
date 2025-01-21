@@ -26,6 +26,7 @@ import com.team.presentation.register.state.RegisterContract
 import com.team.presentation.register.state.isAdsAgree
 import com.team.presentation.util.uitext.asUiText
 import com.team.presentation.util.uitext.errorBodyFirst
+import com.team.presentation.util.uitext.errorBodyReasonFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
@@ -262,7 +263,7 @@ class RegisterViewModel @Inject constructor(
                             inputIdState.copy(
                                 inputIdValidState =
                                     InputIdValidState.Invalid(
-                                        result.errorBodyFirst(),
+                                        result.errorBodyReasonFirst(),
                                     ),
                                 loading = false,
                             )
@@ -301,7 +302,7 @@ class RegisterViewModel @Inject constructor(
                         val updatedInputNameState =
                             inputNameState.copy(
                                 inputNicknameValidState =
-                                    InputNicknameValidState.Invalid(result.errorBodyFirst()),
+                                    InputNicknameValidState.Invalid(result.errorBodyReasonFirst()),
                                 loading = false,
                             )
                         updateState {

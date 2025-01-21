@@ -48,8 +48,8 @@ object NetworkModule {
     /** Interceptor Module * */
     @Singleton
     @Provides
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
             // TODO AGP 8.0부터는 BuildConfig 기본 비활성화, 9.0부터는 삭제 예정
             if (BuildConfig.DEBUG) {
                 setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -57,14 +57,14 @@ object NetworkModule {
                 setLevel(HttpLoggingInterceptor.Level.NONE)
             }
         }
-    }
 
     /** OkHttpClient Module * */
     @LoggingOkHttpClient
     @Singleton
     @Provides
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-        OkHttpClient.Builder()
+        OkHttpClient
+            .Builder()
             .addInterceptor(httpLoggingInterceptor)
             //        .callTimeout(1, TimeUnit.MINUTES)
             .readTimeout(3, TimeUnit.SECONDS)
@@ -78,13 +78,13 @@ object NetworkModule {
         tokenAuthenticator: TokenAuthenticator,
         tokenInterceptor: TokenInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .authenticator(tokenAuthenticator)
             .addInterceptor(tokenInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
-    }
 
     /** TokenInterceptor & TokenAuthentication * */
     @Singleton
@@ -96,7 +96,8 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor = TokenInterceptor(dataStoreManager)
+    fun provideTokenInterceptor(dataStoreManager: DataStoreManager): TokenInterceptor =
+        TokenInterceptor(dataStoreManager)
 
     /** Retrofit Instance * */
     @DefaultRetrofitBuilder
@@ -105,9 +106,10 @@ object NetworkModule {
     fun provideRetrofitBuilder(): Retrofit.Builder {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
-        return Retrofit.Builder()
+        return Retrofit
+            .Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BuildConfig.FLIP_MOCK_SERVER_URL)
+            .baseUrl(BuildConfig.FLIP_SERVER_URL)
     }
 
     /** ApiService * */
@@ -116,14 +118,16 @@ object NetworkModule {
     fun provideAuthApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): AccountNetworkApi = retrofit.client(loggingOkHttpClient).build().create(AccountNetworkApi::class.java)
+    ): AccountNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(AccountNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideUserApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): UserNetworkApi = retrofit.client(tokenOkHttpClient).build().create(UserNetworkApi::class.java)
+    ): UserNetworkApi =
+        retrofit.client(tokenOkHttpClient).build().create(UserNetworkApi::class.java)
 
     @Singleton
     @Provides
@@ -141,7 +145,8 @@ object NetworkModule {
         // CacheInterceptorManager().createForceCacheInterceptor(networkCheckUtil)
 
         val client =
-            OkHttpClient.Builder()
+            OkHttpClient
+                .Builder()
                 .authenticator(tokenAuthenticator)
                 //            .cache(cache)
                 .addInterceptor(tokenInterceptor)
@@ -158,60 +163,60 @@ object NetworkModule {
     fun provideSearchApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): SearchNetworkApi = retrofit.client(loggingOkHttpClient).build().create(SearchNetworkApi::class.java)
+    ): SearchNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(SearchNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideCategoryApiService(
         @LoggingOkHttpClient loggingOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): CategoryNetworkApi = retrofit.client(loggingOkHttpClient).build().create(CategoryNetworkApi::class.java)
+    ): CategoryNetworkApi =
+        retrofit.client(loggingOkHttpClient).build().create(CategoryNetworkApi::class.java)
 
     @Singleton
     @Provides
     fun provideInterestCategoryApiService(
         @TokenOkHttpClient tokenOkHttpClient: OkHttpClient,
         @DefaultRetrofitBuilder retrofit: Retrofit.Builder,
-    ): InterestCategoryNetworkApi = retrofit.client(tokenOkHttpClient).build().create(InterestCategoryNetworkApi::class.java)
+    ): InterestCategoryNetworkApi =
+        retrofit.client(tokenOkHttpClient).build().create(InterestCategoryNetworkApi::class.java)
 
     /** DataSource * */
     @Singleton
     @Provides
-    fun provideAccountNetworkDataSource(accountNetworkApi: AccountNetworkApi): AccountNetworkDataSource {
-        return AccountNetworkDataSourceImpl(accountNetworkApi)
-    }
+    fun provideAccountNetworkDataSource(
+        accountNetworkApi: AccountNetworkApi,
+    ): AccountNetworkDataSource = AccountNetworkDataSourceImpl(accountNetworkApi)
 
     @Singleton
     @Provides
-    fun provideUserNetworkDataSource(userNetworkApi: UserNetworkApi): UserNetworkDataSource {
-        return UserNetworkDataSourceImpl(userNetworkApi)
-    }
+    fun provideUserNetworkDataSource(userNetworkApi: UserNetworkApi): UserNetworkDataSource =
+        UserNetworkDataSourceImpl(userNetworkApi)
 
     @Singleton
     @Provides
-    fun provideCategoryNetworkDataSource(categoryNetworkApi: CategoryNetworkApi): CategoryNetworkDataSource {
-        return CategoryNetworkDataSourceImpl(categoryNetworkApi)
-    }
+    fun provideCategoryNetworkDataSource(
+        categoryNetworkApi: CategoryNetworkApi,
+    ): CategoryNetworkDataSource = CategoryNetworkDataSourceImpl(categoryNetworkApi)
 
     @Singleton
     @Provides
     fun provideInterestCategoryNetworkDataSource(
         interestCategoryNetworkApi: InterestCategoryNetworkApi,
-    ): InterestCategoryNetworkDataSource {
-        return InterestCategoryNetworkDataSourceImpl(interestCategoryNetworkApi)
-    }
+    ): InterestCategoryNetworkDataSource =
+        InterestCategoryNetworkDataSourceImpl(interestCategoryNetworkApi)
 
     @Singleton
     @Provides
-    fun providePostNetworkDataSource(postNetworkApi: PostNetworkApi): PostNetworkDataSource {
-        return PostNetworkDataSourceImpl(postNetworkApi)
-    }
+    fun providePostNetworkDataSource(postNetworkApi: PostNetworkApi): PostNetworkDataSource =
+        PostNetworkDataSourceImpl(postNetworkApi)
 
     @Singleton
     @Provides
-    fun provideSearchNetworkDataSource(searchNetworkApi: SearchNetworkApi): SearchNetworkDataSource {
-        return SearchNetworkDataSourceImpl(searchNetworkApi)
-    }
+    fun provideSearchNetworkDataSource(
+        searchNetworkApi: SearchNetworkApi,
+    ): SearchNetworkDataSource = SearchNetworkDataSourceImpl(searchNetworkApi)
 }
 
 /** Qualifier * */

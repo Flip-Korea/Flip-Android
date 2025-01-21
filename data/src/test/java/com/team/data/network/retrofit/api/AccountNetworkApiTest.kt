@@ -123,7 +123,8 @@ class AccountNetworkApiTest {
                 },
             )
 
-            val loginRequest = LoginRequest(SocialLoginPlatform.Kakao, "kakao123test")
+            val loginRequest =
+                LoginRequest(SocialLoginPlatform.Kakao.providerName, "kakao123test")
             val response = accountNetworkApi.login(loginRequest)
 
             assertNotNull(response.body())

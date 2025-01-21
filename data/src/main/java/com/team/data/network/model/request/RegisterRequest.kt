@@ -4,7 +4,6 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.team.domain.model.account.Register
 import com.team.domain.model.account.RegisterProfile
-import com.team.domain.type.SocialLoginPlatform
 
 // {
 //    "provider" : "kakao",
@@ -20,7 +19,7 @@ import com.team.domain.type.SocialLoginPlatform
 @JsonClass(generateAdapter = true)
 data class RegisterRequest(
     /** google, kakao, naver, apple 중 하나여야 함 */
-    val provider: SocialLoginPlatform,
+    val provider: String,
     val oauthId: String,
     @Json(name = "ads_agree") val adsAgree: Boolean,
     val profile: ProfileRequest,
@@ -38,7 +37,7 @@ fun RegisterProfile.toNetwork(): ProfileRequest =
 
 fun Register.toNetwork(): RegisterRequest =
     RegisterRequest(
-        provider = socialLoginPlatform,
+        provider = socialLoginPlatform.providerName,
         oauthId = oauthId,
         profile = profile.toNetwork(),
         adsAgree = adsAgree,
