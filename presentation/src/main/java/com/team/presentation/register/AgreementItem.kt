@@ -6,7 +6,7 @@ import com.team.presentation.R
 
 enum class AgreementItem(
     val displayName: Int,
-    private val isEssential: Boolean,
+    val isEssential: Boolean,
     val isRequireDetail: Boolean,
 ) {
     Age(
@@ -47,5 +47,9 @@ enum class AgreementItem(
 
     companion object {
         val allItems: List<AgreementItem> = AgreementItem.entries.map { it }
+        val allCheckItems: Map<AgreementItem, Boolean> =
+            AgreementItem.entries.map { it }.associateWith { false }
+        val essentialItems: List<AgreementItem> =
+            AgreementItem.entries.map { it }.filter { it.isEssential }
     }
 }

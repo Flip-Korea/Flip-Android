@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -48,14 +50,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        /** statusBarsPadding() & navigationBarsPadding() 사용하기 **/
         setContent {
             val context = LocalContext.current
-            val coroutineScope = rememberCoroutineScope()
-
             val mainNavController = rememberNavController()
 
             /** 스낵바 */
+            val coroutineScope = rememberCoroutineScope()
             val snackbarHostState = remember { SnackbarHostState() }
             val dismissSnackbarState =
                 rememberSwipeToDismissBoxState(
@@ -107,7 +107,10 @@ class MainActivity : ComponentActivity() {
                             dismissSnackbarState = dismissSnackbarState,
                         )
                     },
+                    contentWindowInsets = WindowInsets.systemBars,
+                    containerColor = FlipTheme.colors.white,
                 ) { innerPadding ->
+                    // TODO: 회원가입 테스트를 위한 임시코드
                     MainNavigation(
                         modifier =
                             Modifier

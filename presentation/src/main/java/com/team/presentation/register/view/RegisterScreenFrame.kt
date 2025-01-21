@@ -1,16 +1,21 @@
 package com.team.presentation.register.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.button.FlipMediumButton
 import com.team.designsystem.component.topbar.FlipTopBar
 import com.team.designsystem.theme.FlipAppTheme
+import com.team.designsystem.theme.FlipTheme
 import com.team.presentation.common.util.CommonPaddingValues
 import com.team.presentation.register.RegisterScreenPage
 
@@ -39,10 +45,6 @@ import com.team.presentation.register.RegisterScreenPage
  *
  * @param currentPage 현재 회원가입 페이지
  * @param topBarTitle 탑바 타이틀
- * @param bottomBarTitle 바텀 버튼 타이틀
- * @param bottomBarEnabled 바텀 버튼 활성화 여부
- * @param isLoading 현재 회원가입 페이지 로딩 여부
- * @param onBottomBarClick 바텀 버튼 클릭 시
  * @param onBackPress 뒤로가기 클릭 시 (탑바 뒤로가기 버튼 클릭 시)
  * @param content 회원가입 컨텐츠 (UI)
  */
@@ -54,21 +56,32 @@ fun RegisterScreenFrame(
     onBackPress: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val topBarEnabled by remember(currentPage) {
+        mutableStateOf(currentPage != null)
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
             TopBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(FlipTheme.colors.white)
+                        .padding(CommonPaddingValues.TopBarWithTouchTarget),
                 title = topBarTitle,
+                enabled = topBarEnabled,
                 onBackPress = onBackPress,
             )
         },
+        contentWindowInsets = WindowInsets(top = 0, bottom = 0),
     ) { innerPadding ->
         Box(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
+            contentAlignment = Alignment.Center,
         ) {
             content()
         }
@@ -79,16 +92,16 @@ fun RegisterScreenFrame(
 private fun TopBar(
     modifier: Modifier = Modifier,
     title: String,
+    enabled: Boolean,
     onBackPress: () -> Unit,
 ) {
     FlipTopBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(44.dp)
-                .padding(horizontal = CommonPaddingValues.TopBarHorizontalWithTouchTarget),
+                .heightIn(min = 44.dp),
         title = title,
-        onBackPress = onBackPress,
+        onBackPress = if (enabled) onBackPress else null,
     )
 }
 
@@ -127,9 +140,6 @@ fun RegisterScreenBottomBar(
         }
     }
 }
-
-private val SCREEN_HORIZONTAL_PADDING = 16.dp
-private val SCREEN_BOTTOM_PADDING = 26.dp
 
 @Preview
 @Composable

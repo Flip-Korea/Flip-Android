@@ -12,5 +12,5 @@ data class Register(
 data class RegisterProfile(
     val userId: String,
     val nickname: String,
-    val photoUrl: String,
+    val photoUrl: String?,
 )

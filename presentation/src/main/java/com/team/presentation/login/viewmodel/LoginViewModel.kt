@@ -59,6 +59,9 @@ class LoginViewModel @Inject constructor(
                     }
 
                     is AuthUiState.Success -> {
+                        _loginState.update {
+                            it.copy(loginInfo = Login(socialLoginPlatform, authUiState.data))
+                        }
                         signIn(socialLoginPlatform, authUiState.data)
                     }
                 }

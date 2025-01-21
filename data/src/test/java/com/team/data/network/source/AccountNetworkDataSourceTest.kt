@@ -114,7 +114,8 @@ class AccountNetworkDataSourceTest {
                 },
             )
 
-            val loginRequest = LoginRequest(SocialLoginPlatform.Kakao, "kakao123test")
+            val loginRequest =
+                LoginRequest(SocialLoginPlatform.Kakao.providerName, "kakao123test")
             val response = accountNetworkDataSource.login(loginRequest)
 
             assertNotNull(response)

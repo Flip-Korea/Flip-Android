@@ -53,6 +53,7 @@ sealed interface ErrorType : Error {
         CANCELLED,
         DELETE_ACCOUNT_FAILED,
         USER_NOT_FOUND,
+        LOGIN_RETRY,
         UNEXPECTED,
     }
 }
