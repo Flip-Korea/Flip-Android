@@ -72,8 +72,7 @@ fun FlipModal(
                         FlipModalStyle.MEDIUM -> 290.dp
                         FlipModalStyle.SMALL -> 262.dp
                     },
-                )
-                .background(FlipTheme.colors.white),
+                ).background(FlipTheme.colors.white),
     ) {
         Column(
             modifier =
@@ -81,12 +80,20 @@ fun FlipModal(
                     .wrapContentSize()
                     .padding(start = 16.dp, end = 16.dp, top = 21.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(18.dp, alignment = Alignment.CenterVertically),
+            verticalArrangement =
+                Arrangement.spacedBy(
+                    18.dp,
+                    alignment = Alignment.CenterVertically,
+                ),
         ) {
             Column(
 //                modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp, alignment = Alignment.CenterVertically),
+                verticalArrangement =
+                    Arrangement.spacedBy(
+                        6.dp,
+                        alignment = Alignment.CenterVertically,
+                    ),
             ) {
                 Text(text = mainTitle, style = FlipTheme.typography.headline4)
                 if (subTitle != null) {
@@ -119,7 +126,7 @@ fun FlipModal(
                 ModalButton(
                     modifier = Modifier.weight(1f),
                     text = itemText2,
-                    containerColor = FlipTheme.colors.gray1,
+                    containerColor = FlipTheme.colors.gray2,
                     contentColor = FlipTheme.colors.main,
                     onClick = onItem2Click,
                 )
@@ -127,7 +134,7 @@ fun FlipModal(
                     ModalButton(
                         modifier = Modifier.weight(1f),
                         text = itemText3,
-                        containerColor = FlipTheme.colors.gray1,
+                        containerColor = FlipTheme.colors.gray2,
                         contentColor = FlipTheme.colors.main,
                         onClick = onItem3Click,
                     )
@@ -250,7 +257,13 @@ private fun FlipMediumModalWithoutSubTitlePreview2() {
     }
 }
 
-@Preview(name = "Interaction-Medium", showBackground = true, widthDp = 300, heightDp = 300, backgroundColor = 0x00444444)
+@Preview(
+    name = "Interaction-Medium",
+    showBackground = true,
+    widthDp = 300,
+    heightDp = 300,
+    backgroundColor = 0x00444444,
+)
 @Composable
 private fun FlipMediumModalPreview2() {
     var isOpen by remember { mutableStateOf(true) }
@@ -280,7 +293,13 @@ private fun FlipMediumModalPreview2() {
     }
 }
 
-@Preview(name = "Interaction-Small", showBackground = true, widthDp = 300, heightDp = 300, backgroundColor = 0x00444444)
+@Preview(
+    name = "Interaction-Small",
+    showBackground = true,
+    widthDp = 300,
+    heightDp = 300,
+    backgroundColor = 0x00444444,
+)
 @Composable
 private fun FlipSmallModalPreview2() {
     var isOpen by remember { mutableStateOf(false) }

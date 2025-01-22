@@ -127,7 +127,11 @@ fun FlipSnackbar(
                                 contentAlignment = Alignment.CenterEnd,
                             ) {
                                 Text(
-                                    modifier = Modifier.clickableSingleWithoutRipple { it.performAction() },
+                                    modifier =
+                                        Modifier.clickableSingleWithoutRipple {
+                                            it
+                                                .performAction()
+                                        },
                                     text = stringResource(id = actionTextRes),
                                     style = FlipTheme.typography.headline2,
                                     color = FlipTheme.colors.point2,
