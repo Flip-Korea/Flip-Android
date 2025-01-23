@@ -145,7 +145,9 @@
     <string name="add_flip_screen_add_tags_btn">추가</string>
     <string name="add_flip_screen_add_tags_save_btn">저장하기</string>
     <string name="add_flip_screen_bottom_btn">완료</string>
-    <string name="add_flip_screen_temp_save">임시 저장 중</string>
+    <string name="add_flip_screen_temp_post_save">임시 저장 중</string>
+    <string name="add_flip_screen_post_save">저장 중</string>
+    <string name="add_flip_screen_not_loading">로딩 중</string>
 
     <!-- AddFlip Screen (Content Description) -->
     <string name="add_flip_screen_content_desc_select_category">분야 선택</string>

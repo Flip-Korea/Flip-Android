@@ -14,6 +14,7 @@ import com.team.domain.util.SafeSaveResult
 import com.team.domain.util.SuccessType
 import com.team.domain.util.validation.ValidationResult
 import com.team.presentation.addflip.state.AddFlipContract
+import com.team.presentation.addflip.state.AddPostLoadingType
 import com.team.presentation.common.snackbar.SnackbarAction
 import com.team.presentation.common.snackbar.SnackbarController
 import com.team.presentation.common.snackbar.SnackbarEvent
@@ -54,14 +55,17 @@ class AddFlipViewModel @Inject constructor(
                 onBackgroundChanged(
                     event.bgColorType,
                 )
+
             is AddFlipContract.UiEvent.OnCategoryChanged -> onCategoryChanged(event.category)
             is AddFlipContract.UiEvent.OnPageDelete -> showPageDeleteWarningModal(event.complete)
             is AddFlipContract.UiEvent.SaveTempPost -> {
                 saveTempPost(event.title, event.contents, event.bgColorType, event.category)
             }
+
             is AddFlipContract.UiEvent.SavePost -> {
                 savePost(event.title, event.contents, event.bgColorType, event.category)
             }
+
             AddFlipContract.UiEvent.SafeNavigateBack -> navigateBackToSafeSave()
             AddFlipContract.UiEvent.NavigateBack -> {
                 sendEffect { AddFlipContract.UiEffect.NavigateBack(true) }
@@ -87,7 +91,7 @@ class AddFlipViewModel @Inject constructor(
                     when (result) {
                         Result.Loading -> {
                             val updatedPostSaveState =
-                                contentState.postSaveState.copy(loading = true)
+                                contentState.postSaveState.copy(loading = AddPostLoadingType.Post)
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
@@ -95,7 +99,9 @@ class AddFlipViewModel @Inject constructor(
 
                         is Result.Error -> {
                             val updatedPostSaveState =
-                                contentState.postSaveState.copy(loading = false)
+                                contentState.postSaveState.copy(
+                                    loading = AddPostLoadingType.NotLoading,
+                                )
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
@@ -104,7 +110,10 @@ class AddFlipViewModel @Inject constructor(
 
                         is Result.Success -> {
                             val updatedPostSaveState =
-                                contentState.postSaveState.copy(postSave = true, loading = false)
+                                contentState.postSaveState.copy(
+                                    postSave = true,
+                                    loading = AddPostLoadingType.NotLoading,
+                                )
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
@@ -154,28 +163,32 @@ class AddFlipViewModel @Inject constructor(
                     categoryId = categoryId,
                 ).onEach { result ->
                     when (result) {
+                        Result.Loading -> {
+                            val updatedAddTempPostState =
+                                contentState.postSaveState.copy(
+                                    loading = AddPostLoadingType.TempPost,
+                                )
+                            updateState {
+                                contentState.copy(postSaveState = updatedAddTempPostState)
+                            }
+                        }
+
                         is Result.Error -> {
                             val updatedPostSaveState =
-                                contentState.postSaveState.copy(loading = false)
+                                contentState.postSaveState.copy(
+                                    loading = AddPostLoadingType.NotLoading,
+                                )
                             updateState {
                                 contentState.copy(postSaveState = updatedPostSaveState)
                             }
                             showSnackbar(result.errorBodyFirst())
                         }
 
-                        Result.Loading -> {
-                            val updatedAddTempPostState =
-                                contentState.postSaveState.copy(loading = true)
-                            updateState {
-                                contentState.copy(postSaveState = updatedAddTempPostState)
-                            }
-                        }
-
                         is Result.Success -> {
                             val updatedAddTempPostState =
                                 contentState.postSaveState.copy(
                                     tempPostSave = true,
-                                    loading = false,
+                                    loading = AddPostLoadingType.NotLoading,
                                 )
                             updateState {
                                 contentState.copy(postSaveState = updatedAddTempPostState)

@@ -1,5 +1,5 @@
 package com.team.domain.type
 
 object FlipContentSeparator {
-    const val SEPARATOR = "\nnext_page\n"
+    const val SEPARATOR = "\n!next_._page!\n"
 }

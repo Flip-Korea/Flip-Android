@@ -73,6 +73,7 @@ import com.team.designsystem.theme.FlipTheme
 import com.team.domain.model.category.Category
 import com.team.presentation.R
 import com.team.presentation.addflip.state.AddFlipContract
+import com.team.presentation.addflip.state.AddPostLoadingType
 import com.team.presentation.addflip.state.NewPostState
 import com.team.presentation.addflip.state.PostSaveState
 import com.team.presentation.common.bottomsheet.FlipModalBottomSheet
@@ -195,12 +196,13 @@ private fun ContentScreen(
     var contentTextFieldFocused by rememberSaveable { mutableStateOf(false) }
     val currentContentLength =
         rememberSaveable(pagerState.currentPage, contents) {
-            contents.getOrNull(
-                pagerState.currentPage.coerceIn(
-                    0,
-                    contents.lastIndex,
-                ),
-            )?.length ?: 0
+            contents
+                .getOrNull(
+                    pagerState.currentPage.coerceIn(
+                        0,
+                        contents.lastIndex,
+                    ),
+                )?.length ?: 0
         }
 
     LaunchedEffect(pageDelete) {
@@ -216,14 +218,22 @@ private fun ContentScreen(
     }
 
     /** 로딩 화면 */
-    LaunchedEffect(postSaveState) {
-        if (postSaveState.tempPostSave) {
+    LaunchedEffect(postSaveState.tempPostSave, postSaveState.postSave) {
+        if (postSaveState.tempPostSave || postSaveState.postSave) {
             onUiEvent(AddFlipContract.UiEvent.NavigateBack)
         }
     }
     FlipLoadingScreen(
-        isLoading = postSaveState.loading,
-        text = stringResource(id = R.string.add_flip_screen_temp_save),
+        isLoading = postSaveState.loading != AddPostLoadingType.NotLoading,
+        text =
+            when (postSaveState.loading) {
+                AddPostLoadingType.Post -> stringResource(id = R.string.add_flip_screen_post_save)
+                AddPostLoadingType.NotLoading ->
+                    stringResource(id = R.string.add_flip_screen_not_loading)
+
+                AddPostLoadingType.TempPost ->
+                    stringResource(id = R.string.add_flip_screen_temp_post_save)
+            },
     )
 
     /** 분야 선택 바텀 시트 */
