@@ -471,8 +471,7 @@ private fun AddFlipContentSection(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .flipGradient(color = newPostState.bgColorType.asColor())
-                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
+                    .flipGradient(color = newPostState.bgColorType.asColor()),
             focusManager = focusManager,
             placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
             content = contents[page],

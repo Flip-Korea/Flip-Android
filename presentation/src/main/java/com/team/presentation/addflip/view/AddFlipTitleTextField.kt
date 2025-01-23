@@ -40,7 +40,11 @@ fun AddFlipTitleTextField(
         onValueChange = { onTitleChanged(it) },
         textStyle = FlipTheme.typography.headline1,
         cursorBrush = FlipTextFieldStyles.cursorBrushPoint,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
         keyboardActions =
             KeyboardActions(
                 onDone = {
@@ -58,7 +62,7 @@ fun AddFlipTitleTextField(
                 modifier =
                     Modifier
                         .align(Alignment.CenterStart)
-                        .padding(top = 3.dp, bottom = 3.dp),
+                        .padding(top = 3.dp, bottom = 3.dp, start = 8.dp),
             ) {
                 innerTextField()
                 if (title.isEmpty()) {

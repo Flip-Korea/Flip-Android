@@ -69,8 +69,12 @@ fun AddFlipRoute(
                 AddFlipContract.UiEvent.SaveTempPost(
                     title = (uiState as AddFlipContract.UiState.Content).newPostState.title,
                     contents = (uiState as AddFlipContract.UiState.Content).newPostState.contents,
-                    bgColorType = (uiState as AddFlipContract.UiState.Content).newPostState.bgColorType,
-                    category = (uiState as AddFlipContract.UiState.Content).newPostState.category,
+                    bgColorType =
+                        (uiState as AddFlipContract.UiState.Content)
+                            .newPostState.bgColorType,
+                    category =
+                        (uiState as AddFlipContract.UiState.Content)
+                            .newPostState.category,
                 ),
             )
             tempPostWarningModalVisible = false
@@ -105,8 +109,6 @@ fun AddFlipRoute(
         pageDelete = pageDelete,
         uiState = uiState,
         onUiEvent = addFlipViewModel::processEvent,
-        onNavigateToTempFlipBox = {
-            // TODO: 임시저장함으로 이동
-        },
+        onNavigateToTempFlipBox = onNavigateToTempFlipBox,
     )
 }

@@ -40,9 +40,6 @@ fun AddFlipContentTextField(
             modifier
                 .heightIn(min = 200.dp, max = (200 * 2).dp)
                 .focusCleaner(focusManager)
-//            .focusRequester(focusRequester)
-//            .focusable()
-//            .clickable {}
                 .onFocusChanged {
                     when {
                         it.isFocused -> onFocusChanged(it.isFocused)
@@ -60,7 +57,7 @@ fun AddFlipContentTextField(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            Box(modifier = Modifier.align(Alignment.TopStart)) {
+            Box(modifier = Modifier.align(Alignment.TopStart).padding(8.dp)) {
                 innerTextField()
                 if (content.isEmpty()) {
                     Text(

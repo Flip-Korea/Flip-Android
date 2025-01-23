@@ -109,7 +109,7 @@ object NetworkModule {
         return Retrofit
             .Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BuildConfig.FLIP_SERVER_URL)
+            .baseUrl(BuildConfig.FLIP_MOCK_SERVER_URL)
     }
 
     /** ApiService * */
