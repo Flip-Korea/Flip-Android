@@ -38,6 +38,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -56,6 +59,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -182,8 +186,10 @@ private fun ContentScreen(
     showMore: () -> Unit,
     onUiEvent: (AddFlipContract.UiEvent) -> Unit,
 ) {
-    var contents by rememberSaveable { mutableStateOf(listOf("")) }
-    LaunchedEffect(contents) { onUiEvent(AddFlipContract.UiEvent.OnContentsChanged(contents)) }
+    var contents by rememberSaveable { mutableStateOf(listOf(TextFieldValue(""))) }
+    LaunchedEffect(contents) {
+        onUiEvent(AddFlipContract.UiEvent.OnContentsChanged(contents.toStringList()))
+    }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val lazyListState = rememberLazyListState()
@@ -197,12 +203,9 @@ private fun ContentScreen(
     val currentContentLength =
         rememberSaveable(pagerState.currentPage, contents) {
             contents
-                .getOrNull(
-                    pagerState.currentPage.coerceIn(
-                        0,
-                        contents.lastIndex,
-                    ),
-                )?.length ?: 0
+                .toStringList()
+                .getOrNull(pagerState.currentPage.coerceIn(0, contents.lastIndex))
+                ?.length ?: 0
         }
 
     LaunchedEffect(pageDelete) {
@@ -211,13 +214,13 @@ private fun ContentScreen(
                 val currentPage = pagerState.currentPage
                 val newPage = currentPage.minusPage()
                 pagerState.animateScrollToPage(newPage)
-                contents = contents.remove(currentPage)
+                contents = contents.toStringList().remove(currentPage).map { TextFieldValue(it) }
                 onUiEvent(AddFlipContract.UiEvent.OnPageDelete(true))
             }
         }
     }
 
-    /** 로딩 화면 */
+    /** 로딩 화면 & 저장 완료 처리 */
     LaunchedEffect(postSaveState.tempPostSave, postSaveState.postSave) {
         if (postSaveState.tempPostSave || postSaveState.postSave) {
             onUiEvent(AddFlipContract.UiEvent.NavigateBack)
@@ -225,15 +228,7 @@ private fun ContentScreen(
     }
     FlipLoadingScreen(
         isLoading = postSaveState.loading != AddPostLoadingType.NotLoading,
-        text =
-            when (postSaveState.loading) {
-                AddPostLoadingType.Post -> stringResource(id = R.string.add_flip_screen_post_save)
-                AddPostLoadingType.NotLoading ->
-                    stringResource(id = R.string.add_flip_screen_not_loading)
-
-                AddPostLoadingType.TempPost ->
-                    stringResource(id = R.string.add_flip_screen_temp_post_save)
-            },
+        text = postSaveState.loading.toText(),
     )
 
     /** 분야 선택 바텀 시트 */
@@ -465,10 +460,24 @@ private fun AddFlipContentSection(
     focusManager: FocusManager,
     newPostState: NewPostState,
     pagerState: PagerState,
-    contents: List<String>,
-    onContentsChanged: (List<String>) -> Unit,
+    contents: List<TextFieldValue>,
+    onContentsChanged: (List<TextFieldValue>) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    /** 포커싱 처리 */
+    val focusRequesters = remember(contents.size) { List(contents.size) { FocusRequester() } }
+    val isScrolling by remember {
+        derivedStateOf { pagerState.currentPageOffsetFraction != 0.0f }
+    }
+    LaunchedEffect(isScrolling) {
+        if (!isScrolling) {
+            focusRequesters[pagerState.currentPage].requestFocus()
+            keyboardController?.hide()
+        }
+    }
+
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
@@ -481,12 +490,15 @@ private fun AddFlipContentSection(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .flipGradient(color = newPostState.bgColorType.asColor()),
+                    .flipGradient(color = newPostState.bgColorType.asColor())
+                    .focusRequester(focusRequesters[page]),
             focusManager = focusManager,
             placeholder = stringResource(id = R.string.add_flip_screen_content_tf_placeholder),
             content = contents[page],
-            onContentChanged = {
-                onContentsChanged(contents.toMutableList().apply { this[page] = it })
+            onContentChanged = { newValue ->
+                onContentsChanged(
+                    contents.toMutableList().apply { this[page] = newValue },
+                )
             },
             onFocusChanged = onFocusChanged,
         )
@@ -741,9 +753,9 @@ private val PAGE_COUNTER_BAR_PADDING =
         vertical = 10.dp,
     )
 
-private fun List<String>.add(newPageIndex: Int): List<String> =
+private fun List<TextFieldValue>.add(newPageIndex: Int): List<TextFieldValue> =
     this.toMutableList().apply {
-        add(newPageIndex, "")
+        add(newPageIndex, TextFieldValue(""))
     }
 
 private fun List<String>.remove(currentPage: Int): List<String> =
@@ -754,6 +766,19 @@ private fun List<String>.remove(currentPage: Int): List<String> =
 private fun Int.addPage(): Int = (this + 1).coerceAtMost(MAX_PAGE)
 
 private fun Int.minusPage(): Int = (this - 1).coerceAtLeast(0)
+
+@Composable
+private fun AddPostLoadingType.toText(): String =
+    when (this) {
+        AddPostLoadingType.Post -> stringResource(id = R.string.add_flip_screen_post_save)
+        AddPostLoadingType.NotLoading ->
+            stringResource(id = R.string.add_flip_screen_not_loading)
+
+        AddPostLoadingType.TempPost ->
+            stringResource(id = R.string.add_flip_screen_temp_post_save)
+    }
+
+private fun List<TextFieldValue>.toStringList(): List<String> = this.map { it.text }
 
 @Preview
 @Composable

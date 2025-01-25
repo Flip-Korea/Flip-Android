@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team.designsystem.component.utils.focusCleaner
@@ -31,8 +32,8 @@ fun AddFlipContentTextField(
     modifier: Modifier = Modifier,
     focusManager: FocusManager,
     placeholder: String,
-    content: String,
-    onContentChanged: (String) -> Unit,
+    content: TextFieldValue,
+    onContentChanged: (TextFieldValue) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
 ) {
     BasicTextField(
@@ -48,7 +49,7 @@ fun AddFlipContentTextField(
                 },
         value = content,
         onValueChange = { onContentChanged(it) },
-        textStyle = FlipTheme.typography.headline1,
+        textStyle = FlipTheme.typography.body5,
         cursorBrush = SolidColor(FlipTheme.colors.point),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     ) { innerTextField ->
@@ -59,7 +60,7 @@ fun AddFlipContentTextField(
         ) {
             Box(modifier = Modifier.align(Alignment.TopStart).padding(8.dp)) {
                 innerTextField()
-                if (content.isEmpty()) {
+                if (content.text.isEmpty()) {
                     Text(
                         text = placeholder,
                         style = FlipTheme.typography.body5,
@@ -74,7 +75,7 @@ fun AddFlipContentTextField(
 @Preview(showBackground = true)
 @Composable
 private fun AddFlipContentTextFieldPreview() {
-    val (title, onTitleChanged) = remember { mutableStateOf("") }
+    val (title, onTitleChanged) = remember { mutableStateOf(TextFieldValue("")) }
     val focusManager = LocalFocusManager.current
 
     FlipAppTheme {
